@@ -13,7 +13,7 @@ namespace Core.MathStructures {
         }
 
         /**
-         * Get the computed length/magnitude/norme  of the vector
+         * Get the computed length/magnitude/norme of the vector
          */
         public get length(): number {
             return Math.sqrt(this.x * this.x + this.y * this.y);
@@ -85,7 +85,7 @@ namespace Core.MathStructures {
         }
 
         /**
-         * Clone / duplicate this vector
+         * Get a cloned/duplicated instance of this vector
          */
         public clone(): Vector2 {
             return new Vector2(this.x, this.y);
