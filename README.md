@@ -47,6 +47,8 @@ You can then deploy these files to a any web server.
 │   │   └───InputSystem     // Namespace: Extensions.InputSystem
 ├───public                  // Web files (not bundled, external resources)
 ```
+### Class syntax
+The classes are written in order to follow the [Google TypeScript style guidelines](https://google.github.io/styleguide/tsguide.html#classes)
 
 ### Workflow
 * [Gitflow](https://www.atlassian.com/fr/git/tutorials/comparing-workflows/gitflow-workflow#:~:text=Gitflow%20est%20l'un%20des,les%20hotfix%20vers%20la%20production.)
