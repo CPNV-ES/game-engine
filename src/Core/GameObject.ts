@@ -88,15 +88,15 @@ export class GameObject {
     /**
      * Get the first behavior of a specific type attached to this GameObject or null if none is found.
      */
-    public getFirstBehavior<T extends Behavior>(): T | null {
-        return (this._behaviors.find((b) => b instanceof T) as T) || null;
+    public getFirstBehavior<T extends Behavior>(BehaviorClass: new (...args: any[]) => T): T | null {
+        return this._behaviors.find((b) => b instanceof BehaviorClass) as T ?? null;
     }
 
     /**
      * Get all behaviors of a specific type attached to this GameObject.
      */
-    public getBehaviors<T extends Behavior>(): T[] {
-        return this._behaviors.filter((b) => b instanceof T) as T[];
+    public getBehaviors<T extends Behavior>(BehaviorClass: new (...args: any[]) => T): T[] {
+        return this._behaviors.filter((b) => b instanceof BehaviorClass) as T[];
     }
 
     /**
