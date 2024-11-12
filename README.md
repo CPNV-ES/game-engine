@@ -1,7 +1,9 @@
-# 2D Web Game Engine
+# Sprunk - A TypeScript 2D Web Game Engine
 
 ## Description
-TODO
+This is a [Vite](https://vitejs.dev/) project that aims to create a 2D game engine in TypeScript. 
+The project is based on the [WebGPU](https://gpuweb.github.io/gpuweb/) API and is intended to be used in the browser. 
+The engine is designed to be modular and extensible, with a focus on enforcing a strict separation of concerns between the different components of the engine.
 
 ## Getting Started
 
@@ -23,19 +25,26 @@ npm run dev
 ```
 
 ## Deployment
-
-### On integration environment
-TODO
+### Build the project
+```shell
+  npm run build
+```
+This will generate static files in the `dist` folder. 
+You can then deploy these files to a any web server.
 
 ## Collaborate
 ### Directory structure
 ```shell
-├───doc                   //Documentation
-├───src                   //Source code
-│   ├───shaders
-│   ├───imgs
-│   └───vendors             
-├───public                //Web file (not bundled)
+├───doc                     // Documentation
+├───src                     // Source code
+│   ├───Core                // Core components
+│   │   ├───EventSystem     // Namespace: Core.EventSystem
+│   │   └───MathStructures  // Namespace: Core.MathStructures
+│   ├───Extensions          // Extensions and modules
+│   │   ├───RenderEngine    // Namespace: Extensions.RenderEngine
+│   │   ├───PhysicsEngine   // Namespace: Extensions.PhysicsEngine
+│   │   └───InputSystem     // Namespace: Extensions.InputSystem
+├───public                  // Web files (not bundled, external resources)
 ```
 
 ### Workflow
