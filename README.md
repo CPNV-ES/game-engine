@@ -56,6 +56,8 @@ You can then deploy these files to a any web server.
     * We only use tasks
 * Pull requests are open to merge in the develop branch.
 * Release on the main branch we use GitFlow and not with GitHub release.
+* When creating a new feature, the branch name must be `feature/SPR-XX-NameOfTheFeature`
+* Before merging a feature into develop, the code should be reviewed by one other person (by opening a pull request).
 * Issues are added to the [github issues page](https://github.com/JuilletMikael/RIA-EggFlix/issues)
 
 ## License
