@@ -12,6 +12,7 @@ The engine is designed to be modular and extensible, with a focus on enforcing a
 * npm 10.8.0 [official doc](https://docs.npmjs.com/try-the-latest-stable-version-of-npm)
 * node v22.9 [official doc](https://nodejs.org/en/download)
 * git version 2.39 [official doc](https://git-scm.com/)
+* Astah UML 8+ [official doc](https://astah.net/products/astah-uml/)
 * Google Chrome 130+ (or any other browser that runs WebGPU)
 
 ### Run the project
