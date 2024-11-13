@@ -58,8 +58,11 @@ export class Vector2 {
      * @param angle
      */
     public rotate(angle: number): Vector2 {
-        this.x = this.x * Math.cos(angle) - this.y * Math.sin(angle);
-        this.y = this.x * Math.sin(angle) + this.y * Math.cos(angle);
+        let x = this.x;
+        let y = this.y;
+
+        this.x = x * Math.cos(angle) - y * Math.sin(angle);
+        this.y = x * Math.sin(angle) + y * Math.cos(angle);
         return this;
     }
 
