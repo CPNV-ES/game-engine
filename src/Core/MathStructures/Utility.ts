@@ -1,7 +1,7 @@
 /**
  * A utility class for standard and redundant mathematical operations
  */
-export class Utility {
+export class MathUtility {
     /**
      * Convert degrees angles to radians
      * @param degrees
