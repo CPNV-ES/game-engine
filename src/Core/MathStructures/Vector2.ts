@@ -80,8 +80,10 @@ export class Vector2 {
      * Normalize the vector
      */
     public normalize(): Vector2 {
-        this.x /= this.length;
-        this.y /= this.length;
+        let length = this.length;
+
+        this.x /= length;
+        this.y /= length;
         return this;
     }
 
