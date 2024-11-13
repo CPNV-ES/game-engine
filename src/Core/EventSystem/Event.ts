@@ -2,7 +2,7 @@
  * The class can be used to add observers to an event and emit the event with data of type T (generic).
  */
 export class Event<T> {
-    private observers: Array<(data: T) => void> = [];
+    private _observers: Array<(data: T) => void> = [];
 
     /**
      * Adds an observer to the Event instance.
@@ -10,7 +10,7 @@ export class Event<T> {
      * @param observer
      */
     public addObserver(observer: (data: T) => void): void {
-        this.observers.push(observer);
+        this._observers.push(observer);
     }
 
     /**
@@ -19,7 +19,7 @@ export class Event<T> {
      * @param observer
      */
     public removeObserver(observer: (data: T) => void): void {
-        this.observers = this.observers.filter(obs => obs !== observer);
+        this._observers = this._observers.filter(obs => obs !== observer);
     }
 
     /**
@@ -28,7 +28,7 @@ export class Event<T> {
      * @param data
      */
     public emit(data: T): void {
-        this.observers.forEach(observer => {
+        this._observers.forEach(observer => {
             observer(data);
         });
     }
