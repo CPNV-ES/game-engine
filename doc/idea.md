@@ -67,9 +67,44 @@ const buttonScript = new Button();
 ```
 
 ## In game
-
+Object that jump :
 ```ts
-const flappyScene = new GameObject();
 const flappyBird = new GameObject();
-flappyBird.AddBehavior(new FlappyBird());
+flappyBird.addComponent(new RigidbodyJumperWebControls());
+flappyBird.addComponent(new RigidbodyJumper());
+flappyBird.addComponent(new BirdSpriteRender());
+
+class RigidbodyJumperWebControls extends DeviceInputBehavior {
+    override OnMouseLeftClick() {
+        getLogicBehavior<RigidbodyJumper>().Jump();
+    }
+}
+
+class RigidbodyJumper extends Rigidbody {
+    Jump() {
+        this.velocity.y = 10;
+        this.notifyOutput();
+    }
+}
+
+class BirdSpriteRender extends SpriteRenderBehavior {
+    private const MAX_VISUAL_ROTATION = 45;
+    private const MIN_VISUAL_ROTATION = -45;
+    private const ROTATION_SPEED = 100;
+
+    constructor() {
+        super("bird.png");
+        this.observe<RigidbodyJumper>(this.onJump);
+    }
+
+    onJump() {
+        this.renderOffset.rotation = MAX_VISUAL_ROTATION;
+    }
+
+    override tick(deltaTime: number) {
+        if (this.renderOffset.rotation > MIN_VISUAL_ROTATION) {
+            this.renderOffset.rotation -= deltaTime * ROTATION_SPEED;
+        }
+    }
+}
 ```

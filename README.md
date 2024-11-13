@@ -9,9 +9,10 @@ The engine is designed to be modular and extensible, with a focus on enforcing a
 
 ### Prerequisites
 * IDE used PhpStorm 2024.2 or Webstorm 2024.2
-* npm 10.8.0 [official doc](https://docs.npmjs.com/try-the-latest-stable-version-of-npm)
-* node v22.9 [official doc](https://nodejs.org/en/download)
+* npm 10.2+ [official doc](https://docs.npmjs.com/try-the-latest-stable-version-of-npm)
+* node v21+ [official doc](https://nodejs.org/en/download)
 * git version 2.39 [official doc](https://git-scm.com/)
+* git-lfs/3.5 + [official doc](https://git-lfs.github.com/)
 * Astah UML 8+ [official doc](https://astah.net/products/astah-uml/)
 * Google Chrome 130+ (or any other browser that runs WebGPU)
 
@@ -23,6 +24,11 @@ npm install
 Run vite dev server
 ```shell
 npm run dev 
+```
+
+### Run the tests
+```shell
+npm run test
 ```
 
 ## Deployment
@@ -39,14 +45,18 @@ You can then deploy these files to a any web server.
 ├───doc                     // Documentation
 ├───src                     // Source code
 │   ├───Core                // Core components
-│   │   ├───EventSystem     // Namespace: Core.EventSystem
-│   │   └───MathStructures  // Namespace: Core.MathStructures
+│   │   ├───EventSystem     // Event and callback helpers
+│   │   └───MathStructures  // Math structures (like Vector2)
 │   ├───Extensions          // Extensions and modules
-│   │   ├───RenderEngine    // Namespace: Extensions.RenderEngine
-│   │   ├───PhysicsEngine   // Namespace: Extensions.PhysicsEngine
-│   │   └───InputSystem     // Namespace: Extensions.InputSystem
+│   │   ├───RenderEngine    // WebGPU rendering engine
+│   │   ├───PhysicsEngine   // 2D Bounding Box physics engine
+│   │   └───InputSystem     // Web input systemeb
+├───test                    // Vitests Unit tests
+├   ├───...                 // Same structure as src
 ├───public                  // Web files (not bundled, external resources)
 ```
+### Class syntax
+The classes are written in order to follow the [Google TypeScript style guidelines](https://google.github.io/styleguide/tsguide.html#classes)
 
 ### Workflow
 * [Gitflow](https://www.atlassian.com/fr/git/tutorials/comparing-workflows/gitflow-workflow#:~:text=Gitflow%20est%20l'un%20des,les%20hotfix%20vers%20la%20production.)
