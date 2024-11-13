@@ -44,10 +44,9 @@ export class GameObject {
      * @param gameObject
      */
     public addChild(gameObject: GameObject): void {
-        if (!this.children.includes(gameObject)) {
-            this.children.push(gameObject);
-            gameObject.setParent(this);
-        }
+        if(this.children.includes(gameObject)) return;
+        this.children.push(gameObject);
+        gameObject.setParent(this);
     }
 
     /**
@@ -56,10 +55,9 @@ export class GameObject {
      */
     public removeChild(gameObject: GameObject): void {
         const index = this.children.indexOf(gameObject);
-        if (index !== -1) {
-            this.children.splice(index, 1);
-            gameObject.setParent(null);
-        }
+        if(index === -1) return;
+        this.children.splice(index, 1);
+        gameObject.setParent(null);
     }
 
     /**
@@ -67,10 +65,9 @@ export class GameObject {
      * @param behavior
      */
     public addBehavior(behavior: Behavior): void {
-        if (!this._behaviors.includes(behavior)) {
-            this._behaviors.push(behavior);
-            behavior.setup(this);
-        }
+        if (this._behaviors.includes(behavior)) return;
+        this._behaviors.push(behavior);
+        behavior.setup(this);
     }
 
     /**
@@ -79,10 +76,9 @@ export class GameObject {
      */
     public removeBehavior(behavior: Behavior): void {
         const index = this._behaviors.indexOf(behavior);
-        if (index !== -1) {
-            this._behaviors.splice(index, 1);
-            behavior.detach(this);
-        }
+        if (index === 1) return;
+        this._behaviors.splice(index, 1);
+        behavior.detach(this);
     }
 
     /**
