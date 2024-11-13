@@ -1,13 +1,6 @@
 import { Behavior } from './Behavior';
 import { GameObject } from './GameObject';
-
-class Event<T> {
-    emit(data: T): void {
-    }
-    addObserver(observer: (data: T) => void): void {
-
-    }
-}
+import {Event} from "./EventSystem/Event.ts";
 
 /**
  * A behavior that contains logic to modify an owned data state object.
