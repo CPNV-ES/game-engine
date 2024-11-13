@@ -1,7 +1,6 @@
 import { Behavior } from './Behavior.ts';
-/*import { Event } from './EventSystem/Event.ts';
-import { Transform } from './BasicMathStructures/Transform.ts';*/
-class Event {}
+import {Event} from "./EventSystem/Event.ts";
+/*import { Transform } from './BasicMathStructures/Transform.ts';*/
 class Transform {}
 
 /**
@@ -12,6 +11,10 @@ export class GameObject {
      * The position, rotation, and scale of this GameObject.
      */
     public readonly transform: Transform = new Transform();
+    /**
+     * Event that is triggered when the list of behaviors attached to this GameObject changes.
+     */
+    public readonly onBehaviorListChanged : Event<void> = new Event<void>();
     /**
      * Optional parent of this GameObject. If set, the transform should follow the parent's transform.
      */
@@ -68,6 +71,7 @@ export class GameObject {
         if (this._behaviors.includes(behavior)) return;
         this._behaviors.push(behavior);
         behavior.setup(this);
+        this.onBehaviorListChanged.emit();
     }
 
     /**
@@ -79,6 +83,7 @@ export class GameObject {
         if (index === 1) return;
         this._behaviors.splice(index, 1);
         behavior.detach(this);
+        this.onBehaviorListChanged.emit();
     }
 
     /**
