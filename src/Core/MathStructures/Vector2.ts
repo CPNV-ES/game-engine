@@ -11,7 +11,7 @@ export class Vector2 {
     }
 
     /**
-     * Get the computed length/magnitude/norme of the vector
+     * Get the computed length/magnitude/norm/intensity of the vector
      */
     public get length(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y);
