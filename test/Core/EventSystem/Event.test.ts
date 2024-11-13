@@ -1,7 +1,7 @@
 import {describe, it, expect, vi, Mock} from 'vitest';
 import { Event } from '../../../src/Core/EventSystem/Event';
 
-describe('Event', () => {
+describe('Event', (): void => {
 
     /**
      * Tests if an observer can be successfully added to the Event instance.
