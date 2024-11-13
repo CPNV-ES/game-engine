@@ -100,4 +100,28 @@ describe('Vector2', (): void => {
         expect(vector.x).toBe(0.6);
         expect(vector.y).toBe(0.8);
     });
+
+    /**
+     * Test if the dot product of two vectors can be calculated.
+     */
+    it('should calculate the dot product of two vectors', (): void => {
+        const vector1: Vector2 = new Vector2(1, 2);
+        const vector2: Vector2 = new Vector2(3, 4);
+
+        const dotProduct: number = vector1.dotProduct(vector2);
+
+        expect(dotProduct).toBe(11);
+    });
+
+    /**
+     * Test if the angle between two vectors can be calculated.
+     */
+    it('should calculate the angle between two vectors', (): void => {
+        const vector1: Vector2 = new Vector2(1, 0);
+        const vector2: Vector2 = new Vector2(0, 1);
+
+        const angle: number = vector1.angleBetween(vector2);
+
+        expect(angle).toBeCloseTo(Math.PI / 2);
+    });
 });
