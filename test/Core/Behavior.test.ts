@@ -9,6 +9,7 @@ test('setup and detach without error', () => {
     expect(behavior.disableCount).toBe(0);
     gameObject.addBehavior(behavior);
     expect(behavior.enableCount).toBe(1);
+    expect(behavior.disableCount).toBe(0);
     gameObject.removeBehavior(behavior);
     expect(behavior.disableCount).toBe(1);
 });
@@ -55,4 +56,19 @@ test('detach from wrong GameObject throws error', () => {
     expect(behavior.enableCount).toBe(1);
     expect(() => behavior.detach(gameObject2)).toThrow();
     expect(behavior.disableCount).toBe(0);
+});
+
+test('double attach / detach should call onEnable / onDisable twice', () => {
+    let gameObject = new GameObject();
+    let behavior = new TestBehavior();
+    expect(behavior.enableCount).toBe(0);
+    expect(behavior.disableCount).toBe(0);
+    gameObject.addBehavior(behavior);
+    expect(behavior.enableCount).toBe(1);
+    gameObject.removeBehavior(behavior);
+    expect(behavior.disableCount).toBe(1);
+    gameObject.addBehavior(behavior);
+    expect(behavior.enableCount).toBe(2);
+    gameObject.removeBehavior(behavior);
+    expect(behavior.disableCount).toBe(2);
 });
