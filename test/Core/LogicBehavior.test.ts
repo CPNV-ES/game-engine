@@ -13,4 +13,19 @@ describe('LogicBehavior', () => {
         //When + Then
         expect(throwingFunction).toThrowError(Error);
     });
+
+    it('should notify data change', () => {
+        //Given
+        const gameObject = new GameObject();
+        const logicBehavior = new TestLogicBehavior();
+        gameObject.addBehavior(logicBehavior);
+        let dataChangedCount = 0;
+        logicBehavior.onDataChanged.addObserver(() => dataChangedCount++);
+        expect(dataChangedCount).toBe(0);
+        //When
+        logicBehavior.callFromTestInputBehavior();
+
+        //Then
+        expect(dataChangedCount).toBe(1);
+    });
 });
