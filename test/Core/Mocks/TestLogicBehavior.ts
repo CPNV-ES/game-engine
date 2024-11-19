@@ -2,8 +2,12 @@ import {LogicBehavior} from "../../../src/Core/LogicBehavior";
 import {TestData} from "./TestData";
 
 export class TestLogicBehavior extends LogicBehavior<TestData>{
+    public initDataOnEnable = true;
     protected onEnable() {
         super.onEnable();
+        if(this.initDataOnEnable){
+            this.data = new TestData();
+        }
     }
 
     protected onDisable() {
@@ -18,5 +22,9 @@ export class TestLogicBehavior extends LogicBehavior<TestData>{
         this.data.number = 1;
         this.data.string = "test";
         this.notifyDataChanged();
+    }
+
+    public inspectData(): TestData {
+        return this.data;
     }
 }
