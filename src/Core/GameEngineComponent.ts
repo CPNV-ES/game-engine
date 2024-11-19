@@ -3,18 +3,14 @@ import { GameEngineWindow } from "./GameEngineWindow";
 /**
  * @class GameEngineComponent
  * @description Base class for all game engine components.
- * @method onAttachedTo(gameEngine: GameEngineWindow): void
  * @property attachedEngine: GameEngineWindow | null
  */
-export class GameEngineComponent {
-    protected attachedEngine: GameEngineWindow | null = null;
+export abstract class GameEngineComponent {
 
     /**
      * @method onAttachedTo
      * @param gameEngine
-     * @description Called when the component is added to the game engine window.
+     * @description can be overriden by subclasses to perform actions when the component is attached to the game engine.
      */
-    public onAttachedTo(gameEngine: GameEngineWindow): void {
-        this.attachedEngine = gameEngine;
-    }
+    public onAttachedTo(gameEngine: GameEngineWindow): void {}
 }
