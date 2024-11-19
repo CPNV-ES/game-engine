@@ -9,7 +9,8 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "preview": "vite preview",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "format": "prettier --write \"{src,test}/**/*.ts\""
   },
   "devDependencies": {
     "@webgpu/types": "^0.1.51",
