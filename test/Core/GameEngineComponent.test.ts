@@ -4,10 +4,12 @@ import { GameEngineWindow } from '../../src/Core/GameEngineWindow'
 
 export class MockGameEngineComponent extends GameEngineComponent{
     public attachedTo : GameEngineWindow | null = null;
+    public count : number = 0;
 
     onAttachedTo(gameEngine: GameEngineWindow) : void {
         super.onAttachedTo(gameEngine);
         this.attachedTo = gameEngine;
+        this.count++;
     }
 }
 
@@ -25,7 +27,8 @@ describe("GameEngineComponent", () : void => {
         let gameEngineComponent: MockGameEngineComponent = new MockGameEngineComponent();
 
         gameEngineWindow.addGameComponent(gameEngineComponent);
-        expect(gameEngineComponent.attachedTo).toBe(gameEngineWindow);
+        gameEngineWindow.addGameComponent(gameEngineComponent);
+        expect(gameEngineComponent.count).toBe(1);
     });
 
     it('should return null if it\'s not attached', () : void => {
