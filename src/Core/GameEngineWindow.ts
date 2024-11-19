@@ -41,8 +41,8 @@ export class GameEngineWindow {
      * @description Adds a GameEngineComponent to the game engine window unless it is already attached.
      */
     public addGameComponent(component: GameEngineComponent): void {
-        if (this.engineComponents.includes(component)) return;
-        this.engineComponents.push(component);
+        if (this._engineComponents.includes(component)) return;
+        this._engineComponents.push(component);
         component.onAttachedTo(this);
     }
 
@@ -52,6 +52,6 @@ export class GameEngineWindow {
      * @returns {GameEngineComponent | null}
      */
     public getEngineComponent<T extends GameEngineComponent>(componentClass: new () => T): GameEngineComponent | null {
-        return this.engineComponents.find(component => component instanceof componentClass) || null;
+        return this._engineComponents.find(component => component instanceof componentClass) || null;
     }
 }
