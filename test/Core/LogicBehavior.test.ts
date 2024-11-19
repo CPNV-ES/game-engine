@@ -28,4 +28,14 @@ describe('LogicBehavior', () => {
         //Then
         expect(dataChangedCount).toBe(1);
     });
+
+    it('should expose gameObject with protected permissions', () => {
+        //Given
+        const gameObject = new GameObject();
+        const logicBehavior = new TestLogicBehavior();
+        gameObject.addBehavior(logicBehavior);
+
+        //When + Then
+        expect(logicBehavior.inspectGameObject()).toBe(gameObject);
+    });
 });
