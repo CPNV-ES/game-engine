@@ -1,11 +1,5 @@
 import {GameEngineComponent} from "./GameEngineComponent.ts";
-
-/**
- * @description Mock GameObject class for the GameEngineWindow class before it is implemented.
- */
-export class GameObject {
-    // Mock implementation
-}
+import {GameObject} from "./GameObject.ts";
 
 /**
 * @class GameEngineWindow
@@ -24,7 +18,6 @@ export class GameEngineWindow {
     private _root: GameObject = new GameObject();
 
     /**
-     * @method instance
      * @description Singleton instance of the GameEngineWindow class.
      * @returns {GameEngineWindow}
      */
@@ -36,7 +29,6 @@ export class GameEngineWindow {
     }
 
     /**
-     * @method root
      * @description Root GameObject of the game engine window.
      * @returns {GameObject}
      */
@@ -45,17 +37,16 @@ export class GameEngineWindow {
     }
 
     /**
-     * @method addGameComponent
      * @param component
-     * @description Adds a GameEngineComponent to the game engine window.
+     * @description Adds a GameEngineComponent to the game engine window unless it is already attached.
      */
     public addGameComponent(component: GameEngineComponent): void {
+        if (this.engineComponents.includes(component)) return;
         this.engineComponents.push(component);
         component.onAttachedTo(this);
     }
 
     /**
-     * @method getEngineComponent
      * @param componentClass
      * @description Returns a GameEngineComponent of the specified type.
      * @returns {GameEngineComponent | null}
