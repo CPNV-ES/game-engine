@@ -18,6 +18,9 @@ export abstract class OutputBehavior extends Behavior {
      * @protected
      */
     protected observe<T extends LogicBehavior<U>, U>(BehaviorClass: new (...args: any[]) => T, observer: (data : U) => void): void {
+        if (!this._gameObject) {
+            throw new Error("GameObject is not set.");
+        }
         let behavior = this._gameObject!.getFirstBehavior(BehaviorClass) as T | null;
         if (!behavior) {
             throw new Error("Logic Behavior not found.");
