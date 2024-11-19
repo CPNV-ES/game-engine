@@ -14,7 +14,7 @@ import {GameObject} from "./GameObject.ts";
 */
 export class GameEngineWindow {
     private static _INSTANCE: GameEngineWindow | null = null;
-    private engineComponents: GameEngineComponent[] = [];
+    private _engineComponents: GameEngineComponent[] = [];
     private _root: GameObject = new GameObject();
 
     /**
