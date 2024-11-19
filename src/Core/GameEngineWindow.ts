@@ -13,7 +13,7 @@ import {GameObject} from "./GameObject.ts";
 * @property private _root: GameObject
 */
 export class GameEngineWindow {
-    private static _instance: GameEngineWindow | null = null;
+    private static _INSTANCE: GameEngineWindow | null = null;
     private engineComponents: GameEngineComponent[] = [];
     private _root: GameObject = new GameObject();
 
@@ -22,10 +22,10 @@ export class GameEngineWindow {
      * @returns {GameEngineWindow}
      */
     public static get instance(): GameEngineWindow {
-        if (this._instance === null) {
-            this._instance = new GameEngineWindow();
+        if (this._INSTANCE === null) {
+            this._INSTANCE = new GameEngineWindow();
         }
-        return this._instance;
+        return this._INSTANCE;
     }
 
     /**
