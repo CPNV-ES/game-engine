@@ -4,13 +4,6 @@ import {GameObject} from "./GameObject.ts";
 /**
 * @class GameEngineWindow
 * @description Singleton class that represents the game engine window.
-* @method get instance(): GameEngineWindow
-* @method get root(): GameObject
-* @method addGameComponent(component: GameEngineComponent): void
-* @method getEngineComponent<T extends GameEngineComponent>(componentClass: new () => T): GameEngineComponent | null
-* @property private static _instance: GameEngineWindow | null
-* @property private engineComponents: GameEngineComponent[]
-* @property private _root: GameObject
 */
 export class GameEngineWindow {
     private static _INSTANCE: GameEngineWindow | null = null;
@@ -29,7 +22,7 @@ export class GameEngineWindow {
     }
 
     /**
-     * @description Root GameObject of the game engine window.
+     * @description Root GameObject of the game engine window, it will serve to be like a singleton that will contain all the other GameObjects.
      * @returns {GameObject}
      */
     public get root(): GameObject {
