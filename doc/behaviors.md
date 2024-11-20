@@ -1,3 +1,12 @@
+# Behaviors
+Behaviors are modular components that encapsulate specific functionality or logic.
+- They can be attached to gameobjects to add specific functionality to them or interacti with other gameobject's components.
+- They are designed to be reusable and composable, allowing you to mix and match them to create complex game objects.
+
+All behaviors provide the following methods:
+- `onEnable()`: Called when the behavior is enabled (attached to a game object).
+- `onDisable()`: Called when the behavior is disabled (removed from a game object).
+- `tick(deltaTime : float)`: Called every frame with the time that has passed since the last frame.
 
 ## Types of Behaviors (Input, Logic, Output)
 These behaviors are modular and enforce clear separation of concerns, improving maintainability and testability.
