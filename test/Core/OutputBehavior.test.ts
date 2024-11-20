@@ -35,7 +35,7 @@ describe('OutputBehavior', () => {
     it('should throw explicit error if observe without gameobject', () => {
         //Given
         const outputBehavior = new TestOutputBehavior();
-        const throwingFunction = () => outputBehavior.doObserve(TestLogicBehavior, (data : TestData) => {});
+        const throwingFunction = () => outputBehavior.doObserve(TestLogicBehavior, (_ : TestData) => {});
         //When + Then
         expect(throwingFunction).toThrowError(Error);
     });
@@ -45,7 +45,7 @@ describe('OutputBehavior', () => {
         const gameObject = new GameObject();
         const outputBehavior = new TestOutputBehavior();
         gameObject.addBehavior(outputBehavior);
-        const throwingFunction = () => outputBehavior.doObserve(TestLogicBehavior, (data : TestData) => {});
+        const throwingFunction = () => outputBehavior.doObserve(TestLogicBehavior, (_ : TestData) => {});
         //When + Then
         expect(throwingFunction).toThrowError(Error);
     });

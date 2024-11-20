@@ -1,7 +1,7 @@
 import { Behavior } from './Behavior';
-import { Transform } from './BasicMathStructures';
 import { GameObject } from './GameObject';
 import { LogicBehavior } from './LogicBehavior';
+import {Transform} from "./MathStructures/Transform.ts";
 
 export abstract class OutputBehavior extends Behavior {
     private _gameObject!: GameObject;

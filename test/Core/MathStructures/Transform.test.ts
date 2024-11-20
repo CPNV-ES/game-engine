@@ -1,4 +1,4 @@
-import {describe, it, expect, vi, Mock} from 'vitest';
+import {describe, it, expect} from 'vitest';
 import {Transform} from "../../../src/Core/MathStructures/Transform";
 
 describe('Transform', (): void => {
