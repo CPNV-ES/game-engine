@@ -1,7 +1,6 @@
 import { Behavior } from './Behavior.ts';
 import {Event} from "./EventSystem/Event.ts";
-/*import { Transform } from './BasicMathStructures/Transform.ts';*/
-class Transform {}
+import {Transform} from "./MathStructures/Transform.ts";
 
 /**
  * A GameObject is the base class for all entities objects in the game. It is a container for behaviors and other GameObjects.

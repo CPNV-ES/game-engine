@@ -28,7 +28,7 @@ export abstract class OutputBehavior extends Behavior {
         behavior.onDataChanged.addObserver(observer);
     }
 
-    protected get transform(): Transform | null {
-        return null;
+    protected get transform(): Transform {
+        return this._gameObject.transform;
     }
 }
