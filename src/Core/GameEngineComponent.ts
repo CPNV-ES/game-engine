@@ -6,11 +6,10 @@ import { GameEngineWindow } from "./GameEngineWindow";
  * @property attachedEngine: GameEngineWindow | null
  */
 export abstract class GameEngineComponent {
-
-    /**
-     * @method onAttachedTo
-     * @param gameEngine
-     * @description can be overriden by subclasses to perform actions when the component is attached to the game engine.
-     */
-    public onAttachedTo(gameEngine: GameEngineWindow): void {}
+  /**
+   * @method onAttachedTo
+   * @param gameEngine
+   * @description can be overriden by subclasses to perform actions when the component is attached to the game engine.
+   */
+  public onAttachedTo(gameEngine: GameEngineWindow): void {}
 }
