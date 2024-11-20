@@ -28,6 +28,6 @@
     "vitest": "^2.1.4"
   },
   "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
+    "**/*.{ts,html}": "prettier --write"
   }
 }
