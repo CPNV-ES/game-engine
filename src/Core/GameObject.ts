@@ -17,7 +17,7 @@ export class GameObject {
   /**
    * Optional parent of this GameObject. If set, the transform should follow the parent's transform.
    */
-  public parent: GameObject | null = null;
+  protected _parent: GameObject | null = null;
 
   private _behaviors: Behavior[] = [];
   private _children: GameObject[] = [];
@@ -48,7 +48,7 @@ export class GameObject {
   public addChild(gameObject: GameObject): void {
     if (this.children.includes(gameObject)) return;
     this.children.push(gameObject);
-    gameObject.setParent(this);
+    gameObject._parent = this;
   }
 
   /**
@@ -59,7 +59,7 @@ export class GameObject {
     const index = this.children.indexOf(gameObject);
     if (index === -1) return;
     this.children.splice(index, 1);
-    gameObject.setParent(null);
+    gameObject._parent = null;
   }
 
   /**
@@ -106,12 +106,10 @@ export class GameObject {
   }
 
   /**
-   * Internally set the parent of this GameObject when it is added as a child to another GameObject.
-   * The transform should follow the parent's transform.
-   * @param parent - The GameObject that this GameObject is added as a child to. Detach from parent by passing null.
-   * @protected - This method should only be called from within the GameObject class.
+   * Update all behaviors attached to this GameObject.
+   * @param deltaTime
    */
-  protected setParent(parent: GameObject | null): void {
-    this.parent = parent;
+  public get parent(): GameObject | null {
+    return this._parent;
   }
 }

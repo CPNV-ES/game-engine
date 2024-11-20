@@ -31,10 +31,10 @@ test("all game object children", () => {
 test("add child should ßset parent", () => {
   let parent = new GameObject();
   let child = new GameObject();
-  expect(child.parent).toBe(null);
+  expect(child._parent).toBe(null);
   parent.addChild(child);
   expect(parent.children).toEqual([child]);
-  expect(child.parent).toBe(parent);
+  expect(child._parent).toBe(parent);
 });
 
 test("add child twice should not duplicate", () => {
@@ -43,7 +43,7 @@ test("add child twice should not duplicate", () => {
   parent.addChild(child);
   parent.addChild(child);
   expect(parent.children).toEqual([child]);
-  expect(child.parent).toBe(parent);
+  expect(child._parent).toBe(parent);
 });
 
 test("remove child should unset parent", () => {
@@ -51,10 +51,10 @@ test("remove child should unset parent", () => {
   let child = new GameObject();
   parent.addChild(child);
   expect(parent.children).toEqual([child]);
-  expect(child.parent).toBe(parent);
+  expect(child._parent).toBe(parent);
   parent.removeChild(child);
   expect(parent.children).toEqual([]);
-  expect(child.parent).toBe(null);
+  expect(child._parent).toBe(null);
 });
 
 test("remove child twice should not throw", () => {
@@ -64,7 +64,7 @@ test("remove child twice should not throw", () => {
   parent.removeChild(child);
   parent.removeChild(child);
   expect(parent.children).toEqual([]);
-  expect(child.parent).toBe(null);
+  expect(child._parent).toBe(null);
 });
 
 test("getting first behavior should return the first behavior of the type", () => {
