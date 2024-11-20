@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest'
 import {GameObject} from "../../src/Core/GameObject";
-import {TestBehavior} from "./TestBehavior";
-import {TestBehaviorOtherType} from "./TestBehaviorOtherType";
+import {TestBehavior} from "./Mocks/TestBehavior";
+import {TestBehaviorOtherType} from "./Mocks/TestBehaviorOtherType";
 
 test('direct game object children', () => {
     let parent = new GameObject();

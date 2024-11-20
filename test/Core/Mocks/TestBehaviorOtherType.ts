@@ -1,6 +1,6 @@
-import {Behavior} from "../../src/Core/Behavior";
+import {Behavior} from "../../../src/Core/Behavior";
 
-export class TestBehavior extends Behavior {
+export class TestBehaviorOtherType extends Behavior {
     public enableCount = 0;
     public disableCount = 0;
     public tickCount = 0;

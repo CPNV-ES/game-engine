@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import {GameObject} from "../../src/Core/GameObject";
-import {TestBehavior} from "./TestBehavior";
+import {TestBehavior} from "./Mocks/TestBehavior";
 
 test('setup and detach without error', () => {
     let gameObject = new GameObject();
