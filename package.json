@@ -12,12 +12,6 @@
     "prepare": "husky install",
     "format": "prettier --write \"{src,test}/**/*.ts\""
   },
-  "lint-staged": {
-    "*.{ts,json}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
   "devDependencies": {
     "@webgpu/types": "^0.1.51",
     "husky": "^9.1.7",
