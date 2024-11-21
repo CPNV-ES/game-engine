@@ -40,7 +40,7 @@ export abstract class Behavior {
     //This is not abstract because it is not required to be implemented.
   }
 
-  protected tick(deltaTime: number): void {
+  protected tick(_deltaTime: number): void {
     //This is not abstract because it is not required to be implemented.
   }
 }

@@ -11,5 +11,5 @@ export abstract class GameEngineComponent {
    * @param gameEngine
    * @description can be overriden by subclasses to perform actions when the component is attached to the game engine.
    */
-  public onAttachedTo(gameEngine: GameEngineWindow): void {}
+  public onAttachedTo(_gameEngine: GameEngineWindow): void {}
 }
