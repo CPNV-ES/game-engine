@@ -77,9 +77,21 @@ export class Vector2 {
   }
 
   /**
+   * Scale axis independently by a vector
+   * @param vector
+   */
+  public scaleAxis(vector: Vector2): Vector2 {
+    this.x *= vector.x;
+    this.y *= vector.y;
+    return this;
+  }
+
+  /**
    * Normalize the vector
    */
-  public normalize(): Vector2 {
+  public;
+
+  normalize(): Vector2 {
     let length = this.length;
 
     this.x /= length;
@@ -90,7 +102,9 @@ export class Vector2 {
   /**
    * Get a cloned/duplicated instance of this vector
    */
-  public clone(): Vector2 {
+  public;
+
+  clone(): Vector2 {
     return new Vector2(this.x, this.y);
   }
 }
