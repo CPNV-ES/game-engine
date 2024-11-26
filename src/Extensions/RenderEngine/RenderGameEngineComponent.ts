@@ -7,7 +7,7 @@ import { Event } from "../../Core/EventSystem/Event.ts";
  */
 export class RenderGameEngineComponent extends GameEngineComponent {
   /**
-   * Event that is triggered when the list of behaviors attached to this GameObject changes.
+   * Event that is triggered when an asynchronous error occurs.
    */
   public readonly onError: Event<Error> = new Event<Error>();
 
@@ -25,12 +25,67 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     this._gpu = gpu;
   }
 
-  onAttachedTo(_gameEngine: GameEngineWindow): void {
+  public onAttachedTo(_gameEngine: GameEngineWindow): void {
     super.onAttachedTo(_gameEngine);
     this.requestResources();
     window.addEventListener("resize", this.resizeCanvasToMatchDisplaySize);
     requestAnimationFrame(() => this.frame());
     this.resizeCanvasToMatchDisplaySize();
+  }
+
+  public createPipeline(
+    vertexWGSLShader: string,
+    fragmentWGSLShader: string,
+    topology: GPUPrimitiveTopology,
+  ): GPURenderPipeline {
+    if (!this._device || !this._presentationTextureFormat) {
+      throw new Error("Device or presentation texture format not available");
+    }
+    return this._device.createRenderPipeline({
+      layout: "auto",
+      vertex: {
+        module: this._device.createShaderModule({
+          code: vertexWGSLShader,
+        }),
+      },
+      fragment: {
+        module: this._device.createShaderModule({
+          code: fragmentWGSLShader,
+        }),
+        targets: [
+          {
+            format: this._presentationTextureFormat,
+          },
+        ],
+      },
+      primitive: {
+        topology: topology,
+      },
+    });
+  }
+
+  public async createTexture(url: RequestInfo | URL): Promise<GPUTexture> {
+    if (!this._device) {
+      throw new Error("Device not available");
+    }
+    const response = await fetch(url);
+    const imageBitmap = await createImageBitmap(await response.blob());
+
+    const [srcWidth, srcHeight] = [imageBitmap.width, imageBitmap.height];
+    const imageTexture = this._device.createTexture({
+      size: [srcWidth, srcHeight, 1],
+      format: "rgba8unorm",
+      usage:
+        GPUTextureUsage.TEXTURE_BINDING |
+        GPUTextureUsage.COPY_DST |
+        GPUTextureUsage.RENDER_ATTACHMENT,
+    });
+    this._device.queue.copyExternalImageToTexture(
+      { source: imageBitmap },
+      { texture: imageTexture },
+      [imageBitmap.width, imageBitmap.height],
+    );
+    return imageTexture;
   }
 
   private async requestResources() {
