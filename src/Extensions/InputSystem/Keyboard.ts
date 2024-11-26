@@ -8,9 +8,15 @@ import { Event } from "../../Core/EventSystem/Event.ts";
  */
 export class Keyboard extends Device {
   /**
-   * onKeyDown and onKeyUp are events that are triggered when a key is pressed or released.
+   *  Event triggered when a key is pressed.
+   *  @type {Event<string>}
    */
   public readonly onKeyDown: Event<string> = new Event<string>();
+
+  /**
+   * Event triggered when a key is released.
+   * @type {Event<string>}
+   */
   public readonly onKeyUp: Event<string> = new Event<string>();
 
   /**
