@@ -13,9 +13,9 @@ export abstract class RenderGameEngineComponent extends GameEngineComponent {
 
   private _canvasToDrawOn: HTMLCanvasElement;
   private _gpu: GPU;
-  private _context: GPUCanvasContext;
-  private _presentationTextureFormat: GPUTextureFormat;
-  private _device: GPUDevice;
+  private _context: GPUCanvasContext | undefined;
+  private _presentationTextureFormat: GPUTextureFormat | undefined;
+  private _device: GPUDevice | undefined;
 
   constructor(canvasToDrawOn: HTMLCanvasElement, gpu: GPU) {
     super();
@@ -88,7 +88,8 @@ export abstract class RenderGameEngineComponent extends GameEngineComponent {
   }
 
   private frame() {
-    if (!this._device) return;
+    if (!this._device || !this._context || !this._presentationTextureFormat)
+      return;
     const commandEncoder: GPUCommandEncoder =
       this._device.createCommandEncoder();
     const textureView: GPUTextureView = this._context
