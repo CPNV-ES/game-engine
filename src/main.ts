@@ -1,3 +1,8 @@
-//import { setup } from "./render-test.ts";
+import { GameEngineWindow } from "./Core/GameEngineWindow.ts";
+import { RenderGameEngineComponent } from "./Extensions/RenderEngine/RenderGameEngineComponent.ts";
 
-//await setup();
+const canvas: HTMLCanvasElement =
+  document.querySelector<HTMLCanvasElement>("#app")!;
+GameEngineWindow.instance.addGameComponent(
+  new RenderGameEngineComponent(canvas, navigator.gpu),
+);
