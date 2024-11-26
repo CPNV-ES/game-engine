@@ -5,7 +5,7 @@ import { Event } from "../../Core/EventSystem/Event.ts";
 /**
  *
  */
-export abstract class RenderGameEngineComponent extends GameEngineComponent {
+export class RenderGameEngineComponent extends GameEngineComponent {
   /**
    * Event that is triggered when the list of behaviors attached to this GameObject changes.
    */
@@ -29,7 +29,7 @@ export abstract class RenderGameEngineComponent extends GameEngineComponent {
     super.onAttachedTo(_gameEngine);
     this.requestResources();
     window.addEventListener("resize", this.resizeCanvasToMatchDisplaySize);
-    requestAnimationFrame(this.frame);
+    requestAnimationFrame(() => this.frame());
     this.resizeCanvasToMatchDisplaySize();
   }
 
@@ -115,6 +115,6 @@ export abstract class RenderGameEngineComponent extends GameEngineComponent {
 
     this._device.queue.submit([commandEncoder.finish()]);
 
-    requestAnimationFrame(this.frame);
+    requestAnimationFrame(() => this.frame());
   }
 }
