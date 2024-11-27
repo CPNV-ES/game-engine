@@ -39,9 +39,15 @@ export class Mouse extends Device {
 
   /**
    * Event triggered when the mouse is moved.
-   * @type {Event<number[]>}
+   * @type {Event<MouseEvent>}
    */
-  public readonly onMove: Event<number[]> = new Event<number[]>();
+  public readonly onMove: Event<MouseEvent> = new Event<MouseEvent>();
+
+  /**
+   * Event triggered when the mouse is scrolled.
+   * @type {Event<MouseEvent>}
+   */
+  public readonly onScroll: Event<MouseEvent> = new Event<MouseEvent>();
 
   /**
    * Creates a new Mouse instance.
@@ -71,6 +77,9 @@ export class Mouse extends Device {
     });
     document.addEventListener("mousemove", (event: MouseEvent) => {
       this.onMove.emit([event.clientX, event.clientY]);
+    });
+    document.addEventListener("scroll", (event: MouseEvent) => {
+      this.onScroll.emit(event);
     });
   }
 }
