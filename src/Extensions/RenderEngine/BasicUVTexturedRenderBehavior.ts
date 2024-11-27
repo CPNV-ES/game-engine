@@ -13,6 +13,9 @@ export abstract class BasicUVTexturedRenderBehavior extends RenderBehavior {
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
   ) {
+    if (!renderEngine) {
+      throw new Error("Render engine is required");
+    }
     const descriptor: GPUBindGroupLayoutDescriptor = {
       entries: [
         { binding: 0, visibility: GPUShaderStage.FRAGMENT, texture: {} },
