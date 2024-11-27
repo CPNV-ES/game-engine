@@ -74,7 +74,7 @@ describe("Mouse", (): void => {
     expect(mouse.onFifthClick.emit).toHaveBeenCalledWith(true);
   });
 
-  it("should emit clientX and Y values when mouse moves", (): void => {
+  it("should emit the whole event object when mouse moves", (): void => {
     mouse.onMove.addObserver(callback);
     vi.spyOn(mouse.onMove, "emit");
 
@@ -83,7 +83,19 @@ describe("Mouse", (): void => {
       .filter((call) => call[0] === "mousemove")
       .forEach((call) => call[1](moveEvent));
 
-    expect(mouse.onMove.emit).toHaveBeenCalledWith([100, 200]);
+    expect(mouse.onMove.emit).toHaveBeenCalledWith(moveEvent);
+  });
+
+  it("should emit the whole event object when mouse scrolls", (): void => {
+    mouse.onScroll.addObserver(callback);
+    vi.spyOn(mouse.onScroll, "emit");
+
+    const scrollEvent = { scrollX: 100, scrollY: 200 };
+    (document.addEventListener as Mock).mock.calls
+      .filter((call) => call[0] === "scroll")
+      .forEach((call) => call[1](scrollEvent));
+
+    expect(mouse.onScroll.emit).toHaveBeenCalledWith(scrollEvent);
   });
 
   afterAll((): void => {
