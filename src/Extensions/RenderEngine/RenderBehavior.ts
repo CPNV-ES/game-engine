@@ -8,7 +8,7 @@ import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
  */
 export abstract class RenderBehavior extends OutputBehavior {
   protected _pipeline: GPURenderPipeline;
-  protected constructor(
+  public constructor(
     renderEngine: RenderGameEngineComponent,
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
@@ -26,12 +26,5 @@ export abstract class RenderBehavior extends OutputBehavior {
     );
   }
 
-  protected lateTick(_fixedDeltaTime: number) {
-    super.lateTick(_fixedDeltaTime);
-    const renderEngine: RenderGameEngineComponent =
-      GameEngineWindow.instance.getEngineComponent(RenderGameEngineComponent)!;
-    this.render(renderEngine.renderPassEncoder);
-  }
-
-  protected abstract render(renderpass: GPURenderPassEncoder): void;
+  public abstract render(renderpass: GPURenderPassEncoder): void;
 }

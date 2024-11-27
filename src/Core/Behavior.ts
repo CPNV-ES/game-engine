@@ -43,27 +43,9 @@ export abstract class Behavior {
   /**
    * Called every frame. Override this method to add custom behavior.
    * @param _deltaTime - The time in seconds since the last frame.
-   * @protected - This method should not be called directly.
+   * @protected - This method should not be called directly except by the GameEngineWindowComponent.
    */
-  protected tick(_deltaTime: number): void {
-    //This is not abstract because it is not required to be implemented.
-  }
-
-  /**
-   * Called every fixed frame (primary designed for physics). Override this method to add custom behavior.
-   * @param _fixedDeltaTime - The time in seconds since the last fixed frame.
-   * @protected - This method should not be called directly.
-   */
-  protected fixedTick(_fixedDeltaTime: number): void {
-    //This is not abstract because it is not required to be implemented.
-  }
-
-  /**
-   * Called after all tick methods have been called (primary designed for rendering purposes). Override this method to add custom behavior.
-   * @param _fixedDeltaTime - The time in seconds since the last frame.
-   * @protected - This method should not be called directly.
-   */
-  protected lateTick(_fixedDeltaTime: number): void {
+  public tick(_deltaTime: number): void {
     //This is not abstract because it is not required to be implemented.
   }
 }
