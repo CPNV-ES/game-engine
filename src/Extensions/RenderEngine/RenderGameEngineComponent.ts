@@ -11,15 +11,31 @@ export class RenderGameEngineComponent extends GameEngineComponent {
    */
   public readonly onError: Event<Error> = new Event<Error>();
 
+  /**
+   * The render pass encoder that will be used to render to the screen.
+   */
+  public get renderPassEncoder(): GPURenderPassEncoder {
+    if (!this._renderPassEncoder) {
+      throw new Error(
+        "Render pass encoder not available! Are we rendering one frame?",
+      );
+    }
+    return this._renderPassEncoder;
+  }
+
   private _canvasToDrawOn: HTMLCanvasElement;
   private _gpu: GPU;
   private _context: GPUCanvasContext | undefined;
   private _presentationTextureFormat: GPUTextureFormat | undefined;
   private _device: GPUDevice | undefined;
+  private _renderPassEncoder: GPURenderPassEncoder | null = null;
 
-  constructor(canvasToDrawOn: HTMLCanvasElement, gpu: GPU) {
+  constructor(
+    canvasToDrawOn: HTMLCanvasElement | null = null,
+    gpu: GPU | null = null,
+  ) {
     super();
-    if (!canvasToDrawOn) new Error("Canvas to draw on is required");
+    if (!canvasToDrawOn) throw new Error("Canvas to draw on is required");
     if (!gpu) throw new Error("GPU is required");
     this._canvasToDrawOn = canvasToDrawOn;
     this._gpu = gpu;
@@ -33,25 +49,59 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     this.resizeCanvasToMatchDisplaySize();
   }
 
+  public createBindGroupLayout(
+    descriptor: GPUBindGroupLayoutDescriptor,
+  ): GPUBindGroupLayout {
+    if (!this._device) {
+      throw new Error("Device not available");
+    }
+    return this._device.createBindGroupLayout(descriptor);
+  }
+
+  public createBindGroup(
+    bindGroupLayout: GPUBindGroupLayout,
+    entries: GPUBindGroupEntry[],
+  ): GPUBindGroup {
+    if (!this._device) {
+      throw new Error("Device not available");
+    }
+    return this._device.createBindGroup({ layout: bindGroupLayout, entries });
+  }
+
+  public createSampler(descriptor: GPUSamplerDescriptor): GPUSampler {
+    if (!this._device) {
+      throw new Error("Device not available");
+    }
+    return this._device.createSampler(descriptor);
+  }
+
   public createPipeline(
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
     topology: GPUPrimitiveTopology,
+    bindGroupLayout: GPUBindGroupLayout,
+    buffer: GPUVertexBufferLayout,
   ): GPURenderPipeline {
     if (!this._device || !this._presentationTextureFormat) {
       throw new Error("Device or presentation texture format not available");
     }
+
     return this._device.createRenderPipeline({
-      layout: "auto",
+      layout: this._device.createPipelineLayout({
+        bindGroupLayouts: [bindGroupLayout],
+      }),
       vertex: {
         module: this._device.createShaderModule({
           code: vertexWGSLShader,
         }),
+        entryPoint: "main",
+        buffers: [buffer],
       },
       fragment: {
         module: this._device.createShaderModule({
           code: fragmentWGSLShader,
         }),
+        entryPoint: "main",
         targets: [
           {
             format: this._presentationTextureFormat,
@@ -60,6 +110,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       },
       primitive: {
         topology: topology,
+        cullMode: "back",
       },
     });
   }
@@ -161,15 +212,16 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       ],
     };
 
-    const passEncoder: GPURenderPassEncoder =
+    this._renderPassEncoder =
       commandEncoder.beginRenderPass(renderPassDescriptor);
     /*passEncoder.setPipeline(pipeline);
         passEncoder.setBindGroup(0, bindGroup);
         passEncoder.draw(6);*/
-    passEncoder.end();
+    this._renderPassEncoder.end();
 
     this._device.queue.submit([commandEncoder.finish()]);
 
+    this._renderPassEncoder = null;
     requestAnimationFrame(() => this.frame());
   }
 }
