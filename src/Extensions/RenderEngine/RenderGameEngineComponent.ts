@@ -1,6 +1,7 @@
 import { GameEngineComponent } from "../../Core/GameEngineComponent.ts";
 import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
 import { Event } from "../../Core/EventSystem/Event.ts";
+import { RenderBehavior } from "./RenderBehavior.ts";
 
 /**
  *
@@ -137,6 +138,30 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       [imageBitmap.width, imageBitmap.height],
     );
     return imageTexture;
+  }
+
+  public createVertexBuffer(data: Float32Array): GPUBuffer {
+    if (!this._device) {
+      throw new Error("Device not available");
+    }
+    const buffer: GPUBuffer = this._device.createBuffer({
+      size: data.byteLength,
+      usage: GPUBufferUsage.VERTEX,
+    });
+    this._device.queue.writeBuffer(buffer, 0, data);
+    return buffer;
+  }
+
+  public createIndexBuffer(data: Uint16Array): GPUBuffer {
+    if (!this._device) {
+      throw new Error("Device not available");
+    }
+    const buffer: GPUBuffer = this._device.createBuffer({
+      size: data.byteLength,
+      usage: GPUBufferUsage.INDEX,
+    });
+    this._device.queue.writeBuffer(buffer, 0, data);
+    return buffer;
   }
 
   private async requestResources() {
