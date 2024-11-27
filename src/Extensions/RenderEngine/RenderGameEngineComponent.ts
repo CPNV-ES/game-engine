@@ -32,9 +32,6 @@ export class RenderGameEngineComponent extends GameEngineComponent {
   public onAttachedTo(_gameEngine: GameEngineWindow): void {
     super.onAttachedTo(_gameEngine);
     this.requestResources();
-    window.addEventListener("resize", this.resizeCanvasToMatchDisplaySize);
-    requestAnimationFrame(() => this.frame());
-    this.resizeCanvasToMatchDisplaySize();
   }
 
   public createBindGroupLayout(
@@ -184,6 +181,13 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       device,
       format: this._presentationTextureFormat,
     });
+    this.startRendering();
+  }
+
+  private startRendering(): void {
+    window.addEventListener("resize", this.resizeCanvasToMatchDisplaySize);
+    requestAnimationFrame((deltaTime: number) => this.frame(deltaTime));
+    this.resizeCanvasToMatchDisplaySize();
   }
 
   private subscribeToDeviceEvents(device: GPUDevice) {
@@ -205,9 +209,11 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       this._canvasToDrawOn.clientHeight * devicePixelRatio;
   }
 
-  private frame() {
+  private frame(deltaTime: number) {
     if (!this._device || !this._context || !this._presentationTextureFormat)
-      return;
+      throw new Error(
+        "Device, context, or presentation texture format not available",
+      );
     const commandEncoder: GPUCommandEncoder =
       this._device.createCommandEncoder();
     const textureView: GPUTextureView = this._context
@@ -236,8 +242,6 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     renderPassEncoder.end();
 
     this._device.queue.submit([commandEncoder.finish()]);
-
-    this._renderPassEncoder = null;
-    requestAnimationFrame(() => this.frame());
+    requestAnimationFrame((deltaTime: number) => this.frame(deltaTime));
   }
 }
