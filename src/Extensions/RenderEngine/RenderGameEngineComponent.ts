@@ -12,24 +12,11 @@ export class RenderGameEngineComponent extends GameEngineComponent {
    */
   public readonly onError: Event<Error> = new Event<Error>();
 
-  /**
-   * The render pass encoder that will be used to render to the screen.
-   */
-  public get renderPassEncoder(): GPURenderPassEncoder {
-    if (!this._renderPassEncoder) {
-      throw new Error(
-        "Render pass encoder not available! Are we rendering one frame?",
-      );
-    }
-    return this._renderPassEncoder;
-  }
-
   private _canvasToDrawOn: HTMLCanvasElement;
   private _gpu: GPU;
   private _context: GPUCanvasContext | undefined;
   private _presentationTextureFormat: GPUTextureFormat | undefined;
   private _device: GPUDevice | undefined;
-  private _renderPassEncoder: GPURenderPassEncoder | null = null;
 
   constructor(
     canvasToDrawOn: HTMLCanvasElement | null = null,
@@ -237,12 +224,16 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       ],
     };
 
-    this._renderPassEncoder =
+    const renderPassEncoder: GPURenderPassEncoder =
       commandEncoder.beginRenderPass(renderPassDescriptor);
-    /*passEncoder.setPipeline(pipeline);
-        passEncoder.setBindGroup(0, bindGroup);
-        passEncoder.draw(6);*/
-    this._renderPassEncoder.end();
+
+    GameEngineWindow.instance.root.getAllChildren().forEach((gameObject) => {
+      gameObject.getBehaviors(RenderBehavior).forEach((behavior) => {
+        behavior.render(renderPassEncoder);
+      });
+    });
+
+    renderPassEncoder.end();
 
     this._device.queue.submit([commandEncoder.finish()]);
 
