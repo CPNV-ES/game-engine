@@ -102,9 +102,7 @@ export class Vector2 {
   /**
    * Get a cloned/duplicated instance of this vector
    */
-  public;
-
-  clone(): Vector2 {
+  public clone(): Vector2 {
     return new Vector2(this.x, this.y);
   }
 }
