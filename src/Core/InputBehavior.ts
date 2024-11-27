@@ -18,7 +18,7 @@ export abstract class InputBehavior extends Behavior {
    * Get the first behavior of a specific type (only from logic type to keep clean separation of concerns) attached to this GameObject or null if none is found.
    */
   protected getLogicBehavior<T extends LogicBehavior<any>>(
-    BehaviorClass: new (...args: any[]) => T,
+    BehaviorClass: abstract new (...args: any[]) => T,
   ): T | null {
     return this._gameObject.getFirstBehavior(BehaviorClass);
   }

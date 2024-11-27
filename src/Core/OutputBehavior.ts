@@ -18,7 +18,7 @@ export abstract class OutputBehavior extends Behavior {
    * @protected
    */
   protected observe<T extends LogicBehavior<U>, U>(
-    BehaviorClass: new (...args: any[]) => T,
+    BehaviorClass: abstract new (...args: any[]) => T,
     observer: (data: U) => void,
   ): void {
     if (!this._gameObject) {

@@ -46,7 +46,7 @@ export class GameEngineWindow {
    * @returns {GameEngineComponent | null}
    */
   public getEngineComponent<T extends GameEngineComponent>(
-    componentClass: new () => T,
+    componentClass: abstract new () => T,
   ): T | null {
     return (this._engineComponents.find(
       (component) => component instanceof componentClass,
