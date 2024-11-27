@@ -76,7 +76,7 @@ export class Mouse extends Device {
       }
     });
     document.addEventListener("mousemove", (event: MouseEvent) => {
-      this.onMove.emit([event.clientX, event.clientY]);
+      this.onMove.emit(event);
     });
     document.addEventListener("scroll", (event: MouseEvent) => {
       this.onScroll.emit(event);
