@@ -209,7 +209,9 @@ export class RenderGameEngineComponent extends GameEngineComponent {
   }
 
   private startRendering(): void {
-    window.addEventListener("resize", this.resizeCanvasToMatchDisplaySize);
+    window.addEventListener("resize", () => {
+      this.resizeCanvasToMatchDisplaySize();
+    });
     requestAnimationFrame((deltaTime: number) => this.frame(deltaTime));
     this.resizeCanvasToMatchDisplaySize();
     this.IsRenderingReady = true;
