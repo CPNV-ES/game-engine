@@ -1,6 +1,5 @@
 import { OutputBehavior } from "../../Core/OutputBehavior.ts";
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
-import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
 
 /**
  * An object that can be rendered to the WebGPU screen.
@@ -37,13 +36,13 @@ export abstract class RenderBehavior extends OutputBehavior {
     this._bufferLayout = buffer;
 
     if (renderEngine.IsRenderingReady) {
-      this.setup();
+      this.asyncInit();
     } else {
-      renderEngine.onRenderingReady.addObserver(this.setup);
+      renderEngine.onRenderingReady.addObserver(this.asyncInit);
     }
   }
 
-  public async setup() {
+  protected async asyncInit() {
     this._bindGroupLayout = this._renderEngine.createBindGroupLayout(
       this._bindGroupLayoutDescriptor,
     );
