@@ -6,16 +6,11 @@ import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
  * BindGroupLayout can be used to set up the bind group layout for the texture and sampler.
  */
 export abstract class BasicUVTexturedRenderBehavior extends RenderBehavior {
-  protected _bindGroupLayout: GPUBindGroupLayout;
-
   constructor(
     renderEngine: RenderGameEngineComponent,
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
   ) {
-    if (!renderEngine) {
-      throw new Error("Render engine is required");
-    }
     const descriptor: GPUBindGroupLayoutDescriptor = {
       entries: [
         { binding: 0, visibility: GPUShaderStage.FRAGMENT, texture: {} },
@@ -31,18 +26,13 @@ export abstract class BasicUVTexturedRenderBehavior extends RenderBehavior {
       ],
     };
 
-    const bindGroupLayout: GPUBindGroupLayout =
-      renderEngine.createBindGroupLayout(descriptor);
-
     super(
       renderEngine,
       vertexWGSLShader,
       fragmentWGSLShader,
       "triangle-list",
-      bindGroupLayout,
+      descriptor,
       buffer,
     );
-
-    this._bindGroupLayout = bindGroupLayout;
   }
 }
