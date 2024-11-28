@@ -38,7 +38,9 @@ export abstract class RenderBehavior extends OutputBehavior {
     if (renderEngine.IsRenderingReady) {
       this.asyncInit();
     } else {
-      renderEngine.onRenderingReady.addObserver(this.asyncInit);
+      renderEngine.onRenderingReady.addObserver(() => {
+        this.asyncInit();
+      });
     }
   }
 
