@@ -1,23 +1,27 @@
 import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
-import { Transform } from "../../Core/MathStructures/Transform.ts";
+import { Collider } from "./Collider.ts";
 
-export class Polygon {
+export class Polygon extends Collider {
   public vertices: Vector2[];
 
   constructor(vertices: Vector2[]) {
+    super();
     this.vertices = vertices;
   }
 
-  public getVerticesWithTransform(transform: Transform): Vector2[] {
-    return this.vertices.reduce((accumulator: Vector2[], vertex: Vector2) => {
-      accumulator.push(
-        vertex
-          .clone()
-          .scaleAxis(transform.scale)
-          .rotate(transform.rotation)
-          .add(transform.position),
-      );
-      return accumulator;
-    }, []);
+  public getVerticesWithTransform(): Vector2[] {
+    return this.vertices.reduce(
+      (computedVertices: Vector2[], vertex: Vector2) => {
+        computedVertices.push(
+          vertex
+            .clone()
+            .scaleAxis(this.gameObject.transform.scale)
+            .rotate(this.gameObject.transform.rotation)
+            .add(this.gameObject.transform.position),
+        );
+        return computedVertices;
+      },
+      [],
+    );
   }
 }
