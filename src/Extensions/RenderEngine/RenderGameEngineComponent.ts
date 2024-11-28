@@ -263,7 +263,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     const renderPassEncoder: GPURenderPassEncoder =
       commandEncoder.beginRenderPass(renderPassDescriptor);
 
-    console.log("Rendering sprite");
+    console.log("Render loop");
     GameEngineWindow.instance.root.getAllChildren().forEach((gameObject) => {
       gameObject.getBehaviors(RenderBehavior).forEach((behavior) => {
         behavior.render(renderPassEncoder);
