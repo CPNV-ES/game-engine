@@ -4,7 +4,7 @@ import { Event } from "../../Core/EventSystem/Event.ts";
 import { RenderBehavior } from "./RenderBehavior.ts";
 
 /**
- *
+ * A unique game engine component responsible for rendering the game using WebGPU.
  */
 export class RenderGameEngineComponent extends GameEngineComponent {
   /**
@@ -12,11 +12,33 @@ export class RenderGameEngineComponent extends GameEngineComponent {
    */
   public readonly onError: Event<Error> = new Event<Error>();
 
+  /**
+   * Event that is triggered when rendering become ready (context and device are available).
+   */
+  public readonly onRenderingReady: Event<boolean> = new Event<boolean>();
+
+  /**
+   * Returns whether the rendering is currently ready.
+   * @constructor
+   */
+  public get IsRenderingReady(): boolean {
+    return this._isRenderingReady;
+  }
+
+  /**
+   * Sets + emit whether the rendering is currently ready.
+   */
+  protected set IsRenderingReady(value: boolean) {
+    this._isRenderingReady = value;
+    this.onRenderingReady.emit(value);
+  }
+
   private _canvasToDrawOn: HTMLCanvasElement;
   private _gpu: GPU;
   private _context: GPUCanvasContext | undefined;
   private _presentationTextureFormat: GPUTextureFormat | undefined;
   private _device: GPUDevice | undefined;
+  private _isRenderingReady: boolean = false;
 
   constructor(
     canvasToDrawOn: HTMLCanvasElement | null = null,
@@ -29,35 +51,30 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     this._gpu = gpu;
   }
 
-  public onAttachedTo(_gameEngine: GameEngineWindow): void {
-    super.onAttachedTo(_gameEngine);
-    this.requestResources();
-  }
-
   public createBindGroupLayout(
     descriptor: GPUBindGroupLayoutDescriptor,
   ): GPUBindGroupLayout {
-    if (!this._device) {
-      throw new Error("Device not available");
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
     }
-    return this._device.createBindGroupLayout(descriptor);
+    return this._device!.createBindGroupLayout(descriptor);
   }
 
   public createBindGroup(
     bindGroupLayout: GPUBindGroupLayout,
     entries: GPUBindGroupEntry[],
   ): GPUBindGroup {
-    if (!this._device) {
-      throw new Error("Device not available");
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
     }
-    return this._device.createBindGroup({ layout: bindGroupLayout, entries });
+    return this._device!.createBindGroup({ layout: bindGroupLayout, entries });
   }
 
   public createSampler(descriptor: GPUSamplerDescriptor): GPUSampler {
-    if (!this._device) {
-      throw new Error("Device not available");
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
     }
-    return this._device.createSampler(descriptor);
+    return this._device!.createSampler(descriptor);
   }
 
   public createPipeline(
@@ -67,29 +84,29 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     bindGroupLayout: GPUBindGroupLayout,
     buffer: GPUVertexBufferLayout,
   ): GPURenderPipeline {
-    if (!this._device || !this._presentationTextureFormat) {
-      throw new Error("Device or presentation texture format not available");
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
     }
 
-    return this._device.createRenderPipeline({
-      layout: this._device.createPipelineLayout({
+    return this._device!.createRenderPipeline({
+      layout: this._device!.createPipelineLayout({
         bindGroupLayouts: [bindGroupLayout],
       }),
       vertex: {
-        module: this._device.createShaderModule({
+        module: this._device!.createShaderModule({
           code: vertexWGSLShader,
         }),
         entryPoint: "main",
         buffers: [buffer],
       },
       fragment: {
-        module: this._device.createShaderModule({
+        module: this._device!.createShaderModule({
           code: fragmentWGSLShader,
         }),
         entryPoint: "main",
         targets: [
           {
-            format: this._presentationTextureFormat,
+            format: this._presentationTextureFormat!,
           },
         ],
       },
@@ -101,14 +118,14 @@ export class RenderGameEngineComponent extends GameEngineComponent {
   }
 
   public async createTexture(url: RequestInfo | URL): Promise<GPUTexture> {
-    if (!this._device) {
-      throw new Error("Device not available");
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
     }
     const response = await fetch(url);
     const imageBitmap = await createImageBitmap(await response.blob());
 
     const [srcWidth, srcHeight] = [imageBitmap.width, imageBitmap.height];
-    const imageTexture = this._device.createTexture({
+    const imageTexture = this._device!.createTexture({
       size: [srcWidth, srcHeight, 1],
       format: "rgba8unorm",
       usage:
@@ -116,7 +133,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
         GPUTextureUsage.COPY_DST |
         GPUTextureUsage.RENDER_ATTACHMENT,
     });
-    this._device.queue.copyExternalImageToTexture(
+    this._device!.queue.copyExternalImageToTexture(
       { source: imageBitmap },
       { texture: imageTexture },
       [imageBitmap.width, imageBitmap.height],
@@ -125,27 +142,32 @@ export class RenderGameEngineComponent extends GameEngineComponent {
   }
 
   public createVertexBuffer(data: Float32Array): GPUBuffer {
-    if (!this._device) {
-      throw new Error("Device not available");
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
     }
-    const buffer: GPUBuffer = this._device.createBuffer({
+    const buffer: GPUBuffer = this._device!.createBuffer({
       size: data.byteLength,
       usage: GPUBufferUsage.VERTEX,
     });
-    this._device.queue.writeBuffer(buffer, 0, data);
+    this._device!.queue.writeBuffer(buffer, 0, data);
     return buffer;
   }
 
   public createIndexBuffer(data: Uint16Array): GPUBuffer {
-    if (!this._device) {
-      throw new Error("Device not available");
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
     }
-    const buffer: GPUBuffer = this._device.createBuffer({
+    const buffer: GPUBuffer = this._device!.createBuffer({
       size: data.byteLength,
       usage: GPUBufferUsage.INDEX,
     });
-    this._device.queue.writeBuffer(buffer, 0, data);
+    this._device!.queue.writeBuffer(buffer, 0, data);
     return buffer;
+  }
+
+  public onAttachedTo(_gameEngine: GameEngineWindow): void {
+    super.onAttachedTo(_gameEngine);
+    this.requestResources();
   }
 
   private async requestResources() {
@@ -188,6 +210,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     window.addEventListener("resize", this.resizeCanvasToMatchDisplaySize);
     requestAnimationFrame((deltaTime: number) => this.frame(deltaTime));
     this.resizeCanvasToMatchDisplaySize();
+    this.IsRenderingReady = true;
   }
 
   private subscribeToDeviceEvents(device: GPUDevice) {
@@ -195,9 +218,11 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       this.onError.emit(
         new Error(`Device lost ("${reason.reason}"):\n${reason.message}`),
       );
+      this.IsRenderingReady = false;
     });
     device.onuncapturederror = (ev: GPUUncapturedErrorEvent): void => {
       this.onError.emit(new Error(`Uncaptured error:\n${ev.error.message}`));
+      this.IsRenderingReady = false;
     };
   }
 
