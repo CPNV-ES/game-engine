@@ -15,7 +15,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
   /**
    * Event that is triggered when rendering become ready (context and device are available).
    */
-  public readonly onRenderingReady: Event<boolean> = new Event<boolean>();
+  public readonly onRenderingReady: Event<void> = new Event<void>();
 
   /**
    * Returns whether the rendering is currently ready.
@@ -30,7 +30,9 @@ export class RenderGameEngineComponent extends GameEngineComponent {
    */
   protected set IsRenderingReady(value: boolean) {
     this._isRenderingReady = value;
-    this.onRenderingReady.emit(value);
+    if (this._isRenderingReady) {
+      this.onRenderingReady.emit();
+    }
   }
 
   private _canvasToDrawOn: HTMLCanvasElement;

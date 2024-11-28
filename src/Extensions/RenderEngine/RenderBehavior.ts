@@ -7,7 +7,15 @@ import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
  * Create the pipeline for rendering and set up the bind group layout.
  */
 export abstract class RenderBehavior extends OutputBehavior {
-  protected _pipeline: GPURenderPipeline;
+  protected _renderEngine: RenderGameEngineComponent;
+  protected _pipeline: GPURenderPipeline | null = null;
+
+  private _vertexWGSLShader: string;
+  private _fragmentWGSLShader: string;
+  private _topology: GPUPrimitiveTopology;
+  private _bindGroupLayout: GPUBindGroupLayout;
+  private _buffer: GPUVertexBufferLayout;
+
   public constructor(
     renderEngine: RenderGameEngineComponent,
     vertexWGSLShader: string,
@@ -17,12 +25,27 @@ export abstract class RenderBehavior extends OutputBehavior {
     buffer: GPUVertexBufferLayout,
   ) {
     super();
-    this._pipeline = renderEngine.createPipeline(
-      vertexWGSLShader,
-      fragmentWGSLShader,
-      topology,
-      bindGroupLayout,
-      buffer,
+    this._renderEngine = renderEngine;
+    this._vertexWGSLShader = vertexWGSLShader;
+    this._fragmentWGSLShader = fragmentWGSLShader;
+    this._topology = topology;
+    this._bindGroupLayout = bindGroupLayout;
+    this._buffer = buffer;
+
+    if (renderEngine.IsRenderingReady) {
+      this.setup();
+    } else {
+      renderEngine.onRenderingReady.addObserver(this.setup);
+    }
+  }
+
+  public async setup() {
+    this._pipeline = this._renderEngine.createPipeline(
+      this._vertexWGSLShader,
+      this._fragmentWGSLShader,
+      this._topology,
+      this._bindGroupLayout,
+      this._buffer,
     );
   }
 
