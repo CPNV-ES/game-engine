@@ -149,7 +149,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     }
     const buffer: GPUBuffer = this._device!.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.VERTEX,
+      usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
     });
     this._device!.queue.writeBuffer(buffer, 0, data);
     return buffer;
@@ -161,7 +161,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     }
     const buffer: GPUBuffer = this._device!.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.INDEX,
+      usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST,
     });
     this._device!.queue.writeBuffer(buffer, 0, data);
     return buffer;
@@ -222,11 +222,12 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       this.onError.emit(
         new Error(`Device lost ("${reason.reason}"):\n${reason.message}`),
       );
+      console.error("Device lost:", reason);
       this.IsRenderingReady = false;
     });
     device.onuncapturederror = (ev: GPUUncapturedErrorEvent): void => {
       this.onError.emit(new Error(`Uncaptured error:\n${ev.error.message}`));
-      this.IsRenderingReady = false;
+      console.error("Uncaptured error:", ev.error);
     };
   }
 
@@ -262,6 +263,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     const renderPassEncoder: GPURenderPassEncoder =
       commandEncoder.beginRenderPass(renderPassDescriptor);
 
+    console.log("Rendering sprite");
     GameEngineWindow.instance.root.getAllChildren().forEach((gameObject) => {
       gameObject.getBehaviors(RenderBehavior).forEach((behavior) => {
         behavior.render(renderPassEncoder);
