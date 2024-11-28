@@ -6,7 +6,7 @@ import { Transform } from "./MathStructures/Transform.ts";
 export abstract class OutputBehavior extends Behavior {
   private _gameObject!: GameObject;
 
-  override setup(attachedOn: GameObject) {
+  override setup(attachedOn: GameObject): void {
     super.setup(attachedOn);
     this._gameObject = attachedOn;
   }
