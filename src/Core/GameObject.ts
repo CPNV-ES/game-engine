@@ -9,7 +9,7 @@ export class GameObject {
   /**
    * The position, rotation, and scale of this GameObject.
    */
-  public readonly transform: Transform = new Transform();
+  public readonly transform: Transform = new Transform(this);
   /**
    * Event that is triggered when the list of behaviors attached to this GameObject changes.
    */
