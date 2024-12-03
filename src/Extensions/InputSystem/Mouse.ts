@@ -11,35 +11,19 @@ export class Mouse extends Device {
    * Event triggered when the left mouse button is clicked.
    * @type {Event<boolean>}
    */
-  public readonly onLeftClick: Event<boolean> = new Event<boolean>();
+  public readonly onLeftClickUp: Event<void> = new Event<void>();
+  public readonly onLeftClickDown: Event<void> = new Event<void>();
 
   /**
    * Event triggered when the right mouse button is clicked.
    * @type {Event<boolean>}
    */
-  public readonly onRightClick: Event<boolean> = new Event<boolean>();
-
-  /**
-   * Event triggered when the middle mouse button is clicked.
-   * @type {Event<boolean>}
-   */
-  public readonly onMiddleClick: Event<boolean> = new Event<boolean>();
-
-  /**
-   * Event triggered when the browser back button is clicked.
-   * @type {Event<boolean>}
-   */
-  public readonly onFourthClick: Event<boolean> = new Event<boolean>();
-
-  /**
-   * Event triggered when the browser forward button is clicked.
-   * @type {Event<boolean>}
-   */
-  public readonly onFifthClick: Event<boolean> = new Event<boolean>();
+  public readonly onRightClickUp: Event<void> = new Event<void>();
+  public readonly onRightClickDown: Event<void> = new Event<void>();
 
   /**
    * Event triggered when the mouse is moved.
-   * @type {Event<MouseEvent>}
+   * @type {Event<number[]>}
    */
   public readonly onMove: Event<MouseEvent> = new Event<MouseEvent>();
 
@@ -47,7 +31,7 @@ export class Mouse extends Device {
    * Event triggered when the mouse is scrolled.
    * @type {Event<MouseEvent>}
    */
-  public readonly onScroll: Event<MouseEvent> = new Event<MouseEvent>();
+  public readonly onScroll: Event<number> = new Event<number>();
 
   /**
    * Creates a new Mouse instance.
@@ -55,31 +39,37 @@ export class Mouse extends Device {
    */
   constructor() {
     super();
-    document.addEventListener("click", (event: MouseEvent) => {
-      this.onAnyButtonPress.emit();
+    document.addEventListener("mousedown", (event: MouseEvent) => {
+      this.onAnyChange.emit();
       switch (event.button) {
         case 0:
-          this.onLeftClick.emit(true);
-          break;
-        case 1:
-          this.onMiddleClick.emit(true);
+          this.onLeftClickDown.emit();
           break;
         case 2:
-          this.onRightClick.emit(true);
-          break;
-        case 3:
-          this.onFourthClick.emit(true);
-          break;
-        case 4:
-          this.onFifthClick.emit(true);
+          this.onRightClickDown.emit();
           break;
       }
     });
+
+    document.addEventListener("mouseup", (event: MouseEvent) => {
+      this.onAnyChange.emit();
+      switch (event.button) {
+        case 0:
+          this.onLeftClickUp.emit();
+          break;
+        case 2:
+          this.onRightClickUp.emit();
+          break;
+      }
+    });
+
     document.addEventListener("mousemove", (event: MouseEvent) => {
+      this.onAnyChange.emit();
       this.onMove.emit(event);
     });
     document.addEventListener("scroll", (event: MouseEvent) => {
-      this.onScroll.emit(event);
+      this.onAnyChange.emit();
+      this.onScroll.emit(document.documentElement.scrollTop);
     });
   }
 }
