@@ -1,5 +1,6 @@
 import { RenderBehavior } from "./RenderBehavior.ts";
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
+import { Camera } from "./Camera.ts";
 
 /**
  * A RenderBehavior already set up to render a textured object with UV coordinates (GPUBindGroupLayoutDescriptor and GPUVertexBufferLayout are already set up).
@@ -98,9 +99,11 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
       !this._mvpUniformBuffer
     )
       return;
+    const camera: Camera | null = this._renderEngine.camera;
+    if (!camera) return;
     this._renderEngine.fillUniformBuffer(
       this._mvpUniformBuffer,
-      this.toModelMatrix(),
+      camera.getMVPMatrix(this.toModelMatrix()),
     );
     renderpass.setPipeline(this._pipeline);
     renderpass.setVertexBuffer(0, this._vertexBuffer);

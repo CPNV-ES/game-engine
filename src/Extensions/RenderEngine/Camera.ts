@@ -29,10 +29,10 @@ export class Camera extends OutputBehavior {
   }
 
   override setup(attachedOn: GameObject) {
-    super.setup(attachedOn);
     this._renderEngine = GameEngineWindow.instance.getEngineComponent(
       RenderGameEngineComponent,
     )!;
+    super.setup(attachedOn);
   }
 
   protected onEnable() {
@@ -101,7 +101,7 @@ export class Camera extends OutputBehavior {
   public getMVPMatrix(modelMatrix: Mat4): Mat4 {
     // Compute the view matrix (lookAt)
     const viewMatrix = mat4.lookAt(
-      vec3.fromValues(this.transform.position.x, this.transform.position.y, 0),
+      vec3.fromValues(this.transform.position.x, this.transform.position.y, 10),
       vec3.fromValues(0, 0, 0),
       vec3.fromValues(0, 1, 0),
     );
