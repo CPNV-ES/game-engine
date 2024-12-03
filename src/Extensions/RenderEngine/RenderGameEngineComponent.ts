@@ -262,6 +262,10 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       this._canvasToDrawOn.clientWidth * devicePixelRatio;
     this._canvasToDrawOn.height =
       this._canvasToDrawOn.clientHeight * devicePixelRatio;
+    if (this.camera) {
+      this.camera.aspect =
+        this._canvasToDrawOn.width / this._canvasToDrawOn.height;
+    }
   }
 
   private frame(deltaTime: number) {
