@@ -10,5 +10,5 @@ export abstract class Device {
    * Add observers and emit the event.
    * @readonly
    */
-  public readonly onAnyButtonPress: Event<void> = new Event<void>();
+  public readonly onAnyChange: Event<void> = new Event<void>();
 }
