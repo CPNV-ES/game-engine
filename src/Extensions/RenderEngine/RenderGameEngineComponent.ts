@@ -149,6 +149,25 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     return imageTexture;
   }
 
+  public createUniformBuffer(data: Float32Array): GPUBuffer {
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
+    }
+    const buffer: GPUBuffer = this._device!.createBuffer({
+      size: data.byteLength,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
+    this._device!.queue.writeBuffer(buffer, 0, data);
+    return buffer;
+  }
+
+  public fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void {
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
+    }
+    this._device!.queue.writeBuffer(buffer, 0, data);
+  }
+
   public createVertexBuffer(data: Float32Array): GPUBuffer {
     if (!this.IsRenderingReady) {
       throw new Error("Rendering is not ready yet! (Device not available)");
@@ -269,7 +288,6 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     const renderPassEncoder: GPURenderPassEncoder =
       commandEncoder.beginRenderPass(renderPassDescriptor);
 
-    console.log("Render loop");
     GameEngineWindow.instance.root.getAllChildren().forEach((gameObject) => {
       gameObject.getBehaviors(RenderBehavior).forEach((behavior) => {
         behavior.render(renderPassEncoder);

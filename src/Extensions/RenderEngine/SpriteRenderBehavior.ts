@@ -1,5 +1,5 @@
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
-import BasicVertexPassWithUV from "./BasicShaders/BasicVertexPassWithUV.vert.wgsl?raw";
+import BasicVertexMVPWithUV from "./BasicShaders/BasicVertexMVPWithUV.vert.wgsl?raw";
 import BasicTextureSample from "./BasicShaders/BasicTextureSample.frag.wgsl?raw";
 import { BasicUVTexturedRenderBehavior } from "./BasicUVTexturedRenderBehavior.ts";
 
@@ -51,7 +51,7 @@ export class SpriteRenderBehavior extends BasicUVTexturedRenderBehavior {
       spriteImageUrl,
       vertexData,
       indexData,
-      BasicVertexPassWithUV,
+      BasicVertexMVPWithUV,
       BasicTextureSample,
     );
   }

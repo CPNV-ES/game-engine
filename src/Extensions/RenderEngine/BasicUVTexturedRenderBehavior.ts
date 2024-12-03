@@ -8,6 +8,7 @@ import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
 export class BasicUVTexturedRenderBehavior extends RenderBehavior {
   protected _vertexBuffer: GPUBuffer | null = null;
   protected _indexBuffer: GPUBuffer | null = null;
+  protected _mvpUniformBuffer: GPUBuffer | null = null;
   protected _indexData: Uint16Array;
   protected _spriteTexture: GPUTexture | null = null;
   protected _bindGroup: GPUBindGroup | null = null;
@@ -25,8 +26,9 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
   ) {
     const descriptor: GPUBindGroupLayoutDescriptor = {
       entries: [
-        { binding: 0, visibility: GPUShaderStage.FRAGMENT, texture: {} },
-        { binding: 1, visibility: GPUShaderStage.FRAGMENT, sampler: {} },
+        { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {} },
+        { binding: 1, visibility: GPUShaderStage.FRAGMENT, texture: {} },
+        { binding: 2, visibility: GPUShaderStage.FRAGMENT, sampler: {} },
       ],
     };
 
@@ -59,15 +61,25 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
       this._vertexData,
     );
     this._indexBuffer = this._renderEngine.createIndexBuffer(this._indexData);
+    this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
+      this.toModelMatrix(),
+    );
+
     this._spriteTexture = await this._renderEngine.createTexture(
       this._spriteImageUrl,
     );
     this._bindGroup = this._renderEngine.createBindGroup(
       this._bindGroupLayout!,
       [
-        { binding: 0, resource: this._spriteTexture.createView() },
         {
-          binding: 1,
+          binding: 0,
+          resource: {
+            buffer: this._mvpUniformBuffer,
+          },
+        },
+        { binding: 1, resource: this._spriteTexture.createView() },
+        {
+          binding: 2,
           resource: this._renderEngine.createSampler({
             magFilter: "linear",
             minFilter: "linear",
@@ -82,9 +94,14 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
       !this._bindGroup ||
       !this._pipeline ||
       !this._vertexBuffer ||
-      !this._indexBuffer
+      !this._indexBuffer ||
+      !this._mvpUniformBuffer
     )
       return;
+    this._renderEngine.fillUniformBuffer(
+      this._mvpUniformBuffer,
+      this.toModelMatrix(),
+    );
     renderpass.setPipeline(this._pipeline);
     renderpass.setVertexBuffer(0, this._vertexBuffer);
     renderpass.setIndexBuffer(this._indexBuffer, "uint16");
