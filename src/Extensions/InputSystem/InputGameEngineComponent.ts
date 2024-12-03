@@ -10,13 +10,11 @@ export class InputGameEngineComponent extends GameEngineComponent {
   private _devices: Device[] = [];
 
   /**
-   * Gets a device of a specified class.
-   * @param deviceClass - The class
+   * Gets a device of a specified class inheriting Device.
    */
-  public getDevice<T extends Device>(deviceClass: new () => T): Device | null {
-    return (
-      this._devices.find((device) => device instanceof deviceClass) || null
-    );
+  public getDevice<T extends Device>(deviceClass: new () => T): T | null {
+    return (this._devices.find((device) => device instanceof deviceClass) ||
+      null) as T;
   }
 
   /**
