@@ -1,25 +1,25 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { BoundingBoxCollider } from "../../../src/Extensions/PhysicsEngine/BoundingBoxCollider";
 import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
 import { Transform } from "../../../src/Core/MathStructures/Transform";
 import { GameObject } from "../../../src/Core/GameObject";
 
 describe("BoundingBoxCollider", (): void => {
+  let vertices: Vector2[];
+  let gameObject: GameObject;
+  let boundingBoxCollider: BoundingBoxCollider;
+
+  beforeEach(() => {
+    vertices = [new Vector2(1, 2), new Vector2(3, 4), new Vector2(5, 6)];
+    gameObject = new GameObject();
+    boundingBoxCollider = new BoundingBoxCollider(vertices);
+    gameObject.addBehavior(boundingBoxCollider);
+  });
+
   /**
    * Tests if a boundingBoxCollider can be successfully scaled.
    */
   it("should get a scaled boundingBoxCollider without changing the original", () => {
-    const vertices: Vector2[] = [
-      new Vector2(1, 2),
-      new Vector2(3, 4),
-      new Vector2(5, 6),
-    ];
-    const gameObject = new GameObject();
-    const boundingBoxCollider: BoundingBoxCollider = new BoundingBoxCollider(
-      vertices,
-    );
-
-    gameObject.addBehavior(boundingBoxCollider);
     gameObject.transform.scale = new Vector2(2, 3);
 
     const transformedBoundingBoxCollider =
@@ -37,17 +37,6 @@ describe("BoundingBoxCollider", (): void => {
    * Tests if a boundingBoxCollider can be successfully rotated.
    */
   it("should get a rotated boundingBoxCollider without changing the original", () => {
-    const vertices: Vector2[] = [
-      new Vector2(1, 2),
-      new Vector2(3, 4),
-      new Vector2(5, 6),
-    ];
-    const gameObject = new GameObject();
-    const boundingBoxCollider: BoundingBoxCollider = new BoundingBoxCollider(
-      vertices,
-    );
-
-    gameObject.addBehavior(boundingBoxCollider);
     gameObject.transform.rotation = Math.PI / 2;
 
     const transformedBoundingBoxCollider =
@@ -68,18 +57,7 @@ describe("BoundingBoxCollider", (): void => {
    * Tests if a boundingBoxCollider can be successfully translated.
    */
   it("should get a translated boundingBoxCollider without changing the original", () => {
-    const vertices: Vector2[] = [
-      new Vector2(1, 2),
-      new Vector2(3, 4),
-      new Vector2(5, 6),
-    ];
-    const gameObject = new GameObject();
-    const boundingBoxCollider: BoundingBoxCollider = new BoundingBoxCollider(
-      vertices,
-    );
     const position = new Vector2(1, 2);
-
-    gameObject.addBehavior(boundingBoxCollider);
     gameObject.transform.position = position;
 
     const transformedBoundingBoxCollider =
