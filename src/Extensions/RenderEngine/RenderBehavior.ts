@@ -64,7 +64,7 @@ export abstract class RenderBehavior extends OutputBehavior {
    * Convert the Transform into a model matrix
    */
   public toModelMatrix(): Float32Array {
-    const modelMatrix = mat4.create();
+    const modelMatrix = mat4.identity();
     mat4.translate(modelMatrix, modelMatrix, [
       this.transform.position.x,
       this.transform.position.y,
