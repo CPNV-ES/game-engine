@@ -1,13 +1,15 @@
 import { PhysicsBehavior } from "./PhysicsBehavior";
 
 export class Collider extends PhysicsBehavior<Collider[]> {
-  public lastTickCollisions: Collider[] = [];
+  constructor() {
+    super();
+    this.data = [];
+  }
 
   public onTick(collidedColliders: Collider[]): void {
-    if (collidedColliders != this.lastTickCollisions) {
-      this.gameObject.onDataChanged.emit(collidedColliders);
+    if (collidedColliders != this.data) {
+      this.data = collidedColliders;
+      this.onDataChanged.emit(this.data);
     }
-
-    this.lastTickCollisions = collidedColliders;
   }
 }
