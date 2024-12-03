@@ -2,6 +2,7 @@ import { GameEngineComponent } from "../../Core/GameEngineComponent.ts";
 import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
 import { Event } from "../../Core/EventSystem/Event.ts";
 import { RenderBehavior } from "./RenderBehavior.ts";
+import { Camera } from "./Camera.ts";
 
 /**
  * A unique game engine component responsible for rendering the game using WebGPU.
@@ -16,6 +17,11 @@ export class RenderGameEngineComponent extends GameEngineComponent {
    * Event that is triggered when rendering become ready (context and device are available).
    */
   public readonly onRenderingReady: Event<void> = new Event<void>();
+
+  /**
+   * The camera to use for rendering.
+   */
+  public camera: Camera | null = null;
 
   /**
    * Returns whether the rendering is currently ready.

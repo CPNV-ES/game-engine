@@ -1,0 +1,118 @@
+import { vec3, Vec3, mat4, Mat4 } from "wgpu-matrix";
+import { OutputBehavior } from "../../Core/OutputBehavior.ts";
+import { GameObject } from "../../Core/GameObject.ts";
+import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
+import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
+
+export class Camera extends OutputBehavior {
+  private _fov: number; // Field of view in radians
+  private _aspect: number; // Aspect ratio (width / height)
+  private _near: number; // Near clipping plane
+  private _far: number; // Far clipping plane
+
+  private _projectionMatrix!: Mat4;
+  private _renderEngine: RenderGameEngineComponent;
+
+  constructor(
+    fov: number = Math.PI / 4,
+    aspect: number = 1,
+    near: number = 0.1,
+    far: number = 100,
+  ) {
+    super();
+    this._fov = fov;
+    this._aspect = aspect;
+    this._near = near;
+    this._far = far;
+
+    this._recomputeProjectionMatrix();
+  }
+
+  override setup(attachedOn: GameObject) {
+    super.setup(attachedOn);
+    this._renderEngine = GameEngineWindow.instance.getEngineComponent(
+      RenderGameEngineComponent,
+    )!;
+  }
+
+  protected onEnable() {
+    super.onEnable();
+    this._renderEngine.camera = this;
+  }
+
+  protected onDisable() {
+    super.onDisable();
+    if (this._renderEngine.camera === this) {
+      this._renderEngine.camera = null;
+    }
+  }
+
+  public get fov(): number {
+    return this._fov;
+  }
+
+  public set fov(value: number) {
+    this._fov = value;
+    this._recomputeProjectionMatrix();
+  }
+
+  public get aspect(): number {
+    return this._aspect;
+  }
+
+  public set aspect(value: number) {
+    this._aspect = value;
+    this._recomputeProjectionMatrix();
+  }
+
+  public get near(): number {
+    return this._near;
+  }
+
+  public set near(value: number) {
+    this._near = value;
+    this._recomputeProjectionMatrix();
+  }
+
+  public get far(): number {
+    return this._far;
+  }
+
+  public set far(value: number) {
+    this._far = value;
+    this._recomputeProjectionMatrix();
+  }
+
+  // Recompute projection matrix
+  private _recomputeProjectionMatrix(): void {
+    this._projectionMatrix = mat4.perspective(
+      this._fov,
+      this._aspect,
+      this._near,
+      this._far,
+    );
+  }
+
+  /**
+   * Returns the Model-View-Projection (MVP) matrix for the given model matrix.
+   * @param modelMatrix - The model matrix of the object.
+   * @returns The MVP matrix as a mat4.
+   */
+  public getMVPMatrix(modelMatrix: Mat4): Mat4 {
+    // Compute the view matrix (lookAt)
+    const viewMatrix = mat4.lookAt(
+      vec3.fromValues(this.transform.position.x, this.transform.position.y, 0),
+      vec3.fromValues(0, 0, 0),
+      vec3.fromValues(0, 1, 0),
+    );
+
+    // Combine projection, view, and model matrices: MVP = Projection * View * Model
+    const vpMatrix = mat4.multiply(this._projectionMatrix, viewMatrix);
+
+    //TODO : We should cache the vpMatrix and only recompute it when the camera moves
+
+    const mvpMatrix = mat4.multiply(vpMatrix, modelMatrix);
+
+    return mvpMatrix;
+  }
+}

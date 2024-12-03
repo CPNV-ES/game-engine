@@ -23,5 +23,8 @@
   },
   "lint-staged": {
     "**/*.{ts,html}": "prettier --write"
+  },
+  "dependencies": {
+    "wgpu-matrix": "^3.3.0"
   }
 }
