@@ -14,71 +14,59 @@ describe("Mouse", (): void => {
     expect(mouse).toBeInstanceOf(Mouse);
   });
 
-  it("should emit true when left click is called", (): void => {
-    mouse.onLeftClick.addObserver(callback);
-    vi.spyOn(mouse.onLeftClick, "emit");
+  it("should emit when left click down is called", (): void => {
+    mouse.onLeftClickDown.addObserver(callback);
+    vi.spyOn(mouse.onLeftClickDown, "emit");
 
-    const clickEvent = { button: 0 };
+    const mouseDownEvent = { button: 0 };
     (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "click")
-      .forEach((call) => call[1](clickEvent));
+      .filter((call) => call[0] === "mousedown")
+      .forEach((call) => call[1](mouseDownEvent));
 
-    expect(mouse.onLeftClick.emit).toHaveBeenCalledWith(true);
+    expect(mouse.onLeftClickDown.emit).toHaveBeenCalled();
   });
 
-  it("should emit true when right click is called", (): void => {
-    mouse.onRightClick.addObserver(callback);
-    vi.spyOn(mouse.onRightClick, "emit");
+  it("should emit when left click up is called", (): void => {
+    mouse.onLeftClickUp.addObserver(callback);
+    vi.spyOn(mouse.onLeftClickUp, "emit");
 
-    const clickEvent = { button: 2 };
+    const mouseUpEvent = { button: 0 };
     (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "click")
-      .forEach((call) => call[1](clickEvent));
+      .filter((call) => call[0] === "mouseup")
+      .forEach((call) => call[1](mouseUpEvent));
 
-    expect(mouse.onRightClick.emit).toHaveBeenCalledWith(true);
+    expect(mouse.onLeftClickUp.emit).toHaveBeenCalled();
   });
 
-  it("should emit true when middle click is called", (): void => {
-    mouse.onMiddleClick.addObserver(callback);
-    vi.spyOn(mouse.onMiddleClick, "emit");
+  it("should emit when right click down is called", (): void => {
+    mouse.onRightClickDown.addObserver(callback);
+    vi.spyOn(mouse.onRightClickDown, "emit");
 
-    const clickEvent = { button: 1 };
+    const mouseDownEvent = { button: 2 };
     (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "click")
-      .forEach((call) => call[1](clickEvent));
+      .filter((call) => call[0] === "mousedown")
+      .forEach((call) => call[1](mouseDownEvent));
 
-    expect(mouse.onMiddleClick.emit).toHaveBeenCalledWith(true);
+    expect(mouse.onRightClickDown.emit).toHaveBeenCalled();
   });
 
-  it("should emit true when fourth click is called", (): void => {
-    mouse.onFourthClick.addObserver(callback);
-    vi.spyOn(mouse.onFourthClick, "emit");
+  it("should emit when right click up is called", (): void => {
+    mouse.onRightClickUp.addObserver(callback);
+    vi.spyOn(mouse.onRightClickUp, "emit");
 
-    const clickEvent = { button: 3 };
+    const mouseUpEvent = { button: 2 };
     (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "click")
-      .forEach((call) => call[1](clickEvent));
+      .filter((call) => call[0] === "mouseup")
+      .forEach((call) => call[1](mouseUpEvent));
 
-    expect(mouse.onFourthClick.emit).toHaveBeenCalledWith(true);
+    expect(mouse.onRightClickUp.emit).toHaveBeenCalled();
   });
 
-  it("should emit true when fifth click is called", (): void => {
-    mouse.onFifthClick.addObserver(callback);
-    vi.spyOn(mouse.onFifthClick, "emit");
-
-    const clickEvent = { button: 4 };
-    (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "click")
-      .forEach((call) => call[1](clickEvent));
-
-    expect(mouse.onFifthClick.emit).toHaveBeenCalledWith(true);
-  });
-
-  it("should emit the whole event object when mouse moves", (): void => {
+  it("should emit the mouse position when mouse moves", (): void => {
     mouse.onMove.addObserver(callback);
     vi.spyOn(mouse.onMove, "emit");
 
-    const moveEvent = { clientX: 100, clientY: 200 };
+    const moveEvent = { clientX: 150, clientY: 300 };
     (document.addEventListener as Mock).mock.calls
       .filter((call) => call[0] === "mousemove")
       .forEach((call) => call[1](moveEvent));
@@ -86,19 +74,38 @@ describe("Mouse", (): void => {
     expect(mouse.onMove.emit).toHaveBeenCalledWith(moveEvent);
   });
 
-  it("should emit the whole event object when mouse scrolls", (): void => {
+  it("should emit the scroll position when mouse scrolls", (): void => {
     mouse.onScroll.addObserver(callback);
     vi.spyOn(mouse.onScroll, "emit");
 
-    const scrollEvent = { scrollX: 100, scrollY: 200 };
+    // Mock document.documentElement
+    const originalDocumentElement = document.documentElement;
+    const mockDocumentElement = {
+      scrollTop: 0,
+    };
+    Object.defineProperty(document, "documentElement", {
+      value: mockDocumentElement,
+      configurable: true,
+    });
+
+    // Mock scrollDown from 0 to 500
+    const scrollTopMock = vi
+      .spyOn(mockDocumentElement, "scrollTop", "get")
+      .mockReturnValue(500);
+
+    // Simulate a scroll event
+    const scrollEvent = new Event("scroll");
     (document.addEventListener as Mock).mock.calls
       .filter((call) => call[0] === "scroll")
       .forEach((call) => call[1](scrollEvent));
 
-    expect(mouse.onScroll.emit).toHaveBeenCalledWith(scrollEvent);
-  });
+    expect(mouse.onScroll.emit).toHaveBeenCalledWith(500);
 
-  afterAll((): void => {
-    mouse = null;
+    // Restore the mock
+    scrollTopMock.mockRestore();
+    Object.defineProperty(document, "documentElement", {
+      value: originalDocumentElement,
+      configurable: true,
+    });
   });
 });
