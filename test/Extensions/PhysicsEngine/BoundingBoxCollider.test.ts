@@ -1,76 +1,101 @@
 import { describe, it, expect } from "vitest";
-import { Polygon } from "../../../src/Extensions/PhysicsEngine/Polygon";
+import { BoundingBoxCollider } from "../../../src/Extensions/PhysicsEngine/BoundingBoxCollider";
 import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
 import { Transform } from "../../../src/Core/MathStructures/Transform";
+import { GameObject } from "../../../src/Core/GameObject";
 
-describe("Polygon", (): void => {
+describe("BoundingBoxCollider", (): void => {
   /**
-   * Tests if a polygon can be successfully scaled.
+   * Tests if a boundingBoxCollider can be successfully scaled.
    */
-  it("should get a scaled polygon without changing the original", () => {
-    const vect1: Vector2 = new Vector2(1, 2);
-    const vect2: Vector2 = new Vector2(3, 4);
-    const vect3: Vector2 = new Vector2(5, 6);
-    const polygon: Polygon = new Polygon([vect1, vect2, vect3]);
-    const transform = new Transform();
+  it("should get a scaled boundingBoxCollider without changing the original", () => {
+    const vertices: Vector2[] = [
+      new Vector2(1, 2),
+      new Vector2(3, 4),
+      new Vector2(5, 6),
+    ];
+    const gameObject = new GameObject();
+    const boundingBoxCollider: BoundingBoxCollider = new BoundingBoxCollider(
+      vertices,
+    );
 
-    transform.scale = new Vector2(2, 3);
+    gameObject.addBehavior(boundingBoxCollider);
+    gameObject.transform.scale = new Vector2(2, 3);
 
-    const transformedPolygon = polygon.getVerticesWithTransform(transform);
+    const transformedBoundingBoxCollider =
+      boundingBoxCollider.getVerticesWithTransform();
 
-    expect(transformedPolygon[0]).toEqual(new Vector2(2, 6));
-    expect(transformedPolygon[1]).toEqual(new Vector2(6, 12));
-    expect(transformedPolygon[2]).toEqual(new Vector2(10, 18));
-    expect(polygon.vertices[0]).toBe(vect1);
-    expect(polygon.vertices[1]).toBe(vect2);
-    expect(polygon.vertices[2]).toBe(vect3);
+    expect(transformedBoundingBoxCollider[0]).toEqual(new Vector2(2, 6));
+    expect(transformedBoundingBoxCollider[1]).toEqual(new Vector2(6, 12));
+    expect(transformedBoundingBoxCollider[2]).toEqual(new Vector2(10, 18));
+    expect(boundingBoxCollider.vertices[0]).toBe(vertices[0]);
+    expect(boundingBoxCollider.vertices[1]).toBe(vertices[1]);
+    expect(boundingBoxCollider.vertices[2]).toBe(vertices[2]);
   });
 
   /**
-   * Tests if a polygon can be successfully rotated.
+   * Tests if a boundingBoxCollider can be successfully rotated.
    */
-  it("should get a rotated polygon without changing the original", () => {
-    const vect1: Vector2 = new Vector2(1, 2);
-    const vect2: Vector2 = new Vector2(3, 4);
-    const vect3: Vector2 = new Vector2(5, 6);
-    const polygon: Polygon = new Polygon([vect1, vect2, vect3]);
-    const transform = new Transform();
+  it("should get a rotated boundingBoxCollider without changing the original", () => {
+    const vertices: Vector2[] = [
+      new Vector2(1, 2),
+      new Vector2(3, 4),
+      new Vector2(5, 6),
+    ];
+    const gameObject = new GameObject();
+    const boundingBoxCollider: BoundingBoxCollider = new BoundingBoxCollider(
+      vertices,
+    );
 
-    transform.rotation = Math.PI / 2;
+    gameObject.addBehavior(boundingBoxCollider);
+    gameObject.transform.rotation = Math.PI / 2;
 
-    const transformedPolygon = polygon.getVerticesWithTransform(transform);
+    const transformedBoundingBoxCollider =
+      boundingBoxCollider.getVerticesWithTransform();
 
-    expect(transformedPolygon[0].x).toBeCloseTo(-2);
-    expect(transformedPolygon[0].y).toBeCloseTo(1);
-    expect(transformedPolygon[1].x).toBeCloseTo(-4);
-    expect(transformedPolygon[1].y).toBeCloseTo(3);
-    expect(transformedPolygon[2].x).toBeCloseTo(-6);
-    expect(transformedPolygon[2].y).toBeCloseTo(5);
-    expect(polygon.vertices[0]).toBe(vect1);
-    expect(polygon.vertices[1]).toBe(vect2);
-    expect(polygon.vertices[2]).toBe(vect3);
+    expect(transformedBoundingBoxCollider[0].x).toBeCloseTo(-2);
+    expect(transformedBoundingBoxCollider[0].y).toBeCloseTo(1);
+    expect(transformedBoundingBoxCollider[1].x).toBeCloseTo(-4);
+    expect(transformedBoundingBoxCollider[1].y).toBeCloseTo(3);
+    expect(transformedBoundingBoxCollider[2].x).toBeCloseTo(-6);
+    expect(transformedBoundingBoxCollider[2].y).toBeCloseTo(5);
+    expect(boundingBoxCollider.vertices[0]).toBe(vertices[0]);
+    expect(boundingBoxCollider.vertices[1]).toBe(vertices[1]);
+    expect(boundingBoxCollider.vertices[2]).toBe(vertices[2]);
   });
 
   /**
-   * Tests if a polygon can be successfully translated.
+   * Tests if a boundingBoxCollider can be successfully translated.
    */
-  it("should get a translated polygon without changing the original", () => {
-    const vect1: Vector2 = new Vector2(1, 2);
-    const vect2: Vector2 = new Vector2(3, 4);
-    const vect3: Vector2 = new Vector2(5, 6);
-    const polygon: Polygon = new Polygon([vect1, vect2, vect3]);
-    const transform = new Transform();
-
+  it("should get a translated boundingBoxCollider without changing the original", () => {
+    const vertices: Vector2[] = [
+      new Vector2(1, 2),
+      new Vector2(3, 4),
+      new Vector2(5, 6),
+    ];
+    const gameObject = new GameObject();
+    const boundingBoxCollider: BoundingBoxCollider = new BoundingBoxCollider(
+      vertices,
+    );
     const position = new Vector2(1, 2);
-    transform.position = position;
 
-    const transformedPolygon = polygon.getVerticesWithTransform(transform);
+    gameObject.addBehavior(boundingBoxCollider);
+    gameObject.transform.position = position;
 
-    expect(transformedPolygon[0]).toEqual(vect1.add(position));
-    expect(transformedPolygon[1]).toEqual(vect2.add(position));
-    expect(transformedPolygon[2]).toEqual(vect3.add(position));
-    expect(polygon.vertices[0]).toBe(vect1);
-    expect(polygon.vertices[1]).toBe(vect2);
-    expect(polygon.vertices[2]).toBe(vect3);
+    const transformedBoundingBoxCollider =
+      boundingBoxCollider.getVerticesWithTransform();
+
+    expect(boundingBoxCollider.vertices[0]).toBe(vertices[0]);
+    expect(boundingBoxCollider.vertices[1]).toBe(vertices[1]);
+    expect(boundingBoxCollider.vertices[2]).toBe(vertices[2]);
+    expect(transformedBoundingBoxCollider[0]).toEqual(
+      vertices[0].add(position),
+    );
+    expect(transformedBoundingBoxCollider[1]).toEqual(
+      vertices[1].add(position),
+    );
+    expect(transformedBoundingBoxCollider[2]).toEqual(
+      vertices[2].add(position),
+    );
   });
 });
