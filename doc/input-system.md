@@ -160,3 +160,51 @@ GameEngineWindow.instance.addGameComponent(inputGameEngineComponent);
 In this example, two basic devices—Keyboard and Mouse—are added to the InputGameEngineComponent.
 If desired by the game developer using this game engine, it is possible to implement other devices and add them to the InputGameEngineComponent.
 
+## DeviceInputBehavior
+``DeviceInputBehavior`` is a class responsible for processing input events from devices. It acts as a behavior in the ``InputGameEngineComponent``, connecting to and handling events emitted by various devices.
+Developers can extend this class to handle events specific to new devices added to the ``InputGameEngineComponent``.
+```TypeScript
+export class TestDeviceInputBehavior extends DeviceInputBehavior {
+    public lastAction: string = "";
+    public countActions: number = 0;
+
+    override onAnyChange(): void {
+        this.countActions++;
+    }
+
+    override onMouseLeftClickUp(): void {
+        this.lastAction = "LeftClickUp";
+    }
+    
+    override onMouseRightClickDown(): void {
+        this.lastAction = "RightClickDown";
+    }
+}
+```
+
+By default, the DeviceInputBehavior has a method called onAnyChange that is called whenever any event is emitted by any of the included device, but that is defined at the devices when they're emitting the event.
+In this example, we have a class that inherits from DeviceInputBehavior and has a function that is called whenever the left click of the mouse is released.
+
+### Changes to OnEnable and OnDisable
+``OnEnable`` and ``OnDisable`` are lifecycle methods used to subscribe to or unsubscribe from device events. When adding a new device, you must extend these methods to handle the additional subscriptions and unsubscriptions.
+```TypeScript
+export class TestDeviceInputBehavior extends DeviceInputBehavior {
+    public countActions: number = 0;
+
+    override onAnyChange(): void {
+        this.countActions++;
+    }
+
+    public onControllerMoveRightJoystick(): void {
+        console.log("Right Joystick Moved on Controller");
+    }
+
+    override onEnable(): void {
+        const device = GameEngineWindow.instance.inputGameEngineComponent.getDevice<Controller>();
+        if (device) {
+            device.onAnyChange.subscribe(this.onAnyChange);
+            device.onMoveRightJoystick.subscribe(this.onControllerMoveRightJoystick);
+        }
+    }
+}
+```
