@@ -1,15 +1,13 @@
 import { describe, it, expect, vi, Mock, beforeAll, afterAll } from "vitest";
 import { Mouse } from "../../../src/Extensions/InputSystem/Mouse";
+import { InputUtility } from "./InputUtility";
 
 describe("Mouse", (): void => {
   let mouse: Mouse;
   let callback: Mock;
 
   beforeAll((): void => {
-    // Mock the global document object
-    global.document = {
-      addEventListener: vi.fn(),
-    } as unknown as Document;
+    InputUtility.mockDocumentEventListeners(); // Mock global document with event listeners
     callback = vi.fn(); // Create a mock function for the callback
     mouse = new Mouse(); // Instantiate the Mouse class
     expect(mouse).toBeInstanceOf(Mouse);
@@ -20,10 +18,7 @@ describe("Mouse", (): void => {
     mouse.onLeftClickDown.addObserver(callback);
     vi.spyOn(mouse.onLeftClickDown, "emit");
 
-    const mouseDownEvent = { button: 0 }; // Mock mouse down event with left button
-    (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "mousedown") // Filter for mousedown events
-      .forEach((call) => call[1](mouseDownEvent)); // Trigger the event
+    InputUtility.triggerMouseEvent("mousedown", 0); // Trigger the mouse down event
 
     expect(mouse.onLeftClickDown.emit).toHaveBeenCalled(); // Check if emit was called
   });
@@ -33,10 +28,7 @@ describe("Mouse", (): void => {
     mouse.onLeftClickUp.addObserver(callback);
     vi.spyOn(mouse.onLeftClickUp, "emit");
 
-    const mouseUpEvent = { button: 0 }; // Mock mouse up event with left button
-    (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "mouseup") // Filter for mouseup events
-      .forEach((call) => call[1](mouseUpEvent)); // Trigger the event
+    InputUtility.triggerMouseEvent("mouseup", 0); // Trigger the mouse up event
 
     expect(mouse.onLeftClickUp.emit).toHaveBeenCalled(); // Check if emit was called
   });
@@ -46,10 +38,7 @@ describe("Mouse", (): void => {
     mouse.onRightClickDown.addObserver(callback);
     vi.spyOn(mouse.onRightClickDown, "emit");
 
-    const mouseDownEvent = { button: 2 }; // Mock mouse down event with right button
-    (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "mousedown") // Filter for mousedown events
-      .forEach((call) => call[1](mouseDownEvent)); // Trigger the event
+    InputUtility.triggerMouseEvent("mousedown", 2); // Trigger the mouse down event
 
     expect(mouse.onRightClickDown.emit).toHaveBeenCalled();
   });
@@ -59,10 +48,7 @@ describe("Mouse", (): void => {
     mouse.onRightClickUp.addObserver(callback);
     vi.spyOn(mouse.onRightClickUp, "emit");
 
-    const mouseUpEvent = { button: 2 }; // Mock mouse up event with right button
-    (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "mouseup") // Filter for mouseup events
-      .forEach((call) => call[1](mouseUpEvent)); // Trigger the event
+    InputUtility.triggerMouseEvent("mouseup", 2);
 
     expect(mouse.onRightClickUp.emit).toHaveBeenCalled();
   });
@@ -72,12 +58,12 @@ describe("Mouse", (): void => {
     mouse.onMove.addObserver(callback);
     vi.spyOn(mouse.onMove, "emit");
 
-    const moveEvent = { clientX: 150, clientY: 300 }; // Mock mouse move event
-    (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "mousemove") // Filter for mousemove events
-      .forEach((call) => call[1](moveEvent)); // Trigger the event
+    InputUtility.triggerMouseMovementEvent(100, 200);
 
-    expect(mouse.onMove.emit).toHaveBeenCalledWith(moveEvent);
+    expect(mouse.onMove.emit).toHaveBeenCalledWith({
+      clientX: 100,
+      clientY: 200,
+    });
   });
 
   // Test for mouse scroll event
@@ -85,34 +71,8 @@ describe("Mouse", (): void => {
     mouse.onScroll.addObserver(callback); // Add observer to the event
     vi.spyOn(mouse.onScroll, "emit");
 
-    // Mock document.documentElement
-    const originalDocumentElement = document.documentElement;
-    const mockDocumentElement = {
-      scrollTop: 0,
-    };
-    Object.defineProperty(document, "documentElement", {
-      value: mockDocumentElement,
-      configurable: true,
-    });
-
-    // Mock scrollDown from 0 to 500
-    const scrollTopMock = vi
-      .spyOn(mockDocumentElement, "scrollTop", "get")
-      .mockReturnValue(500);
-
-    // Simulate a scroll event
-    const scrollEvent = new Event("scroll");
-    (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "scroll") // Filter for scroll events
-      .forEach((call) => call[1](scrollEvent)); // Trigger the event
+    InputUtility.triggerScrollEvent(500);
 
     expect(mouse.onScroll.emit).toHaveBeenCalledWith(500);
-
-    // Restore the mock
-    scrollTopMock.mockRestore();
-    Object.defineProperty(document, "documentElement", {
-      value: originalDocumentElement,
-      configurable: true,
-    });
   });
 });

@@ -1,16 +1,15 @@
 import { describe, it, expect, vi, Mock, beforeAll, afterAll } from "vitest";
 import { Keyboard } from "../../../src/Extensions/InputSystem/Keyboard";
+import { InputUtility } from "./InputUtility";
 
 describe("Keyboard", (): void => {
   let keyboard: Keyboard;
   let callback: Mock;
 
   beforeAll((): void => {
-    global.document = {
-      addEventListener: vi.fn(),
-    } as unknown as Document;
-    callback = vi.fn();
-    keyboard = new Keyboard();
+    InputUtility.mockDocumentEventListeners(); // Mock global document with event listeners
+    callback = vi.fn(); // Create a mock function for the callback
+    keyboard = new Keyboard(); // Instantiate the Keyboard class
     expect(keyboard).toBeInstanceOf(Keyboard);
   });
 
@@ -18,10 +17,7 @@ describe("Keyboard", (): void => {
     keyboard.onKeyDown.addObserver(callback);
     vi.spyOn(keyboard.onKeyDown, "emit");
 
-    const keydownEvent = { key: "w" };
-    (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "keydown")
-      .forEach((call) => call[1](keydownEvent));
+    InputUtility.triggerKeyboardEvent("keydown", "w");
 
     expect(keyboard.onKeyDown.emit).toHaveBeenCalledWith("w");
   });
@@ -30,10 +26,7 @@ describe("Keyboard", (): void => {
     keyboard.onKeyUp.addObserver(callback);
     vi.spyOn(keyboard.onKeyUp, "emit");
 
-    const keyupEvent = { key: "w" };
-    (document.addEventListener as Mock).mock.calls
-      .filter((call) => call[0] === "keyup")
-      .forEach((call) => call[1](keyupEvent));
+    InputUtility.triggerKeyboardEvent("keyup", "w");
 
     expect(keyboard.onKeyUp.emit).toHaveBeenCalledWith("w");
   });
