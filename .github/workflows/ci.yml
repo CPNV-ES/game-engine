@@ -34,18 +34,10 @@ jobs:
       - name: Run tests
         run: npm run test:ci
 
-      # Archive and upload test PNGs only if tests fail
-      - name: Archive test PNGs
-        if: failure()
-        run: |
-          mkdir -p artifacts
-          find ./test -type f \( -name "actual*.png" -o -name "difference*.png" \) -exec tar -rf artifacts/test-results.tar {} +
-        shell: bash
-
-      # Upload the archive only if tests fail
-      - name: Upload test results archive
+      # Output test results
+      - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: test-results-archive
-          path: artifacts/test-results.tar
+          name: test-results
+          path: ./test-results
