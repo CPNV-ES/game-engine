@@ -14,9 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
-      - name: Check out code
+      # Checkout the code with Git LFS support
+      - name: Check out code with Git LFS
         uses: actions/checkout@v3
+        with:
+          lfs: true
 
       # Set up Node.js
       - name: Set up Node.js
