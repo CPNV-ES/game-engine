@@ -30,6 +30,8 @@ export class ScreenshotTestUtil {
   public async takeScreenshot(
     pageRootPath: string,
     screenshotPath: string,
+    width: number = 800,
+    height: number = 600,
     timeToWait: number = 100,
     devPort: number = 8081,
   ) {
@@ -45,7 +47,7 @@ export class ScreenshotTestUtil {
     await server.listen();
 
     await this._page.goto("http://localhost:" + devPort + "/" + pageRootPath);
-    await this._page.setViewport({ width: 800, height: 600 });
+    await this._page.setViewport({ width: width, height: height });
     await this._page.waitForSelector("#app");
     await new Promise((resolve) => setTimeout(resolve, timeToWait));
 
