@@ -20,6 +20,10 @@ jobs:
         with:
           lfs: true
 
+      # Set CI environment variable for CI-specific config
+      - name: Set CI environment variable
+        run: echo "CI=true" >> $GITHUB_ENV
+
       # Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
