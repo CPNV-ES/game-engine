@@ -64,14 +64,13 @@ class BasicUVTexturedRenderBehavior {
   +render(renderpass: GPURenderPassEncoder): void
 }
 
-RenderGameEngineComponent --|> GameEngineComponent
-RenderBehavior --|> OutputBehavior
-SpriteRenderBehavior --|> BasicUVTexturedRenderBehavior
-BasicUVTexturedRenderBehavior --|> RenderBehavior
+RenderGameEngineComponent -up-|> GameEngineComponent
+RenderBehavior -up-|> OutputBehavior
+SpriteRenderBehavior -up-|> BasicUVTexturedRenderBehavior
+BasicUVTexturedRenderBehavior -up-|> RenderBehavior
 
 RenderGameEngineComponent --> Camera
 RenderGameEngineComponent ..> RenderBehavior : "uses"
-RenderGameEngineComponent ..> SpriteRenderBehavior : "uses"
 RenderBehavior ..> RenderEngineUtiliy : "uses"
 Camera ..> RenderEngineUtiliy : "uses"
 }
