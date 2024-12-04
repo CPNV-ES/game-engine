@@ -2,9 +2,9 @@ import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { ScreenshotTestUtil } from "../../ScreenshotTestUtil";
 
 const testPath = "test/Extensions/RenderEngine/";
-const actualFileName = "actual.png";
-const expectedFileName = "expected.png";
-const differenceFileName = "difference.png";
+const actualFileName = "actual";
+const expectedFileName = "expected";
+const differenceFileName = "difference";
 const pageName = "index.html";
 const screenshotUtil = new ScreenshotTestUtil();
 
@@ -16,15 +16,53 @@ afterAll(async () => {
   await screenshotUtil.closeBrowser();
 });
 
-const runScreenshotTestCase = async (testName: string) => {
+const runScreenshotTestCase = async (
+  testName: string,
+  width: number = 800,
+  height: number = 600,
+) => {
   await screenshotUtil.takeScreenshot(
     testPath + testName + "/" + pageName,
-    testPath + testName + "/" + actualFileName,
+    testPath +
+      testName +
+      "/" +
+      actualFileName +
+      "_" +
+      width +
+      "_" +
+      height +
+      ".png",
+    width,
+    height,
   );
   const mismatchedPixels = await screenshotUtil.imageDiff(
-    testPath + testName + "/" + expectedFileName,
-    testPath + testName + "/" + actualFileName,
-    testPath + testName + "/" + differenceFileName,
+    testPath +
+      testName +
+      "/" +
+      expectedFileName +
+      "_" +
+      width +
+      "_" +
+      height +
+      ".png",
+    testPath +
+      testName +
+      "/" +
+      actualFileName +
+      "_" +
+      width +
+      "_" +
+      height +
+      ".png",
+    testPath +
+      testName +
+      "/" +
+      differenceFileName +
+      "_" +
+      width +
+      "_" +
+      height +
+      ".png",
   );
   expect(mismatchedPixels).toBe(0);
 };
