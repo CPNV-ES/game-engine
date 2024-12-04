@@ -69,10 +69,8 @@ export class DeviceInputBehavior extends InputBehavior {
   public onMouseLeftClickDown(): void {}
   public onMouseRightClickUp(): void {}
   public onMouseRightClickDown(): void {}
-  public onMouseMove(data: MouseEvent): void {
-    data = data;
-  }
-  public onMouseScroll(data: number): void {}
-  public onKeyboardKeyDown(key: string): void {}
-  public onKeyboardKeyUp(key: string): void {}
+  public onMouseMove(_data: MouseEvent): void {}
+  public onMouseScroll(_data: number): void {}
+  public onKeyboardKeyDown(_key: string): void {}
+  public onKeyboardKeyUp(_key: string): void {}
 }
