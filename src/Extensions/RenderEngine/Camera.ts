@@ -3,6 +3,7 @@ import { OutputBehavior } from "../../Core/OutputBehavior.ts";
 import { GameObject } from "../../Core/GameObject.ts";
 import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
+import { RenderEngineUtiliy } from "./RenderEngineUtiliy.ts";
 
 export class Camera extends OutputBehavior {
   private _fov: number; // Field of view in radians
@@ -100,10 +101,10 @@ export class Camera extends OutputBehavior {
    */
   public getMVPMatrix(modelMatrix: Mat4): Mat4 {
     // Compute the view matrix (lookAt)
-    const viewMatrix = mat4.lookAt(
-      vec3.fromValues(this.transform.position.x, this.transform.position.y, 10),
-      vec3.fromValues(0, 0, 0),
-      vec3.fromValues(0, 1, 0),
+    let viewMatrix = RenderEngineUtiliy.toModelMatrix(this.transform);
+    viewMatrix = mat4.translate(
+      viewMatrix,
+      vec3.fromValues(viewMatrix[12], viewMatrix[13], viewMatrix[14] - 10),
     );
 
     // Combine projection, view, and model matrices: MVP = Projection * View * Model
