@@ -23,19 +23,19 @@ export class Mouse extends Device {
 
   /**
    * Event triggered when the mouse is moved.
-   * @type {Event<number[]>}
+   * @type {Event<MouseEvent>}
    */
   public readonly onMove: Event<MouseEvent> = new Event<MouseEvent>();
 
   /**
    * Event triggered when the mouse is scrolled.
-   * @type {Event<MouseEvent>}
+   * @type {Event<number>}
    */
   public readonly onScroll: Event<number> = new Event<number>();
 
   /**
    * Creates a new Mouse instance.
-   * Adds event listeners for click and mousemove events.
+   * Adds event listeners for mousedown, mouseup, mousemove and scroll events.
    */
   constructor() {
     super();
