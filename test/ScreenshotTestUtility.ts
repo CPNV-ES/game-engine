@@ -33,7 +33,7 @@ export class ScreenshotTestUtility {
     width: number = 800,
     height: number = 600,
     timeToWait: number = 100,
-    devPort: number = 8081,
+    devPort: number = 5171,
   ) {
     // Remove the existing file if it exists
     if (fs.existsSync(screenshotPath)) {
