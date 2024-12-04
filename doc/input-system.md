@@ -142,3 +142,21 @@ mouse.onScroll.addObserver((scrollDistance) => {
     console.log(`Scrolled by ${scrollDistance} units`);
 });
 ```
+
+## InputGameEngineComponent
+``InputGameEngineComponent`` is a component responsible for managing input devices and providing access to them across other classes. This is achieved by adding it as a component to the ``GameEngineWindow``.
+
+It provides methods to add devices and retrieve them based on their type.
+```TypeScript
+keyboard = new Keyboard();
+mouse = new Mouse();
+
+inputGameEngineComponent = new InputGameEngineComponent();
+
+inputGameEngineComponent.addDevice(keyboard);
+inputGameEngineComponent.addDevice(mouse);
+GameEngineWindow.instance.addGameComponent(inputGameEngineComponent);
+```
+In this example, two basic devices—Keyboard and Mouse—are added to the InputGameEngineComponent.
+If desired by the game developer using this game engine, it is possible to implement other devices and add them to the InputGameEngineComponent.
+
