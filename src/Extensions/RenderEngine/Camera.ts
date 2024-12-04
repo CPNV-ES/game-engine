@@ -102,13 +102,13 @@ export class Camera extends OutputBehavior {
   public getMVPMatrix(modelMatrix: Mat4): Mat4 {
     // Compute the view matrix (lookAt)
     let viewMatrix = RenderEngineUtiliy.toModelMatrix(this.transform);
-    viewMatrix = mat4.translate(
-      viewMatrix,
-      vec3.fromValues(viewMatrix[12], viewMatrix[13], viewMatrix[14] - 10),
-    );
+    viewMatrix = mat4.translate(viewMatrix, vec3.fromValues(0, 0, 10));
 
     // Combine projection, view, and model matrices: MVP = Projection * View * Model
-    const vpMatrix = mat4.multiply(this._projectionMatrix, viewMatrix);
+    const vpMatrix = mat4.multiply(
+      this._projectionMatrix,
+      mat4.inverse(viewMatrix),
+    );
 
     //TODO : We should cache the vpMatrix and only recompute it when the camera moves
 

@@ -8,19 +8,12 @@ const differenceFileName = "difference";
 const pageName = "index.html";
 const screenshotUtil = new ScreenshotTestUtil();
 
-beforeAll(async () => {
-  await screenshotUtil.openBrowser();
-});
-
-afterAll(async () => {
-  await screenshotUtil.closeBrowser();
-});
-
 const runScreenshotTestCase = async (
   testName: string,
   width: number = 800,
   height: number = 600,
 ) => {
+  await screenshotUtil.openBrowser();
   await screenshotUtil.takeScreenshot(
     testPath + testName + "/" + pageName,
     testPath +
@@ -65,6 +58,7 @@ const runScreenshotTestCase = async (
       ".png",
   );
   expect(mismatchedPixels).toBe(0);
+  await screenshotUtil.closeBrowser();
 };
 
 describe("WebGPU Rendering Test", () => {
@@ -74,10 +68,10 @@ describe("WebGPU Rendering Test", () => {
   it("one centered sprite is correctly resized", async () => {
     await runScreenshotTestCase("SimpleSprite", 640, 480);
   });
-  /*it("sprite should move when camera is translated", async () => {
+  it("sprite should move when camera is translated", async () => {
     await runScreenshotTestCase("TranslateCamera");
   });
-  it("sprite should move when camera is rotated", async () => {
+  /*it("sprite should move when camera is rotated", async () => {
     await runScreenshotTestCase("RotateCamera");
   });
   it("sprite should when it's transform is translated", async () => {
