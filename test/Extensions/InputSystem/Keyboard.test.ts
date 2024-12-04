@@ -17,7 +17,7 @@ describe("Keyboard", (): void => {
     keyboard.onKeyDown.addObserver(callback);
     vi.spyOn(keyboard.onKeyDown, "emit");
 
-    InputUtility.triggerKeyboardEvent("keydown", "w");
+    InputUtility.triggerKeyboardKeyDown();
 
     expect(keyboard.onKeyDown.emit).toHaveBeenCalledWith("w");
   });
@@ -26,7 +26,7 @@ describe("Keyboard", (): void => {
     keyboard.onKeyUp.addObserver(callback);
     vi.spyOn(keyboard.onKeyUp, "emit");
 
-    InputUtility.triggerKeyboardEvent("keyup", "w");
+    InputUtility.triggerKeyboardKeyUp();
 
     expect(keyboard.onKeyUp.emit).toHaveBeenCalledWith("w");
   });

@@ -18,7 +18,7 @@ describe("Mouse", (): void => {
     mouse.onLeftClickDown.addObserver(callback);
     vi.spyOn(mouse.onLeftClickDown, "emit");
 
-    InputUtility.triggerMouseEvent("mousedown", 0); // Trigger the mouse down event
+    InputUtility.triggerMouseLeftClickDown();
 
     expect(mouse.onLeftClickDown.emit).toHaveBeenCalled(); // Check if emit was called
   });
@@ -28,7 +28,7 @@ describe("Mouse", (): void => {
     mouse.onLeftClickUp.addObserver(callback);
     vi.spyOn(mouse.onLeftClickUp, "emit");
 
-    InputUtility.triggerMouseEvent("mouseup", 0); // Trigger the mouse up event
+    InputUtility.triggerMouseLeftClickUp();
 
     expect(mouse.onLeftClickUp.emit).toHaveBeenCalled(); // Check if emit was called
   });
@@ -38,7 +38,7 @@ describe("Mouse", (): void => {
     mouse.onRightClickDown.addObserver(callback);
     vi.spyOn(mouse.onRightClickDown, "emit");
 
-    InputUtility.triggerMouseEvent("mousedown", 2); // Trigger the mouse down event
+    InputUtility.triggerMouseRightClickDown();
 
     expect(mouse.onRightClickDown.emit).toHaveBeenCalled();
   });
@@ -48,7 +48,7 @@ describe("Mouse", (): void => {
     mouse.onRightClickUp.addObserver(callback);
     vi.spyOn(mouse.onRightClickUp, "emit");
 
-    InputUtility.triggerMouseEvent("mouseup", 2);
+    InputUtility.triggerMouseRightClickUp();
 
     expect(mouse.onRightClickUp.emit).toHaveBeenCalled();
   });
@@ -58,7 +58,7 @@ describe("Mouse", (): void => {
     mouse.onMove.addObserver(callback);
     vi.spyOn(mouse.onMove, "emit");
 
-    InputUtility.triggerMouseMovementEvent(100, 200);
+    InputUtility.triggerMouseMovement();
 
     expect(mouse.onMove.emit).toHaveBeenCalledWith({
       clientX: 100,
@@ -71,7 +71,7 @@ describe("Mouse", (): void => {
     mouse.onScroll.addObserver(callback); // Add observer to the event
     vi.spyOn(mouse.onScroll, "emit");
 
-    InputUtility.triggerScrollEvent(500);
+    InputUtility.triggerMouseScroll();
 
     expect(mouse.onScroll.emit).toHaveBeenCalledWith(500);
   });
