@@ -33,18 +33,25 @@ export class ScreenshotTestUtil {
     timeToWait: number = 100,
     devPort: number = 8081,
   ) {
+    // Remove the existing file if it exists
+    if (fs.existsSync(screenshotPath)) {
+      fs.unlinkSync(screenshotPath);
+    }
+
     const server = await createServer({
-      root: pageRootPath,
+      root: "./",
       server: { port: devPort },
     });
     await server.listen();
 
-    await this._page.goto("http://localhost:" + devPort);
+    await this._page.goto("http://localhost:" + devPort + "/" + pageRootPath);
     await this._page.setViewport({ width: 800, height: 600 });
     await this._page.waitForSelector("#app");
     await new Promise((resolve) => setTimeout(resolve, timeToWait));
 
     await this._page.screenshot({ path: screenshotPath });
+
+    await server.close();
   }
 
   /**
