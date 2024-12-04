@@ -6,10 +6,10 @@ export class Collider extends PhysicsBehavior<Collider[]> {
     this.data = [];
   }
 
-  public onTick(collidedColliders: Collider[]): void {
+  public collide(collidedColliders: Collider[]): void {
     if (collidedColliders != this.data) {
       this.data = collidedColliders;
-      this.onDataChanged.emit(this.data);
+      this.notifyDataChanged();
     }
   }
 }
