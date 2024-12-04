@@ -1,14 +1,11 @@
 # **Input System**
 
 ## **Devices**
-Devices are modular input components that encapsulate functionality for capturing and managing user interactions.
-
 - They represent hardware input devices like keyboards and mice.
 - Devices emit events when specific user actions occur, such as key presses or mouse clicks.
-- They are designed to be reusable and composable, providing a consistent interface for handling input events.
 
 ## **Types of Devices (Keyboard, Mouse)**
-These devices are specialized implementations of the `Device` base class, enforcing a clear separation of input concerns. This design improves maintainability and simplifies handling user interactions.
+These devices are specialized implementations of the `Device` base class.
 
 ### **Key Differences Between Devices**
 
@@ -17,8 +14,6 @@ These devices are specialized implementations of the `Device` base class, enforc
 | **Primary Role**   | Emits events for key press/release.     | Emits events for mouse actions.     | Base class for all input devices.   |
 | **Interactions**   | Monitors keyboard input.                | Monitors mouse buttons, movement, and scroll. | General event propagation.          |
 | **Event Types**    | `onKeyDown`, `onKeyUp`.                 | `onMove`, `onScroll`, button events. | `onAnyChange`.                      |
-
----
 
 ### **1. Keyboard**
 **Responsibilities**:
@@ -31,8 +26,6 @@ These devices are specialized implementations of the `Device` base class, enforc
 **Key Events**:
 - `onKeyDown`: Triggered when any key is pressed. Emits the key identifier as a string.
 - `onKeyUp`: Triggered when any key is released. Emits the key identifier as a string.
-
----
 
 ### **2. Mouse**
 **Responsibilities**:
@@ -47,8 +40,6 @@ These devices are specialized implementations of the `Device` base class, enforc
 - `onRightClickDown` / `onRightClickUp`: Triggered when the right mouse button is pressed or released.
 - `onMove`: Triggered when the mouse is moved. Emits a `MouseEvent` with detailed movement data.
 - `onScroll`: Triggered when the mouse is scrolled. Emits the scroll distance as a number.
-
----
 
 ### **3. Device (Base Class)**
 **Responsibilities**:
@@ -77,8 +68,6 @@ Those functions have default values but can be overridden in the arguments of th
 | `triggerMouseRightClickUp`  | Simulates a `mouseup` event for the right mouse button.                                             |
 | `triggerMouseMovement`      | Simulates a `mousemove` event with specific coordinates. Default value = clientX: 100, clientY: 200 |
 | `triggerMouseScroll`        | Simulates a `scroll` event with a specified scroll distance. Default value = scrollTopValue: 500    |
-
----
 
 ### **Example Usage**
 
