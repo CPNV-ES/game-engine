@@ -7,7 +7,7 @@ import pixelmatch from "pixelmatch";
 /**
  * Utility class to take screenshots of a page and compare them with expected images
  */
-export class ScreenshotTestUtil {
+export class ScreenshotTestUtility {
   private _browser: puppeteer.Browser;
   private _page: puppeteer.Page;
 
