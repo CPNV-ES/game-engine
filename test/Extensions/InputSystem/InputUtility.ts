@@ -98,33 +98,49 @@ export class InputUtility {
 
   /**
    * Simulates a mouse movement event to a predefined position.
-   * Calls the "mousemove" event listener with coordinates (100, 200).
+   * Calls the "mousemove" event listener with coordinates (100, 200) by default.
+   * The coordinates can be changed by providing different values for clientX and clientY.
+   *
+   * @param {number} [clientX=100] - The X coordinate of the mouse movement.
+   * @param {number} [clientY=200] - The Y coordinate of the mouse movement.
    */
-  static triggerMouseMovement(): void {
-    this.triggerMouseMovementEvent(100, 200);
+  static triggerMouseMovement(
+    clientX: number = 100,
+    clientY: number = 200,
+  ): void {
+    this.triggerMouseMovementEvent(clientX, clientY);
   }
 
   /**
    * Simulates a scroll event with a predefined scroll position.
-   * Calls the "scroll" event listener with a scrollTop value of 500.
+   * Calls the "scroll" event listener with a scrollTop value of 500 by default.
+   * The scrollTop value can be changed by providing a different value.
+   *
+   * @param {number} [scrollTopValue=500] - The scrollTop value of the scroll event.
    */
-  static triggerMouseScroll(): void {
-    this.triggerScrollEvent(500);
+  static triggerMouseScroll(scrollTopValue: number = 500): void {
+    this.triggerScrollEvent(scrollTopValue);
   }
 
   /**
    * Simulates a key press down event.
-   * Calls the "keydown" event listener with the key "w".
+   * Calls the "keydown" event listener with the key "w" by default.
+   * The key can be changed by providing a different value.
+   *
+   * @param {string} [key="w"] - The key value of the keydown event.
    */
-  static triggerKeyboardKeyDown(): void {
-    this.triggerKeyboardEvent("keydown", "w");
+  static triggerKeyboardKeyDown(key: string = "w"): void {
+    this.triggerKeyboardEvent("keydown", key);
   }
 
   /**
    * Simulates a key release event.
-   * Calls the "keyup" event listener with the key "w".
+   * Calls the "keyup" event listener with the key "w" by default.
+   * The key can be changed by providing a different value.
+   *
+   * @param {string} [key="w"] - The key value of the keyup event.
    */
-  static triggerKeyboardKeyUp(): void {
-    this.triggerKeyboardEvent("keyup", "w");
+  static triggerKeyboardKeyUp(key: string = "w"): void {
+    this.triggerKeyboardEvent("keyup", key);
   }
 }
