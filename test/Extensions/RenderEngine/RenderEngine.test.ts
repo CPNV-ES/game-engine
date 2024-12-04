@@ -35,9 +35,6 @@ const runScreenshotTestCase = async (
     width,
     height,
   );
-  it("one centered sprite is correctly resized", async () => {
-    await runScreenshotTestCase("SimpleSprite", 640, 480);
-  });
   const mismatchedPixels = await screenshotUtil.imageDiff(
     testPath +
       testName +
@@ -74,4 +71,16 @@ describe("WebGPU Rendering Test", () => {
   it("renders a WebGPU canvas correctly with one centered sprite", async () => {
     await runScreenshotTestCase("SimpleSprite");
   });
+  it("one centered sprite is correctly resized", async () => {
+    await runScreenshotTestCase("SimpleSprite", 640, 480);
+  });
+  /*it("sprite should move when camera is translated", async () => {
+    await runScreenshotTestCase("TranslateCamera");
+  });
+  it("sprite should move when camera is rotated", async () => {
+    await runScreenshotTestCase("RotateCamera");
+  });
+  it("sprite should when it's transform is translated", async () => {
+    await runScreenshotTestCase("TranslateTransform");
+  });*/
 });
