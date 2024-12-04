@@ -15,22 +15,22 @@ export class DeviceInputBehavior extends InputBehavior {
     if (inputComponent === null) return;
     const mouse: Mouse | null = inputComponent.getDevice(Mouse);
     if (mouse) {
-      mouse.onAnyChange.addObserver(this.onAnyChange);
+      mouse.onAnyChange.addObserver(() => this.onAnyChange());
 
-      mouse.onLeftClickUp.addObserver(this.onMouseLeftClickUp);
-      mouse.onLeftClickDown.addObserver(this.onMouseLeftClickDown);
+      mouse.onLeftClickUp.addObserver(() => this.onMouseLeftClickUp());
+      mouse.onLeftClickDown.addObserver(() => this.onMouseLeftClickDown());
 
-      mouse.onRightClickUp.addObserver(this.onMouseRightClickUp);
-      mouse.onRightClickDown.addObserver(this.onMouseRightClickDown);
+      mouse.onRightClickUp.addObserver(() => this.onMouseRightClickUp());
+      mouse.onRightClickDown.addObserver(() => this.onMouseRightClickDown());
 
-      mouse.onMove.addObserver(this.onMouseMove);
-      mouse.onScroll.addObserver(this.onMouseScroll);
+      mouse.onMove.addObserver((data) => this.onMouseMove(data));
+      mouse.onScroll.addObserver((data) => this.onMouseScroll(data));
     }
     const keyboard: Keyboard | null = inputComponent.getDevice(Keyboard);
     if (keyboard) {
-      keyboard.onAnyChange.addObserver(this.onAnyChange);
-      keyboard.onKeyDown.addObserver(this.onKeyboardKeyDown);
-      keyboard.onKeyUp.addObserver(this.onKeyboardKeyUp);
+      keyboard.onAnyChange.addObserver(() => this.onAnyChange());
+      keyboard.onKeyDown.addObserver((data) => this.onKeyboardKeyDown(data));
+      keyboard.onKeyUp.addObserver((data) => this.onKeyboardKeyUp(data));
     }
   }
 
@@ -40,22 +40,22 @@ export class DeviceInputBehavior extends InputBehavior {
     if (inputComponent === null) return;
     const mouse: Mouse | null = inputComponent.getDevice(Mouse);
     if (mouse) {
-      mouse.onAnyChange.removeObserver(this.onAnyChange);
+      mouse.onAnyChange.removeObserver(() => this.onAnyChange);
 
-      mouse.onLeftClickUp.removeObserver(this.onMouseLeftClickUp);
-      mouse.onLeftClickDown.removeObserver(this.onMouseLeftClickDown);
+      mouse.onLeftClickUp.removeObserver(() => this.onMouseLeftClickUp);
+      mouse.onLeftClickDown.removeObserver(() => this.onMouseLeftClickDown);
 
-      mouse.onRightClickUp.removeObserver(this.onMouseRightClickUp);
-      mouse.onRightClickDown.removeObserver(this.onMouseRightClickDown);
+      mouse.onRightClickUp.removeObserver(() => this.onMouseRightClickUp);
+      mouse.onRightClickDown.removeObserver(() => this.onMouseRightClickDown);
 
-      mouse.onMove.removeObserver(this.onMouseMove);
-      mouse.onScroll.removeObserver(this.onMouseScroll);
+      mouse.onMove.removeObserver(() => this.onMouseMove);
+      mouse.onScroll.removeObserver(() => this.onMouseScroll);
     }
     const keyboard: Keyboard | null = inputComponent.getDevice(Keyboard);
     if (keyboard) {
-      keyboard.onAnyChange.removeObserver(this.onAnyChange);
-      keyboard.onKeyDown.removeObserver(this.onKeyboardKeyDown);
-      keyboard.onKeyUp.removeObserver(this.onKeyboardKeyUp);
+      keyboard.onAnyChange.removeObserver(() => this.onAnyChange);
+      keyboard.onKeyDown.removeObserver(() => this.onKeyboardKeyDown);
+      keyboard.onKeyUp.removeObserver(() => this.onKeyboardKeyUp);
     }
   }
 
