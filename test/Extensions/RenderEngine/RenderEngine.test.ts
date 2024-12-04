@@ -74,7 +74,10 @@ describe("WebGPU Rendering Test", () => {
   it("sprite should move when camera is rotated", async () => {
     await runScreenshotTestCase("RotateCamera");
   });
-  it("sprite should when it's transform is translated", async () => {
+  it("sprite should move when it's transform is translated", async () => {
     await runScreenshotTestCase("TranslateTransform");
+  });
+  it("sprite should move and be rotated when it's transform is translated + rotated", async () => {
+    await runScreenshotTestCase("RotateTransform");
   });
 });
