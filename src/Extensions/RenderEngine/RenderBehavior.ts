@@ -1,6 +1,5 @@
 import { OutputBehavior } from "../../Core/OutputBehavior.ts";
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
-import { mat4 } from "wgpu-matrix";
 
 /**
  * An object that can be rendered to the WebGPU screen.
@@ -59,23 +58,4 @@ export abstract class RenderBehavior extends OutputBehavior {
   }
 
   public abstract render(renderpass: GPURenderPassEncoder): void;
-
-  /**
-   * Convert the Transform into a model matrix
-   */
-  public toModelMatrix(): Float32Array {
-    const modelMatrix = mat4.identity();
-    mat4.translate(modelMatrix, modelMatrix, [
-      this.transform.position.x,
-      this.transform.position.y,
-      0,
-    ]);
-    mat4.rotateZ(modelMatrix, this.transform.rotation);
-    mat4.scale(modelMatrix, modelMatrix, [
-      this.transform.scale.x,
-      this.transform.scale.y,
-      1,
-    ]);
-    return modelMatrix;
-  }
 }
