@@ -31,7 +31,6 @@ export class InputUtility {
 
   private static triggerScrollEvent(scrollTopValue: number): void {
     // Mock document.documentElement
-    const originalDocumentElement = document.documentElement;
     const mockDocumentElement = { scrollTop: 0 };
     Object.defineProperty(document, "documentElement", {
       value: mockDocumentElement,
@@ -39,22 +38,15 @@ export class InputUtility {
     });
 
     // Update scrollTop value
-    const scrollTopMock = vi
-      .spyOn(mockDocumentElement, "scrollTop", "get")
-      .mockReturnValue(scrollTopValue);
+    vi.spyOn(mockDocumentElement, "scrollTop", "get").mockReturnValue(
+      scrollTopValue,
+    );
 
     // Trigger scroll event
     const scrollEvent = new Event("scroll");
     (document.addEventListener as Mock).mock.calls
       .filter((call) => call[0] === "scroll")
       .forEach((call) => call[1](scrollEvent));
-
-    // Restore the original document element
-    scrollTopMock.mockRestore();
-    Object.defineProperty(document, "documentElement", {
-      value: originalDocumentElement,
-      configurable: true,
-    });
   }
 
   private static triggerKeyboardEvent(eventType: string, key: string): void {
