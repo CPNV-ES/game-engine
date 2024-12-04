@@ -35,6 +35,9 @@ const runScreenshotTestCase = async (
     width,
     height,
   );
+  it("one centered sprite is correctly resized", async () => {
+    await runScreenshotTestCase("SimpleSprite", 640, 480);
+  });
   const mismatchedPixels = await screenshotUtil.imageDiff(
     testPath +
       testName +
