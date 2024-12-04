@@ -5,8 +5,12 @@ import { GameObject } from "../../Core/GameObject.ts";
 
 export class PhysicsGameEngineComponent extends GameEngineComponent {
   rootObject: GameObject;
+  tickInterval: ReturnType<typeof setInterval>;
+
   public onAttachedTo(_gameEngine: GameEngineWindow): void {
-    this.rootObject = GameEngineWindow.root;
+    this.rootObject = GameEngineWindow.instance.root;
+    this.tick();
+    this.tickInterval = setInterval(() => this.tick(), 100);
   }
 
   private getAllColliders(): Collider[] {
@@ -18,7 +22,6 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   }
 
   private tick(): void {
-    const allColliders = this.getAllColliders();
     //Check SAT collisions
   }
 }
