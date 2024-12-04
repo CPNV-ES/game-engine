@@ -18,6 +18,15 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
   private _spriteImageUrl: RequestInfo | URL;
   private _vertexData: Float32Array;
 
+  /**
+   * Create a new BasicUVTexturedRenderBehavior with a predetermined descriptor and buffer layout.
+   * @param renderEngine The render engine to use
+   * @param spriteImageUrl The URL of the sprite image (will automatically load the texture in the GPU)
+   * @param vertexData The vertex data (3 floats for position and 2 float for UV coordinates)
+   * @param indexData The index data (to form triangles)
+   * @param vertexWGSLShader The vertex shader in WGSL (source code in string). Ensure that the shader has a uniform mat4 mvpMatrix and is compatible with the layout.
+   * @param fragmentWGSLShader The fragment shader in WGSL (source code in string). Ensure that the shader has a texture and sampler and is compatible with the layout.
+   */
   constructor(
     renderEngine: RenderGameEngineComponent,
     spriteImageUrl: RequestInfo | URL,
@@ -59,17 +68,23 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
   protected async asyncInit(): Promise<void> {
     await super.asyncInit();
 
+    //Create buffers on the GPU based on data
     this._vertexBuffer = this._renderEngine.createVertexBuffer(
       this._vertexData,
     );
     this._indexBuffer = this._renderEngine.createIndexBuffer(this._indexData);
+
+    //Create the uniform buffer with the already set model matrix (for good size)
     this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
       RenderEngineUtiliy.toModelMatrix(this.transform),
     );
 
+    //Upload the texture to the GPU
     this._spriteTexture = await this._renderEngine.createTexture(
       this._spriteImageUrl,
     );
+
+    //Create the bind group for shaders
     this._bindGroup = this._renderEngine.createBindGroup(
       this._bindGroupLayout!,
       [

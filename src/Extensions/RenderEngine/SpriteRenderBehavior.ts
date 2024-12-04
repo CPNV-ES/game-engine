@@ -4,9 +4,15 @@ import BasicTextureSample from "./BasicShaders/BasicTextureSample.frag.wgsl?raw"
 import { BasicUVTexturedRenderBehavior } from "./BasicUVTexturedRenderBehavior.ts";
 
 /**
- * A UVTextured object, desinged to be rendered with a sprite texture (no repeat, transparency, etc).
+ * A UVTextured object, designed to be rendered with a sprite texture (no repeat, transparency, etc).
+ * Essentially a quad with UV coordinates and a texture.
  */
 export class SpriteRenderBehavior extends BasicUVTexturedRenderBehavior {
+  /**
+   * Construct a new Quad with the texture of the image at the given URL.
+   * @param renderEngine
+   * @param spriteImageUrl
+   */
   constructor(
     renderEngine: RenderGameEngineComponent,
     spriteImageUrl: RequestInfo | URL,

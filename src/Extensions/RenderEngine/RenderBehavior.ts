@@ -16,6 +16,15 @@ export abstract class RenderBehavior extends OutputBehavior {
   private _bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor;
   private _bufferLayout: GPUVertexBufferLayout;
 
+  /**
+   * Create a new RenderBehavior (auto init, create pipeline and render).
+   * @param renderEngine The render engine to use
+   * @param vertexWGSLShader The vertex shader in WGSL (source code in string)
+   * @param fragmentWGSLShader The fragment shader in WGSL (source code in string)
+   * @param topology The type of primitive to be constructed from the vertex inputs.
+   * @param bindGroupLayoutDescriptor The descriptor of the layout for the bind group
+   * @param buffer The layout of the vertex buffer transmitted to the vertex shader
+   */
   public constructor(
     renderEngine: RenderGameEngineComponent,
     vertexWGSLShader: string,
@@ -44,6 +53,10 @@ export abstract class RenderBehavior extends OutputBehavior {
     }
   }
 
+  /**
+   * Called when the rendering is ready (device is available).
+   * @protected
+   */
   protected async asyncInit() {
     this._bindGroupLayout = this._renderEngine.createBindGroupLayout(
       this._bindGroupLayoutDescriptor,
@@ -57,5 +70,9 @@ export abstract class RenderBehavior extends OutputBehavior {
     );
   }
 
+  /**
+   * Render the object to the screen.
+   * @param renderpass The render pass to render to
+   */
   public abstract render(renderpass: GPURenderPassEncoder): void;
 }
