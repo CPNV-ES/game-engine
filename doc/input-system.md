@@ -38,7 +38,7 @@ These devices are specialized implementations of the `Device` base class.
 **Key Events**:
 - `onLeftClickDown` / `onLeftClickUp`: Triggered when the left mouse button is pressed or released.
 - `onRightClickDown` / `onRightClickUp`: Triggered when the right mouse button is pressed or released.
-- `onMove`: Triggered when the mouse is moved. Emits a `MouseEvent` with detailed movement data.
+- `onMove`: Triggered when the mouse is moved. Emits a `Vector2` with the clientX and clientY coordinates.
 - `onScroll`: Triggered when the mouse is scrolled. Emits the scroll distance as a number.
 
 ### **3. Device (Base Class)**
