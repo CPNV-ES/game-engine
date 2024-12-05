@@ -1,12 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { InputGameEngineComponent } from "../../../src/Extensions/InputSystem/InputGameEngineComponent";
 import { Device } from "../../../src/Extensions/InputSystem/Device";
-
-class MockDevice extends Device {
-  constructor() {
-    super();
-  }
-}
+import { MockDevice } from "./Mocks/MockDevice";
 
 describe("InputGameEngineComponent", (): void => {
   let inputGameEngineComponent: InputGameEngineComponent;
