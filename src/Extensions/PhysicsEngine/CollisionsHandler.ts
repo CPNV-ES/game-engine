@@ -53,7 +53,7 @@ export class CollisionsHandler {
     ];
 
     // Check every axis of the polygons for separation
-    axes.forEach((axis: Vector2) => {
+    for (const axis of axes) {
       const projectionA: { min: number; max: number } = this.projectVertices(
         verticesA,
         axis,
@@ -67,9 +67,11 @@ export class CollisionsHandler {
       if (
         projectionA.max < projectionB.min ||
         projectionB.max < projectionA.min
-      )
+      ) {
         return false;
-    });
-    return true;
+      }
+    }
+
+    return true; // No separating axis found, polygons are colliding
   }
 }
