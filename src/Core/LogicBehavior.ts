@@ -11,7 +11,7 @@ export class LogicBehavior<T> extends Behavior {
   protected gameObject!: GameObject;
   protected data!: T;
 
-  override setup(attachedOn: GameObject) {
+  override setup(attachedOn: GameObject): void {
     super.setup(attachedOn);
     this.gameObject = attachedOn;
     if (!this.data) {
