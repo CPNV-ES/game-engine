@@ -33,14 +33,14 @@ class RenderEngineUtiliy {
 }
 
 class RenderBehavior {
-  +_renderEngine: RenderGameEngineComponent
-  +_pipeline: GPURenderPipeline | null
-  +_bindGroupLayout: GPUBindGroupLayout | null
-  +_vertexWGSLShader: string
-  +_fragmentWGSLShader: string
-  +_topology: GPUPrimitiveTopology
-  +_bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor
-  +_bufferLayout: GPUVertexBufferLayout
+  #_renderEngine: RenderGameEngineComponent
+  #_pipeline: GPURenderPipeline | null
+  #_bindGroupLayout: GPUBindGroupLayout | null
+  #_vertexWGSLShader: string
+  #_fragmentWGSLShader: string
+  #_topology: GPUPrimitiveTopology
+  #_bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor
+  #_bufferLayout: GPUVertexBufferLayout
   +constructor(renderEngine: RenderGameEngineComponent, vertexWGSLShader: string, fragmentWGSLShader: string, topology: GPUPrimitiveTopology, bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor, buffer: GPUVertexBufferLayout)
   +asyncInit(): void
   +render(renderpass: GPURenderPassEncoder): void
@@ -51,14 +51,14 @@ class Camera {
 }
 
 class BasicUVTexturedRenderBehavior {
-  +_vertexBuffer: GPUBuffer | null
-  +_indexBuffer: GPUBuffer | null
-  +_mvpUniformBuffer: GPUBuffer | null
-  +_indexData: Uint16Array
-  +_spriteTexture: GPUTexture | null
-  +_bindGroup: GPUBindGroup | null
-  +_spriteImageUrl: RequestInfo | URL
-  +_vertexData: Float32Array
+  #_vertexBuffer: GPUBuffer | null
+  #_indexBuffer: GPUBuffer | null
+  #_mvpUniformBuffer: GPUBuffer | null
+  #_indexData: Uint16Array
+  #_spriteTexture: GPUTexture | null
+  #_bindGroup: GPUBindGroup | null
+  #_spriteImageUrl: RequestInfo | URL
+  #_vertexData: Float32Array
   +constructor(renderEngine: RenderGameEngineComponent, spriteImageUrl: RequestInfo | URL, vertexData: Float32Array, indexData: Uint16Array, vertexWGSLShader: string, fragmentWGSLShader: string)
   +asyncInit(): Promise<void>
   +render(renderpass: GPURenderPassEncoder): void
