@@ -1,7 +1,7 @@
 import { Mock, vi } from "vitest";
 
 export class InputUtility {
-  static mockDocumentEventListeners(): void {
+  public static mockDocumentEventListeners(): void {
     // Mock global document with event listeners
     global.document = {
       addEventListener: vi.fn(),
@@ -60,7 +60,7 @@ export class InputUtility {
    * Simulates a left mouse button press down event.
    * Calls the "mousedown" event listener with button 0 (left button).
    */
-  static triggerMouseLeftClickDown(): void {
+  public static triggerMouseLeftClickDown(): void {
     this.triggerMouseEvent("mousedown", 0);
   }
 
@@ -68,7 +68,7 @@ export class InputUtility {
    * Simulates a left mouse button release event.
    * Calls the "mouseup" event listener with button 0 (left button).
    */
-  static triggerMouseLeftClickUp(): void {
+  public static triggerMouseLeftClickUp(): void {
     this.triggerMouseEvent("mouseup", 0);
   }
 
@@ -76,7 +76,7 @@ export class InputUtility {
    * Simulates a right mouse button press down event.
    * Calls the "mousedown" event listener with button 2 (right button).
    */
-  static triggerMouseRightClickDown(): void {
+  public static triggerMouseRightClickDown(): void {
     this.triggerMouseEvent("mousedown", 2);
   }
 
@@ -84,7 +84,7 @@ export class InputUtility {
    * Simulates a right mouse button release event.
    * Calls the "mouseup" event listener with button 2 (right button).
    */
-  static triggerMouseRightClickUp(): void {
+  public static triggerMouseRightClickUp(): void {
     this.triggerMouseEvent("mouseup", 2);
   }
 
@@ -96,7 +96,7 @@ export class InputUtility {
    * @param {number} [clientX=100] - The X coordinate of the mouse movement.
    * @param {number} [clientY=200] - The Y coordinate of the mouse movement.
    */
-  static triggerMouseMovement(
+  public static triggerMouseMovement(
     clientX: number = 100,
     clientY: number = 200,
   ): void {
@@ -110,7 +110,7 @@ export class InputUtility {
    *
    * @param {number} [scrollTopValue=500] - The scrollTop value of the scroll event.
    */
-  static triggerMouseScroll(scrollTopValue: number = 500): void {
+  public static triggerMouseScroll(scrollTopValue: number = 500): void {
     this.triggerScrollEvent(scrollTopValue);
   }
 
@@ -121,7 +121,7 @@ export class InputUtility {
    *
    * @param {string} [key="w"] - The key value of the keydown event.
    */
-  static triggerKeyboardKeyDown(key: string = "w"): void {
+  public static triggerKeyboardKeyDown(key: string = "w"): void {
     this.triggerKeyboardEvent("keydown", key);
   }
 
@@ -132,7 +132,7 @@ export class InputUtility {
    *
    * @param {string} [key="w"] - The key value of the keyup event.
    */
-  static triggerKeyboardKeyUp(key: string = "w"): void {
+  public static triggerKeyboardKeyUp(key: string = "w"): void {
     this.triggerKeyboardEvent("keyup", key);
   }
 }
