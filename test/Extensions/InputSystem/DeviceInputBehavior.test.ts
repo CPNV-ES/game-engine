@@ -1,52 +1,10 @@
-import { DeviceInputBehavior } from "../../../src/Extensions/InputSystem/DeviceInputBehavior";
 import { Mouse } from "../../../src/Extensions/InputSystem/Mouse";
-import {
-  describe,
-  it,
-  expect,
-  vi,
-  Mock,
-  beforeAll,
-  afterAll,
-  beforeEach,
-} from "vitest";
+import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
 import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
 import { InputGameEngineComponent } from "../../../src/Extensions/InputSystem/InputGameEngineComponent";
 import { InputUtility } from "./InputUtility";
 import { Keyboard } from "../../../src/Extensions/InputSystem/Keyboard";
-
-export class MockDeviceInputBehavior extends DeviceInputBehavior {
-  public functionCalled: string = "";
-  public countCalledFunction: number = 0;
-
-  override onAnyChange(): void {
-    this.countCalledFunction++;
-  }
-  override onMouseLeftClickUp(): void {
-    this.functionCalled = "onMouseLeftClickUp";
-  }
-  override onMouseLeftClickDown(): void {
-    this.functionCalled = "onMouseLeftClickDown";
-  }
-  override onMouseRightClickUp(): void {
-    this.functionCalled = "onMouseRightClickUp";
-  }
-  override onMouseRightClickDown(): void {
-    this.functionCalled = "onMouseRightClickDown";
-  }
-  override onMouseMove(): void {
-    this.functionCalled = "onMouseMove";
-  }
-  override onMouseScroll(): void {
-    this.functionCalled = "onMouseScroll";
-  }
-  override onKeyboardKeyDown(): void {
-    this.functionCalled = "onKeyboardKeyDown";
-  }
-  override onKeyboardKeyUp(): void {
-    this.functionCalled = "onKeyboardKeyUp";
-  }
-}
+import { MockDeviceInputBehavior } from "./Mocks/MockDeviceInputBehavior";
 
 describe("DeviceInputBehavior", (): void => {
   let mouse: Mouse;
