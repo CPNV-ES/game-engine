@@ -30,130 +30,111 @@ describe("DeviceInputBehavior", (): void => {
     deviceInputBehavior = new MockDeviceInputBehavior();
   });
 
-  it("should change the value of function called to onMouseLeftClickUp", (): void => {
+  it("should change the value of last function called to onMouseLeftClickUp", (): void => {
     // Given
     deviceInputBehavior.onEnable();
 
     // When
-    vi.spyOn(mouse.onLeftClickUp, "emit");
     InputUtility.triggerMouseLeftClickUp();
 
     // Then
-    expect(mouse.onLeftClickUp.emit).toHaveBeenCalled();
-
-    // log the functions called
-    expect(deviceInputBehavior.functionCalled).toBe("onMouseLeftClickUp");
+    expect(deviceInputBehavior.countAnyChangeCalls).toBe(1);
+    expect(deviceInputBehavior.LastFunctionCalled).toBe("onMouseLeftClickUp");
   });
 
-  it("should change the value of function called to onMouseLeftClickDown", (): void => {
+  it("should change the value of last function called to onMouseLeftClickDown", (): void => {
     // Given
     deviceInputBehavior.onEnable();
 
     // When
-    vi.spyOn(mouse.onLeftClickDown, "emit");
     InputUtility.triggerMouseLeftClickDown();
 
     // Then
-    expect(mouse.onLeftClickDown.emit).toHaveBeenCalled();
-
-    // log the functions called
-    expect(deviceInputBehavior.functionCalled).toBe("onMouseLeftClickDown");
+    expect(deviceInputBehavior.countAnyChangeCalls).toBe(1);
+    expect(deviceInputBehavior.LastFunctionCalled).toBe("onMouseLeftClickDown");
   });
 
-  it("should change the value of function called to onMouseRightClickUp", (): void => {
+  it("should change the value of last function called to onMouseRightClickUp", (): void => {
     // Given
     deviceInputBehavior.onEnable();
 
     // When
-    vi.spyOn(mouse.onRightClickUp, "emit");
     InputUtility.triggerMouseRightClickUp();
 
     // Then
-    expect(mouse.onRightClickUp.emit).toHaveBeenCalled();
-
-    // log the functions called
-    expect(deviceInputBehavior.functionCalled).toBe("onMouseRightClickUp");
+    expect(deviceInputBehavior.countAnyChangeCalls).toBe(1);
+    expect(deviceInputBehavior.LastFunctionCalled).toBe("onMouseRightClickUp");
   });
 
-  it("should change the value of function called to onMouseRightClickDown", (): void => {
+  it("should change the value of last function called to onMouseRightClickDown", (): void => {
     // Given
     deviceInputBehavior.onEnable();
 
     // When
-    vi.spyOn(mouse.onRightClickDown, "emit");
     InputUtility.triggerMouseRightClickDown();
 
     // Then
-    expect(mouse.onRightClickDown.emit).toHaveBeenCalled();
-
-    // log the functions called
-    expect(deviceInputBehavior.functionCalled).toBe("onMouseRightClickDown");
+    expect(deviceInputBehavior.countAnyChangeCalls).toBe(1);
+    expect(deviceInputBehavior.LastFunctionCalled).toBe(
+      "onMouseRightClickDown",
+    );
   });
 
-  it("should change the value of function called to onMouseMove", (): void => {
+  it("should change the value of last function called to onMouseMove", (): void => {
     // Given
     deviceInputBehavior.onEnable();
 
     // When
-    vi.spyOn(mouse.onMove, "emit");
     InputUtility.triggerMouseMovement();
 
     // Then
-    expect(mouse.onMove.emit).toHaveBeenCalled();
-
-    // log the functions called
-    expect(deviceInputBehavior.functionCalled).toBe("onMouseMove");
+    expect(deviceInputBehavior.countAnyChangeCalls).toBe(1);
+    expect(deviceInputBehavior.LastFunctionCalled).toBe("onMouseMove");
   });
 
-  it("should change the value of function called to onMouseScroll", (): void => {
+  it("should change the value of last function called to onMouseScroll", (): void => {
     // Given
     deviceInputBehavior.onEnable();
 
     // When
-    vi.spyOn(mouse.onScroll, "emit");
     InputUtility.triggerMouseScroll();
 
     // Then
-    expect(mouse.onScroll.emit).toHaveBeenCalled();
-    expect(deviceInputBehavior.functionCalled).toBe("onMouseScroll");
+    expect(deviceInputBehavior.countAnyChangeCalls).toBe(1);
+    expect(deviceInputBehavior.LastFunctionCalled).toBe("onMouseScroll");
   });
 
-  it("should change the value of function called to onKeyboardKeyDown", (): void => {
+  it("should change the value of last function called to onKeyboardKeyDown", (): void => {
     // Given
     deviceInputBehavior.onEnable();
 
     // When
-    vi.spyOn(keyboard.onKeyDown, "emit");
     InputUtility.triggerKeyboardKeyDown();
 
     // Then
-    expect(mouse.onScroll.emit).toHaveBeenCalled();
-
-    // log the functions called
-    expect(deviceInputBehavior.functionCalled).toBe("onKeyboardKeyDown");
+    expect(deviceInputBehavior.countAnyChangeCalls).toBe(1);
+    expect(deviceInputBehavior.LastFunctionCalled).toBe("onKeyboardKeyDown");
   });
 
-  it("should add value to countCalledFunction", (): void => {
+  it("should add value to countAnyChangeCalls", (): void => {
     // Given
     deviceInputBehavior.onEnable();
     // When
-    vi.spyOn(mouse.onAnyChange, "emit");
     InputUtility.triggerMouseRightClickDown();
 
     // Then
-    expect(mouse.onAnyChange.emit).toHaveBeenCalled();
-    expect(deviceInputBehavior.countCalledFunction).toBe(1);
+    expect(deviceInputBehavior.countAnyChangeCalls).toBe(1);
+    expect(deviceInputBehavior.countAnyChangeCalls).toBe(1);
   });
 
-  it("should not add value to countCalledFunction when it's disabled", (): void => {
+  it("should not add value to countAnyChangeCalls when it's disabled", (): void => {
     // Given
     deviceInputBehavior.onEnable();
     // When
     deviceInputBehavior.onDisable();
-    vi.spyOn(mouse.onAnyChange, "emit");
     InputUtility.triggerMouseRightClickDown();
 
     // Then
-    expect(deviceInputBehavior.countCalledFunction).toBe(0);
+    expect(deviceInputBehavior.countAnyChangeCalls).toBe(0);
   });
 });

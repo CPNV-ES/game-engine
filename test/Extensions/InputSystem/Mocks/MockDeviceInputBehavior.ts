@@ -1,34 +1,34 @@
 import { DeviceInputBehavior } from "../../../../src/Extensions/InputSystem/DeviceInputBehavior";
 
 export class MockDeviceInputBehavior extends DeviceInputBehavior {
-  public functionCalled: string = "";
-  public countCalledFunction: number = 0;
+  public LastFunctionCalled: string = "";
+  public countAnyChangeCalls: number = 0;
 
   override onAnyChange(): void {
-    this.countCalledFunction++;
+    this.countAnyChangeCalls++;
   }
   override onMouseLeftClickUp(): void {
-    this.functionCalled = "onMouseLeftClickUp";
+    this.LastFunctionCalled = "onMouseLeftClickUp";
   }
   override onMouseLeftClickDown(): void {
-    this.functionCalled = "onMouseLeftClickDown";
+    this.LastFunctionCalled = "onMouseLeftClickDown";
   }
   override onMouseRightClickUp(): void {
-    this.functionCalled = "onMouseRightClickUp";
+    this.LastFunctionCalled = "onMouseRightClickUp";
   }
   override onMouseRightClickDown(): void {
-    this.functionCalled = "onMouseRightClickDown";
+    this.LastFunctionCalled = "onMouseRightClickDown";
   }
   override onMouseMove(): void {
-    this.functionCalled = "onMouseMove";
+    this.LastFunctionCalled = "onMouseMove";
   }
   override onMouseScroll(): void {
-    this.functionCalled = "onMouseScroll";
+    this.LastFunctionCalled = "onMouseScroll";
   }
   override onKeyboardKeyDown(): void {
-    this.functionCalled = "onKeyboardKeyDown";
+    this.LastFunctionCalled = "onKeyboardKeyDown";
   }
   override onKeyboardKeyUp(): void {
-    this.functionCalled = "onKeyboardKeyUp";
+    this.LastFunctionCalled = "onKeyboardKeyUp";
   }
 }
