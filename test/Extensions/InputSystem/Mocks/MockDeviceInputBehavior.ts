@@ -1,5 +1,11 @@
 import { DeviceInputBehavior } from "../../../../src/Extensions/InputSystem/DeviceInputBehavior";
 
+/**
+ * MockDeviceInputBehavior is a mock class for DeviceInputBehavior.
+ * It is used to test the DeviceInputBehavior class.
+ * It counts calls to onAnyChange and sets LastFunctionCalled to the last function called (excluding OnAnyChange).
+ * [Not for production use.]
+ */
 export class MockDeviceInputBehavior extends DeviceInputBehavior {
   public LastFunctionCalled: string = "";
   public countAnyChangeCalls: number = 0;
