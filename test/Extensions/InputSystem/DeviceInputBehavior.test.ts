@@ -5,6 +5,7 @@ import { InputGameEngineComponent } from "../../../src/Extensions/InputSystem/In
 import { InputUtility } from "./InputUtility";
 import { Keyboard } from "../../../src/Extensions/InputSystem/Keyboard";
 import { MockDeviceInputBehavior } from "./Mocks/MockDeviceInputBehavior";
+import { GameObject } from "../../../src/Core/GameObject";
 
 describe("DeviceInputBehavior", (): void => {
   let mouse: Mouse;
@@ -32,7 +33,8 @@ describe("DeviceInputBehavior", (): void => {
 
   it("should change the value of last function called to onMouseLeftClickUp", (): void => {
     // Given
-    deviceInputBehavior.onEnable();
+    const gameObject = new GameObject();
+    gameObject.addBehavior(deviceInputBehavior);
 
     // When
     InputUtility.triggerMouseLeftClickUp();
@@ -44,7 +46,8 @@ describe("DeviceInputBehavior", (): void => {
 
   it("should change the value of last function called to onMouseLeftClickDown", (): void => {
     // Given
-    deviceInputBehavior.onEnable();
+    const gameObject = new GameObject();
+    gameObject.addBehavior(deviceInputBehavior);
 
     // When
     InputUtility.triggerMouseLeftClickDown();
@@ -56,7 +59,8 @@ describe("DeviceInputBehavior", (): void => {
 
   it("should change the value of last function called to onMouseRightClickUp", (): void => {
     // Given
-    deviceInputBehavior.onEnable();
+    const gameObject = new GameObject();
+    gameObject.addBehavior(deviceInputBehavior);
 
     // When
     InputUtility.triggerMouseRightClickUp();
@@ -68,7 +72,8 @@ describe("DeviceInputBehavior", (): void => {
 
   it("should change the value of last function called to onMouseRightClickDown", (): void => {
     // Given
-    deviceInputBehavior.onEnable();
+    const gameObject = new GameObject();
+    gameObject.addBehavior(deviceInputBehavior);
 
     // When
     InputUtility.triggerMouseRightClickDown();
@@ -82,7 +87,8 @@ describe("DeviceInputBehavior", (): void => {
 
   it("should change the value of last function called to onMouseMove", (): void => {
     // Given
-    deviceInputBehavior.onEnable();
+    const gameObject = new GameObject();
+    gameObject.addBehavior(deviceInputBehavior);
 
     // When
     InputUtility.triggerMouseMovement();
@@ -94,7 +100,8 @@ describe("DeviceInputBehavior", (): void => {
 
   it("should change the value of last function called to onMouseScroll", (): void => {
     // Given
-    deviceInputBehavior.onEnable();
+    const gameObject = new GameObject();
+    gameObject.addBehavior(deviceInputBehavior);
 
     // When
     InputUtility.triggerMouseScroll();
@@ -106,7 +113,8 @@ describe("DeviceInputBehavior", (): void => {
 
   it("should change the value of last function called to onKeyboardKeyDown", (): void => {
     // Given
-    deviceInputBehavior.onEnable();
+    const gameObject = new GameObject();
+    gameObject.addBehavior(deviceInputBehavior);
 
     // When
     InputUtility.triggerKeyboardKeyDown();
@@ -118,7 +126,9 @@ describe("DeviceInputBehavior", (): void => {
 
   it("should add value to countAnyChangeCalls", (): void => {
     // Given
-    deviceInputBehavior.onEnable();
+    const gameObject = new GameObject();
+    gameObject.addBehavior(deviceInputBehavior);
+
     // When
     InputUtility.triggerMouseRightClickDown();
 
@@ -129,9 +139,11 @@ describe("DeviceInputBehavior", (): void => {
 
   it("should not add value to countAnyChangeCalls when it's disabled", (): void => {
     // Given
-    deviceInputBehavior.onEnable();
+    const gameObject = new GameObject();
+    gameObject.addBehavior(deviceInputBehavior);
+
     // When
-    deviceInputBehavior.onDisable();
+    gameObject.removeBehavior(deviceInputBehavior);
     InputUtility.triggerMouseRightClickDown();
 
     // Then
