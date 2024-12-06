@@ -1,5 +1,5 @@
 import { Mouse } from "../../../src/Extensions/InputSystem/Mouse";
-import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach } from "vitest";
 import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
 import { InputGameEngineComponent } from "../../../src/Extensions/InputSystem/InputGameEngineComponent";
 import { InputUtility } from "./InputUtility";
