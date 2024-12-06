@@ -12,7 +12,9 @@ export class InputGameEngineComponent extends GameEngineComponent {
   /**
    * Gets a device of a specified class inheriting Device.
    */
-  public getDevice<T extends Device>(deviceClass: new () => T): T | null {
+  public getDevice<T extends Device>(
+    deviceClass: abstract new () => T,
+  ): T | null {
     return (this._devices.find((device) => device instanceof deviceClass) ||
       null) as T;
   }
