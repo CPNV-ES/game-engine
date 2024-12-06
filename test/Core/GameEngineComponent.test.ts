@@ -1,17 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { GameEngineComponent } from "../../src/Core/GameEngineComponent";
 import { GameEngineWindow } from "../../src/Core/GameEngineWindow";
-
-export class MockGameEngineComponent extends GameEngineComponent {
-  public attachedTo: GameEngineWindow | null = null;
-  public count: number = 0;
-
-  onAttachedTo(gameEngine: GameEngineWindow): void {
-    super.onAttachedTo(gameEngine);
-    this.attachedTo = gameEngine;
-    this.count++;
-  }
-}
+import { MockGameEngineComponent } from "./Mocks/MockGameEngineComponent";
 
 describe("GameEngineComponent", (): void => {
   it("should attach on addGameComponent", (): void => {
