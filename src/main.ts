@@ -1,3 +1,6 @@
-//import { setup } from "./render-test.ts";
+import { GameEngineWindow } from "./Core/GameEngineWindow.ts";
 
-//await setup();
+const canvas: HTMLCanvasElement =
+  document.querySelector<HTMLCanvasElement>("#app")!;
+
+const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
