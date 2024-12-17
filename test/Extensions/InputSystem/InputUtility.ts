@@ -1,5 +1,9 @@
 import { Mock, vi } from "vitest";
 
+/**
+ * Utility class for simulating input events in tests.
+ * Provides methods for triggering mouse and keyboard events.
+ */
 export class InputUtility {
   public static mockDocumentEventListeners(): void {
     // Mock global document with event listeners
