@@ -10,7 +10,7 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   tickInterval: ReturnType<typeof setInterval>;
 
   public onAttachedTo(_gameEngine: GameEngineWindow): void {
-    this.rootObject = GameEngineWindow.instance.root;
+    this.rootObject = _gameEngine.root;
     this.tick();
     this.tickInterval = setInterval(() => this.tick(), 100);
   }

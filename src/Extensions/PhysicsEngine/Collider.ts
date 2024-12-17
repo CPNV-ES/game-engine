@@ -7,7 +7,10 @@ export class Collider extends PhysicsBehavior<Collider[]> {
   }
 
   public collide(collidedColliders: Collider[]): void {
-    if (collidedColliders != this.data) {
+    if (
+      collidedColliders.length !== this.data.length ||
+      !collidedColliders.every((value, index) => value === this.data[index])
+    ) {
       this.data = collidedColliders;
       this.notifyDataChanged();
     }
