@@ -85,7 +85,6 @@ describe("PhysicsGameEngineComponent", (): void => {
 
     let collisionsTriggered = 0;
     const observer = (data) => {
-      console.log("Observer invoked with data:", data); // Debugging
       collisionsTriggered++;
     };
 
