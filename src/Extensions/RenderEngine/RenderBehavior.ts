@@ -1,5 +1,7 @@
 import { OutputBehavior } from "../../Core/OutputBehavior.ts";
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
+import { RenderEngineUtiliy } from "./RenderEngineUtiliy.ts";
+import { Camera } from "./Camera.ts";
 
 /**
  * An object that can be rendered to the WebGPU screen.
@@ -9,6 +11,7 @@ export abstract class RenderBehavior extends OutputBehavior {
   protected _renderEngine: RenderGameEngineComponent;
   protected _pipeline: GPURenderPipeline | null = null;
   protected _bindGroupLayout: GPUBindGroupLayout | null = null;
+  protected _mvpUniformBuffer: GPUBuffer | null = null;
 
   private _vertexWGSLShader: string;
   private _fragmentWGSLShader: string;
@@ -73,11 +76,23 @@ export abstract class RenderBehavior extends OutputBehavior {
       this._buffers,
       this._targetBlend,
     );
+    this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
+      RenderEngineUtiliy.toModelMatrix(this.transform),
+    );
   }
 
   /**
-   * Render the object to the screen.
+   * Render the object to the screen. Pipeline and MVP uniform are set by RenderEngine.
    * @param renderpass The render pass to render to
    */
-  public abstract render(renderpass: GPURenderPassEncoder): void;
+  public render(renderpass: GPURenderPassEncoder) {
+    const camera: Camera | null = this._renderEngine.camera;
+    if (!camera || !this._pipeline || !this._mvpUniformBuffer) return;
+    this._renderEngine.fillUniformBuffer(
+      this._mvpUniformBuffer,
+      camera.getMVPMatrix(RenderEngineUtiliy.toModelMatrix(this.transform)),
+    );
+
+    renderpass.setPipeline(this._pipeline);
+  }
 }
