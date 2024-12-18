@@ -3,16 +3,17 @@ import { Collider } from "./Collider";
 import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
 import { GameObject } from "../../Core/GameObject.ts";
 import { BoundingBoxCollider } from "./BoundingBoxCollider.ts";
-import { CollisionsHandler } from "./CollisionsHandler.ts";
+import { SatCollisionHandler } from "./CollisionHandlers/SatCollisionHandler.ts";
 
 export class PhysicsGameEngineComponent extends GameEngineComponent {
   rootObject: GameObject;
   tickInterval: ReturnType<typeof setInterval>;
+  satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
 
   public onAttachedTo(_gameEngine: GameEngineWindow): void {
     this.rootObject = _gameEngine.root;
-    this.tick();
     this.tickInterval = setInterval(() => this.tick(), 100);
+    this.tick();
   }
 
   /**
@@ -39,7 +40,7 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
       (collidingColliders: Collider[], otherCollider: BoundingBoxCollider) => {
         if (
           otherCollider !== collider &&
-          CollisionsHandler.isSATColliding(collider, otherCollider)
+          this.satCollisionHandler.areColliding(collider, otherCollider)
         ) {
           collidingColliders.push(otherCollider);
         }

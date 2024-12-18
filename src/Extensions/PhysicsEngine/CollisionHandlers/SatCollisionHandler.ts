@@ -1,11 +1,12 @@
-import { BoundingBoxCollider } from "./BoundingBoxCollider.ts";
-import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
+import { BoundingBoxCollider } from "../BoundingBoxCollider.ts";
+import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
+import { CollisionHandler } from "./CollisionHandler.ts";
 
-export class CollisionsHandler {
+export class SatCollisionHandler implements CollisionHandler {
   /**
    * Helper function to calculate projection of vertices onto an axis
    */
-  private static projectVertices(
+  private projectVertices(
     vertices: Vector2[],
     axis: Vector2,
   ): { min: number; max: number } {
@@ -23,7 +24,7 @@ export class CollisionsHandler {
   /**
    * Helper function to get the axes of a polygon (perpendicular vectors to the edges of the polygon)
    */
-  private static getSATAxes(vertices: Vector2[]): Vector2[] {
+  private getSATAxes(vertices: Vector2[]): Vector2[] {
     return vertices.reduce((axes: Vector2[], vertex: Vector2, i: number) => {
       const edge: Vector2 = vertices[(i + 1) % vertices.length]
         .clone()
@@ -38,10 +39,7 @@ export class CollisionsHandler {
    * @param a
    * @param b
    */
-  public static isSATColliding(
-    a: BoundingBoxCollider,
-    b: BoundingBoxCollider,
-  ): boolean {
+  public areColliding(a: BoundingBoxCollider, b: BoundingBoxCollider): boolean {
     // Get transformed vertices
     const verticesA: Vector2[] = a.getVerticesWithTransform();
     const verticesB: Vector2[] = b.getVerticesWithTransform();
