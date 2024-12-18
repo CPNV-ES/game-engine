@@ -58,7 +58,7 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
         topology: "triangle-list",
         cullMode: "back",
       },
-      descriptor,
+      [descriptor],
       [buffer],
     );
 
@@ -83,12 +83,12 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
 
     //Create the bind group for shaders
     this._bindGroup = this._renderEngine.createBindGroup(
-      this._bindGroupLayout!,
+      this._bindGroupLayouts![0],
       [
         {
           binding: 0,
           resource: {
-            buffer: this._mvpUniformBuffer,
+            buffer: this._mvpUniformBuffer!,
           },
         },
         { binding: 1, resource: this._spriteTexture.createView() },

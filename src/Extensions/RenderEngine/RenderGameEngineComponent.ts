@@ -92,7 +92,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
     primitiveState: GPUPrimitiveState,
-    bindGroupLayout: GPUBindGroupLayout,
+    bindGroupLayouts: Iterable<GPUBindGroupLayout | null>,
     buffers?: Iterable<GPUVertexBufferLayout | null> | undefined,
     targetBlend?: GPUBlendState | undefined,
   ): GPURenderPipeline {
@@ -102,7 +102,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
 
     return this._device!.createRenderPipeline({
       layout: this._device!.createPipelineLayout({
-        bindGroupLayouts: [bindGroupLayout],
+        bindGroupLayouts: bindGroupLayouts,
       }),
       vertex: {
         module: this._device!.createShaderModule({
@@ -293,7 +293,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     }
   }
 
-  private frame(deltaTime: number) {
+  private frame(_deltaTime: number) {
     if (!this._device || !this._context || !this._presentationTextureFormat)
       throw new Error(
         "Device, context, or presentation texture format not available",

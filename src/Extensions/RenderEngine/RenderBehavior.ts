@@ -10,13 +10,13 @@ import { Camera } from "./Camera.ts";
 export abstract class RenderBehavior extends OutputBehavior {
   protected _renderEngine: RenderGameEngineComponent;
   protected _pipeline: GPURenderPipeline | null = null;
-  protected _bindGroupLayout: GPUBindGroupLayout | null = null;
+  protected _bindGroupLayouts: GPUBindGroupLayout[] | null = null;
   protected _mvpUniformBuffer: GPUBuffer | null = null;
 
   private _vertexWGSLShader: string;
   private _fragmentWGSLShader: string;
   private _primitiveState: GPUPrimitiveState;
-  private _bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor;
+  private _bindGroupLayoutDescriptors: GPUBindGroupLayoutDescriptor[];
   private _buffers: Iterable<GPUVertexBufferLayout | null> | undefined;
   private _targetBlend: GPUBlendState | undefined;
 
@@ -26,7 +26,7 @@ export abstract class RenderBehavior extends OutputBehavior {
    * @param vertexWGSLShader The vertex shader in WGSL (source code in string)
    * @param fragmentWGSLShader The fragment shader in WGSL (source code in string)
    * @param primitiveState The type of primitive to be constructed from the vertex inputs (topology, strip index, cull mode).
-   * @param bindGroupLayoutDescriptor The descriptor of the layout for the bind group
+   * @param bindGroupLayoutDescriptors The descriptor of the layout for the bind group
    * @param buffers The layout of the vertex buffer transmitted to the vertex shader or undefined if no buffer is needed
    * @param targetBlend The blend state to use for the pipeline
    */
@@ -35,7 +35,7 @@ export abstract class RenderBehavior extends OutputBehavior {
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
     primitiveState: GPUPrimitiveState,
-    bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor,
+    bindGroupLayoutDescriptors: GPUBindGroupLayoutDescriptor[],
     buffers?: Iterable<GPUVertexBufferLayout | null> | undefined,
     targetBlend?: GPUBlendState | undefined,
   ) {
@@ -47,7 +47,7 @@ export abstract class RenderBehavior extends OutputBehavior {
     this._vertexWGSLShader = vertexWGSLShader;
     this._fragmentWGSLShader = fragmentWGSLShader;
     this._primitiveState = primitiveState;
-    this._bindGroupLayoutDescriptor = bindGroupLayoutDescriptor;
+    this._bindGroupLayoutDescriptors = bindGroupLayoutDescriptors;
     this._buffers = buffers;
     this._targetBlend = targetBlend;
 
@@ -65,14 +65,14 @@ export abstract class RenderBehavior extends OutputBehavior {
    * @protected
    */
   protected async asyncInit() {
-    this._bindGroupLayout = this._renderEngine.createBindGroupLayout(
-      this._bindGroupLayoutDescriptor,
+    this._bindGroupLayouts = this._bindGroupLayoutDescriptors.map(
+      (descriptor) => this._renderEngine.createBindGroupLayout(descriptor),
     );
     this._pipeline = this._renderEngine.createPipeline(
       this._vertexWGSLShader,
       this._fragmentWGSLShader,
       this._primitiveState,
-      this._bindGroupLayout,
+      this._bindGroupLayouts,
       this._buffers,
       this._targetBlend,
     );
