@@ -89,9 +89,7 @@ export class Vector2 {
   /**
    * Normalize the vector
    */
-  public;
-
-  normalize(): Vector2 {
+  public normalize(): Vector2 {
     let length = this.length;
 
     this.x /= length;
