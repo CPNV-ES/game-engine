@@ -66,7 +66,7 @@ export abstract class RenderBehavior extends OutputBehavior {
       this._fragmentWGSLShader,
       this._primitiveState,
       this._bindGroupLayout,
-      this._bufferLayout,
+      [this._bufferLayout],
     );
   }
 

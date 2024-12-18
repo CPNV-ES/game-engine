@@ -93,7 +93,8 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     fragmentWGSLShader: string,
     primitiveState: GPUPrimitiveState,
     bindGroupLayout: GPUBindGroupLayout,
-    buffer: GPUVertexBufferLayout,
+    buffers?: Iterable<GPUVertexBufferLayout | null> | undefined,
+    targetBlend?: GPUBlendState | undefined = undefined,
   ): GPURenderPipeline {
     if (!this.IsRenderingReady) {
       throw new Error("Rendering is not ready yet! (Device not available)");
@@ -108,7 +109,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
           code: vertexWGSLShader,
         }),
         entryPoint: "main",
-        buffers: [buffer],
+        buffers: buffers,
       },
       fragment: {
         module: this._device!.createShaderModule({
@@ -118,6 +119,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
         targets: [
           {
             format: this._presentationTextureFormat!,
+            blend: targetBlend,
           },
         ],
       },
