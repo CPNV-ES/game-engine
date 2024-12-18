@@ -60,7 +60,7 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
         cullMode: "back",
       },
       descriptor,
-      buffer,
+      [buffer],
     );
 
     this._spriteImageUrl = spriteImageUrl;

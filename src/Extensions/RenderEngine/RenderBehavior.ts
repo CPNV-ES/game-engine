@@ -14,7 +14,8 @@ export abstract class RenderBehavior extends OutputBehavior {
   private _fragmentWGSLShader: string;
   private _primitiveState: GPUPrimitiveState;
   private _bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor;
-  private _bufferLayout: GPUVertexBufferLayout;
+  private _buffers: Iterable<GPUVertexBufferLayout | null> | undefined;
+  private _targetBlend: GPUBlendState | undefined;
 
   /**
    * Create a new RenderBehavior (auto init, create pipeline and render).
@@ -23,7 +24,8 @@ export abstract class RenderBehavior extends OutputBehavior {
    * @param fragmentWGSLShader The fragment shader in WGSL (source code in string)
    * @param primitiveState The type of primitive to be constructed from the vertex inputs (topology, strip index, cull mode).
    * @param bindGroupLayoutDescriptor The descriptor of the layout for the bind group
-   * @param buffer The layout of the vertex buffer transmitted to the vertex shader
+   * @param buffers The layout of the vertex buffer transmitted to the vertex shader or undefined if no buffer is needed
+   * @param targetBlend The blend state to use for the pipeline
    */
   public constructor(
     renderEngine: RenderGameEngineComponent,
@@ -31,7 +33,8 @@ export abstract class RenderBehavior extends OutputBehavior {
     fragmentWGSLShader: string,
     primitiveState: GPUPrimitiveState,
     bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor,
-    buffer: GPUVertexBufferLayout,
+    buffers?: Iterable<GPUVertexBufferLayout | null> | undefined,
+    targetBlend?: GPUBlendState | undefined,
   ) {
     super();
     if (!renderEngine) {
@@ -42,7 +45,8 @@ export abstract class RenderBehavior extends OutputBehavior {
     this._fragmentWGSLShader = fragmentWGSLShader;
     this._primitiveState = primitiveState;
     this._bindGroupLayoutDescriptor = bindGroupLayoutDescriptor;
-    this._bufferLayout = buffer;
+    this._buffers = buffers;
+    this._targetBlend = targetBlend;
 
     if (renderEngine.IsRenderingReady) {
       this.asyncInit();
@@ -66,7 +70,8 @@ export abstract class RenderBehavior extends OutputBehavior {
       this._fragmentWGSLShader,
       this._primitiveState,
       this._bindGroupLayout,
-      [this._bufferLayout],
+      this._buffers,
+      this._targetBlend,
     );
   }
 

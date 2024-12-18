@@ -94,7 +94,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     primitiveState: GPUPrimitiveState,
     bindGroupLayout: GPUBindGroupLayout,
     buffers?: Iterable<GPUVertexBufferLayout | null> | undefined,
-    targetBlend?: GPUBlendState | undefined = undefined,
+    targetBlend?: GPUBlendState | undefined,
   ): GPURenderPipeline {
     if (!this.IsRenderingReady) {
       throw new Error("Rendering is not ready yet! (Device not available)");
