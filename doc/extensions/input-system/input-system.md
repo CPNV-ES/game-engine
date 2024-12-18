@@ -127,8 +127,10 @@ mouse.onMove.addObserver((event) => {
 });
 
 // Handle scrolling
-mouse.onScroll.addObserver((scrollDistance) => {
-    console.log(`Scrolled by ${scrollDistance} units`);
+let lastScrollTop = 0;
+mouse.onScroll.addObserver((scrollTop) => {
+    lastScrollTop = scrollTop;
+    console.log(`Mouse scrolled by ${scrollTop - lastScrollTop}`);
 });
 ```
 
