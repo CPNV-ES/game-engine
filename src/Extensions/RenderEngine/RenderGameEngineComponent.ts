@@ -45,6 +45,9 @@ export class RenderGameEngineComponent extends GameEngineComponent {
   private _gpu: GPU;
   private _context: GPUCanvasContext | undefined;
   private _presentationTextureFormat: GPUTextureFormat | undefined;
+  private _depthTextureFormat: GPUTextureFormat | undefined;
+  private _depthTexture: GPUTexture | null = null;
+  private _depthTextureView: GPUTextureView | null = null;
   private _device: GPUDevice | undefined;
   private _isRenderingReady: boolean = false;
 
@@ -121,6 +124,11 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       primitive: {
         topology: topology,
         cullMode: "back",
+      },
+      depthStencil: {
+        depthWriteEnabled: false,
+        depthCompare: "less",
+        format: this._depthTextureFormat!,
       },
     });
   }
@@ -226,10 +234,12 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       "webgpu",
     ) as GPUCanvasContext;
     this._presentationTextureFormat = this._gpu.getPreferredCanvasFormat();
+    this._depthTextureFormat = "depth24plus";
     this._context.configure({
       device,
       format: this._presentationTextureFormat,
     });
+    this.createDepthTexture();
     this.startRendering();
   }
 
@@ -256,12 +266,28 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     };
   }
 
+  private createDepthTexture() {
+    const [width, height] = [
+      this._canvasToDrawOn.width,
+      this._canvasToDrawOn.height,
+    ];
+    this._depthTexture = this._device!.createTexture({
+      size: [width, height, 1],
+      format: this._depthTextureFormat!,
+      usage: GPUTextureUsage.RENDER_ATTACHMENT,
+    });
+    this._depthTextureView = this._depthTexture.createView();
+  }
+
   private resizeCanvasToMatchDisplaySize() {
     const devicePixelRatio: number = window.devicePixelRatio;
     this._canvasToDrawOn.width =
       this._canvasToDrawOn.clientWidth * devicePixelRatio;
     this._canvasToDrawOn.height =
       this._canvasToDrawOn.clientHeight * devicePixelRatio;
+
+    this.createDepthTexture();
+
     if (this.camera) {
       this.camera.aspect =
         this._canvasToDrawOn.width / this._canvasToDrawOn.height;
@@ -287,6 +313,12 @@ export class RenderGameEngineComponent extends GameEngineComponent {
           storeOp: "store",
         },
       ],
+      depthStencilAttachment: {
+        view: this._depthTextureView!,
+        depthClearValue: 1.0, // Clear depth to the farthest value
+        depthLoadOp: "clear",
+        depthStoreOp: "store",
+      },
     };
 
     const renderPassEncoder: GPURenderPassEncoder =
