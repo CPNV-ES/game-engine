@@ -91,7 +91,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
   public createPipeline(
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
-    topology: GPUPrimitiveTopology,
+    primitiveState: GPUPrimitiveState,
     bindGroupLayout: GPUBindGroupLayout,
     buffer: GPUVertexBufferLayout,
   ): GPURenderPipeline {
@@ -121,10 +121,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
           },
         ],
       },
-      primitive: {
-        topology: topology,
-        cullMode: "back",
-      },
+      primitive: primitiveState,
       depthStencil: {
         depthWriteEnabled: false,
         depthCompare: "less",

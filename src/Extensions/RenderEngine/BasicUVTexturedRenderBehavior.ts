@@ -55,7 +55,10 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
       renderEngine,
       vertexWGSLShader,
       fragmentWGSLShader,
-      "triangle-list",
+      {
+        topology: "triangle-list",
+        cullMode: "back",
+      },
       descriptor,
       buffer,
     );

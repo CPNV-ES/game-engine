@@ -12,7 +12,7 @@ export abstract class RenderBehavior extends OutputBehavior {
 
   private _vertexWGSLShader: string;
   private _fragmentWGSLShader: string;
-  private _topology: GPUPrimitiveTopology;
+  private _primitiveState: GPUPrimitiveState;
   private _bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor;
   private _bufferLayout: GPUVertexBufferLayout;
 
@@ -21,7 +21,7 @@ export abstract class RenderBehavior extends OutputBehavior {
    * @param renderEngine The render engine to use
    * @param vertexWGSLShader The vertex shader in WGSL (source code in string)
    * @param fragmentWGSLShader The fragment shader in WGSL (source code in string)
-   * @param topology The type of primitive to be constructed from the vertex inputs.
+   * @param primitiveState The type of primitive to be constructed from the vertex inputs (topology, strip index, cull mode).
    * @param bindGroupLayoutDescriptor The descriptor of the layout for the bind group
    * @param buffer The layout of the vertex buffer transmitted to the vertex shader
    */
@@ -29,7 +29,7 @@ export abstract class RenderBehavior extends OutputBehavior {
     renderEngine: RenderGameEngineComponent,
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
-    topology: GPUPrimitiveTopology,
+    primitiveState: GPUPrimitiveState,
     bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor,
     buffer: GPUVertexBufferLayout,
   ) {
@@ -40,7 +40,7 @@ export abstract class RenderBehavior extends OutputBehavior {
     this._renderEngine = renderEngine;
     this._vertexWGSLShader = vertexWGSLShader;
     this._fragmentWGSLShader = fragmentWGSLShader;
-    this._topology = topology;
+    this._primitiveState = primitiveState;
     this._bindGroupLayoutDescriptor = bindGroupLayoutDescriptor;
     this._bufferLayout = buffer;
 
@@ -64,7 +64,7 @@ export abstract class RenderBehavior extends OutputBehavior {
     this._pipeline = this._renderEngine.createPipeline(
       this._vertexWGSLShader,
       this._fragmentWGSLShader,
-      this._topology,
+      this._primitiveState,
       this._bindGroupLayout,
       this._bufferLayout,
     );
