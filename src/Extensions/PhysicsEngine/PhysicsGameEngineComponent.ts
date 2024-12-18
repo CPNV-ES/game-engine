@@ -15,6 +15,10 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     this.tickInterval = setInterval(() => this.tick(), 100);
   }
 
+  /**
+   * Get all the colliders in the game
+   * @private
+   */
   private getAllBoundingBoxCollider(): Collider[] {
     return this.rootObject
       .getAllChildren()
@@ -23,6 +27,11 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
       }, []);
   }
 
+  /**
+   * Get all the colliders that are colliding with the given collider
+   * @param collider
+   * @private
+   */
   private getBoundingBoxColliderCollisions(
     collider: BoundingBoxCollider,
   ): Collider[] {

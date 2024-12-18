@@ -6,6 +6,10 @@ export class Collider extends PhysicsBehavior<Collider[]> {
     this.data = [];
   }
 
+  /**
+   * Trigger an event when the colliders hit another collider
+   * @param collidedColliders
+   */
   public collide(collidedColliders: Collider[]): void {
     if (
       collidedColliders.length !== this.data.length ||
