@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect } from "vitest";
 import { GameEngineComponent } from "../../src/Core/GameEngineComponent";
 import { GameEngineWindow } from "../../src/Core/GameEngineWindow";
 import { GameObject } from "../../src/Core/GameObject";
-import { MockGameEngineComponent } from "./GameEngineComponent.test";
+import { MockGameEngineComponent } from "./Mocks/MockGameEngineComponent";
 
 describe("GameEngineWindow", () => {
   it("should return a singleton instance", () => {
