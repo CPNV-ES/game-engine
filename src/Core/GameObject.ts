@@ -19,6 +19,12 @@ export class GameObject {
    */
   protected _parent: GameObject | null = null;
 
+  /**
+   * The name of this GameObject
+   * @default "GameObject"
+   */
+  public name: string = "GameObject";
+
   private _behaviors: Behavior[] = [];
   private _children: GameObject[] = [];
 
