@@ -111,6 +111,10 @@ export class GameObject {
     return this._behaviors.filter((b) => b instanceof BehaviorClass) as T[];
   }
 
+  public getAllBehaviors(): Behavior[] {
+    return this._behaviors;
+  }
+
   /**
    * Update all behaviors attached to this GameObject.
    * @param deltaTime

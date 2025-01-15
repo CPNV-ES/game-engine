@@ -49,6 +49,12 @@ export class GameObjectDebugger {
 
   private renderGameObjects(gameObject: GameObject, gui: GUI): void {
     const gameObjectFolder: GUI = gui.addFolder(gameObject.name);
+    const behaviorsFolder: GUI = gameObjectFolder.addFolder("Behaviors");
+    const behaviors: Behavior[] = gameObject.getAllBehaviors();
+
+    behaviors.forEach((behavior: Behavior): void => {
+      behaviorsFolder.addFolder(behavior.constructor.name);
+    });
 
     gameObjectFolder
       .add(gameObject, "name")
