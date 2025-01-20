@@ -53,7 +53,23 @@ export class GameObjectDebugger {
     const behaviors: Behavior[] = gameObject.getAllBehaviors();
 
     behaviors.forEach((behavior: Behavior): void => {
-      behaviorsFolder.addFolder(behavior.constructor.name);
+      const behaviorFolder = behaviorsFolder.addFolder(
+        behavior.constructor.name,
+      );
+      const keys = Reflect.ownKeys(behavior) as (keyof Behavior)[];
+
+      const typeHandlers: Record<string, (key: keyof Behavior) => void> = {
+        number: (key) => behaviorFolder.add(behavior, key).name(key as string),
+        string: (key) => behaviorFolder.add(behavior, key).name(key as string),
+        boolean: (key) => behaviorFolder.add(behavior, key).name(key as string),
+      };
+
+      keys.forEach((key) => {
+        const value = behavior[key];
+        const type = typeof value;
+
+        typeHandlers[type]?.(key);
+      });
     });
 
     gameObjectFolder
