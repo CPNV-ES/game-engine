@@ -1,13 +1,14 @@
 import { MsdfTextMeasurements } from "./MsdfChar.ts";
 import { MsdfFont } from "./MsdfFont.ts";
 import { Mat4, mat4 } from "wgpu-matrix";
+import { RenderBehavior } from "../../RenderBehavior.ts";
 
 export class MsdfText {
   private bufferArray = new Float32Array(24);
   private bufferArrayDirty = true;
 
   constructor(
-    public device: GPUDevice,
+    public renderBehavior: RenderBehavior,
     private renderBundle: GPURenderBundle,
     public measurements: MsdfTextMeasurements,
     public font: MsdfFont,
