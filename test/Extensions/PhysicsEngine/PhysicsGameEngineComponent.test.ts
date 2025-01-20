@@ -99,6 +99,82 @@ describe("PhysicsGameEngineComponent", (): void => {
   });
 
   /**
+   * Tests if a PhysicsGameEngineComponent trigger all collision when there is many.
+   */
+  it("should emit multiple events from a Collider", () => {
+    // First object with collider
+    const object1 = new GameObject();
+    const vertices1 = [
+      new Vector2(0, 5),
+      new Vector2(8, 5),
+      new Vector2(11, 16),
+      new Vector2(12, 20),
+    ];
+    const boundingBoxCollider1 = new BoundingBoxCollider(vertices1);
+    object1.addBehavior(boundingBoxCollider1);
+    gameEngineWindow.root.addChild(object1);
+
+    // Second object with collider
+    const object2 = new GameObject();
+    const vertices2 = [new Vector2(4, 0), new Vector2(6, 5), new Vector2(0, 4)];
+    const boundingBoxCollider2 = new BoundingBoxCollider(vertices2);
+    object2.addBehavior(boundingBoxCollider2);
+    gameEngineWindow.root.addChild(object2);
+
+    // Third object with collider
+    const object3 = new GameObject();
+    const vertices3 = [
+      new Vector2(5, 0),
+      new Vector2(15, 1),
+      new Vector2(11, 12),
+      new Vector2(7, 8),
+    ];
+    const boundingBoxCollider3 = new BoundingBoxCollider(vertices3);
+    object3.addBehavior(boundingBoxCollider3);
+    gameEngineWindow.root.addChild(object3);
+
+    // Fourth object with collider
+    const object4 = new GameObject();
+    const vertices4 = [
+      new Vector2(11, 10),
+      new Vector2(15, 2),
+      new Vector2(20, 4),
+      new Vector2(20, 8),
+      new Vector2(14, 13),
+    ];
+    const boundingBoxCollider4 = new BoundingBoxCollider(vertices4);
+    object4.addBehavior(boundingBoxCollider4);
+    gameEngineWindow.root.addChild(object4);
+
+    // Fifth object with collider
+    const object5 = new GameObject();
+    const vertices5 = [
+      new Vector2(10, 13),
+      new Vector2(17, 10),
+      new Vector2(19, 15),
+      new Vector2(18, 17),
+      new Vector2(12, 16),
+    ];
+    const boundingBoxCollider5 = new BoundingBoxCollider(vertices5);
+    object5.addBehavior(boundingBoxCollider5);
+    gameEngineWindow.root.addChild(object5);
+
+    let collisionsTriggered = 0;
+    const observer = (data) => {
+      collisionsTriggered++;
+    };
+
+    // Attach observer
+    boundingBoxCollider2.onDataChanged.addObserver(observer);
+
+    // Fire the event
+    gameEngineWindow.addGameComponent(physicsGameEngineComponent);
+
+    // Assert the result
+    expect(collisionsTriggered).toBe(5);
+  });
+
+  /**
    * Tests if a PhysicsGameEngineComponent does not trigger collision if there is not with many polygons.
    */
   it("should not emit an event from a Collider", () => {
