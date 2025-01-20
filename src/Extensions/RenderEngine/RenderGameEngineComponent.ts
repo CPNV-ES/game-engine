@@ -199,6 +199,30 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     return buffer;
   }
 
+  public createStorageBuffer(
+    size: number,
+    label: string = "Storage buffer",
+  ): GPUBuffer {
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
+    }
+    return this._device!.createBuffer({
+      label: label,
+      size: size,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      mappedAtCreation: true,
+    });
+  }
+
+  public createRenderBundleEncoder(
+    descriptor: GPURenderBundleEncoderDescriptor,
+  ): GPURenderBundleEncoder {
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
+    }
+    return this._device!.createRenderBundleEncoder(descriptor);
+  }
+
   public onAttachedTo(_gameEngine: GameEngineWindow): void {
     super.onAttachedTo(_gameEngine);
     this.requestResources();
