@@ -287,7 +287,7 @@ export class TextRenderBehavior extends RenderBehavior {
     const renderBundle = encoder.finish();
 
     const msdfText = new MsdfText(
-      this.device,
+      this._renderEngine,
       renderBundle,
       measurements,
       font,

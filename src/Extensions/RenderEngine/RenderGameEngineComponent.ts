@@ -172,7 +172,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     if (!this.IsRenderingReady) {
       throw new Error("Rendering is not ready yet! (Device not available)");
     }
-    this._device!.queue.writeBuffer(buffer, 0, data);
+    this._device!.queue.writeBuffer(buffer, 0, data, 0, data.length);
   }
 
   public createVertexBuffer(data: Float32Array): GPUBuffer {
