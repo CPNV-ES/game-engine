@@ -1,4 +1,5 @@
 import { PolygonCollider } from "../PolygonCollider.ts";
+import { Collider } from "../Collider.ts";
 import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
 import { CollisionHandler } from "./CollisionHandler.ts";
 
@@ -34,12 +35,23 @@ export class SatCollisionHandler implements CollisionHandler {
     }, []);
   }
 
+  // Check if two Colliders are colliding
+  public areColliding(a: Collider, b: Collider): boolean {
+    if (a instanceof PolygonCollider && b instanceof PolygonCollider) {
+      return this.areCollidingPolygonToPolygon(a, b);
+    }
+    throw new Error("Not implemented");
+  }
+
   /**
    * Check if two PolygonColliders are colliding using the Separating Axis Theorem (SAT)
    * @param a
    * @param b
    */
-  public areColliding(a: PolygonCollider, b: PolygonCollider): boolean {
+  public areCollidingPolygonToPolygon(
+    a: PolygonCollider,
+    b: PolygonCollider,
+  ): boolean {
     // Get transformed vertices
     const verticesA: Vector2[] = a.getVerticesWithTransform();
     const verticesB: Vector2[] = b.getVerticesWithTransform();
