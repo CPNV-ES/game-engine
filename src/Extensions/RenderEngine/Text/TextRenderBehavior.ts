@@ -275,8 +275,8 @@ export class TextRenderBehavior extends RenderBehavior {
     );
 
     const descriptor: GPURenderBundleEncoderDescriptor = {
-      colorFormats: [colorFormat],
-      depthStencilFormat: depthFormat,
+      colorFormats: [this._renderEngine.presentationTextureFormat],
+      depthStencilFormat: "depth24plus",
     };
 
     const encoder = this._renderEngine.createRenderBundleEncoder(descriptor);

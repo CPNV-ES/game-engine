@@ -228,6 +228,12 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     this.requestResources();
   }
 
+  public get presentationTextureFormat(): GPUTextureFormat {
+    if (!this._presentationTextureFormat)
+      throw new Error("Presentation texture format not available");
+    return this._presentationTextureFormat;
+  }
+
   private async requestResources() {
     const adapter: GPUAdapter | null = await this._gpu.requestAdapter();
     const device: GPUDevice | null = (await adapter?.requestDevice()) ?? null;
