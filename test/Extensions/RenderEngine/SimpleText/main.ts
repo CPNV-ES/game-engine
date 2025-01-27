@@ -22,8 +22,8 @@ const textRenderBehavior = new TextRenderBehavior(
 );
 
 go.addBehavior(textRenderBehavior);
-textRenderBehavior.text = "Ah lala ouais";
-textRenderBehavior.color = [0, 1, 1, 1];
+textRenderBehavior.text = "Happy SPRUNK day!";
+textRenderBehavior.color = [0.1, 1, 0.3, 1];
 textRenderBehavior.pixelScale = 1 / 64;
 textRenderBehavior.centered = true;
 

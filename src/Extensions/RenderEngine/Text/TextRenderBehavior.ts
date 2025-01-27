@@ -30,8 +30,8 @@ export class TextRenderBehavior extends RenderBehavior {
     options?: MsdfTextFormattingOptions,
   ) {
     const primitiveState: GPUPrimitiveState = {
-      topology: "triangle-list",
-      cullMode: "back",
+      topology: "triangle-strip",
+      stripIndexFormat: "uint32",
     };
 
     const fontGroupLayerDescriptor: GPUBindGroupLayoutDescriptor = {
@@ -338,7 +338,7 @@ export class TextRenderBehavior extends RenderBehavior {
     encoder.setPipeline(font.pipeline);
     encoder.setBindGroup(0, font.bindGroup);
     encoder.setBindGroup(1, textBindGroup);
-    encoder.draw(4, measurements.printedCharCount);
+    encoder.draw(4, measurements.printedCharCount, 0, 0);
     const renderBundle = encoder.finish();
 
     const msdfText = new MsdfText(
