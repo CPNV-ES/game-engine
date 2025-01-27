@@ -2,7 +2,7 @@ import { describe, it, expect, vi, Mock, beforeEach } from "vitest";
 import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
 import { PhysicsGameEngineComponent } from "../../../src/Extensions/PhysicsEngine/PhysicsGameEngineComponent";
 import { GameObject } from "../../../src/Core/GameObject";
-import { PolygonCollider } from "../../../src/Extensions/PhysicsEngine/polygonCollider";
+import { PolygonCollider } from "../../../src/Extensions/PhysicsEngine/PolygonCollider";
 import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
 
 describe("PhysicsGameEngineComponent", (): void => {
