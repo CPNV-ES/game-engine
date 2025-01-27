@@ -10,13 +10,24 @@ struct Char {
 
 struct VertexOutput {
   @builtin(position) position : vec4f,
-  @location(0) texcoord : vec2f,
+  @location(0) uv : vec2f,
 };
+
+struct FormattedText {
+  transform: mat4x4f,
+  color: vec4f,
+  scale: f32,
+  chars: array<vec3f>,
+};
+
 
 // Font bindings
 @group(0) @binding(0) var fontTexture: texture_2d<f32>;
 @group(0) @binding(1) var fontSampler: sampler;
 @group(0) @binding(2) var<storage> chars: array<Char>;
+
+// Text bindings
+@group(1) @binding(1) var<storage> text: FormattedText;
 
 fn sampleMsdf(texcoord: vec2f) -> f32 {
   let c = textureSample(fontTexture, fontSampler, texcoord);

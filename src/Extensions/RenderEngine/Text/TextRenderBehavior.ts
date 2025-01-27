@@ -28,22 +28,6 @@ export class TextRenderBehavior extends RenderBehavior {
       cullMode: "back",
     };
 
-    const textGroupLayerDescriptor: GPUBindGroupLayoutDescriptor = {
-      label: "MSDF text group layout",
-      entries: [
-        {
-          binding: 0,
-          visibility: GPUShaderStage.VERTEX,
-          buffer: {},
-        },
-        {
-          binding: 1,
-          visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
-          buffer: { type: "read-only-storage" },
-        },
-      ],
-    };
-
     const fontGroupLayerDescriptor: GPUBindGroupLayoutDescriptor = {
       label: "MSDF font group layout",
       entries: [
@@ -65,6 +49,22 @@ export class TextRenderBehavior extends RenderBehavior {
       ],
     };
 
+    const textGroupLayerDescriptor: GPUBindGroupLayoutDescriptor = {
+      label: "MSDF text group layout",
+      entries: [
+        {
+          binding: 0,
+          visibility: GPUShaderStage.VERTEX,
+          buffer: {},
+        },
+        {
+          binding: 1,
+          visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
+          buffer: { type: "read-only-storage" },
+        },
+      ],
+    };
+
     const targetBlend: GPUBlendState = {
       color: {
         srcFactor: "src-alpha",
@@ -81,7 +81,7 @@ export class TextRenderBehavior extends RenderBehavior {
       MsdfTextVert,
       MsdfTextFrag,
       primitiveState,
-      [textGroupLayerDescriptor, fontGroupLayerDescriptor],
+      [fontGroupLayerDescriptor, textGroupLayerDescriptor],
       undefined,
       targetBlend,
     );
@@ -113,7 +113,7 @@ export class TextRenderBehavior extends RenderBehavior {
   render(renderPass: GPURenderPassEncoder) {
     super.render(renderPass);
     if (this._text == null) return;
-    renderPass.executeBundles([this._text.getRenderBundle()]);
+    //renderPass.executeBundles([this._text.getRenderBundle()]);
   }
 
   private refreshText() {
@@ -174,7 +174,7 @@ export class TextRenderBehavior extends RenderBehavior {
     });
 
     const fontBindGroup = this._renderEngine.createBindGroup(
-      this._bindGroupLayouts![1],
+      this._bindGroupLayouts![0],
       [
         {
           binding: 0,
@@ -261,7 +261,7 @@ export class TextRenderBehavior extends RenderBehavior {
     textBuffer.unmap();
 
     const textBindGroup = this._renderEngine.createBindGroup(
-      this._bindGroupLayouts![0],
+      this._bindGroupLayouts![1],
       [
         {
           binding: 0,
