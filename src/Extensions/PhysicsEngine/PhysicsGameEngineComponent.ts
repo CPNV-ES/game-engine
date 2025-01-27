@@ -2,7 +2,7 @@ import { GameEngineComponent } from "../../Core/GameEngineComponent";
 import { Collider } from "./Collider";
 import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
 import { GameObject } from "../../Core/GameObject.ts";
-import { BoundingBoxCollider } from "./BoundingBoxCollider.ts";
+import { PolygonCollider } from "./PolygonCollider.ts";
 import { SatCollisionHandler } from "./CollisionHandlers/SatCollisionHandler.ts";
 
 export class PhysicsGameEngineComponent extends GameEngineComponent {
@@ -20,11 +20,11 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
    * Get all the colliders in the game
    * @private
    */
-  private getAllBoundingBoxCollider(): Collider[] {
+  private getAllPolygonCollider(): Collider[] {
     return this.rootObject
       .getAllChildren()
       .reduce((colliders: Collider[], gameObject: GameObject) => {
-        return colliders.concat(gameObject.getBehaviors(BoundingBoxCollider));
+        return colliders.concat(gameObject.getBehaviors(PolygonCollider));
       }, []);
   }
 
@@ -33,11 +33,9 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
    * @param collider
    * @private
    */
-  private getBoundingBoxColliderCollisions(
-    collider: BoundingBoxCollider,
-  ): Collider[] {
-    return this.getAllBoundingBoxCollider().reduce(
-      (collidingColliders: Collider[], otherCollider: BoundingBoxCollider) => {
+  private getPolygonColliderCollisions(collider: PolygonCollider): Collider[] {
+    return this.getAllPolygonCollider().reduce(
+      (collidingColliders: Collider[], otherCollider: PolygonCollider) => {
         if (
           otherCollider !== collider &&
           this.satCollisionHandler.areColliding(collider, otherCollider)
@@ -52,10 +50,8 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
 
   private tick(): void {
     //Check SAT collisions
-    this.getAllBoundingBoxCollider().forEach(
-      (collider: BoundingBoxCollider) => {
-        collider.collide(this.getBoundingBoxColliderCollisions(collider));
-      },
-    );
+    this.getAllPolygonCollider().forEach((collider: PolygonCollider) => {
+      collider.collide(this.getPolygonColliderCollisions(collider));
+    });
   }
 }

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, Mock, beforeEach } from "vitest";
 import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
 import { PhysicsGameEngineComponent } from "../../../src/Extensions/PhysicsEngine/PhysicsGameEngineComponent";
 import { GameObject } from "../../../src/Core/GameObject";
-import { BoundingBoxCollider } from "../../../src/Extensions/PhysicsEngine/boundingBoxCollider";
+import { PolygonCollider } from "../../../src/Extensions/PhysicsEngine/polygonCollider";
 import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
 
 describe("PhysicsGameEngineComponent", (): void => {
@@ -26,10 +26,8 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(-5, 5),
       new Vector2(-4, 2),
     ];
-    const boundingBoxCollider1: BoundingBoxCollider = new BoundingBoxCollider(
-      vertices1,
-    );
-    object1.addBehavior(boundingBoxCollider1);
+    const polygonCollider1: PolygonCollider = new PolygonCollider(vertices1);
+    object1.addBehavior(polygonCollider1);
     gameEngineWindow.root.addChild(object1);
 
     // Second object with collider
@@ -40,19 +38,17 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(2, 6),
       new Vector2(-2, 4),
     ];
-    const boundingBoxCollider2: BoundingBoxCollider = new BoundingBoxCollider(
-      vertices2,
-    );
-    object2.addBehavior(boundingBoxCollider2);
+    const polygonCollider2: PolygonCollider = new PolygonCollider(vertices2);
+    object2.addBehavior(polygonCollider2);
     gameEngineWindow.root.addChild(object2);
 
     const observer: Mock = vi.fn();
-    boundingBoxCollider2.onDataChanged.addObserver((data) => observer(data));
+    polygonCollider2.onDataChanged.addObserver((data) => observer(data));
 
     // Fire the event
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
 
-    expect(observer).toHaveBeenCalledWith([boundingBoxCollider1]);
+    expect(observer).toHaveBeenCalledWith([polygonCollider1]);
   });
 
   /**
@@ -67,8 +63,8 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(-5, 5),
       new Vector2(-4, 2),
     ];
-    const boundingBoxCollider1 = new BoundingBoxCollider(vertices1);
-    object1.addBehavior(boundingBoxCollider1);
+    const polygonCollider1 = new PolygonCollider(vertices1);
+    object1.addBehavior(polygonCollider1);
     gameEngineWindow.root.addChild(object1);
 
     // Second object with collider
@@ -79,8 +75,8 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(2, 6),
       new Vector2(0, 4),
     ];
-    const boundingBoxCollider2 = new BoundingBoxCollider(vertices2);
-    object2.addBehavior(boundingBoxCollider2);
+    const polygonCollider2 = new PolygonCollider(vertices2);
+    object2.addBehavior(polygonCollider2);
     gameEngineWindow.root.addChild(object2);
 
     let collisionsTriggered = 0;
@@ -89,7 +85,7 @@ describe("PhysicsGameEngineComponent", (): void => {
     };
 
     // Attach observer
-    boundingBoxCollider2.onDataChanged.addObserver(observer);
+    polygonCollider2.onDataChanged.addObserver(observer);
 
     // Fire the event
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
@@ -110,15 +106,15 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(11, 16),
       new Vector2(12, 20),
     ];
-    const boundingBoxCollider1 = new BoundingBoxCollider(vertices1);
-    object1.addBehavior(boundingBoxCollider1);
+    const polygonCollider1 = new PolygonCollider(vertices1);
+    object1.addBehavior(polygonCollider1);
     gameEngineWindow.root.addChild(object1);
 
     // Second object with collider
     const object2 = new GameObject();
     const vertices2 = [new Vector2(4, 0), new Vector2(6, 5), new Vector2(0, 4)];
-    const boundingBoxCollider2 = new BoundingBoxCollider(vertices2);
-    object2.addBehavior(boundingBoxCollider2);
+    const polygonCollider2 = new PolygonCollider(vertices2);
+    object2.addBehavior(polygonCollider2);
     gameEngineWindow.root.addChild(object2);
 
     // Third object with collider
@@ -129,8 +125,8 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(11, 12),
       new Vector2(7, 8),
     ];
-    const boundingBoxCollider3 = new BoundingBoxCollider(vertices3);
-    object3.addBehavior(boundingBoxCollider3);
+    const polygonCollider3 = new PolygonCollider(vertices3);
+    object3.addBehavior(polygonCollider3);
     gameEngineWindow.root.addChild(object3);
 
     // Fourth object with collider
@@ -142,8 +138,8 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(20, 8),
       new Vector2(14, 13),
     ];
-    const boundingBoxCollider4 = new BoundingBoxCollider(vertices4);
-    object4.addBehavior(boundingBoxCollider4);
+    const polygonCollider4 = new PolygonCollider(vertices4);
+    object4.addBehavior(polygonCollider4);
     gameEngineWindow.root.addChild(object4);
 
     // Fifth object with collider
@@ -155,8 +151,8 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(18, 17),
       new Vector2(12, 16),
     ];
-    const boundingBoxCollider5 = new BoundingBoxCollider(vertices5);
-    object5.addBehavior(boundingBoxCollider5);
+    const polygonCollider5 = new PolygonCollider(vertices5);
+    object5.addBehavior(polygonCollider5);
     gameEngineWindow.root.addChild(object5);
 
     let collisionsTriggered: number = 0;
@@ -167,11 +163,11 @@ describe("PhysicsGameEngineComponent", (): void => {
     };
 
     // Attach observer
-    boundingBoxCollider1.onDataChanged.addObserver(dataChangedObserver);
-    boundingBoxCollider2.onDataChanged.addObserver(dataChangedObserver);
-    boundingBoxCollider3.onDataChanged.addObserver(dataChangedObserver);
-    boundingBoxCollider4.onDataChanged.addObserver(dataChangedObserver);
-    boundingBoxCollider5.onDataChanged.addObserver(dataChangedObserver);
+    polygonCollider1.onDataChanged.addObserver(dataChangedObserver);
+    polygonCollider2.onDataChanged.addObserver(dataChangedObserver);
+    polygonCollider3.onDataChanged.addObserver(dataChangedObserver);
+    polygonCollider4.onDataChanged.addObserver(dataChangedObserver);
+    polygonCollider5.onDataChanged.addObserver(dataChangedObserver);
 
     // Fire the event
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
@@ -180,24 +176,24 @@ describe("PhysicsGameEngineComponent", (): void => {
     expect(dataChanged.length).toBe(5);
 
     // Assert that Collider1 has collided with Colliders 2, 3 and 5
-    expect(dataChanged[0]).toContain(boundingBoxCollider2);
-    expect(dataChanged[0]).toContain(boundingBoxCollider3);
-    expect(dataChanged[0]).toContain(boundingBoxCollider5);
+    expect(dataChanged[0]).toContain(polygonCollider2);
+    expect(dataChanged[0]).toContain(polygonCollider3);
+    expect(dataChanged[0]).toContain(polygonCollider5);
 
     // Assert that Collider2 has collided with Collider1
-    expect(dataChanged[1]).toContain(boundingBoxCollider1);
+    expect(dataChanged[1]).toContain(polygonCollider1);
 
     // Assert that Collider3 has collided with Colliders 1 and 4
-    expect(dataChanged[2]).toContain(boundingBoxCollider1);
-    expect(dataChanged[2]).toContain(boundingBoxCollider4);
+    expect(dataChanged[2]).toContain(polygonCollider1);
+    expect(dataChanged[2]).toContain(polygonCollider4);
 
     // Assert that Collider4 has collided with Colliders 3 and 5
-    expect(dataChanged[3]).toContain(boundingBoxCollider3);
-    expect(dataChanged[3]).toContain(boundingBoxCollider5);
+    expect(dataChanged[3]).toContain(polygonCollider3);
+    expect(dataChanged[3]).toContain(polygonCollider5);
 
     // Assert that Collider5 has collided with Colliders 1 and 4
-    expect(dataChanged[4]).toContain(boundingBoxCollider1);
-    expect(dataChanged[4]).toContain(boundingBoxCollider4);
+    expect(dataChanged[4]).toContain(polygonCollider1);
+    expect(dataChanged[4]).toContain(polygonCollider4);
   });
 
   /**
@@ -212,15 +208,15 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(11, 16),
       new Vector2(12, 20),
     ];
-    const boundingBoxCollider1 = new BoundingBoxCollider(vertices1);
-    object1.addBehavior(boundingBoxCollider1);
+    const polygonCollider1 = new PolygonCollider(vertices1);
+    object1.addBehavior(polygonCollider1);
     gameEngineWindow.root.addChild(object1);
 
     // Second object with collider
     const object2 = new GameObject();
     const vertices2 = [new Vector2(4, 0), new Vector2(6, 5), new Vector2(0, 4)];
-    const boundingBoxCollider2 = new BoundingBoxCollider(vertices2);
-    object2.addBehavior(boundingBoxCollider2);
+    const polygonCollider2 = new PolygonCollider(vertices2);
+    object2.addBehavior(polygonCollider2);
     gameEngineWindow.root.addChild(object2);
 
     // Third object with collider
@@ -231,8 +227,8 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(11, 12),
       new Vector2(7, 8),
     ];
-    const boundingBoxCollider3 = new BoundingBoxCollider(vertices3);
-    object3.addBehavior(boundingBoxCollider3);
+    const polygonCollider3 = new PolygonCollider(vertices3);
+    object3.addBehavior(polygonCollider3);
     gameEngineWindow.root.addChild(object3);
 
     // Fourth object with collider
@@ -244,8 +240,8 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(20, 8),
       new Vector2(14, 11),
     ];
-    const boundingBoxCollider4 = new BoundingBoxCollider(vertices4);
-    object4.addBehavior(boundingBoxCollider4);
+    const polygonCollider4 = new PolygonCollider(vertices4);
+    object4.addBehavior(polygonCollider4);
     gameEngineWindow.root.addChild(object4);
 
     // Fifth object with collider
@@ -257,8 +253,8 @@ describe("PhysicsGameEngineComponent", (): void => {
       new Vector2(18, 17),
       new Vector2(12, 16),
     ];
-    const boundingBoxCollider5 = new BoundingBoxCollider(vertices5);
-    object5.addBehavior(boundingBoxCollider5);
+    const polygonCollider5 = new PolygonCollider(vertices5);
+    object5.addBehavior(polygonCollider5);
     gameEngineWindow.root.addChild(object5);
 
     let collisionsTriggered = 0;
@@ -267,11 +263,11 @@ describe("PhysicsGameEngineComponent", (): void => {
     };
 
     // Attach observer
-    boundingBoxCollider1.onDataChanged.addObserver(observer);
-    boundingBoxCollider2.onDataChanged.addObserver(observer);
-    boundingBoxCollider3.onDataChanged.addObserver(observer);
-    boundingBoxCollider4.onDataChanged.addObserver(observer);
-    boundingBoxCollider5.onDataChanged.addObserver(observer);
+    polygonCollider1.onDataChanged.addObserver(observer);
+    polygonCollider2.onDataChanged.addObserver(observer);
+    polygonCollider3.onDataChanged.addObserver(observer);
+    polygonCollider4.onDataChanged.addObserver(observer);
+    polygonCollider5.onDataChanged.addObserver(observer);
 
     // Fire the event
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);

@@ -1,4 +1,4 @@
-import { BoundingBoxCollider } from "../BoundingBoxCollider.ts";
+import { PolygonCollider } from "../PolygonCollider.ts";
 import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
 import { CollisionHandler } from "./CollisionHandler.ts";
 
@@ -35,11 +35,11 @@ export class SatCollisionHandler implements CollisionHandler {
   }
 
   /**
-   * Check if two BoundingBoxColliders are colliding using the Separating Axis Theorem (SAT)
+   * Check if two PolygonColliders are colliding using the Separating Axis Theorem (SAT)
    * @param a
    * @param b
    */
-  public areColliding(a: BoundingBoxCollider, b: BoundingBoxCollider): boolean {
+  public areColliding(a: PolygonCollider, b: PolygonCollider): boolean {
     // Get transformed vertices
     const verticesA: Vector2[] = a.getVerticesWithTransform();
     const verticesB: Vector2[] = b.getVerticesWithTransform();

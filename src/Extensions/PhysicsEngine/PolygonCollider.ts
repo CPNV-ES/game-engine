@@ -1,7 +1,7 @@
 import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
 import { Collider } from "./Collider.ts";
 
-export class BoundingBoxCollider extends Collider {
+export class PolygonCollider extends Collider {
   public vertices: Vector2[];
 
   constructor(vertices: Vector2[]) {
