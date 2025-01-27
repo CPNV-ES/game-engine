@@ -161,19 +161,12 @@ describe("PhysicsGameEngineComponent", (): void => {
 
     let collisionsTriggered: number = 0;
     let dataChanged: any[] = [];
-    const countObserver = (data) => {
-      collisionsTriggered++;
-    };
+
     const dataChangedObserver = (data) => {
       dataChanged.push(data);
     };
 
     // Attach observer
-    boundingBoxCollider1.onDataChanged.addObserver(countObserver);
-    boundingBoxCollider2.onDataChanged.addObserver(countObserver);
-    boundingBoxCollider3.onDataChanged.addObserver(countObserver);
-    boundingBoxCollider4.onDataChanged.addObserver(countObserver);
-    boundingBoxCollider5.onDataChanged.addObserver(countObserver);
     boundingBoxCollider1.onDataChanged.addObserver(dataChangedObserver);
     boundingBoxCollider2.onDataChanged.addObserver(dataChangedObserver);
     boundingBoxCollider3.onDataChanged.addObserver(dataChangedObserver);
@@ -184,7 +177,7 @@ describe("PhysicsGameEngineComponent", (): void => {
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
 
     // Assert the result (we expect 10 event because each collision will trigger event on 2 colliders)
-    expect(collisionsTriggered).toBe(5);
+    expect(dataChanged.length).toBe(5);
 
     // Assert that Collider1 has collided with Colliders 2, 3 and 5
     expect(dataChanged[0]).toContain(boundingBoxCollider2);
