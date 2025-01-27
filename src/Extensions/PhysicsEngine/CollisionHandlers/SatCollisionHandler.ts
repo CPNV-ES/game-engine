@@ -35,7 +35,10 @@ export class SatCollisionHandler implements CollisionHandler {
     }, []);
   }
 
-  // Check if two Colliders are colliding
+  /** Check if two Colliders are colliding
+   * @param a
+   * @param b
+   */
   public areColliding(a: Collider, b: Collider): boolean {
     if (a instanceof PolygonCollider && b instanceof PolygonCollider) {
       return this.areCollidingPolygonToPolygon(a, b);
