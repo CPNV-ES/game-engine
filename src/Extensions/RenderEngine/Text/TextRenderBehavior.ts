@@ -113,7 +113,7 @@ export class TextRenderBehavior extends RenderBehavior {
   render(renderPass: GPURenderPassEncoder) {
     super.render(renderPass);
     if (this._text == null) return;
-    //renderPass.executeBundles([this._text.getRenderBundle()]);
+    renderPass.executeBundles([this._text.getRenderBundle()]);
   }
 
   private refreshText() {

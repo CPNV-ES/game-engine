@@ -16,12 +16,15 @@ gameEngineWindow.addGameComponent(renderComponent);
 const go = new GameObject();
 gameEngineWindow.root.addChild(go);
 
-go.addBehavior(
-  new TextRenderBehavior(
-    renderComponent,
-    "/test/Extensions/RenderEngine/SimpleText/Sprunthrax/Sprunthrax-SemiBold-msdf.json",
-  ),
+const textRenderBehavior = new TextRenderBehavior(
+  renderComponent,
+  "/test/Extensions/RenderEngine/SimpleText/Sprunthrax/Sprunthrax-SemiBold-msdf.json",
 );
+
+go.addBehavior(textRenderBehavior);
+textRenderBehavior.text = "Ah lala ouais";
+go.transform.scale.x = 10;
+go.transform.scale.y = 10;
 
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
