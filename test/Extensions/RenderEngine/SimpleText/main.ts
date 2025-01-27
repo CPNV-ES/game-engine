@@ -23,8 +23,9 @@ const textRenderBehavior = new TextRenderBehavior(
 
 go.addBehavior(textRenderBehavior);
 textRenderBehavior.text = "Ah lala ouais";
-go.transform.scale.x = 10;
-go.transform.scale.y = 10;
+textRenderBehavior.color = [0, 1, 1, 1];
+textRenderBehavior.pixelScale = 1 / 64;
+textRenderBehavior.centered = true;
 
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);

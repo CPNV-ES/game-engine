@@ -16,13 +16,19 @@ export class TextRenderBehavior extends RenderBehavior {
   private _font: MsdfFont | null = null;
   private _text: MsdfText | null = null;
   private _textString: string = "";
+  private _options: MsdfTextFormattingOptions;
 
   /**
    * Construct a new Quad with the texture of the image at the given URL.
    * @param renderEngine
    * @param fontJsonUrl - The URL of the MSDF JSON font file
+   * @param options - Optional options for the text formatting (like color, pixel scale, etc.)
    */
-  constructor(renderEngine: RenderGameEngineComponent, fontJsonUrl: string) {
+  constructor(
+    renderEngine: RenderGameEngineComponent,
+    fontJsonUrl: string,
+    options?: MsdfTextFormattingOptions,
+  ) {
     const primitiveState: GPUPrimitiveState = {
       topology: "triangle-list",
       cullMode: "back",
@@ -86,6 +92,7 @@ export class TextRenderBehavior extends RenderBehavior {
       targetBlend,
     );
     this._fontJsonUrl = fontJsonUrl;
+    this._options = options || {};
   }
 
   /**
@@ -104,6 +111,54 @@ export class TextRenderBehavior extends RenderBehavior {
     this.refreshText();
   }
 
+  /**
+   * Get the color of the text.
+   */
+  public get color(): [number, number, number, number] {
+    return this._options.color || [1, 1, 1, 1];
+  }
+
+  /**
+   * Set the pixel scale of the text.
+   * @param value
+   */
+  public set color(value: [number, number, number, number]) {
+    this._options.color = value;
+    this.refreshText();
+  }
+
+  /**
+   * Get the pixel scale of the text.
+   */
+  public get pixelScale(): number {
+    return this._options.pixelScale || 1 / 512;
+  }
+
+  /**
+   * Set the pixel scale of the text.
+   * @param value
+   */
+  public set pixelScale(value: number) {
+    this._options.pixelScale = value;
+    this.refreshText();
+  }
+
+  /**
+   * Get if the text is centered.
+   */
+  public get centered(): boolean {
+    return this._options.centered || false;
+  }
+
+  /**
+   * Set if the text is centered.
+   * @param value
+   */
+  public set centered(value: boolean) {
+    this._options.centered = value;
+    this.refreshText();
+  }
+
   protected async asyncInit(): Promise<void> {
     await super.asyncInit();
     this._font = await this.createFont();
@@ -118,7 +173,7 @@ export class TextRenderBehavior extends RenderBehavior {
 
   private refreshText() {
     if (this._font == null) return;
-    this._text = this.formatText(this._font, this._textString);
+    this._text = this.formatText(this._font, this._textString, this._options);
   }
 
   private async createFont(): Promise<MsdfFont> {
