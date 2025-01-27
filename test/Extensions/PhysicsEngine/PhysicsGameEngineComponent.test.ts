@@ -2,7 +2,7 @@ import { describe, it, expect, vi, Mock, beforeEach } from "vitest";
 import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
 import { PhysicsGameEngineComponent } from "../../../src/Extensions/PhysicsEngine/PhysicsGameEngineComponent";
 import { GameObject } from "../../../src/Core/GameObject";
-import { BoundingBoxCollider } from "../../../src/Extensions/PhysicsEngine/BoundingBoxCollider";
+import { BoundingBoxCollider } from "../../../src/Extensions/PhysicsEngine/boundingBoxCollider";
 import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
 
 describe("PhysicsGameEngineComponent", (): void => {
@@ -159,19 +159,52 @@ describe("PhysicsGameEngineComponent", (): void => {
     object5.addBehavior(boundingBoxCollider5);
     gameEngineWindow.root.addChild(object5);
 
-    let collisionsTriggered = 0;
-    const observer = (data) => {
+    let collisionsTriggered: number = 0;
+    let dataChanged: any[] = [];
+    const countObserver = (data) => {
       collisionsTriggered++;
+    };
+    const dataChangedObserver = (data) => {
+      dataChanged.push(data);
     };
 
     // Attach observer
-    boundingBoxCollider2.onDataChanged.addObserver(observer);
+    boundingBoxCollider1.onDataChanged.addObserver(countObserver);
+    boundingBoxCollider2.onDataChanged.addObserver(countObserver);
+    boundingBoxCollider3.onDataChanged.addObserver(countObserver);
+    boundingBoxCollider4.onDataChanged.addObserver(countObserver);
+    boundingBoxCollider5.onDataChanged.addObserver(countObserver);
+    boundingBoxCollider1.onDataChanged.addObserver(dataChangedObserver);
+    boundingBoxCollider2.onDataChanged.addObserver(dataChangedObserver);
+    boundingBoxCollider3.onDataChanged.addObserver(dataChangedObserver);
+    boundingBoxCollider4.onDataChanged.addObserver(dataChangedObserver);
+    boundingBoxCollider5.onDataChanged.addObserver(dataChangedObserver);
 
     // Fire the event
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
 
-    // Assert the result
+    // Assert the result (we expect 10 event because each collision will trigger event on 2 colliders)
     expect(collisionsTriggered).toBe(5);
+
+    // Assert that Collider1 has collided with Colliders 2, 3 and 5
+    expect(dataChanged[0]).toContain(boundingBoxCollider2);
+    expect(dataChanged[0]).toContain(boundingBoxCollider3);
+    expect(dataChanged[0]).toContain(boundingBoxCollider5);
+
+    // Assert that Collider2 has collided with Collider1
+    expect(dataChanged[1]).toContain(boundingBoxCollider1);
+
+    // Assert that Collider3 has collided with Colliders 1 and 4
+    expect(dataChanged[2]).toContain(boundingBoxCollider1);
+    expect(dataChanged[2]).toContain(boundingBoxCollider4);
+
+    // Assert that Collider4 has collided with Colliders 3 and 5
+    expect(dataChanged[3]).toContain(boundingBoxCollider3);
+    expect(dataChanged[3]).toContain(boundingBoxCollider5);
+
+    // Assert that Collider5 has collided with Colliders 1 and 4
+    expect(dataChanged[4]).toContain(boundingBoxCollider1);
+    expect(dataChanged[4]).toContain(boundingBoxCollider4);
   });
 
   /**
@@ -241,7 +274,11 @@ describe("PhysicsGameEngineComponent", (): void => {
     };
 
     // Attach observer
+    boundingBoxCollider1.onDataChanged.addObserver(observer);
     boundingBoxCollider2.onDataChanged.addObserver(observer);
+    boundingBoxCollider3.onDataChanged.addObserver(observer);
+    boundingBoxCollider4.onDataChanged.addObserver(observer);
+    boundingBoxCollider5.onDataChanged.addObserver(observer);
 
     // Fire the event
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
