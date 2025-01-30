@@ -13,26 +13,14 @@
         width: 100vw;
         height: 100vh;
       }
-
-      #container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        padding: 1dvh;
-        background-color: rgba(0, 0, 0, 0.5);
-      }
-
-      #debug {
-        overflow: auto;
-        max-height: 80vh;
-      }
     </style>
   </head>
   <body>
     <canvas id="app"></canvas>
-    <div id="container">
-      <div id="debug"></div>
-    </div>
     <script type="module" src="main.ts"></script>
+    <script
+      type="module"
+      src="../../../../src/Extensions/Debugger/Debugger.ts"
+    ></script>
   </body>
 </html>
