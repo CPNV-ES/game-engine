@@ -6,73 +6,97 @@ package sprunk.core{
 }
 
 package sprunk.extensions.renderengine {
-class RenderGameEngineComponent {
-  +onError: Event<Error>
-  +onRenderingReady: Event<void>
-  +camera: Camera | null
-  +IsRenderingReady: boolean
-  +constructor(canvasToDrawOn: HTMLCanvasElement | null, gpu: GPU | null)
-  +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
-  +createBindGroup(bindGroupLayout: GPUBindGroupLayout, entries: GPUBindGroupEntry[]): GPUBindGroup
-  +createSampler(descriptor: GPUSamplerDescriptor): GPUSampler
-  +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, topology: GPUPrimitiveTopology, bindGroupLayout: GPUBindGroupLayout, buffer: GPUVertexBufferLayout): GPURenderPipeline
-  +createTexture(url: RequestInfo | URL): GPUTexture
-  +createUniformBuffer(data: Float32Array): GPUBuffer
-  +fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void
-  +createVertexBuffer(data: Float32Array): GPUBuffer
-  +createIndexBuffer(data: Uint16Array): GPUBuffer
-  +onAttachedTo(_gameEngine: GameEngineWindow): void
-}
+    class RenderGameEngineComponent {
+        +onError: Event<Error>
+        +onRenderingReady: Event<void>
+        +camera: Camera | null
+        +IsRenderingReady: boolean
+        +constructor(canvasToDrawOn: HTMLCanvasElement | null, gpu: GPU | null)
+        +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
+        +createBindGroup(bindGroupLayout: GPUBindGroupLayout, entries: GPUBindGroupEntry[]): GPUBindGroup
+        +createSampler(descriptor: GPUSamplerDescriptor): GPUSampler
+        +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayouts: Iterable<GPUBindGroupLayout | null>, buffers?: Iterable<GPUVertexBufferLayout | null>): GPURenderPipeline
+        +createTexture(url: RequestInfo | URL): GPUTexture
+        +createUniformBuffer(data: Float32Array): GPUBuffer
+        +fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void
+        +createVertexBuffer(data: Float32Array): GPUBuffer
+        +createIndexBuffer(data: Uint16Array): GPUBuffer
+        +createStorageBuffer(size: number, label: string): GPUBuffer
+        +createRenderBundleEncoder(descriptor: GPURenderBundleEncoderDescriptor): GPURenderBundleEncoder
+        +onAttachedTo(_gameEngine: GameEngineWindow): void
+        +presentationTextureFormat(): GPUTextureFormat
+        +requestResources(): void
+        +startRendering(): void
+        +subscribeToDeviceEvents(device: GPUDevice): void
+        +createDepthTexture(): void
+        +resizeCanvasToMatchDisplaySize(): void
+        +frame(_deltaTime: number): void
+    }
 
-class SpriteRenderBehavior {
-  +constructor(renderEngine: RenderGameEngineComponent, spriteImageUrl: RequestInfo | URL)
-}
+    class SpriteRenderBehavior {
+        +constructor(renderEngine: RenderGameEngineComponent, spriteImageUrl: RequestInfo | URL)
+    }
 
-class RenderEngineUtiliy {
-  +static toModelMatrix(transform: Transform): Float32Array
-}
+    class RenderEngineUtiliy {
+        +static toModelMatrix(transform: Transform): Float32Array
+    }
 
-class RenderBehavior {
-  #_renderEngine: RenderGameEngineComponent
-  #_pipeline: GPURenderPipeline | null
-  #_bindGroupLayout: GPUBindGroupLayout | null
-  #_vertexWGSLShader: string
-  #_fragmentWGSLShader: string
-  #_topology: GPUPrimitiveTopology
-  #_bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor
-  #_bufferLayout: GPUVertexBufferLayout
-  +constructor(renderEngine: RenderGameEngineComponent, vertexWGSLShader: string, fragmentWGSLShader: string, topology: GPUPrimitiveTopology, bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor, buffer: GPUVertexBufferLayout)
-  +asyncInit(): void
-  +render(renderpass: GPURenderPassEncoder): void
-}
+    class RenderBehavior {
+        #_renderEngine: RenderGameEngineComponent
+        #_pipeline: GPURenderPipeline | null
+        #_bindGroupLayout: GPUBindGroupLayout | null
+        #_vertexWGSLShader: string
+        #_fragmentWGSLShader: string
+        #_topology: GPUPrimitiveTopology
+        #_bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor
+        #_bufferLayout: GPUVertexBufferLayout
+        +constructor(renderEngine: RenderGameEngineComponent, vertexWGSLShader: string, fragmentWGSLShader: string, topology: GPUPrimitiveTopology, bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor, buffer: GPUVertexBufferLayout)
+        +asyncInit(): void
+        +render(renderpass: GPURenderPassEncoder): void
+    }
 
-class Camera {
-  +constructor(fov: number, aspect: number, near: number, far: number)
-}
+    class Camera {
+        +constructor(fov: number, aspect: number, near: number, far: number)
+    }
 
-class BasicUVTexturedRenderBehavior {
-  #_vertexBuffer: GPUBuffer | null
-  #_indexBuffer: GPUBuffer | null
-  #_mvpUniformBuffer: GPUBuffer | null
-  #_indexData: Uint16Array
-  #_spriteTexture: GPUTexture | null
-  #_bindGroup: GPUBindGroup | null
-  #_spriteImageUrl: RequestInfo | URL
-  #_vertexData: Float32Array
-  +constructor(renderEngine: RenderGameEngineComponent, spriteImageUrl: RequestInfo | URL, vertexData: Float32Array, indexData: Uint16Array, vertexWGSLShader: string, fragmentWGSLShader: string)
-  +asyncInit(): Promise<void>
-  +render(renderpass: GPURenderPassEncoder): void
-}
+    class BasicUVTexturedRenderBehavior {
+        #_vertexBuffer: GPUBuffer | null
+        #_indexBuffer: GPUBuffer | null
+        #_indexData: Uint16Array
+        #_spriteTexture: GPUTexture | null
+        #_bindGroup: GPUBindGroup | null
+        #_spriteImageUrl: RequestInfo | URL
+        #_vertexData: Float32Array
+        +constructor(renderEngine: RenderGameEngineComponent, spriteImageUrl: RequestInfo | URL, vertexData: Float32Array, indexData: Uint16Array, vertexWGSLShader: string, fragmentWGSLShader: string)
+        +asyncInit(): Promise<void>
+        +render(renderpass: GPURenderPassEncoder): void
+    }
 
-RenderGameEngineComponent -up-|> GameEngineComponent
-RenderBehavior -up-|> OutputBehavior
-SpriteRenderBehavior -up-|> BasicUVTexturedRenderBehavior
-BasicUVTexturedRenderBehavior -up-|> RenderBehavior
+    class TextRenderBehavior {
+        #_fontJsonUrl: string
+        #_font: MsdfFont | null
+        #_text: MsdfText | null
+        #_textString: string
+        #_options: MsdfTextFormattingOptions
+        +constructor(renderEngine: RenderGameEngineComponent, fontJsonUrl: string, options?: MsdfTextFormattingOptions)
+        +text: string
+        +color: [number, number, number, number]
+        +pixelScale: number
+        +centered: boolean
+        +asyncInit(): Promise<void>
+        +render(renderpass: GPURenderPassEncoder): void
+    }
 
-RenderGameEngineComponent --> Camera
-RenderGameEngineComponent ..> RenderBehavior : "uses"
-RenderBehavior ..> RenderEngineUtiliy : "uses"
-Camera ..> RenderEngineUtiliy : "uses"
+    RenderGameEngineComponent -up-|> GameEngineComponent
+    RenderBehavior -up-|> OutputBehavior
+    SpriteRenderBehavior -up-|> BasicUVTexturedRenderBehavior
+    BasicUVTexturedRenderBehavior -up-|> RenderBehavior
+    TextRenderBehavior -up-|> RenderBehavior
+
+    RenderGameEngineComponent --> Camera
+    RenderGameEngineComponent ..> RenderBehavior : "uses"
+    RenderBehavior ..> RenderEngineUtiliy : "uses"
+    Camera ..> RenderEngineUtiliy : "uses"
 }
 
 @enduml

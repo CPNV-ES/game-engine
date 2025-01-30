@@ -1,7 +1,5 @@
 import { RenderBehavior } from "./RenderBehavior.ts";
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
-import { Camera } from "./Camera.ts";
-import { RenderEngineUtiliy } from "./RenderEngineUtiliy.ts";
 
 /**
  * A RenderBehavior already set up to render a textured object with UV coordinates (GPUBindGroupLayoutDescriptor and GPUVertexBufferLayout are already set up).
@@ -10,7 +8,6 @@ import { RenderEngineUtiliy } from "./RenderEngineUtiliy.ts";
 export class BasicUVTexturedRenderBehavior extends RenderBehavior {
   protected _vertexBuffer: GPUBuffer | null = null;
   protected _indexBuffer: GPUBuffer | null = null;
-  protected _mvpUniformBuffer: GPUBuffer | null = null;
   protected _indexData: Uint16Array;
   protected _spriteTexture: GPUTexture | null = null;
   protected _bindGroup: GPUBindGroup | null = null;
@@ -55,9 +52,12 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
       renderEngine,
       vertexWGSLShader,
       fragmentWGSLShader,
-      "triangle-list",
-      descriptor,
-      buffer,
+      {
+        topology: "triangle-list",
+        cullMode: "back",
+      },
+      [descriptor],
+      [buffer],
     );
 
     this._spriteImageUrl = spriteImageUrl;
@@ -74,11 +74,6 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
     );
     this._indexBuffer = this._renderEngine.createIndexBuffer(this._indexData);
 
-    //Create the uniform buffer with the already set model matrix (for good size)
-    this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
-      RenderEngineUtiliy.toModelMatrix(this.transform),
-    );
-
     //Upload the texture to the GPU
     this._spriteTexture = await this._renderEngine.createTexture(
       this._spriteImageUrl,
@@ -86,12 +81,12 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
 
     //Create the bind group for shaders
     this._bindGroup = this._renderEngine.createBindGroup(
-      this._bindGroupLayout!,
+      this._bindGroupLayouts![0],
       [
         {
           binding: 0,
           resource: {
-            buffer: this._mvpUniformBuffer,
+            buffer: this._mvpUniformBuffer!,
           },
         },
         { binding: 1, resource: this._spriteTexture.createView() },
@@ -107,21 +102,14 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
   }
 
   public render(renderpass: GPURenderPassEncoder) {
+    super.render(renderpass);
     if (
       !this._bindGroup ||
       !this._pipeline ||
       !this._vertexBuffer ||
-      !this._indexBuffer ||
-      !this._mvpUniformBuffer
+      !this._indexBuffer
     )
       return;
-    const camera: Camera | null = this._renderEngine.camera;
-    if (!camera) return;
-    this._renderEngine.fillUniformBuffer(
-      this._mvpUniformBuffer,
-      camera.getMVPMatrix(RenderEngineUtiliy.toModelMatrix(this.transform)),
-    );
-    renderpass.setPipeline(this._pipeline);
     renderpass.setVertexBuffer(0, this._vertexBuffer);
     renderpass.setIndexBuffer(this._indexBuffer, "uint16");
     renderpass.setBindGroup(0, this._bindGroup);

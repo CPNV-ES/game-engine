@@ -83,4 +83,7 @@ describe("WebGPU Rendering Test", () => {
   it("line wireframe drawing should match the expected", async () => {
     await runScreenshotTestCase("LineDrawing");
   });
+  it("sprite should correspond to text, transformed, colored, centered, scaled", async () => {
+    await runScreenshotTestCase("SimpleText");
+  });
 });
