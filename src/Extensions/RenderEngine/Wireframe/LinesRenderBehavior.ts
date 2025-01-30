@@ -2,6 +2,8 @@ import { WireframeRenderBehavior } from "./WireframeRenderBehavior.ts";
 import { RenderGameEngineComponent } from "../RenderGameEngineComponent.ts";
 import BasicColor from "../BasicShaders/BasicColor.frag.wgsl?raw";
 import BasicVertexMVP from "../BasicShaders/BasicVertexMVP.vert.wgsl?raw";
+import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
+import { RenderEngineUtiliy } from "../RenderEngineUtiliy.ts";
 
 /**
  * A behavior to render lines with a dynamic color.
@@ -15,25 +17,17 @@ export class LinesRenderBehavior extends WireframeRenderBehavior {
    */
   constructor(
     renderEngine: RenderGameEngineComponent,
-    lineData: Float32Array,
+    lineData: Vector2[],
     color: Float32Array,
   ) {
-    let indexData = new Uint16Array((lineData.length / 3 - 1) * 2);
-
-    for (let i = 0; i < indexData.length / 2; i++) {
-      indexData[i * 2] = i;
-      indexData[i * 2 + 1] = i + 1;
-    }
-
-    // Vérifier que la taille est un multiple de 2
-    if (indexData.length % 2 !== 0) {
-      const paddedIndexData = new Uint16Array(indexData.length + 1);
-      paddedIndexData.set(indexData);
-      paddedIndexData[indexData.length] = indexData[indexData.length - 1]; // Duplication du dernier index
-      indexData = paddedIndexData;
-    }
-    super(renderEngine, lineData, indexData, color, BasicVertexMVP, BasicColor);
+    const lineDataFloat32 = RenderEngineUtiliy.toFloat32Attay(lineData);
+    super(
+      renderEngine,
+      lineDataFloat32,
+      RenderEngineUtiliy.createLineIndicesForPoints(lineDataFloat32),
+      color,
+      BasicVertexMVP,
+      BasicColor,
+    );
   }
-
-  public get;
 }

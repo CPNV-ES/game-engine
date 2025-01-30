@@ -20,24 +20,30 @@ gameEngineWindow.root.addChild(go);
 go.addBehavior(
   new LinesRenderBehavior(
     renderComponent,
-    new Float32Array([0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0]),
+    [
+      new Vector2(0, 0),
+      new Vector2(1, 0),
+      new Vector2(1, 1),
+      new Vector2(0, 1),
+      new Vector2(0, 0),
+    ],
     new Float32Array([1, 1, 0, 1]),
   ),
 );
 
-function getPolygon(sides: number, radius: number): Float32Array {
+function getPolygon(sides: number, radius: number): Vector2[] {
   // Calculate the vertices using polar coordinates
-  const polygonLines = [];
+  const polygonLines: Vector2[] = [];
   for (let i = 0; i < sides; i++) {
     const angle = (i / sides) * 2 * Math.PI; // Angle for each vertex
     const x = radius * Math.cos(angle);
     const y = radius * Math.sin(angle);
-    polygonLines.push(x, y, 0); // Add the x, y, z coordinates for each vertex
+    polygonLines.push(new Vector2(x, y));
   }
 
   // Close the polygon by connecting the last point to the first
-  polygonLines.push(polygonLines[0], polygonLines[1], 0);
-  return new Float32Array(polygonLines);
+  polygonLines.push(polygonLines[0]);
+  return polygonLines;
 }
 
 const polygonGo = new GameObject();
