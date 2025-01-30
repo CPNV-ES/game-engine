@@ -85,10 +85,6 @@ package sprunk.extensions.renderengine {
         +centered: boolean
         +asyncInit(): Promise<void>
         +render(renderpass: GPURenderPassEncoder): void
-        +refreshText(): void
-        +createFont(): Promise<MsdfFont>
-        +formatText(font: MsdfFont, text: string, options?: MsdfTextFormattingOptions): MsdfText
-        +measureText(font: MsdfFont, text: string, charCallback?: (x: number, y: number, line: number, char: MsdfChar) => void): MsdfTextMeasurements
     }
 
     RenderGameEngineComponent -up-|> GameEngineComponent
