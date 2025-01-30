@@ -119,7 +119,7 @@ export class TextRenderBehavior extends RenderBehavior {
   }
 
   /**
-   * Set the pixel scale of the text.
+   * Set the color of the text.
    * @param value
    */
   public set color(value: [number, number, number, number]) {
