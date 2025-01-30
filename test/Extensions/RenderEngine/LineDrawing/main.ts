@@ -45,12 +45,11 @@ gameEngineWindow.root.addChild(polygonGo);
 const polygonLines = getPolygon(12, 2);
 const polygonRenderBehavior = new LinesRenderBehavior(
   renderComponent,
-  new Float32Array(),
+  polygonLines,
   new Float32Array([1, 1, 1, 1]),
 );
 polygonGo.addBehavior(polygonRenderBehavior);
 polygonRenderBehavior.color = new Float32Array([0, 1, 1, 1]);
-polygonRenderBehavior.lineData = polygonLines;
 polygonGo.transform.position = new Vector2(2, 1);
 polygonGo.transform.rotation = Math.PI / 4;
 
