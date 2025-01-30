@@ -40,9 +40,8 @@ export class GameObjectDebugger {
    * The root game object from the GameEngineWindow is rendered with all its children and their behaviors.
    */
   public render(): void {
-    this._debugGUI.destroy();
-    this._debugGUI = new GUI({
-      container: this._debugContainer,
+    this._debugGUI.controllers.forEach((controller) => {
+      controller.updateDisplay();
     });
     this.renderGameObjects(GameEngineWindow.instance.root, this._debugGUI);
   }
@@ -120,9 +119,11 @@ export class GameObjectDebugger {
       .add(
         {
           addChild: (): void => {
-            const newChild: GameObject = new GameObject();
-            gameObject.addChild(newChild);
-            this.renderGameObjects(newChild, gameObjectFolder);
+            gameObject.addChild(new GameObject());
+            this.renderGameObjects(
+              gameObject.children[gameObject.children.length - 1],
+              gameObjectFolder,
+            );
           },
         },
         "addChild",
