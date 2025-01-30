@@ -34,4 +34,6 @@ export class LinesRenderBehavior extends WireframeRenderBehavior {
     }
     super(renderEngine, lineData, indexData, color, BasicVertexMVP, BasicColor);
   }
+
+  public get;
 }
