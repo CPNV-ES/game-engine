@@ -45,6 +45,9 @@ export class RenderGameEngineComponent extends GameEngineComponent {
   private _gpu: GPU;
   private _context: GPUCanvasContext | undefined;
   private _presentationTextureFormat: GPUTextureFormat | undefined;
+  private _depthTextureFormat: GPUTextureFormat | undefined;
+  private _depthTexture: GPUTexture | null = null;
+  private _depthTextureView: GPUTextureView | null = null;
   private _device: GPUDevice | undefined;
   private _isRenderingReady: boolean = false;
 
@@ -88,9 +91,10 @@ export class RenderGameEngineComponent extends GameEngineComponent {
   public createPipeline(
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
-    topology: GPUPrimitiveTopology,
-    bindGroupLayout: GPUBindGroupLayout,
-    buffer: GPUVertexBufferLayout,
+    primitiveState: GPUPrimitiveState,
+    bindGroupLayouts: Iterable<GPUBindGroupLayout | null>,
+    buffers?: Iterable<GPUVertexBufferLayout | null> | undefined,
+    targetBlend?: GPUBlendState | undefined,
   ): GPURenderPipeline {
     if (!this.IsRenderingReady) {
       throw new Error("Rendering is not ready yet! (Device not available)");
@@ -98,14 +102,14 @@ export class RenderGameEngineComponent extends GameEngineComponent {
 
     return this._device!.createRenderPipeline({
       layout: this._device!.createPipelineLayout({
-        bindGroupLayouts: [bindGroupLayout],
+        bindGroupLayouts: bindGroupLayouts,
       }),
       vertex: {
         module: this._device!.createShaderModule({
           code: vertexWGSLShader,
         }),
         entryPoint: "main",
-        buffers: [buffer],
+        buffers: buffers,
       },
       fragment: {
         module: this._device!.createShaderModule({
@@ -115,12 +119,15 @@ export class RenderGameEngineComponent extends GameEngineComponent {
         targets: [
           {
             format: this._presentationTextureFormat!,
+            blend: targetBlend,
           },
         ],
       },
-      primitive: {
-        topology: topology,
-        cullMode: "back",
+      primitive: primitiveState,
+      depthStencil: {
+        depthWriteEnabled: false,
+        depthCompare: "less",
+        format: this._depthTextureFormat!,
       },
     });
   }
@@ -165,7 +172,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     if (!this.IsRenderingReady) {
       throw new Error("Rendering is not ready yet! (Device not available)");
     }
-    this._device!.queue.writeBuffer(buffer, 0, data);
+    this._device!.queue.writeBuffer(buffer, 0, data, 0, data.length);
   }
 
   public createVertexBuffer(data: Float32Array): GPUBuffer {
@@ -192,9 +199,39 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     return buffer;
   }
 
+  public createStorageBuffer(
+    size: number,
+    label: string = "Storage buffer",
+  ): GPUBuffer {
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
+    }
+    return this._device!.createBuffer({
+      label: label,
+      size: size,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      mappedAtCreation: true,
+    });
+  }
+
+  public createRenderBundleEncoder(
+    descriptor: GPURenderBundleEncoderDescriptor,
+  ): GPURenderBundleEncoder {
+    if (!this.IsRenderingReady) {
+      throw new Error("Rendering is not ready yet! (Device not available)");
+    }
+    return this._device!.createRenderBundleEncoder(descriptor);
+  }
+
   public onAttachedTo(_gameEngine: GameEngineWindow): void {
     super.onAttachedTo(_gameEngine);
     this.requestResources();
+  }
+
+  public get presentationTextureFormat(): GPUTextureFormat {
+    if (!this._presentationTextureFormat)
+      throw new Error("Presentation texture format not available");
+    return this._presentationTextureFormat;
   }
 
   private async requestResources() {
@@ -226,10 +263,12 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       "webgpu",
     ) as GPUCanvasContext;
     this._presentationTextureFormat = this._gpu.getPreferredCanvasFormat();
+    this._depthTextureFormat = "depth24plus";
     this._context.configure({
       device,
       format: this._presentationTextureFormat,
     });
+    this.createDepthTexture();
     this.startRendering();
   }
 
@@ -256,19 +295,35 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     };
   }
 
+  private createDepthTexture() {
+    const [width, height] = [
+      this._canvasToDrawOn.width,
+      this._canvasToDrawOn.height,
+    ];
+    this._depthTexture = this._device!.createTexture({
+      size: [width, height, 1],
+      format: this._depthTextureFormat!,
+      usage: GPUTextureUsage.RENDER_ATTACHMENT,
+    });
+    this._depthTextureView = this._depthTexture.createView();
+  }
+
   private resizeCanvasToMatchDisplaySize() {
     const devicePixelRatio: number = window.devicePixelRatio;
     this._canvasToDrawOn.width =
       this._canvasToDrawOn.clientWidth * devicePixelRatio;
     this._canvasToDrawOn.height =
       this._canvasToDrawOn.clientHeight * devicePixelRatio;
+
+    this.createDepthTexture();
+
     if (this.camera) {
       this.camera.aspect =
         this._canvasToDrawOn.width / this._canvasToDrawOn.height;
     }
   }
 
-  private frame(deltaTime: number) {
+  private frame(_deltaTime: number) {
     if (!this._device || !this._context || !this._presentationTextureFormat)
       throw new Error(
         "Device, context, or presentation texture format not available",
@@ -287,6 +342,12 @@ export class RenderGameEngineComponent extends GameEngineComponent {
           storeOp: "store",
         },
       ],
+      depthStencilAttachment: {
+        view: this._depthTextureView!,
+        depthClearValue: 1.0, // Clear depth to the farthest value
+        depthLoadOp: "clear",
+        depthStoreOp: "store",
+      },
     };
 
     const renderPassEncoder: GPURenderPassEncoder =
