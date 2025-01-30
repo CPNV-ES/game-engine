@@ -51,9 +51,12 @@ export class WireframeRenderBehavior extends RenderBehavior {
       renderEngine,
       vertexWGSLShader,
       fragmentWGSLShader,
-      "line-list", // Use line rendering mode
-      descriptor,
-      buffer,
+      {
+        topology: "line-list",
+        cullMode: "back",
+      },
+      [descriptor],
+      [buffer],
     );
 
     this._vertexData = vertexData;
@@ -75,7 +78,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
     this._colorBuffer = this._renderEngine.createUniformBuffer(this._color);
 
     this._bindGroup = this._renderEngine.createBindGroup(
-      this._bindGroupLayout!,
+      this._bindGroupLayouts![0],
       [
         { binding: 0, resource: { buffer: this._mvpUniformBuffer } },
         { binding: 1, resource: { buffer: this._colorBuffer } },
