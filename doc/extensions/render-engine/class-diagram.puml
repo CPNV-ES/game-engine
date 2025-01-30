@@ -55,6 +55,12 @@ package sprunk.extensions.renderengine {
         +render(renderpass: GPURenderPassEncoder): void
     }
 
+    class RenderEngineUtiliy {
+        +static toModelMatrix(transform: Transform): Float32Array
+        +static toFloat32Attay(points: Vector2[]): Float32Array
+        +static createLineIndicesForPoints(pointsDataFloat32: Float32Array): Uint16Array
+    }
+
     class Camera {
         +constructor(fov: number, aspect: number, near: number, far: number)
     }
@@ -87,16 +93,40 @@ package sprunk.extensions.renderengine {
         +render(renderpass: GPURenderPassEncoder): void
     }
 
+    class WireframeRenderBehavior {
+        #_vertexBuffer: GPUBuffer | null
+        #_indexBuffer: GPUBuffer | null
+        #_mvpUniformBuffer: GPUBuffer | null
+        #_indexData: Uint16Array
+        #_vertexData: Float32Array
+        #_bindGroup: GPUBindGroup | null
+        #_color: Color
+        #_colorBuffer: GPUBuffer | null
+        #_onReady: Event<void> | null
+        +constructor(renderEngine: RenderGameEngineComponent, vertexData: Float32Array, indexData: Uint16Array, color: Color, vertexWGSLShader: string, fragmentWGSLShader: string)
+        +asyncInit(): Promise<void>
+        +render(renderpass: GPURenderPassEncoder): void
+        +color: Color
+    }
+
+    class LinesRenderBehavior {
+        +constructor(renderEngine: RenderGameEngineComponent, lineData: Vector2[], color: Color)
+    }
+
     RenderGameEngineComponent -up-|> GameEngineComponent
     RenderBehavior -up-|> OutputBehavior
     SpriteRenderBehavior -up-|> BasicUVTexturedRenderBehavior
     BasicUVTexturedRenderBehavior -up-|> RenderBehavior
     TextRenderBehavior -up-|> RenderBehavior
+    WireframeRenderBehavior -up-|> RenderBehavior
+    LinesRenderBehavior -up-|> WireframeRenderBehavior
 
     RenderGameEngineComponent --> Camera
     RenderGameEngineComponent ..> RenderBehavior : "uses"
     RenderBehavior ..> RenderEngineUtiliy : "uses"
     Camera ..> RenderEngineUtiliy : "uses"
+    WireframeRenderBehavior ..> Color : "uses"
+    LinesRenderBehavior ..> Color : "uses"
 }
 
 @enduml
