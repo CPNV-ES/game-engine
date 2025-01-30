@@ -2,6 +2,7 @@ import { RenderBehavior } from "../RenderBehavior.ts";
 import { RenderGameEngineComponent } from "../RenderGameEngineComponent.ts";
 import { Camera } from "../Camera.ts";
 import { RenderEngineUtiliy } from "../RenderEngineUtiliy.ts";
+import { Event } from "../../../../src/Core/EventSystem/Event.ts";
 
 /**
  * A RenderBehavior that renders a wireframe using line primitives.
@@ -15,6 +16,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
   private _bindGroup: GPUBindGroup | null = null;
   private _color: Float32Array;
   private _colorBuffer: GPUBuffer | null = null;
+  private _onReady: Event<void> | null = new Event<void>();
 
   /**
    * Create a new WireframeRenderBehavior that renders lines.
@@ -79,6 +81,29 @@ export class WireframeRenderBehavior extends RenderBehavior {
         { binding: 1, resource: { buffer: this._colorBuffer } },
       ],
     );
+    this._onReady?.emit();
+  }
+
+  /**
+   * Get the color of the wireframe.
+   */
+  public get color(): Float32Array {
+    return this._color;
+  }
+
+  /**
+   * Set the color of the wireframe.
+   * @param value
+   */
+  public set color(value: Float32Array) {
+    this._color = value;
+    if (this._colorBuffer) {
+      this._renderEngine.fillUniformBuffer(this._colorBuffer, this._color);
+    } else {
+      this._onReady?.addObserver(() => {
+        this._renderEngine.fillUniformBuffer(this._colorBuffer!, this._color);
+      });
+    }
   }
 
   public render(renderpass: GPURenderPassEncoder) {
@@ -99,8 +124,6 @@ export class WireframeRenderBehavior extends RenderBehavior {
       this._mvpUniformBuffer,
       camera.getMVPMatrix(RenderEngineUtiliy.toModelMatrix(this.transform)),
     );
-
-    this._renderEngine.fillUniformBuffer(this._colorBuffer, this._color);
 
     renderpass.setPipeline(this._pipeline);
     renderpass.setVertexBuffer(0, this._vertexBuffer);
