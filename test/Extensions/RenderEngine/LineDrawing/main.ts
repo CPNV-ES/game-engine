@@ -4,6 +4,7 @@ import { GameObject } from "../../../../src/Core/GameObject.ts";
 import { Camera } from "../../../../src/Extensions/RenderEngine/Camera.ts";
 import { LinesRenderBehavior } from "../../../../src/Extensions/RenderEngine/Wireframe/LinesRenderBehavior";
 import { Vector2 } from "../../../../src/Core/MathStructures/Vector2";
+import { Color } from "../../../../src/Extensions/RenderEngine/Color";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -27,7 +28,7 @@ go.addBehavior(
       new Vector2(0, 1),
       new Vector2(0, 0),
     ],
-    new Float32Array([1, 1, 0, 1]),
+    new Color(1, 1, 0, 1),
   ),
 );
 
@@ -52,10 +53,10 @@ const polygonLines = getPolygon(12, 2);
 const polygonRenderBehavior = new LinesRenderBehavior(
   renderComponent,
   polygonLines,
-  new Float32Array([1, 1, 1, 1]),
+  new Color(1, 0, 1, 1),
 );
 polygonGo.addBehavior(polygonRenderBehavior);
-polygonRenderBehavior.color = new Float32Array([0, 1, 1, 1]);
+polygonRenderBehavior.color = new Color(0, 1, 1, 1);
 polygonGo.transform.position = new Vector2(2, 1);
 polygonGo.transform.rotation = Math.PI / 4;
 

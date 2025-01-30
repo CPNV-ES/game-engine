@@ -3,6 +3,7 @@ import { RenderGameEngineComponent } from "../RenderGameEngineComponent.ts";
 import { Camera } from "../Camera.ts";
 import { RenderEngineUtiliy } from "../RenderEngineUtiliy.ts";
 import { Event } from "../../../../src/Core/EventSystem/Event.ts";
+import { Color } from "../Color.ts";
 
 /**
  * A RenderBehavior that renders a wireframe using line primitives.
@@ -14,7 +15,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
   protected _indexData: Uint16Array;
   private _vertexData: Float32Array;
   private _bindGroup: GPUBindGroup | null = null;
-  private _color: Float32Array;
+  private _color: Color;
   private _colorBuffer: GPUBuffer | null = null;
   private _onReady: Event<void> | null = new Event<void>();
 
@@ -31,7 +32,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
     renderEngine: RenderGameEngineComponent,
     vertexData: Float32Array,
     indexData: Uint16Array,
-    color: Float32Array,
+    color: Color,
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
   ) {
@@ -75,7 +76,9 @@ export class WireframeRenderBehavior extends RenderBehavior {
       RenderEngineUtiliy.toModelMatrix(this.transform),
     );
 
-    this._colorBuffer = this._renderEngine.createUniformBuffer(this._color);
+    this._colorBuffer = this._renderEngine.createUniformBuffer(
+      this._color.toFloat32Array(),
+    );
 
     this._bindGroup = this._renderEngine.createBindGroup(
       this._bindGroupLayouts![0],
@@ -90,7 +93,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
   /**
    * Get the color of the wireframe.
    */
-  public get color(): Float32Array {
+  public get color(): Color {
     return this._color;
   }
 
@@ -98,13 +101,19 @@ export class WireframeRenderBehavior extends RenderBehavior {
    * Set the color of the wireframe.
    * @param value
    */
-  public set color(value: Float32Array) {
+  public set color(value: Color) {
     this._color = value;
     if (this._colorBuffer) {
-      this._renderEngine.fillUniformBuffer(this._colorBuffer, this._color);
+      this._renderEngine.fillUniformBuffer(
+        this._colorBuffer,
+        this._color.toFloat32Array(),
+      );
     } else {
       this._onReady?.addObserver(() => {
-        this._renderEngine.fillUniformBuffer(this._colorBuffer!, this._color);
+        this._renderEngine.fillUniformBuffer(
+          this._colorBuffer!,
+          this._color.toFloat32Array(),
+        );
       });
     }
   }
