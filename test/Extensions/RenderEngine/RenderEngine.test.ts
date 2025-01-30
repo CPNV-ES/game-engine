@@ -80,4 +80,7 @@ describe("WebGPU Rendering Test", () => {
   it("sprite should move and be rotated when it's transform is translated + rotated", async () => {
     await runScreenshotTestCase("RotateTransform");
   });
+  it("line wireframe drawing should match the expected", async () => {
+    await runScreenshotTestCase("LineDrawing");
+  });
 });
