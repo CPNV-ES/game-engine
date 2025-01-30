@@ -20,7 +20,7 @@ for (let i = 0; i < 10; i++) {
   go.addBehavior(
     new SpriteRenderBehavior(
       renderComponent,
-      "/test/CommonResources/Sprunk.png",
+      "/test/CommonResources/sprunk.png",
     ),
   );
   go.transform.position.x = i;
