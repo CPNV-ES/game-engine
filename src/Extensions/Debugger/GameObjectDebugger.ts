@@ -136,11 +136,11 @@ export class GameObjectDebugger {
 
     const typeHandlers: Record<string, (key: keyof T) => void> = {
       number: (key) =>
-        folder.add(pbj, key).name(this.formatValueForDisplay(key)),
+        folder.add(pbj, key).name(this.formatValueForDisplay(key)).listen(),
       string: (key) =>
-        folder.add(pbj, key).name(this.formatValueForDisplay(key)),
+        folder.add(pbj, key).name(this.formatValueForDisplay(key)).listen(),
       boolean: (key) =>
-        folder.add(pbj, key).name(this.formatValueForDisplay(key)),
+        folder.add(pbj, key).name(this.formatValueForDisplay(key)).listen(),
       object: (key) => {
         const value = pbj[key];
         if (value instanceof Array) {
