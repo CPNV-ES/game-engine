@@ -1,0 +1,24 @@
+@startuml AudioBehavior
+
+class OutputBehavior
+
+class AudioBehavior {
+  - audioContext: AudioContext
+  - gainNode: GainNode
+  - source: AudioBufferSourceNode | null = null
+  - audioBuffer: AudioBuffer | null = null
+  - isPlaying: boolean = false
+
+  + constructor()
+  + setAudio(audio: string): Promise<void>
+  + start(): void
+  + stop(): void
+  + pause(): Promise<void>
+  + resume(): Promise<void>
+  + setVolume(volume: number): void
+  + setPitch(pitch: number): void
+  + setLoop(loop: boolean): void
+}
+
+AudioBehavior --up|> OutputBehavior
+@enduml
