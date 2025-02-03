@@ -1,7 +1,7 @@
-import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
-import { Collider } from "./Collider.ts";
+import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
+import { Collider } from "../Collider.ts";
 
-export class Rigidbody {
+export class PolygonRigidbody {
   public position: Vector2;
   public velocity: Vector2 = new Vector2(0, 0);
   public mass: number = 1;
