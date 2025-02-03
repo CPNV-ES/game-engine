@@ -2,7 +2,6 @@ import { Behavior } from "../../Core/Behavior";
 import { GameEngineWindow } from "../../Core/GameEngineWindow";
 import { GameObject } from "../../Core/GameObject";
 import GUI from "lil-gui";
-import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
 
 /**
  * Class responsible for debugging game objects using a GUI.
@@ -47,7 +46,7 @@ export class GameObjectDebugger {
     this.renderGameObject(GameEngineWindow.instance.root, this._debugGUI);
   }
 
-  private renderGameObject(gameObject: GameObject, gui: GUI): void {
+  private renderGameObject(gameObject: GameObject, gui: GUI): GUI {
     const gameObjectFolder: GUI = gui.addFolder(gameObject.name);
     gameObjectFolder.close();
 
@@ -79,12 +78,14 @@ export class GameObjectDebugger {
         )
         .name("Remove");
     }
+    return gameObjectFolder;
   }
 
   private renderBehaviors(gameObjectFolder: GUI, gameObject: GameObject): GUI {
     const behaviorsFolder: GUI = gameObjectFolder.addFolder("Behaviors");
     behaviorsFolder.close();
     const behaviors: Behavior[] = gameObject.getAllBehaviors();
+    const behaviorFolders: Map<Behavior, GUI> = new Map();
 
     behaviors.forEach((behavior: Behavior): void => {
       const behaviorFolder = behaviorsFolder.addFolder(
@@ -92,6 +93,23 @@ export class GameObjectDebugger {
       );
       behaviorFolder.close();
       this.renderProperties(behaviorFolder, behavior);
+      behaviorFolders.set(behavior, behaviorFolder);
+    });
+
+    //Reactively adding of behaviors
+    gameObject.onBehaviorAdded.addObserver((behavior: Behavior): void => {
+      const behaviorFolder = behaviorsFolder.addFolder(
+        behavior.constructor.name,
+      );
+      behaviorFolder.close();
+      this.renderProperties(behaviorFolder, behavior);
+      behaviorFolders.set(behavior, behaviorFolder);
+    });
+
+    //Reactively removing of behaviors
+    gameObject.onBehaviorRemoved.addObserver((behavior: Behavior): void => {
+      behaviorFolders.get(behavior)?.destroy();
+      behaviorFolders.delete(behavior);
     });
     return behaviorsFolder;
   }
@@ -100,9 +118,21 @@ export class GameObjectDebugger {
     const childrenFolder: GUI = gameObjectFolder.addFolder("Children");
     childrenFolder.close();
     const children: GameObject[] = gameObject.children;
+    const childrenFolders: Map<GameObject, GUI> = new Map();
 
     children.forEach((child: GameObject): void => {
-      this.renderGameObject(child, childrenFolder);
+      childrenFolders.set(child, this.renderGameObject(child, childrenFolder));
+    });
+
+    //Reactively adding of children
+    gameObject.onChildAdded.addObserver((child: GameObject): void => {
+      childrenFolders.set(child, this.renderGameObject(child, childrenFolder));
+    });
+
+    //Reactively removing of children
+    gameObject.onChildRemoved.addObserver((child: GameObject): void => {
+      childrenFolders.get(child)?.destroy();
+      childrenFolders.delete(child);
     });
     return childrenFolder;
   }
