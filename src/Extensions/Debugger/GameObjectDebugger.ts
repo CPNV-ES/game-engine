@@ -44,10 +44,10 @@ export class GameObjectDebugger {
     this._debugGUI.controllers.forEach((controller) => {
       controller.updateDisplay();
     });
-    this.renderGameObjects(GameEngineWindow.instance.root, this._debugGUI);
+    this.renderGameObject(GameEngineWindow.instance.root, this._debugGUI);
   }
 
-  private renderGameObjects(gameObject: GameObject, gui: GUI): void {
+  private renderGameObject(gameObject: GameObject, gui: GUI): void {
     const gameObjectFolder: GUI = gui.addFolder(gameObject.name);
     gameObjectFolder.close();
 
@@ -60,10 +60,7 @@ export class GameObjectDebugger {
         {
           addChild: (): void => {
             gameObject.addChild(new GameObject());
-            this.renderGameObjects(
-              gameObject.children[gameObject.children.length - 1],
-              gameObjectFolder,
-            );
+            //TODO : Refresh the GUI
           },
         },
         "addChild",
@@ -75,7 +72,7 @@ export class GameObjectDebugger {
           {
             removeChild: (): void => {
               gameObject.parent?.removeChild(gameObject);
-              gameObjectFolder.destroy();
+              //TODO : Refresh the GUI
             },
           },
           "removeChild",
@@ -84,7 +81,7 @@ export class GameObjectDebugger {
     }
   }
 
-  private renderBehaviors(gameObjectFolder: GUI, gameObject: GameObject): void {
+  private renderBehaviors(gameObjectFolder: GUI, gameObject: GameObject): GUI {
     const behaviorsFolder: GUI = gameObjectFolder.addFolder("Behaviors");
     behaviorsFolder.close();
     const behaviors: Behavior[] = gameObject.getAllBehaviors();
@@ -96,18 +93,18 @@ export class GameObjectDebugger {
       behaviorFolder.close();
       this.renderProperties(behaviorFolder, behavior);
     });
+    return behaviorsFolder;
   }
 
-  private renderChildren(gameObjectFolder: GUI, gameObject: GameObject): void {
+  private renderChildren(gameObjectFolder: GUI, gameObject: GameObject): GUI {
     const childrenFolder: GUI = gameObjectFolder.addFolder("Children");
     childrenFolder.close();
     const children: GameObject[] = gameObject.children;
 
     children.forEach((child: GameObject): void => {
-      const childFolder = childrenFolder.addFolder(child.name);
-      childFolder.close();
-      this.renderProperties(childFolder, child);
+      this.renderGameObject(child, childrenFolder);
     });
+    return childrenFolder;
   }
 
   private renderGameObjectProperties(
