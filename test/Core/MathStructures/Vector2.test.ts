@@ -88,6 +88,19 @@ describe("Vector2", (): void => {
   });
 
   /**
+   * Tests if a vector can be scaled by a vector.
+   */
+  it("should scale a vector by a vector", (): void => {
+    const vector: Vector2 = new Vector2(1, 2);
+    const scaleVector: Vector2 = new Vector2(2, 3);
+
+    vector.scaleAxis(scaleVector);
+
+    expect(vector.x).toBe(2);
+    expect(vector.y).toBe(6);
+  });
+
+  /**
    * Test if a vector can be normalized.
    */
   it("should normalize a vector", (): void => {

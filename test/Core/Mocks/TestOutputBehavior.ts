@@ -7,7 +7,7 @@ export class TestOutputBehavior extends OutputBehavior {
   }
 
   public doObserve<T extends LogicBehavior<U>, U>(
-    BehaviorClass: new (...args: any[]) => T,
+    BehaviorClass: abstract new (...args: any[]) => T,
     observer: (data: U) => void,
   ): void {
     this.observe(BehaviorClass, observer);

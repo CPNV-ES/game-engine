@@ -40,7 +40,12 @@ export abstract class Behavior {
     //This is not abstract because it is not required to be implemented.
   }
 
-  protected tick(_deltaTime: number): void {
+  /**
+   * Called every frame. Override this method to add custom behavior.
+   * @param _deltaTime - The time in seconds since the last frame.
+   * @protected - This method should not be called directly except by the GameEngineWindowComponent.
+   */
+  public tick(_deltaTime: number): void {
     //This is not abstract because it is not required to be implemented.
   }
 }
