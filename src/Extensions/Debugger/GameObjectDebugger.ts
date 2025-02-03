@@ -127,6 +127,16 @@ export class GameObjectDebugger {
         !key.toString().startsWith("on"),
     );
 
+    // Anything that contains 'name' should be displayed first
+    keys.sort((a, b) => {
+      if (a.toString().includes("name")) {
+        return -1;
+      } else if (b.toString().includes("name")) {
+        return 1;
+      }
+      return 0;
+    });
+
     const typeHandlers: Record<string, (key: keyof T) => void> = {
       number: (key) =>
         folder.add(pbj, key).name(this.formatValueForDisplay(key)),
