@@ -2,6 +2,7 @@ import { Behavior } from "../../Core/Behavior";
 import { GameEngineWindow } from "../../Core/GameEngineWindow";
 import { GameObject } from "../../Core/GameObject";
 import GUI from "lil-gui";
+import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
 
 /**
  * Class responsible for debugging game objects using a GUI.
@@ -48,72 +49,10 @@ export class GameObjectDebugger {
 
   private renderGameObjects(gameObject: GameObject, gui: GUI): void {
     const gameObjectFolder: GUI = gui.addFolder(gameObject.name);
-    const behaviorsFolder: GUI = gameObjectFolder.addFolder("Behaviors");
-    const behaviors: Behavior[] = gameObject.getAllBehaviors();
 
-    behaviors.forEach((behavior: Behavior): void => {
-      const behaviorFolder = behaviorsFolder.addFolder(
-        behavior.constructor.name,
-      );
-      const keys = Reflect.ownKeys(behavior) as (keyof Behavior)[];
-
-      const typeHandlers: Record<string, (key: keyof Behavior) => void> = {
-        number: (key) => behaviorFolder.add(behavior, key).name(key as string),
-        string: (key) => behaviorFolder.add(behavior, key).name(key as string),
-        boolean: (key) => behaviorFolder.add(behavior, key).name(key as string),
-      };
-
-      keys.forEach((key) => {
-        const value = behavior[key];
-        const type = typeof value;
-
-        typeHandlers[type]?.(key);
-      });
-    });
-
-    gameObjectFolder
-      .add(gameObject, "name")
-      .name("Name")
-      .onFinishChange((value: string): void => {
-        gameObject.name = value;
-        gameObjectFolder.title(gameObject.name);
-      })
-      .updateDisplay();
-
-    gameObjectFolder
-      .add(gameObject.transform.position, "x")
-      .name("Position X")
-      .onChange((value: number): void => {
-        gameObject.transform.position.x = value;
-      });
-
-    gameObjectFolder
-      .add(gameObject.transform.position, "y")
-      .name("Position Y")
-      .onChange((value: number): void => {
-        gameObject.transform.position.y = value;
-      });
-
-    gameObjectFolder
-      .add(gameObject.transform.scale, "x")
-      .name("Scale X")
-      .onChange((value: number): void => {
-        gameObject.transform.scale.x = value;
-      });
-
-    gameObjectFolder
-      .add(gameObject.transform.scale, "y")
-      .name("Scale Y")
-      .onChange((value: number): void => {
-        gameObject.transform.scale.y = value;
-      });
-
-    gameObjectFolder
-      .add(gameObject.transform, "rotation")
-      .name("Rotation")
-      .onChange((value: number): void => {
-        gameObject.transform.rotation = value;
-      });
+    this.renderGameObjectProperties(gameObjectFolder, gameObject);
+    this.renderBehaviors(gameObjectFolder, gameObject);
+    this.renderChildren(gameObjectFolder, gameObject);
 
     gameObjectFolder
       .add(
@@ -142,9 +81,83 @@ export class GameObjectDebugger {
         )
         .name("Remove");
     }
+  }
 
-    gameObject.children.forEach((child: GameObject): void => {
-      this.renderGameObjects(child, gameObjectFolder);
+  private renderBehaviors(gameObjectFolder: GUI, gameObject: GameObject): void {
+    const behaviorsFolder: GUI = gameObjectFolder.addFolder("Behaviors");
+    const behaviors: Behavior[] = gameObject.getAllBehaviors();
+
+    behaviors.forEach((behavior: Behavior): void => {
+      const behaviorFolder = behaviorsFolder.addFolder(
+        behavior.constructor.name,
+      );
+      this.renderProperties(behaviorFolder, behavior);
     });
+  }
+
+  private renderChildren(gameObjectFolder: GUI, gameObject: GameObject): void {
+    const childrenFolder: GUI = gameObjectFolder.addFolder("Children");
+    const children: GameObject[] = gameObject.children;
+
+    children.forEach((child: GameObject): void => {
+      const childFolder = childrenFolder.addFolder(child.name);
+      this.renderProperties(childFolder, child);
+    });
+  }
+
+  private renderGameObjectProperties(
+    gameObjectFolder: GUI,
+    gameObject: GameObject,
+  ): void {
+    //Render game object properties
+    this.renderProperties(gameObjectFolder, gameObject);
+  }
+
+  private renderProperties<T extends object>(folder: GUI, pbj: T): void {
+    const keys = (Reflect.ownKeys(pbj) as (keyof T)[]).filter(
+      (key) =>
+        key !== "constructor" &&
+        key !== "prototype" &&
+        !key.toString().startsWith("_") &&
+        !key.toString().startsWith("on"),
+    );
+
+    const typeHandlers: Record<string, (key: keyof T) => void> = {
+      number: (key) =>
+        folder.add(pbj, key).name(this.formatValueForDisplay(key)),
+      string: (key) =>
+        folder.add(pbj, key).name(this.formatValueForDisplay(key)),
+      boolean: (key) =>
+        folder.add(pbj, key).name(this.formatValueForDisplay(key)),
+      object: (key) => {
+        const value = pbj[key];
+        if (value instanceof Array) {
+          const arrayFolder = folder.addFolder(this.formatValueForDisplay(key));
+          value.forEach((item) => {
+            this.renderProperties(arrayFolder, item);
+          });
+        } else if (value instanceof Object) {
+          const objectFolder = folder.addFolder(
+            this.formatValueForDisplay(key),
+          );
+          this.renderProperties(objectFolder, value);
+        }
+      },
+    };
+
+    keys.forEach((key) => {
+      const value = pbj[key];
+      const type = typeof value;
+
+      typeHandlers[type]?.(key);
+    });
+  }
+
+  private formatValueForDisplay(value: any): string {
+    return value
+      .toString()
+      .replace(/(?:^|_)(\w)/g, (_: any, letter: string) =>
+        letter.toUpperCase(),
+      );
   }
 }

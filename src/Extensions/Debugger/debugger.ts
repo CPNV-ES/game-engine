@@ -20,7 +20,7 @@ const gameObjectDebugger: GameObjectDebugger = new GameObjectDebugger(
   debugElement,
 );
 
-gameObjectDebugger.title("Game Object Debugger");
+gameObjectDebugger.title("Game Object Hierarchy");
 gameObjectDebugger.render();
 
 let isDragging: boolean = false;
