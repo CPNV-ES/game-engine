@@ -49,6 +49,7 @@ export class GameObjectDebugger {
 
   private renderGameObjects(gameObject: GameObject, gui: GUI): void {
     const gameObjectFolder: GUI = gui.addFolder(gameObject.name);
+    gameObjectFolder.close();
 
     this.renderGameObjectProperties(gameObjectFolder, gameObject);
     this.renderBehaviors(gameObjectFolder, gameObject);
@@ -85,22 +86,26 @@ export class GameObjectDebugger {
 
   private renderBehaviors(gameObjectFolder: GUI, gameObject: GameObject): void {
     const behaviorsFolder: GUI = gameObjectFolder.addFolder("Behaviors");
+    behaviorsFolder.close();
     const behaviors: Behavior[] = gameObject.getAllBehaviors();
 
     behaviors.forEach((behavior: Behavior): void => {
       const behaviorFolder = behaviorsFolder.addFolder(
         behavior.constructor.name,
       );
+      behaviorFolder.close();
       this.renderProperties(behaviorFolder, behavior);
     });
   }
 
   private renderChildren(gameObjectFolder: GUI, gameObject: GameObject): void {
     const childrenFolder: GUI = gameObjectFolder.addFolder("Children");
+    childrenFolder.close();
     const children: GameObject[] = gameObject.children;
 
     children.forEach((child: GameObject): void => {
       const childFolder = childrenFolder.addFolder(child.name);
+      childFolder.close();
       this.renderProperties(childFolder, child);
     });
   }
@@ -140,6 +145,7 @@ export class GameObjectDebugger {
           const objectFolder = folder.addFolder(
             this.formatValueForDisplay(key),
           );
+          objectFolder.close();
           this.renderProperties(objectFolder, value);
         }
       },
