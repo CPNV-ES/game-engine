@@ -1,6 +1,6 @@
-import { Collider } from "../Collider.ts";
+import { Collider } from "../Colliders/Collider.ts";
 import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
-import { PolygonCollider } from "../PolygonCollider.ts";
+import { PolygonCollider } from "../Colliders/PolygonCollider.ts";
 import { PolygonRigidbody } from "./PolygonRigidbody.ts";
 
 class RigidbodyFactory {

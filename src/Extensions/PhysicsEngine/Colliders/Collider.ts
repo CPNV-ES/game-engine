@@ -1,4 +1,4 @@
-import { PhysicsBehavior } from "./PhysicsBehavior";
+import { PhysicsBehavior } from "../PhysicsBehavior.ts";
 
 export class Collider extends PhysicsBehavior<Collider[]> {
   constructor() {

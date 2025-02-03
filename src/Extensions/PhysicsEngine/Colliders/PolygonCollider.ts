@@ -1,4 +1,4 @@
-import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
+import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
 import { Collider } from "./Collider.ts";
 
 export class PolygonCollider extends Collider {
