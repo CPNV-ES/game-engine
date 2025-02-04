@@ -1,12 +1,12 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { ScreenshotTestUtility } from "../../ScreenshotTestUtility";
+import { describe, it, expect } from "vitest";
+import { NavigatorTestUtility } from "../../NavigatorTestUtility";
 
 const testPath = "test/Extensions/RenderEngine/";
 const actualFileName = "actual";
 const expectedFileName = "expected";
 const differenceFileName = "difference";
 const pageName = "index.html";
-const screenshotUtil = new ScreenshotTestUtility();
+const screenshotUtil = new NavigatorTestUtility();
 
 const runScreenshotTestCase = async (
   testName: string,
