@@ -53,8 +53,12 @@ export class InputUtility {
       .forEach((call) => call[1](scrollEvent));
   }
 
-  private static triggerKeyboardEvent(eventType: string, key: string): void {
-    const event = { key };
+  private static triggerKeyboardEvent(
+    eventType: string,
+    key: string,
+    repeat: boolean = false,
+  ): void {
+    const event = { key, repeat };
     (document.addEventListener as Mock).mock.calls
       .filter((call) => call[0] === eventType) // Filter for the specific event type
       .forEach((call) => call[1](event)); // Trigger the event callback
@@ -124,9 +128,13 @@ export class InputUtility {
    * The key can be changed by providing a different value.
    *
    * @param {string} [key="w"] - The key value of the keydown event.
+   * @param {boolean} [repeat=false] - Whether the key press is a repeat event.
    */
-  public static triggerKeyboardKeyDown(key: string = "w"): void {
-    this.triggerKeyboardEvent("keydown", key);
+  public static triggerKeyboardKeyDown(
+    key: string = "w",
+    repeat: boolean = false,
+  ): void {
+    this.triggerKeyboardEvent("keydown", key, repeat);
   }
 
   /**
