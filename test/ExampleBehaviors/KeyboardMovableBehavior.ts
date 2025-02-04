@@ -15,16 +15,16 @@ export class KeyboardMovableBehavior extends DeviceInputBehavior {
     console.log("Key down: " + _key);
     switch (_key) {
       case "ArrowUp":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, -1));
+        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, -10));
         break;
       case "ArrowDown":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, 1));
+        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, 10));
         break;
       case "ArrowLeft":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(-1, 0));
+        this._movableLogicBehavior.translationSpeed.add(new Vector2(-10, 0));
         break;
       case "ArrowRight":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(1, 0));
+        this._movableLogicBehavior.translationSpeed.add(new Vector2(10, 0));
         break;
     }
   }
@@ -33,16 +33,16 @@ export class KeyboardMovableBehavior extends DeviceInputBehavior {
     if (!this._movableLogicBehavior) return;
     switch (_key) {
       case "ArrowUp":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, 1));
+        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, 10));
         break;
       case "ArrowDown":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, -1));
+        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, -10));
         break;
       case "ArrowLeft":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(1, 0));
+        this._movableLogicBehavior.translationSpeed.add(new Vector2(10, 0));
         break;
       case "ArrowRight":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(-1, 0));
+        this._movableLogicBehavior.translationSpeed.add(new Vector2(-10, 0));
         break;
     }
   }
