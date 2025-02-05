@@ -28,7 +28,7 @@ export class DeviceInputBehavior extends InputBehavior {
    * @description Enables the input events.
    * Add the observers to the input devices.
    */
-  override onEnable(): void {
+  protected override onEnable(): void {
     const inputComponent: InputGameEngineComponent | null =
       GameEngineWindow.instance.getEngineComponent(InputGameEngineComponent);
     if (inputComponent === null) return;
@@ -59,7 +59,7 @@ export class DeviceInputBehavior extends InputBehavior {
    * Remove the observers from the input devices.
    */
 
-  override onDisable(): void {
+  protected override onDisable(): void {
     const inputComponent: InputGameEngineComponent | null =
       GameEngineWindow.instance.getEngineComponent(InputGameEngineComponent);
     if (inputComponent === null) return;

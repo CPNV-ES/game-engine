@@ -57,6 +57,17 @@ export class Color {
   }
 
   /**
+   * Generate a random color.
+   */
+  public static random(min: number = 0, max: number = 1): Color {
+    return new Color(
+      Math.random() * (max - min) + min,
+      Math.random() * (max - min) + min,
+      Math.random() * (max - min) + min,
+    );
+  }
+
+  /**
    * Convert the color to a Float32Array.
    */
   public toFloat32Array(): Float32Array {
