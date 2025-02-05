@@ -2,7 +2,6 @@ import { GameEngineComponent } from "./GameEngineComponent.ts";
 import { GameObject } from "./GameObject.ts";
 import { Ticker } from "./Tickers/Ticker.ts";
 import { Behavior } from "./Behavior.ts";
-import { AnimationFrameTimeTicker } from "./Tickers/AnimationFrameTimeTicker.ts";
 
 /**
  * @class GameEngineWindow
@@ -19,22 +18,11 @@ export class GameEngineWindow {
    * Creates an instance of GameEngineWindow.
    * @param logicTicker - The ticker that will be used to update the game logic.
    */
-  constructor(logicTicker: Ticker = new AnimationFrameTimeTicker()) {
+  constructor(logicTicker: Ticker) {
     this._logicTicker = logicTicker;
     this._logicTicker.onTick.addObserver((deltaTime: number) => {
       this.tickBehaviors(deltaTime);
     });
-  }
-
-  /**
-   * @description Singleton instance of the GameEngineWindow class. By default, the ticker is a AnimationFrame one.
-   * @returns {GameEngineWindow}
-   */
-  public static get instance(): GameEngineWindow {
-    if (this._instance === null) {
-      this._instance = new GameEngineWindow();
-    }
-    return this._instance;
   }
 
   /**

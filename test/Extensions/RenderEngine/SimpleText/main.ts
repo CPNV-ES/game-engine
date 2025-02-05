@@ -8,7 +8,9 @@ import { AnimationFrameTimeTicker } from "../../../../src/Core/Tickers/Animation
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+const gameEngineWindow: GameEngineWindow = new GameEngineWindow(
+  new AnimationFrameTimeTicker(),
+);
 const renderComponent: RenderGameEngineComponent =
   new RenderGameEngineComponent(
     canvas,
@@ -36,4 +38,4 @@ go.transform.position.x = 1;
 
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
-cameraGo.addBehavior(new Camera());
+cameraGo.addBehavior(new Camera(renderComponent));

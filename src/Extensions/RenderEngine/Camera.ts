@@ -1,7 +1,5 @@
-import { vec3, Vec3, mat4, Mat4 } from "wgpu-matrix";
+import { vec3, mat4, Mat4 } from "wgpu-matrix";
 import { OutputBehavior } from "../../Core/OutputBehavior.ts";
-import { GameObject } from "../../Core/GameObject.ts";
-import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
 import { RenderEngineUtiliy } from "./RenderEngineUtiliy.ts";
 
@@ -14,7 +12,16 @@ export class Camera extends OutputBehavior {
   private _projectionMatrix!: Mat4;
   private _renderEngine: RenderGameEngineComponent;
 
+  /**
+   * Creates a new Camera behavior.
+   * @param fov - Field of view in radians.
+   * @param aspect - Aspect ratio (width / height).
+   * @param near - Near clipping plane.
+   * @param far - Far clipping plane.
+   * @param renderGameEngineComponent - The RenderGameEngineComponent that will render the scene.
+   */
   constructor(
+    renderGameEngineComponent: RenderGameEngineComponent,
     fov: number = Math.PI / 4,
     aspect: number = 1,
     near: number = 0.1,
@@ -25,15 +32,12 @@ export class Camera extends OutputBehavior {
     this._aspect = aspect;
     this._near = near;
     this._far = far;
+    if (renderGameEngineComponent == null) {
+      throw new Error("Render engine component is not set!");
+    }
+    this._renderEngine = renderGameEngineComponent;
 
     this._recomputeProjectionMatrix();
-  }
-
-  override setup(attachedOn: GameObject) {
-    this._renderEngine = GameEngineWindow.instance.getEngineComponent(
-      RenderGameEngineComponent,
-    )!;
-    super.setup(attachedOn);
   }
 
   protected onEnable() {
