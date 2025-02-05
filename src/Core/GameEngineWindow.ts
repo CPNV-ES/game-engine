@@ -1,5 +1,8 @@
 import { GameEngineComponent } from "./GameEngineComponent.ts";
 import { GameObject } from "./GameObject.ts";
+import { Ticker } from "./Tickers/Ticker.ts";
+import { Behavior } from "./Behavior.ts";
+import { AnimationFrameTimeTicker } from "./Tickers/AnimationFrameTimeTicker.ts";
 
 /**
  * @class GameEngineWindow
@@ -10,9 +13,21 @@ export class GameEngineWindow {
   private static _instance: GameEngineWindow | null = null;
   private _engineComponents: GameEngineComponent[] = [];
   private _root: GameObject = new GameObject();
+  private _logicTicker: Ticker;
 
   /**
-   * @description Singleton instance of the GameEngineWindow class.
+   * Creates an instance of GameEngineWindow.
+   * @param logicTicker - The ticker that will be used to update the game logic.
+   */
+  constructor(logicTicker: Ticker = new AnimationFrameTimeTicker()) {
+    this._logicTicker = logicTicker;
+    this._logicTicker.onTick.addObserver((deltaTime: number) => {
+      this.tickBehaviors(deltaTime);
+    });
+  }
+
+  /**
+   * @description Singleton instance of the GameEngineWindow class. By default, the ticker is a AnimationFrame one.
    * @returns {GameEngineWindow}
    */
   public static get instance(): GameEngineWindow {
@@ -51,5 +66,13 @@ export class GameEngineWindow {
     return (this._engineComponents.find(
       (component) => component instanceof componentClass,
     ) || null) as T | null;
+  }
+
+  private tickBehaviors(deltaTime: number): void {
+    this._root.getAllChildren().forEach((go) => {
+      go.getBehaviors(Behavior).forEach((behavior) => {
+        behavior.tick(deltaTime);
+      });
+    });
   }
 }
