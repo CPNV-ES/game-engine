@@ -26,10 +26,12 @@ export class Keyboard extends Device {
   constructor() {
     super();
     document.addEventListener("keyup", (event: KeyboardEvent) => {
+      if (event.repeat) return;
       this.onAnyChange.emit();
       this.onKeyUp.emit(event.key);
     });
     document.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.repeat) return;
       this.onAnyChange.emit();
       this.onKeyDown.emit(event.key);
     });

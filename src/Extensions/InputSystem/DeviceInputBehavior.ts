@@ -37,7 +37,7 @@ export class DeviceInputBehavior extends InputBehavior {
    * @description Enables the input events.
    * Add the observers to the input devices.
    */
-  override onEnable(): void {
+  protected override onEnable(): void {
     const mouse: Mouse | null = this.inputEngineComponent.getDevice(Mouse);
     if (mouse) {
       mouse.onAnyChange.addObserver(this.onAnyChangeObserver);
@@ -65,7 +65,7 @@ export class DeviceInputBehavior extends InputBehavior {
    * Remove the observers from the input devices.
    */
 
-  override onDisable(): void {
+  protected override onDisable(): void {
     const mouse: Mouse | null = this.inputEngineComponent.getDevice(Mouse);
     if (mouse) {
       mouse.onAnyChange.removeObserver(this.onAnyChangeObserver);
