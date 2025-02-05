@@ -5,13 +5,18 @@ import { Camera } from "../../../../src/Extensions/RenderEngine/Camera.ts";
 import { LinesRenderBehavior } from "../../../../src/Extensions/RenderEngine/Wireframe/LinesRenderBehavior";
 import { Vector2 } from "../../../../src/Core/MathStructures/Vector2";
 import { Color } from "../../../../src/Extensions/RenderEngine/Color";
+import { AnimationFrameTimeTicker } from "../../../../src/Core/Tickers/AnimationFrameTimeTicker";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
 const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(canvas, navigator.gpu);
+  new RenderGameEngineComponent(
+    canvas,
+    navigator.gpu,
+    new AnimationFrameTimeTicker(),
+  );
 
 gameEngineWindow.addGameComponent(renderComponent);
 

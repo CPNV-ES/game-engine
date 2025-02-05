@@ -3,13 +3,18 @@ import { RenderGameEngineComponent } from "../../../../src/Extensions/RenderEngi
 import { GameObject } from "../../../../src/Core/GameObject.ts";
 import { Camera } from "../../../../src/Extensions/RenderEngine/Camera.ts";
 import { TextRenderBehavior } from "../../../../src/Extensions/RenderEngine/Text/TextRenderBehavior";
+import { AnimationFrameTimeTicker } from "../../../../src/Core/Tickers/AnimationFrameTimeTicker";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
 const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(canvas, navigator.gpu);
+  new RenderGameEngineComponent(
+    canvas,
+    navigator.gpu,
+    new AnimationFrameTimeTicker(),
+  );
 
 gameEngineWindow.addGameComponent(renderComponent);
 
