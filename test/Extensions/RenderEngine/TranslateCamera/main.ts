@@ -3,13 +3,20 @@ import { RenderGameEngineComponent } from "../../../../src/Extensions/RenderEngi
 import { SpriteRenderBehavior } from "../../../../src/Extensions/RenderEngine/SpriteRenderBehavior.ts";
 import { GameObject } from "../../../../src/Core/GameObject.ts";
 import { Camera } from "../../../../src/Extensions/RenderEngine/Camera.ts";
+import { AnimationFrameTimeTicker } from "../../../../src/Core/Tickers/AnimationFrameTimeTicker";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+const gameEngineWindow: GameEngineWindow = new GameEngineWindow(
+  new AnimationFrameTimeTicker(),
+);
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(canvas, navigator.gpu);
+  new RenderGameEngineComponent(
+    canvas,
+    navigator.gpu,
+    new AnimationFrameTimeTicker(),
+  );
 
 gameEngineWindow.addGameComponent(renderComponent);
 
@@ -24,5 +31,5 @@ go.transform.position.x = 0;
 
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
-cameraGo.addBehavior(new Camera());
+cameraGo.addBehavior(new Camera(renderComponent));
 cameraGo.transform.position.x = 2;
