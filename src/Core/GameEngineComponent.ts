@@ -1,5 +1,4 @@
 import { GameEngineWindow } from "./GameEngineWindow";
-import { g } from "vitest/dist/chunks/suite.B2jumIFP";
 
 /**
  * @class GameEngineComponent
