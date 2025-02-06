@@ -10,7 +10,7 @@ export class TestInputBehavior extends InputBehavior {
     super.onDisable();
   }
 
-  protected tick(deltaTime: number) {
+  public tick(deltaTime: number) {
     super.tick(deltaTime);
   }
 

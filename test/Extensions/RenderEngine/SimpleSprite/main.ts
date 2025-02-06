@@ -17,7 +17,7 @@ const go = new GameObject();
 gameEngineWindow.root.addChild(go);
 
 go.addBehavior(
-  new SpriteRenderBehavior(renderComponent, "/test/CommonResources/Sprunk.png"),
+  new SpriteRenderBehavior(renderComponent, "/test/CommonResources/sprunk.png"),
 );
 
 const cameraGo = new GameObject();
