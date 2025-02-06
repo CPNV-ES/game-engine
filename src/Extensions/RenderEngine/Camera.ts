@@ -11,8 +11,8 @@ export class Camera extends OutputBehavior {
   private _near: number; // Near clipping plane
   private _far: number; // Far clipping plane
 
-  private _projectionMatrix!: Mat4;
-  private _renderEngine: RenderGameEngineComponent;
+  protected _projectionMatrix!: Mat4;
+  protected _renderEngine: RenderGameEngineComponent;
 
   constructor(
     fov: number = Math.PI / 4,
