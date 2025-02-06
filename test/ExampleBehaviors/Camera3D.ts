@@ -2,6 +2,9 @@ import { vec3, Vec3, mat4, Mat4, quat } from "wgpu-matrix";
 import { Camera } from "../../src/Extensions/RenderEngine/Camera.ts";
 import { LogicBehavior } from "../../src/Core/LogicBehavior.ts";
 
+/**
+ * A camera that can move and rotate in 3D space. (Use it's own position and rotation instead of the GameObject's)
+ */
 export class Camera3D extends Camera {
   private _position: Vec3 = vec3.create(0, 0, 0);
   private _rotation: Vec3 = vec3.create(0, 0, 0);

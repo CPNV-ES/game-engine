@@ -3,6 +3,9 @@ import { Vec3, vec3 } from "wgpu-matrix";
 import { FreeLookCameraController } from "./FreeLookCameraController";
 import { Vector2 } from "../../src/Core/MathStructures/Vector2";
 
+/**
+ * A logic behavior that controls a free look camera with keyboard and mouse input.
+ */
 export class FreeLookCameraKeyboardMouseInput extends DeviceInputBehavior {
   private _camera: FreeLookCameraController | null = null;
   private _movementDirection: Vec3 = vec3.create(0, 0, 0);
