@@ -12,7 +12,7 @@ export class AnimationFrameTimeTicker implements Ticker {
   }
 
   private onFrame(deltaTime: number): void {
-    this.onTick.emit(deltaTime);
-    requestAnimationFrame((deltaTime: number) => this.onFrame(deltaTime));
+    this.onTick.emit(1 / 60);
+    requestAnimationFrame((deltaTime: number) => this.onFrame(1 / 60));
   }
 }
