@@ -8,13 +8,15 @@ import { FreeLookCameraKeyboardMouseInput } from "../test/ExampleBehaviors/FreeL
 import { InputGameEngineComponent } from "./Extensions/InputSystem/InputGameEngineComponent.ts";
 import { Keyboard } from "./Extensions/InputSystem/Keyboard.ts";
 import { Mouse } from "./Extensions/InputSystem/Mouse.ts";
+import { AnimationFrameTimeTicker } from "./Core/Tickers/AnimationFrameTimeTicker.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+const frameTicker: AnimationFrameTimeTicker = new AnimationFrameTimeTicker();
+const gameEngineWindow: GameEngineWindow = new GameEngineWindow(frameTicker);
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(canvas, navigator.gpu);
+  new RenderGameEngineComponent(canvas, navigator.gpu, frameTicker);
 const inputComponent: InputGameEngineComponent = new InputGameEngineComponent();
 
 inputComponent.addDevice(new Keyboard());
@@ -32,6 +34,6 @@ go.addBehavior(
 
 const cameraGo = new GameObject();
 cameraGo.addBehavior(new FreeLookCameraController());
-cameraGo.addBehavior(new FreeLookCameraKeyboardMouseInput());
-cameraGo.addBehavior(new Camera3D());
+cameraGo.addBehavior(new FreeLookCameraKeyboardMouseInput(inputComponent));
+cameraGo.addBehavior(new Camera3D(renderComponent));
 gameEngineWindow.root.addChild(cameraGo);

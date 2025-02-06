@@ -5,13 +5,20 @@ import { Camera } from "../../../../src/Extensions/RenderEngine/Camera.ts";
 import { LinesRenderBehavior } from "../../../../src/Extensions/RenderEngine/Wireframe/LinesRenderBehavior";
 import { Vector2 } from "../../../../src/Core/MathStructures/Vector2";
 import { Color } from "../../../../src/Extensions/RenderEngine/Color";
+import { AnimationFrameTimeTicker } from "../../../../src/Core/Tickers/AnimationFrameTimeTicker";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+const gameEngineWindow: GameEngineWindow = new GameEngineWindow(
+  new AnimationFrameTimeTicker(),
+);
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(canvas, navigator.gpu);
+  new RenderGameEngineComponent(
+    canvas,
+    navigator.gpu,
+    new AnimationFrameTimeTicker(),
+  );
 
 gameEngineWindow.addGameComponent(renderComponent);
 
@@ -62,4 +69,4 @@ polygonGo.transform.rotation = Math.PI / 4;
 
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
-cameraGo.addBehavior(new Camera());
+cameraGo.addBehavior(new Camera(renderComponent));

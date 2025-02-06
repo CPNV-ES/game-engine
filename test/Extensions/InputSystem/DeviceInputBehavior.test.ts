@@ -6,6 +6,7 @@ import { InputUtility } from "./InputUtility";
 import { Keyboard } from "../../../src/Extensions/InputSystem/Keyboard";
 import { MockDeviceInputBehavior } from "./Mocks/MockDeviceInputBehavior";
 import { GameObject } from "../../../src/Core/GameObject";
+import { ManualTicker } from "../../ExampleBehaviors/ManualTicker";
 
 describe("DeviceInputBehavior", (): void => {
   let mouse: Mouse;
@@ -20,7 +21,7 @@ describe("DeviceInputBehavior", (): void => {
     mouse = new Mouse();
 
     inputGameEngineComponent = new InputGameEngineComponent();
-    gameEngineWindow = GameEngineWindow.instance;
+    gameEngineWindow = new GameEngineWindow(new ManualTicker());
 
     inputGameEngineComponent.addDevice(keyboard);
     inputGameEngineComponent.addDevice(mouse);
@@ -28,7 +29,7 @@ describe("DeviceInputBehavior", (): void => {
   });
 
   beforeEach((): void => {
-    deviceInputBehavior = new MockDeviceInputBehavior();
+    deviceInputBehavior = new MockDeviceInputBehavior(inputGameEngineComponent);
   });
 
   it("should change the value of last function called to onMouseLeftClickUp", (): void => {
