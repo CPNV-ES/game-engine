@@ -57,13 +57,11 @@ export class FreeLookCameraKeyboardMouseInput extends DeviceInputBehavior {
   override tick(_deltaTime: number) {
     super.tick(_deltaTime);
     if (!this._camera) return;
-    console.log("Tick" + this._movementDirection);
     this._camera.move(this._movementDirection);
   }
 
   public override onMouseMove({ delta }: { delta: Vector2 }): void {
     if (!this._camera) return;
     this._camera.look(delta);
-    console.log("Mouse move: " + delta.x + ", " + delta.y);
   }
 }
