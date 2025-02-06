@@ -36,11 +36,14 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   private getPolygonColliderCollisions(collider: PolygonCollider): Collider[] {
     return this.getAllPolygonCollider().reduce(
       (collidingColliders: Collider[], otherCollider: PolygonCollider) => {
-        if (
-          otherCollider !== collider &&
-          this.satCollisionHandler.areColliding(collider, otherCollider)
-        ) {
-          collidingColliders.push(otherCollider);
+        if (otherCollider !== collider) {
+          const { depth: depth, normal: normal } =
+            this.satCollisionHandler.areColliding(collider, otherCollider);
+
+          if (depth != undefined && normal != undefined) {
+            collidingColliders.push(otherCollider);
+            // TODO Move the colliders by depth/2
+          }
         }
         return collidingColliders;
       },

@@ -1,4 +1,5 @@
 import { Collider } from "../Colliders/Collider.ts";
+import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
 
 export interface CollisionHandler {
   /**
@@ -6,5 +7,8 @@ export interface CollisionHandler {
    * @param a
    * @param b
    */
-  areColliding(a: Collider, b: Collider): boolean;
+  areColliding(
+    a: Collider,
+    b: Collider,
+  ): { depth: number; normal: Vector2 } | boolean;
 }

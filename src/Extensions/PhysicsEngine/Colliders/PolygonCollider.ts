@@ -9,6 +9,15 @@ export class PolygonCollider extends Collider {
     this.vertices = vertices;
   }
 
+  public getGravitationCenter(): Vector2 {
+    return this.vertices
+      .reduce(
+        (sum: Vector2, vertex: Vector2) => sum.add(vertex),
+        new Vector2(0, 0),
+      )
+      .scale(1 / this.vertices.length);
+  }
+
   public getVerticesWithTransform(): Vector2[] {
     return this.vertices.reduce(
       (computedVertices: Vector2[], vertex: Vector2) => {

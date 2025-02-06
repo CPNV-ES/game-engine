@@ -39,7 +39,10 @@ export class SatCollisionHandler implements CollisionHandler {
    * @param a
    * @param b
    */
-  public areColliding(a: Collider, b: Collider): boolean {
+  public areColliding(
+    a: Collider,
+    b: Collider,
+  ): { depth: number; normal: Vector2 } | boolean {
     if (a instanceof PolygonCollider && b instanceof PolygonCollider) {
       return this.areCollidingPolygonToPolygon(a, b);
     }
@@ -54,7 +57,9 @@ export class SatCollisionHandler implements CollisionHandler {
   public areCollidingPolygonToPolygon(
     a: PolygonCollider,
     b: PolygonCollider,
-  ): boolean {
+  ): { depth: number; normal: Vector2 } | boolean {
+    let normal: Vector2;
+    let depth: number;
     // Get transformed vertices
     const verticesA: Vector2[] = a.getVerticesWithTransform();
     const verticesB: Vector2[] = b.getVerticesWithTransform();
@@ -83,8 +88,31 @@ export class SatCollisionHandler implements CollisionHandler {
       ) {
         return false;
       }
+
+      // TODO complete the resolution
+      const axisDepth =
+        Math.min(projectionA.max, projectionB.max) -
+        Math.max(projectionA.min, projectionB.min);
+
+      // Keep the smallest depth and normal throughout the iterations
+      if (depth === undefined || axisDepth < depth) {
+        depth = axisDepth;
+        normal = axis;
+      }
     }
 
-    return true; // No separating axis found, polygons are colliding
+    depth /= normal.length;
+    normal = normal.normalize();
+
+    //check the direction of the normal based on a vector pointing from a to b
+    if (
+      normal.dotProduct(
+        a.getGravitationCenter().sub(b.getGravitationCenter()),
+      ) < 0
+    ) {
+      normal = normal.scale(-1);
+    }
+
+    return { depth: depth, normal: normal }; // No separating axis found, polygons are colliding
   }
 }
