@@ -4,13 +4,14 @@ import { PhysicsGameEngineComponent } from "../../../src/Extensions/PhysicsEngin
 import { GameObject } from "../../../src/Core/GameObject";
 import { PolygonCollider } from "../../../src/Extensions/PhysicsEngine/Colliders/PolygonCollider";
 import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
+import { ManualTicker } from "../../ExampleBehaviors/ManualTicker";
 
 describe("PhysicsGameEngineComponent", (): void => {
   let gameEngineWindow: GameEngineWindow;
   let physicsGameEngineComponent: PhysicsGameEngineComponent;
 
   beforeEach(() => {
-    gameEngineWindow = new GameEngineWindow();
+    gameEngineWindow = new GameEngineWindow(new ManualTicker());
     physicsGameEngineComponent = new PhysicsGameEngineComponent();
   });
 

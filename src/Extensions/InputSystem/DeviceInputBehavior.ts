@@ -1,5 +1,4 @@
 import { InputBehavior } from "../../Core/InputBehavior";
-import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
 import { InputGameEngineComponent } from "./InputGameEngineComponent.ts";
 import { Mouse } from "./Mouse.ts";
 import { Keyboard } from "./Keyboard.ts";
@@ -10,6 +9,7 @@ import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
  * @classdesc DeviceInputBehavior is a behavior that listens to input events from devices, it is a helper like an accessor to the devices contained in the InputGameEngineComponent for easier access to the input events.
  */
 export class DeviceInputBehavior extends InputBehavior {
+  private inputEngineComponent: InputGameEngineComponent;
   // Class-level properties to store observer references
   private onAnyChangeObserver = () => this.onAnyChange();
   private onMouseLeftClickUpObserver = () => this.onMouseLeftClickUp();
@@ -25,15 +25,20 @@ export class DeviceInputBehavior extends InputBehavior {
     this.onKeyboardKeyUp(data);
 
   /**
+   * Creates an instance of DeviceInputBehavior.
+   * @param inputEngineComponent
+   */
+  constructor(inputEngineComponent: InputGameEngineComponent) {
+    super();
+    this.inputEngineComponent = inputEngineComponent;
+  }
+
+  /**
    * @description Enables the input events.
    * Add the observers to the input devices.
    */
   protected override onEnable(): void {
-    const inputComponent: InputGameEngineComponent | null =
-      GameEngineWindow.instance.getEngineComponent(InputGameEngineComponent);
-    if (inputComponent === null) return;
-
-    const mouse: Mouse | null = inputComponent.getDevice(Mouse);
+    const mouse: Mouse | null = this.inputEngineComponent.getDevice(Mouse);
     if (mouse) {
       mouse.onAnyChange.addObserver(this.onAnyChangeObserver);
 
@@ -46,7 +51,8 @@ export class DeviceInputBehavior extends InputBehavior {
       mouse.onMove.addObserver(this.onMouseMoveObserver);
       mouse.onScroll.addObserver(this.onMouseScrollObserver);
     }
-    const keyboard: Keyboard | null = inputComponent.getDevice(Keyboard);
+    const keyboard: Keyboard | null =
+      this.inputEngineComponent.getDevice(Keyboard);
     if (keyboard) {
       keyboard.onAnyChange.addObserver(this.onAnyChangeObserver);
       keyboard.onKeyDown.addObserver(this.onKeyboardKeyDownObserver);
@@ -60,11 +66,7 @@ export class DeviceInputBehavior extends InputBehavior {
    */
 
   protected override onDisable(): void {
-    const inputComponent: InputGameEngineComponent | null =
-      GameEngineWindow.instance.getEngineComponent(InputGameEngineComponent);
-    if (inputComponent === null) return;
-
-    const mouse: Mouse | null = inputComponent.getDevice(Mouse);
+    const mouse: Mouse | null = this.inputEngineComponent.getDevice(Mouse);
     if (mouse) {
       mouse.onAnyChange.removeObserver(this.onAnyChangeObserver);
 
@@ -77,7 +79,8 @@ export class DeviceInputBehavior extends InputBehavior {
       mouse.onMove.removeObserver(this.onMouseMoveObserver);
       mouse.onScroll.removeObserver(this.onMouseScrollObserver);
     }
-    const keyboard: Keyboard | null = inputComponent.getDevice(Keyboard);
+    const keyboard: Keyboard | null =
+      this.inputEngineComponent.getDevice(Keyboard);
     if (keyboard) {
       keyboard.onAnyChange.removeObserver(this.onAnyChangeObserver);
       keyboard.onKeyDown.removeObserver(this.onKeyboardKeyDownObserver);

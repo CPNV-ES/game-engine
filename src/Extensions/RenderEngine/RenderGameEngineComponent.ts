@@ -3,6 +3,7 @@ import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
 import { Event } from "../../Core/EventSystem/Event.ts";
 import { RenderBehavior } from "./RenderBehavior.ts";
 import { Camera } from "./Camera.ts";
+import { Ticker } from "../../Core/Tickers/Ticker.ts";
 
 /**
  * A unique game engine component responsible for rendering the game using WebGPU.
@@ -43,6 +44,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
 
   private _canvasToDrawOn: HTMLCanvasElement;
   private _gpu: GPU;
+  private _ticker: Ticker;
   private _context: GPUCanvasContext | undefined;
   private _presentationTextureFormat: GPUTextureFormat | undefined;
   private _depthTextureFormat: GPUTextureFormat | undefined;
@@ -54,12 +56,14 @@ export class RenderGameEngineComponent extends GameEngineComponent {
   constructor(
     canvasToDrawOn: HTMLCanvasElement | null = null,
     gpu: GPU | null = null,
+    ticker: Ticker,
   ) {
     super();
     if (!canvasToDrawOn) throw new Error("Canvas to draw on is required");
     if (!gpu) throw new Error("GPU is required");
     this._canvasToDrawOn = canvasToDrawOn;
     this._gpu = gpu;
+    this._ticker = ticker;
   }
 
   public createBindGroupLayout(
@@ -276,7 +280,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     window.addEventListener("resize", () => {
       this.resizeCanvasToMatchDisplaySize();
     });
-    requestAnimationFrame((deltaTime: number) => this.frame(deltaTime));
+    this._ticker.onTick.addObserver(this.frame.bind(this));
     this.resizeCanvasToMatchDisplaySize();
     this.IsRenderingReady = true;
   }
@@ -353,7 +357,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     const renderPassEncoder: GPURenderPassEncoder =
       commandEncoder.beginRenderPass(renderPassDescriptor);
 
-    GameEngineWindow.instance.root.getAllChildren().forEach((gameObject) => {
+    this.attachedEngine!.root.getAllChildren().forEach((gameObject) => {
       gameObject.getBehaviors(RenderBehavior).forEach((behavior) => {
         behavior.render(renderPassEncoder);
       });
@@ -362,6 +366,5 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     renderPassEncoder.end();
 
     this._device.queue.submit([commandEncoder.finish()]);
-    requestAnimationFrame((deltaTime: number) => this.frame(deltaTime));
   }
 }
