@@ -15,7 +15,7 @@ export class TestLogicBehavior extends LogicBehavior<TestData> {
     super.onDisable();
   }
 
-  protected tick(deltaTime: number) {
+  public tick(deltaTime: number) {
     super.tick(deltaTime);
   }
 

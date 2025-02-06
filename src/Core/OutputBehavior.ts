@@ -6,9 +6,9 @@ import { Transform } from "./MathStructures/Transform.ts";
 export abstract class OutputBehavior extends Behavior {
   private _gameObject!: GameObject;
 
-  override setup(attachedOn: GameObject) {
-    super.setup(attachedOn);
+  override setup(attachedOn: GameObject): void {
     this._gameObject = attachedOn;
+    super.setup(attachedOn);
   }
 
   /**
@@ -18,7 +18,7 @@ export abstract class OutputBehavior extends Behavior {
    * @protected
    */
   protected observe<T extends LogicBehavior<U>, U>(
-    BehaviorClass: new (...args: any[]) => T,
+    BehaviorClass: abstract new (...args: any[]) => T,
     observer: (data: U) => void,
   ): void {
     if (!this._gameObject) {

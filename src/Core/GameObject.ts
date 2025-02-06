@@ -9,7 +9,7 @@ export class GameObject {
   /**
    * The position, rotation, and scale of this GameObject.
    */
-  public readonly transform: Transform = new Transform();
+  public readonly transform: Transform = new Transform(this);
   /**
    * Event that is triggered when the list of behaviors attached to this GameObject changes.
    */
@@ -115,7 +115,7 @@ export class GameObject {
    * Get the first behavior of a specific type attached to this GameObject or null if none is found.
    */
   public getFirstBehavior<T extends Behavior>(
-    BehaviorClass: new (...args: any[]) => T,
+    BehaviorClass: abstract new (...args: any[]) => T,
   ): T | null {
     return (
       (this._behaviors.find((b) => b instanceof BehaviorClass) as T) ?? null
@@ -126,7 +126,7 @@ export class GameObject {
    * Get all behaviors of a specific type attached to this GameObject.
    */
   public getBehaviors<T extends Behavior>(
-    BehaviorClass: new (...args: any[]) => T,
+    BehaviorClass: abstract new (...args: any[]) => T,
   ): T[] {
     return this._behaviors.filter((b) => b instanceof BehaviorClass) as T[];
   }

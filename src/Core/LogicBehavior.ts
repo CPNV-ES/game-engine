@@ -11,9 +11,9 @@ export class LogicBehavior<T> extends Behavior {
   protected gameObject!: GameObject;
   protected data!: T;
 
-  override setup(attachedOn: GameObject) {
-    super.setup(attachedOn);
+  override setup(attachedOn: GameObject): void {
     this.gameObject = attachedOn;
+    super.setup(attachedOn);
     if (!this.data) {
       throw new Error("Data must be initialized in the constructor.");
     }
