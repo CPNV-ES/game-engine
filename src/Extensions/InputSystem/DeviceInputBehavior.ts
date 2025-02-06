@@ -16,7 +16,8 @@ export class DeviceInputBehavior extends InputBehavior {
   private onMouseLeftClickDownObserver = () => this.onMouseLeftClickDown();
   private onMouseRightClickUpObserver = () => this.onMouseRightClickUp();
   private onMouseRightClickDownObserver = () => this.onMouseRightClickDown();
-  private onMouseMoveObserver = (data: Vector2) => this.onMouseMove(data);
+  private onMouseMoveObserver = (data: { position: Vector2; delta: Vector2 }) =>
+    this.onMouseMove(data);
   private onMouseScrollObserver = (data: number) => this.onMouseScroll(data);
 
   private onKeyboardKeyDownObserver = (data: string) =>
@@ -94,7 +95,7 @@ export class DeviceInputBehavior extends InputBehavior {
   public onMouseLeftClickDown(): void {}
   public onMouseRightClickUp(): void {}
   public onMouseRightClickDown(): void {}
-  public onMouseMove(_data: Vector2): void {}
+  public onMouseMove(_data: { position: Vector2; delta: Vector2 }): void {}
   public onMouseScroll(_data: number): void {}
 
   public onKeyboardKeyDown(_key: string): void {}

@@ -26,8 +26,10 @@ export class InputUtility {
   private static triggerMouseMovementEvent(
     clientX: number,
     clientY: number,
+    movementX: number = 0,
+    movementY: number = 0,
   ): void {
-    const event = { clientX, clientY };
+    const event = { clientX, clientY, movementX, movementY };
     (document.addEventListener as Mock).mock.calls
       .filter((call) => call[0] === "mousemove") // Filter for the specific event type
       .forEach((call) => call[1](event)); // Trigger the event callback
@@ -107,8 +109,10 @@ export class InputUtility {
   public static triggerMouseMovement(
     clientX: number = 100,
     clientY: number = 200,
+    movementX: number = 0,
+    movementY: number = 0,
   ): void {
-    this.triggerMouseMovementEvent(clientX, clientY);
+    this.triggerMouseMovementEvent(clientX, clientY, movementX, movementY);
   }
 
   /**
