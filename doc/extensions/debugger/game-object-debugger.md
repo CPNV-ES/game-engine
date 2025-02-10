@@ -18,7 +18,7 @@ The debugger relies on the following dependencies:
 ## How to Use the Debugger
 ### **1. Import the Debugger in Your HTML**
 ```html
-<script type="module" src="../../../../src/Extensions/Debugger/debugger.ts"></script>
+<script type="module" src="../../../../src/Extensions/Debugger/DraggableElement.ts"></script>
 ```
 - Ensure the debugger script is correctly imported in your project.
 - This makes the debugger accessible during runtime.
