@@ -1,3 +1,6 @@
+/**
+ * A class that allows an element to be dragged around the screen.
+ */
 export class DraggableElement {
   private readonly _elementToDrag: HTMLElement;
   private _isDragging: boolean = false;
@@ -6,11 +9,10 @@ export class DraggableElement {
 
   constructor(elementToDrag: HTMLElement) {
     this._elementToDrag = elementToDrag;
-    this._elementToDrag.style.position = "absolute"; // Ensure it's positioned properly for dragging
+    this._elementToDrag.style.position = "absolute";
     this._elementToDrag.style.left = "0";
     this._elementToDrag.style.top = "0";
 
-    // Attach event listeners to the element itself
     this._elementToDrag.addEventListener(
       "mousedown",
       this.onMouseDown.bind(this),
