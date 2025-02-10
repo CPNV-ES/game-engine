@@ -7,6 +7,7 @@ import { AnimationFrameTimeTicker } from "../../../src/Core/Tickers/AnimationFra
 import { GameObjectDebugger } from "../../../src/Extensions/Debugger/GameObjectDebugger";
 import { DraggableElement } from "../../../src/Extensions/Debugger/DraggableElement";
 import "../../../src/Extensions/Debugger/debugger.css";
+import { ResizableElement } from "../../../src/Extensions/Debugger/ResizableElement";
 
 const gameEngineWindow: GameEngineWindow = new GameEngineWindow(
   new AnimationFrameTimeTicker(),
@@ -39,8 +40,9 @@ debugContainer.id = "container";
 debugElement.id = "debug";
 debugElement.className = "style-10";
 
-/*const debuggerGUI = new GameObjectDebugger(debugElement);
+const debuggerGUI = new GameObjectDebugger(debugElement);
 debuggerGUI.title("Game Object Debugger");
-debuggerGUI.render(gameEngineWindow.root);*/
+debuggerGUI.render(gameEngineWindow.root);
 
 new DraggableElement(debugContainer);
+new ResizableElement(debugContainer);

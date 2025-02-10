@@ -144,8 +144,8 @@ export class GameObjectDebugger {
     this.renderProperties(gameObjectFolder, gameObject);
   }
 
-  private renderProperties<T extends object>(folder: GUI, pbj: T): void {
-    const keys = (Reflect.ownKeys(pbj) as (keyof T)[]).filter(
+  private renderProperties<T extends object>(folder: GUI, obj: T): void {
+    const keys = (Reflect.ownKeys(obj) as (keyof T)[]).filter(
       (key) =>
         key !== "constructor" &&
         key !== "prototype" &&
@@ -165,18 +165,26 @@ export class GameObjectDebugger {
 
     const typeHandlers: Record<string, (key: keyof T) => void> = {
       number: (key) =>
-        folder.add(pbj, key).name(this.formatValueForDisplay(key)).listen(),
+        folder.add(obj, key).name(this.formatValueForDisplay(key)).listen(),
       string: (key) =>
-        folder.add(pbj, key).name(this.formatValueForDisplay(key)).listen(),
+        folder.add(obj, key).name(this.formatValueForDisplay(key)).listen(),
       boolean: (key) =>
-        folder.add(pbj, key).name(this.formatValueForDisplay(key)).listen(),
+        folder.add(obj, key).name(this.formatValueForDisplay(key)).listen(),
       object: (key) => {
-        const value = pbj[key];
+        const value = obj[key];
         if (value instanceof Array) {
           const arrayFolder = folder.addFolder(this.formatValueForDisplay(key));
           value.forEach((item) => {
             this.renderProperties(arrayFolder, item);
           });
+        } else if (value instanceof Map) {
+          const mapFolder = folder.addFolder(this.formatValueForDisplay(key));
+          value.forEach((item, key) => {
+            const mapItemFolder = mapFolder.addFolder(key.toString());
+            this.renderProperties(mapItemFolder, item);
+          });
+        } else if (value instanceof GameObject) {
+          //Block infinite recursion (don't perform a full render if it's not the special children case)
         } else if (value instanceof Object) {
           const objectFolder = folder.addFolder(
             this.formatValueForDisplay(key),
@@ -188,7 +196,7 @@ export class GameObjectDebugger {
     };
 
     keys.forEach((key) => {
-      const value = pbj[key];
+      const value = obj[key];
       const type = typeof value;
 
       typeHandlers[type]?.(key);
