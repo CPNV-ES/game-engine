@@ -12,13 +12,20 @@ import { InputGameEngineComponent } from "../../../../../src/Extensions/InputSys
 import { Mouse } from "../../../../../src/Extensions/InputSystem/Mouse.ts";
 import { Keyboard } from "../../../../../src/Extensions/InputSystem/Keyboard.ts";
 import { Behavior } from "../../../../../src/Core/Behavior";
+import { AnimationFrameTimeTicker } from "../../../../../src/Core/Tickers/AnimationFrameTimeTicker";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+const gameEngineWindow: GameEngineWindow = new GameEngineWindow(
+  new AnimationFrameTimeTicker(),
+);
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(canvas, navigator.gpu);
+  new RenderGameEngineComponent(
+    canvas,
+    navigator.gpu,
+    new AnimationFrameTimeTicker(),
+  );
 const inputComponent: InputGameEngineComponent = new InputGameEngineComponent();
 
 inputComponent.addDevice(new Keyboard());

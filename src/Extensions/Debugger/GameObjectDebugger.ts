@@ -1,5 +1,4 @@
 import { Behavior } from "../../Core/Behavior";
-import { GameEngineWindow } from "../../Core/GameEngineWindow";
 import { GameObject } from "../../Core/GameObject";
 import GUI from "lil-gui";
 
@@ -12,7 +11,7 @@ import GUI from "lil-gui";
  * const debugContainer = document.getElementById('debug-container');
  * const gameObjectDebugger = new GameObjectDebugger(debugContainer);
  *
- * gameObjectDebugger.render();
+ * gameObjectDebugger.render(root);
  * gameObjectDebugger.title("Game Object Debugger");
  * ```
  */
@@ -39,11 +38,11 @@ export class GameObjectDebugger {
    * Renders the GUI for the game objects.
    * The root game object from the GameEngineWindow is rendered with all its children and their behaviors.
    */
-  public render(): void {
+  public render(rootObject: GameObject): void {
     this._debugGUI.controllers.forEach((controller) => {
       controller.updateDisplay();
     });
-    this.renderGameObject(GameEngineWindow.instance.root, this._debugGUI);
+    this.renderGameObject(rootObject, this._debugGUI);
   }
 
   private renderGameObject(gameObject: GameObject, gui: GUI): GUI {
