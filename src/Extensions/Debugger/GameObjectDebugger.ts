@@ -171,7 +171,7 @@ export class GameObjectDebugger {
       boolean: (key) =>
         folder.add(obj, key).name(this.formatValueForDisplay(key)).listen(),
       object: (key) => {
-        const value = obj[key];
+        const value: object = obj[key] as object;
         if (value instanceof Array) {
           const arrayFolder = folder.addFolder(this.formatValueForDisplay(key));
           value.forEach((item) => {
