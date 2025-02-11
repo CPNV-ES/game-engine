@@ -9,19 +9,21 @@ export class FixedTimeTicker implements Ticker {
   public onTick: Event<number> = new Event<number>();
 
   private _fixedTimeStep: number;
+  private _lastTimestamp: number = 0;
   private _timeAccumulator: number = 0;
 
   constructor(fixedTimeStep: number) {
     this._fixedTimeStep = fixedTimeStep;
-    requestAnimationFrame((deltaTime: number) => this.onFrame(deltaTime));
+    requestAnimationFrame((timestamp: number) => this.onFrame(timestamp));
   }
 
-  private onFrame(deltaTime: number): void {
+  private onFrame(timestamp: number): void {
+    const deltaTime: number = (timestamp - this._lastTimestamp) / 1000;
     this._timeAccumulator += deltaTime;
     while (this._timeAccumulator >= this._fixedTimeStep) {
       this.onTick.emit(this._fixedTimeStep);
       this._timeAccumulator -= this._fixedTimeStep;
     }
-    requestAnimationFrame((deltaTime: number) => this.onFrame(deltaTime));
+    requestAnimationFrame((timestamp: number) => this.onFrame(timestamp));
   }
 }

@@ -4,21 +4,16 @@ import { SpriteRenderBehavior } from "../../../../src/Extensions/RenderEngine/Sp
 import { GameObject } from "../../../../src/Core/GameObject.ts";
 import { Camera } from "../../../../src/Extensions/RenderEngine/Camera.ts";
 import { AnimationFrameTimeTicker } from "../../../../src/Core/Tickers/AnimationFrameTimeTicker";
+import { Sprunk } from "../../../../src/Core/Initialisation/Sprunk";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const gameEngineWindow: GameEngineWindow = new GameEngineWindow(
-  new AnimationFrameTimeTicker(),
-);
+const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, false, [
+  "RenderGameEngineComponent",
+]);
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(
-    canvas,
-    navigator.gpu,
-    new AnimationFrameTimeTicker(),
-  );
-
-gameEngineWindow.addGameComponent(renderComponent);
+  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
 
 const go = new GameObject();
 gameEngineWindow.root.addChild(go);

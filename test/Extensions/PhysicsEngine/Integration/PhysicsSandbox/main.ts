@@ -9,34 +9,24 @@ import { Color } from "../../../../../src/Extensions/RenderEngine/Color";
 import { KeyboardMovableBehavior } from "../../../../ExampleBehaviors/KeyboardMovableBehavior";
 import { MovableLogicBehavior } from "../../../../ExampleBehaviors/MovableLogicBehavior";
 import { InputGameEngineComponent } from "../../../../../src/Extensions/InputSystem/InputGameEngineComponent";
-import { Mouse } from "../../../../../src/Extensions/InputSystem/Mouse.ts";
-import { Keyboard } from "../../../../../src/Extensions/InputSystem/Keyboard.ts";
 import { Behavior } from "../../../../../src/Core/Behavior";
-import { AnimationFrameTimeTicker } from "../../../../../src/Core/Tickers/AnimationFrameTimeTicker";
+import { Sprunk } from "../../../../../src/Core/Initialisation/Sprunk";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const gameEngineWindow: GameEngineWindow = new GameEngineWindow(
-  new AnimationFrameTimeTicker(),
-);
+const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, true, [
+  "InputGameEngineComponent",
+  "RenderGameEngineComponent",
+]);
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(
-    canvas,
-    navigator.gpu,
-    new AnimationFrameTimeTicker(),
-  );
-const inputComponent: InputGameEngineComponent = new InputGameEngineComponent();
-
-inputComponent.addDevice(new Keyboard());
-inputComponent.addDevice(new Mouse());
-
-gameEngineWindow.addGameComponent(renderComponent);
-gameEngineWindow.addGameComponent(inputComponent);
+  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
+const inputComponent: InputGameEngineComponent =
+  gameEngineWindow.getEngineComponent(InputGameEngineComponent)!;
 
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
-cameraGo.addBehavior(new Camera(17));
+cameraGo.addBehavior(new Camera(renderComponent, 17));
 
 // First object with collider
 const object1: GameObject = new GameObject();
@@ -55,7 +45,7 @@ const debuggedPolygon1 = new PolygonRenderDebugger(
 object1.addBehavior(polygonCollider1);
 object1.addBehavior(debuggedPolygon1);
 object1.addBehavior(new MovableLogicBehavior());
-object1.addBehavior(new KeyboardMovableBehavior());
+object1.addBehavior(new KeyboardMovableBehavior(inputComponent));
 gameEngineWindow.root.addChild(object1);
 
 // Second object with collider
