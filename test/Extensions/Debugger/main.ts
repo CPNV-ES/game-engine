@@ -1,10 +1,11 @@
-import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
 import { GameObject } from "../../../src/Core/GameObject";
 import { TestBehavior } from "../../Core/Mocks/TestBehavior";
 import { TestInputBehavior } from "../../Core/Mocks/TestInputBehavior";
 import { TestLogicBehavior } from "../../Core/Mocks/TestLogicBehavior";
+import { Sprunk } from "../../../src/Core/Initialisation/Sprunk";
+import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
 
-const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+const gameEngineWindow: GameEngineWindow = Sprunk.newGame(null, true, []);
 
 const childGameObject1: GameObject = new GameObject();
 const childGameObject2: GameObject = new GameObject();

@@ -3,7 +3,7 @@ import { Camera } from "../../src/Extensions/RenderEngine/Camera.ts";
 import { LogicBehavior } from "../../src/Core/LogicBehavior.ts";
 
 /**
- * A camera that can move and rotate in 3D space. (Use it's own position and rotation instead of the GameObject's)
+ * A camera that can move and rotate in 3D space. (Use it's own position and rotation instead of the GameObject's, but override the GameObject's position)
  */
 export class Camera3D extends Camera {
   private _position: Vec3 = vec3.create(0, 0, 0);
@@ -16,6 +16,8 @@ export class Camera3D extends Camera {
       (data: { position: Vec3; rotation: Vec3 }) => {
         this._position = data.position;
         this._rotation = data.rotation;
+        this.transform.position.x = data.position[0];
+        this.transform.position.y = data.position[1];
       },
     );
   }

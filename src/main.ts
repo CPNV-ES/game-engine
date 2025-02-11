@@ -9,21 +9,19 @@ import { InputGameEngineComponent } from "./Extensions/InputSystem/InputGameEngi
 import { Keyboard } from "./Extensions/InputSystem/Keyboard.ts";
 import { Mouse } from "./Extensions/InputSystem/Mouse.ts";
 import { AnimationFrameTimeTicker } from "./Core/Tickers/AnimationFrameTimeTicker.ts";
+import { Sprunk } from "./Core/Initialisation/Sprunk.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const frameTicker: AnimationFrameTimeTicker = new AnimationFrameTimeTicker();
-const gameEngineWindow: GameEngineWindow = new GameEngineWindow(frameTicker);
+const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, true, [
+  "InputGameEngineComponent",
+  "RenderGameEngineComponent",
+]);
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(canvas, navigator.gpu, frameTicker);
-const inputComponent: InputGameEngineComponent = new InputGameEngineComponent();
-
-inputComponent.addDevice(new Keyboard());
-inputComponent.addDevice(new Mouse());
-
-gameEngineWindow.addGameComponent(renderComponent);
-gameEngineWindow.addGameComponent(inputComponent);
+  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
+const inputComponent: InputGameEngineComponent =
+  gameEngineWindow.getEngineComponent(InputGameEngineComponent)!;
 
 const go = new GameObject();
 gameEngineWindow.root.addChild(go);
