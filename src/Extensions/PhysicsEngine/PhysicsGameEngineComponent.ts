@@ -10,6 +10,7 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   rootObject: GameObject;
   satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
   private _ticker: Ticker;
+  private _pairColliders: Map<string, Collider[]> = new Map();
 
   constructor(ticker: Ticker) {
     super();
@@ -42,12 +43,28 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     return this.getAllPolygonCollider().reduce(
       (collidingColliders: Collider[], otherCollider: PolygonCollider) => {
         if (otherCollider !== collider) {
-          const { depth: depth, normal: normal } =
-            this.satCollisionHandler.areColliding(collider, otherCollider);
+          const pairKey = [collider, otherCollider].sort().toString();
 
-          if (depth != undefined && normal != undefined) {
-            collidingColliders.push(otherCollider);
-            // TODO Move the colliders by depth/2
+          if (!this._pairColliders.has(pairKey)) {
+            this._pairColliders.set(pairKey, [collider, otherCollider]);
+
+            const { depth: depth, normal: normal } =
+              this.satCollisionHandler.areColliding(collider, otherCollider);
+
+            if (depth != undefined && normal != undefined) {
+              collidingColliders.push(otherCollider);
+              // TODO Move the colliders by depth/2
+
+              collider.gameObject.transform.position =
+                collider.gameObject.transform.position.sub(
+                  normal.scale(depth / 2),
+                );
+
+              otherCollider.gameObject.transform.position =
+                otherCollider.gameObject.transform.position.add(
+                  normal.scale(depth / 2),
+                );
+            }
           }
         }
         return collidingColliders;
@@ -61,5 +78,6 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     this.getAllPolygonCollider().forEach((collider: PolygonCollider) => {
       collider.collide(this.getPolygonColliderCollisions(collider));
     });
+    this._pairColliders.clear();
   }
 }

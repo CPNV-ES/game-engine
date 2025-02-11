@@ -58,8 +58,8 @@ export class SatCollisionHandler implements CollisionHandler {
     a: PolygonCollider,
     b: PolygonCollider,
   ): { depth: number; normal: Vector2 } | boolean {
-    let normal: Vector2;
-    let depth: number;
+    let normal: Vector2 = new Vector2(0, 0);
+    let depth: number = Number.MAX_VALUE;
     // Get transformed vertices
     const verticesA: Vector2[] = a.getVerticesWithTransform();
     const verticesB: Vector2[] = b.getVerticesWithTransform();
@@ -104,12 +104,16 @@ export class SatCollisionHandler implements CollisionHandler {
     depth /= normal.length;
     normal = normal.normalize();
 
-    //check the direction of the normal based on a vector pointing from a to b
-    if (
-      normal.dotProduct(
-        a.getGravitationCenter().sub(b.getGravitationCenter()),
-      ) < 0
-    ) {
+    // Calculate a vector from the center of A to the center of B
+    const worldCenterA: Vector2 = a
+      .getGravitationCenter()
+      .add(a.gameObject.transform.worldPosition);
+    const worldCenterB: Vector2 = b
+      .getGravitationCenter()
+      .add(b.gameObject.transform.worldPosition);
+
+    // Adjust the normal vector if necessary
+    if (worldCenterB.sub(worldCenterA).dotProduct(normal) < 0) {
       normal = normal.scale(-1);
     }
 
