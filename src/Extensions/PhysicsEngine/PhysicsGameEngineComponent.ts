@@ -4,16 +4,21 @@ import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
 import { GameObject } from "../../Core/GameObject.ts";
 import { PolygonCollider } from "./Colliders/PolygonCollider.ts";
 import { SatCollisionHandler } from "./CollisionHandlers/SatCollisionHandler.ts";
+import { Ticker } from "../../Core/Tickers/Ticker.ts";
 
 export class PhysicsGameEngineComponent extends GameEngineComponent {
   rootObject: GameObject;
-  tickInterval: ReturnType<typeof setInterval>;
   satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
+  private _ticker: Ticker;
+
+  constructor(ticker: Ticker) {
+    super();
+    this._ticker = ticker;
+  }
 
   public onAttachedTo(_gameEngine: GameEngineWindow): void {
     this.rootObject = _gameEngine.root;
-    this.tickInterval = setInterval(() => this.tick(), 100);
-    this.tick();
+    this._ticker.onTick.addObserver(this.tick.bind(this));
   }
 
   /**
