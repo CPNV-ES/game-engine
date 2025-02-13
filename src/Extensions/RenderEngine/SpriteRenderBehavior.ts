@@ -1,5 +1,5 @@
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
-import BasicVertexMVPWithUV from "./BasicShaders/BasicVertexMVPWithUV.vert.wgsl?raw";
+import BasicVertexMVPWithUV from "./BasicShaders/BasicVertexMVPWithUVAndNormals.vert.wgsl?raw";
 import BasicTextureSample from "./BasicShaders/BasicTextureSample.frag.wgsl?raw";
 import { BasicUVTexturedRenderBehavior } from "./BasicUVTexturedRenderBehavior.ts";
 
@@ -19,25 +19,37 @@ export class SpriteRenderBehavior extends BasicUVTexturedRenderBehavior {
   ) {
     // Vertex data for a quad (sprite) with UV coordinates and z = 0
     const vertexData = new Float32Array([
-      // Position        // UV
+      // Position        // Normal          // UV
       -0.5,
       -0.5,
       0.0,
+      0.0,
+      0.0,
+      1.0,
       0.0,
       1.0, // Bottom-left
       0.5,
       -0.5,
       0.0,
+      0.0,
+      0.0,
+      1.0,
       1.0,
       1.0, // Bottom-right
       0.5,
       0.5,
       0.0,
+      0.0,
+      0.0,
+      1.0,
       1.0,
       0.0, // Top-right
       -0.5,
       0.5,
       0.0,
+      0.0,
+      0.0,
+      1.0,
       0.0,
       0.0, // Top-left
     ]);

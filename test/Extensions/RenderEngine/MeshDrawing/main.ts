@@ -6,7 +6,7 @@ import { Camera } from "../../../../src/Extensions/RenderEngine/Camera.ts";
 import { Sprunk } from "../../../../src/Core/Initialisation/Sprunk";
 import { ObjLoader } from "../../../../src/Extensions/RenderEngine/MeshBased/ObjLoader";
 
-import BasicVertexMVPWithUV from "../../../../src/Extensions/RenderEngine/BasicShaders/BasicVertexMVPWithUV.vert.wgsl?raw";
+import BasicVertexMVPWithUV from "../../../../src/Extensions/RenderEngine/BasicShaders/BasicVertexMVPWithUVAndNormals.vert.wgsl?raw";
 import BasicTextureSample from "../../../../src/Extensions/RenderEngine/BasicShaders/BasicTextureSample-OpenGL-Like.frag.wgsl?raw";
 import { FreeLookCameraController } from "../../../ExampleBehaviors/FreeLookCameraController";
 import { FreeLookCameraKeyboardMouseInput } from "../../../ExampleBehaviors/FreeLookCameraKeyboardMouseInput";

@@ -21,6 +21,7 @@ export class ObjLoader {
    */
   private static parse(objText: string): MeshData {
     const vertices: number[] = [];
+    const normals: number[] = [];
     const uvs: number[] = [];
     const indices: number[] = [];
     const vertexData: number[] = [];
@@ -34,6 +35,12 @@ export class ObjLoader {
           parseFloat(parts[2]),
           parseFloat(parts[3]),
         );
+      } else if (parts[0] === "vn") {
+        normals.push(
+          parseFloat(parts[1]),
+          parseFloat(parts[2]),
+          parseFloat(parts[3]),
+        );
       } else if (parts[0] === "vt") {
         uvs.push(parseFloat(parts[1]), parseFloat(parts[2]));
       } else if (parts[0] === "f") {
@@ -41,11 +48,15 @@ export class ObjLoader {
           const vertexParts = parts[i].split("/");
           const vertexIndex = parseInt(vertexParts[0]) - 1;
           const uvIndex = parseInt(vertexParts[1]) - 1;
+          const normalIndex = parseInt(vertexParts[2]) - 1;
 
           vertexData.push(
             vertices[vertexIndex * 3],
             vertices[vertexIndex * 3 + 1],
             vertices[vertexIndex * 3 + 2],
+            normals[normalIndex * 3],
+            normals[normalIndex * 3 + 1],
+            normals[normalIndex * 3 + 2],
             uvs[uvIndex * 2],
             uvs[uvIndex * 2 + 1],
           );
