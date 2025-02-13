@@ -12,6 +12,7 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
   private _ticker: Ticker;
   private _pairColliders: Map<string, Collider[]> = new Map();
+  private _collidersCollisions: Map<Collider, Collision[]> = new Map();
 
   constructor(ticker: Ticker) {
     super();
@@ -40,44 +41,50 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
    * @param collider
    * @private
    */
-  private getPolygonColliderCollisions(collider: PolygonCollider): Collider[] {
-    return this.getAllPolygonCollider().reduce(
-      (collidingColliders: Collider[], otherCollider: PolygonCollider) => {
-        if (otherCollider !== collider) {
-          const pairKey = [collider, otherCollider].sort().toString();
+  private getPolygonColliderCollisions(collider: PolygonCollider): void {
+    this.getAllPolygonCollider().forEach((otherCollider: PolygonCollider) => {
+      if (otherCollider !== collider) {
+        const pairKey = [collider, otherCollider].sort().toString();
 
-          if (!this._pairColliders.has(pairKey)) {
-            this._pairColliders.set(pairKey, [collider, otherCollider]);
+        if (!this._pairColliders.has(pairKey)) {
+          this._pairColliders.set(pairKey, [collider, otherCollider]);
 
-            const collision: Collision | boolean =
-              this.satCollisionHandler.areColliding(collider, otherCollider);
-
-            if (typeof collision !== "boolean") {
-              collidingColliders.push(otherCollider);
-
-              collider.gameObject.transform.position =
-                collider.gameObject.transform.position.sub(
-                  collision.normal.scale(collision.depth / 2),
-                );
-
-              otherCollider.gameObject.transform.position =
-                otherCollider.gameObject.transform.position.add(
-                  collision.normal.scale(collision.depth / 2),
-                );
+          const collision: Collision | boolean =
+            this.satCollisionHandler.areColliding(collider, otherCollider);
+          if (typeof collision !== "boolean") {
+            if (!this._collidersCollisions.has(collider)) {
+              this._collidersCollisions.set(collider, []);
             }
+
+            if (!this._collidersCollisions.has(otherCollider)) {
+              this._collidersCollisions.set(otherCollider, []);
+            }
+
+            this._collidersCollisions.get(collider).push(collision);
+            this._collidersCollisions
+              .get(otherCollider)
+              .push(collision.getOpposite());
           }
         }
-        return collidingColliders;
-      },
-      [],
-    );
+      }
+    });
   }
 
   private tick(): void {
     //Check SAT collisions
     this.getAllPolygonCollider().forEach((collider: PolygonCollider) => {
-      collider.collide(this.getPolygonColliderCollisions(collider));
+      this.getPolygonColliderCollisions(collider);
     });
+
+    //Resolve collisions
+    this._collidersCollisions.forEach(
+      (collisions: Collision[], collider: Collider) => {
+        collider.collide(collisions);
+      },
+    );
+
+    //Clear tick's data
     this._pairColliders.clear();
+    this._collidersCollisions.clear();
   }
 }

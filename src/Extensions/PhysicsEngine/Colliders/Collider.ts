@@ -1,4 +1,5 @@
 import { PhysicsBehavior } from "../PhysicsBehavior.ts";
+import { Collision } from "./Collision.ts";
 
 export class Collider extends PhysicsBehavior<Collider[]> {
   constructor() {
@@ -10,12 +11,13 @@ export class Collider extends PhysicsBehavior<Collider[]> {
    * Trigger an event when the colliders hit another collider
    * @param collidedColliders
    */
-  public collide(collidedColliders: Collider[]): void {
+  public collide(collisions: Collision[]): void {
     if (
-      collidedColliders.length !== this.data.length ||
-      !collidedColliders.every((value, index) => value === this.data[index])
+      collisions.length !== this.data.length ||
+      !collisions.every((value, index) => value === this.data[index])
     ) {
-      this.data = collidedColliders;
+      // TODO: fix the type of this.data
+      this.data = collisions;
       this.notifyDataChanged();
     }
   }
