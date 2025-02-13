@@ -24,6 +24,11 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     this._ticker.onTick.addObserver(this.tick.bind(this));
   }
 
+  private setCollidersCollisionChildren(collider: Collider): void {
+    if (this._collidersCollisions.has(collider)) return;
+    this._collidersCollisions.set(collider, []);
+  }
+
   /**
    * Get all the colliders in the game
    * @private
@@ -42,32 +47,32 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
    * @private
    */
   private getPolygonColliderCollisions(collider: PolygonCollider): void {
-    this.getAllPolygonCollider().forEach((otherCollider: PolygonCollider) => {
-      if (otherCollider !== collider) {
-        const pairKey = [collider, otherCollider].sort().toString();
+    const allColliders = this.getAllPolygonCollider();
+    for (const otherCollider of allColliders) {
+      if (otherCollider === collider) continue;
 
-        if (!this._pairColliders.has(pairKey)) {
-          this._pairColliders.set(pairKey, [collider, otherCollider]);
+      // Check that the pair of colliders has not already been checked
+      const pairKey = [collider, otherCollider].sort().toString();
+      if (this._pairColliders.has(pairKey)) continue;
+      this._pairColliders.set(pairKey, [collider, otherCollider]);
 
-          const collision: Collision | boolean =
-            this.satCollisionHandler.areColliding(collider, otherCollider);
-          if (typeof collision !== "boolean") {
-            if (!this._collidersCollisions.has(collider)) {
-              this._collidersCollisions.set(collider, []);
-            }
+      // Check if the colliders are colliding
+      const collision: Collision | boolean =
+        this.satCollisionHandler.areColliding(collider, otherCollider);
 
-            if (!this._collidersCollisions.has(otherCollider)) {
-              this._collidersCollisions.set(otherCollider, []);
-            }
+      // Take action only if the colliders are colliding
+      if (typeof collision == "boolean") continue;
 
-            this._collidersCollisions.get(collider).push(collision);
-            this._collidersCollisions
-              .get(otherCollider)
-              .push(collision.getOpposite());
-          }
-        }
-      }
-    });
+      // Create the temp "storage" for collisions
+      this.setCollidersCollisionChildren(collider);
+      this.setCollidersCollisionChildren(otherCollider);
+
+      // Store the collision data
+      this._collidersCollisions.get(collider).push(collision);
+      this._collidersCollisions
+        .get(otherCollider)
+        .push(collision.getOpposite());
+    }
   }
 
   private tick(): void {
