@@ -24,12 +24,12 @@ const renderComponent: RenderGameEngineComponent =
 const inputComponent: InputGameEngineComponent =
   gameEngineWindow.getEngineComponent(InputGameEngineComponent)!;
 
-const cameraGo = new GameObject();
+const cameraGo = new GameObject("Camera");
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.addBehavior(new Camera(renderComponent, 17));
 
 // First object with collider
-const object1: GameObject = new GameObject();
+const object1: GameObject = new GameObject("Object1");
 const vertices1: Vector2[] = [
   new Vector2(-1, 2),
   new Vector2(-1, 6),
@@ -49,7 +49,7 @@ object1.addBehavior(new KeyboardMovableBehavior(inputComponent));
 gameEngineWindow.root.addChild(object1);
 
 // Second object with collider
-const object2: GameObject = new GameObject();
+const object2: GameObject = new GameObject("Object2");
 const vertices2: Vector2[] = [
   new Vector2(1, 2),
   new Vector2(3, 4),
