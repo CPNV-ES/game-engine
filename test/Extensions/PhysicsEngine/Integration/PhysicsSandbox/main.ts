@@ -12,7 +12,7 @@ import { InputGameEngineComponent } from "../../../../../src/Extensions/InputSys
 import { PhysicsGameEngineComponent } from "../../../../../src/Extensions/PhysicsEngine/PhysicsGameEngineComponent";
 import { Behavior } from "../../../../../src/Core/Behavior";
 import { Sprunk } from "../../../../../src/Core/Initialisation/Sprunk";
-import { PolygonRigidbody } from "../../../../../src/Extensions/PhysicsEngine/Rigidbodies/PolygonRigidbody";
+import { Rigidbody } from "../../../../../src/Extensions/PhysicsEngine/Rigidbodies/Rigidbody";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -68,8 +68,8 @@ const debuggedPolygon2 = new PolygonRenderDebugger(
   Color.random(0.2),
 );
 
-const rigidBody1 = new PolygonRigidbody(polygonCollider1, new Vector2(0, 0));
-const rigidBody2 = new PolygonRigidbody(polygonCollider2, new Vector2(0, 0));
+const rigidBody1 = new Rigidbody(polygonCollider1, new Vector2(0, 0));
+const rigidBody2 = new Rigidbody(polygonCollider2, new Vector2(0, 0));
 
 object2.addBehavior(polygonCollider2);
 object2.addBehavior(debuggedPolygon2);
