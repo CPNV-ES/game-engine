@@ -1,5 +1,5 @@
-import { GameEngineComponent } from "../../../src/Core/GameEngineComponent";
-import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
+import { GameEngineComponent } from "@core/GameEngineComponent.ts";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
 
 /**
  * MockGameEngineComponent is a mock class for GameEngineComponent.

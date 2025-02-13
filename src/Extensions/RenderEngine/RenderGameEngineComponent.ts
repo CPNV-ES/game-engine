@@ -1,9 +1,9 @@
-import { GameEngineComponent } from "../../Core/GameEngineComponent.ts";
-import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
-import { Event } from "../../Core/EventSystem/Event.ts";
-import { RenderBehavior } from "./RenderBehavior.ts";
-import { Camera } from "./Camera.ts";
-import { Ticker } from "../../Core/Tickers/Ticker.ts";
+import { GameEngineComponent } from "@core/GameEngineComponent.ts";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { Event } from "@core/EventSystem/Event.ts";
+import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
+import { Ticker } from "@core/Tickers/Ticker.ts";
 
 /**
  * A unique game engine component responsible for rendering the game using WebGPU.

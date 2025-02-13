@@ -1,6 +1,6 @@
-import { Behavior } from "../../Core/Behavior";
-import { GameEngineWindow } from "../../Core/GameEngineWindow";
-import { GameObject } from "../../Core/GameObject";
+import { Behavior } from "@core/Behavior.ts";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { GameObject } from "@core/GameObject.ts";
 import GUI from "lil-gui";
 
 /**

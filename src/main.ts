@@ -1,5 +1,5 @@
-import { GameEngineWindow } from "./Core/GameEngineWindow.ts";
-import { AnimationFrameTimeTicker } from "./Core/Tickers/AnimationFrameTimeTicker.ts";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { AnimationFrameTimeTicker } from "@core/Tickers/AnimationFrameTimeTicker.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;

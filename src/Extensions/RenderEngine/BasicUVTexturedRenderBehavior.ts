@@ -1,5 +1,5 @@
-import { RenderBehavior } from "./RenderBehavior.ts";
-import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
+import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
 
 /**
  * A RenderBehavior already set up to render a textured object with UV coordinates (GPUBindGroupLayoutDescriptor and GPUVertexBufferLayout are already set up).

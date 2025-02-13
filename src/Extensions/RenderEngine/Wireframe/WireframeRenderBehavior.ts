@@ -1,9 +1,9 @@
-import { RenderBehavior } from "../RenderBehavior.ts";
-import { RenderGameEngineComponent } from "../RenderGameEngineComponent.ts";
-import { Camera } from "../Camera.ts";
-import { RenderEngineUtiliy } from "../RenderEngineUtiliy.ts";
-import { Event } from "../../../../src/Core/EventSystem/Event.ts";
-import { Color } from "../Color.ts";
+import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
+import { RenderEngineUtiliy } from "@extensions/RenderEngine/RenderEngineUtiliy.ts";
+import { Event } from "@core/EventSystem/Event.ts";
+import { Color } from "@extensions/RenderEngine/Color.ts";
 
 /**
  * A RenderBehavior that renders a wireframe using line primitives.

@@ -1,5 +1,5 @@
-import { InputBehavior } from "../../../src/Core/InputBehavior";
-import { TestLogicBehavior } from "./TestLogicBehavior";
+import { InputBehavior } from "@core/InputBehavior.ts";
+import { TestLogicBehavior } from "@test/Core/Mocks/TestLogicBehavior.ts";
 
 export class TestInputBehaviorDirectEnableFetch extends InputBehavior {
   private _testLogicBehavior: TestLogicBehavior | null = null;

@@ -1,4 +1,4 @@
-import { Event } from "../EventSystem/Event.ts";
+import { Event } from "@core/EventSystem/Event.ts";
 
 /**
  * A component that triggers an event every tick (fixed or variable time step).

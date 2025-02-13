@@ -1,5 +1,5 @@
-import { Ticker } from "./Ticker.ts";
-import { Event } from "../EventSystem/Event.ts";
+import { Ticker } from "@core/Tickers/Ticker.ts";
+import { Event } from "@core/EventSystem/Event.ts";
 
 /**
  * A TickComponent that triggers the onTick event every frame.

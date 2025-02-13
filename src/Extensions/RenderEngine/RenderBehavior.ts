@@ -1,7 +1,7 @@
-import { OutputBehavior } from "../../Core/OutputBehavior.ts";
-import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
-import { RenderEngineUtiliy } from "./RenderEngineUtiliy.ts";
-import { Camera } from "./Camera.ts";
+import { OutputBehavior } from "@core/OutputBehavior.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { RenderEngineUtiliy } from "@extensions/RenderEngine/RenderEngineUtiliy.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
 
 /**
  * An object that can be rendered to the WebGPU screen.

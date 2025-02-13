@@ -1,5 +1,5 @@
-import { GameObjectDebugger } from "./GameObjectDebugger.ts";
-import "./debugger.css";
+import { GameObjectDebugger } from "@extensions/Debugger/GameObjectDebugger.ts";
+import "@extensions/Debugger/debugger.css";
 
 const debugContainer: HTMLElement =
   document.getElementById("container") || document.createElement("div");

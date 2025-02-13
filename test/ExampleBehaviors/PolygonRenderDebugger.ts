@@ -1,7 +1,7 @@
-import { LinesRenderBehavior } from "../../src/Extensions/RenderEngine/Wireframe/LinesRenderBehavior";
-import { PolygonCollider } from "../../src/Extensions/PhysicsEngine/PolygonCollider";
-import { RenderGameEngineComponent } from "../../src/Extensions/RenderEngine/RenderGameEngineComponent";
-import { Color } from "../../src/Extensions/RenderEngine/Color";
+import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior.ts";
+import { PolygonCollider } from "@extensions/PhysicsEngine/PolygonCollider.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { Color } from "@extensions/RenderEngine/Color.ts";
 
 /**
  * A behavior to render a polygon collider as a wireframe.

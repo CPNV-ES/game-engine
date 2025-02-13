@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, Mock } from "vitest";
-import { MathUtility } from "../../../src/Core/MathStructures/MathUtility";
+import { MathUtility } from "@core/MathStructures/MathUtility.ts";
 
 describe("MathUtility", (): void => {
   /**

@@ -20,7 +20,13 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "types": ["@webgpu/types"]
+    "types": ["@webgpu/types"],
+    "baseUrl": ".",
+    "paths": {
+      "@core/*": ["./src/core/*"],
+      "@extensions/*": ["./src/extensions/*"],
+      "@test/*": ["./test/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src"],
 }

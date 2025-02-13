@@ -1,5 +1,5 @@
-import { Vector2 } from "./Vector2";
-import { GameObject } from "../GameObject.ts";
+import { Vector2 } from "@core/MathStructures/Vector2";
+import { GameObject } from "@core/GameObject.ts";
 
 /**
  * A class representing a 2D transformation applied to an object by vectors and angles

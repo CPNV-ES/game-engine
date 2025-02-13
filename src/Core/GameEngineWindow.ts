@@ -1,7 +1,7 @@
-import { GameEngineComponent } from "./GameEngineComponent.ts";
-import { GameObject } from "./GameObject.ts";
-import { Ticker } from "./Tickers/Ticker.ts";
-import { Behavior } from "./Behavior.ts";
+import { GameEngineComponent } from "@core/GameEngineComponent.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { Ticker } from "@core/Tickers/Ticker.ts";
+import { Behavior } from "@core/Behavior.ts";
 
 /**
  * @class GameEngineWindow

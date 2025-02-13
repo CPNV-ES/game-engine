@@ -1,15 +1,14 @@
-import { RenderBehavior } from "../RenderBehavior.ts";
-import { RenderGameEngineComponent } from "../RenderGameEngineComponent.ts";
-import MsdfTextVert from "../BasicShaders/MsdfText.vert.wgsl?raw";
-import MsdfTextFrag from "../BasicShaders/MsdfText.frag.wgsl?raw";
-import { MsdfFont } from "./MSDFFont/MsdfFont.ts";
+import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import MsdfTextVert from "@extensions/RenderEngine/BasicShaders/MsdfText.vert.wgsl?raw";
+import MsdfTextFrag from "@extensions/RenderEngine/BasicShaders/MsdfText.frag.wgsl?raw";
+import { MsdfFont } from "@extensions/RenderEngine/Text/MSDFFont/MsdfFont.ts";
 import {
   MsdfChar,
   MsdfTextFormattingOptions,
   MsdfTextMeasurements,
-} from "./MSDFFont/MsdfChar.ts";
-import { MsdfText } from "./MSDFFont/MsdfText.ts";
-import { Mat4 } from "wgpu-matrix";
+} from "@extensions/RenderEngine/Text/MSDFFont/MsdfChar.ts";
+import { MsdfText } from "@extensions/RenderEngine/Text/MSDFFont/MsdfText.ts";
 
 export class TextRenderBehavior extends RenderBehavior {
   private readonly _fontJsonUrl: string;

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { GameObject } from "../../src/Core/GameObject";
-import { TestBehavior } from "./Mocks/TestBehavior";
+import { GameObject } from "@core/GameObject.ts";
+import { TestBehavior } from "@test/Core/Mocks/TestBehavior.ts";
 
 describe("Behavior Lifecycle Tests", () => {
   it("should setup and detach without error", () => {

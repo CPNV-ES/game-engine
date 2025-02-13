@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, Mock, beforeAll } from "vitest";
-import { Keyboard } from "../../../src/Extensions/InputSystem/Keyboard";
-import { InputUtility } from "./InputUtility";
+import { Keyboard } from "@extensions/InputSystem/Keyboard.ts";
+import { InputUtility } from "@test/Extensions/InputSystem/InputUtility.ts";
 
 describe("Keyboard", (): void => {
   let keyboard: Keyboard;

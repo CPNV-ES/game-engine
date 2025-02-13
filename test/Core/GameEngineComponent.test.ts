@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { GameEngineWindow } from "../../src/Core/GameEngineWindow";
-import { MockGameEngineComponent } from "./Mocks/MockGameEngineComponent";
-import { ManualTicker } from "../ExampleBehaviors/ManualTicker";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { MockGameEngineComponent } from "@test/Core/Mocks/MockGameEngineComponent.ts";
+import { ManualTicker } from "@test/ExampleBehaviors/ManualTicker.ts";
 
 describe("GameEngineComponent", (): void => {
   it("should attach on addGameComponent", (): void => {
