@@ -6,9 +6,6 @@ import { Camera3D } from "../test/ExampleBehaviors/Camera3D.ts";
 import { FreeLookCameraController } from "../test/ExampleBehaviors/FreeLookCameraController.ts";
 import { FreeLookCameraKeyboardMouseInput } from "../test/ExampleBehaviors/FreeLookCameraKeyboardMouseInput.ts";
 import { InputGameEngineComponent } from "./Extensions/InputSystem/InputGameEngineComponent.ts";
-import { Keyboard } from "./Extensions/InputSystem/Keyboard.ts";
-import { Mouse } from "./Extensions/InputSystem/Mouse.ts";
-import { AnimationFrameTimeTicker } from "./Core/Tickers/AnimationFrameTimeTicker.ts";
 import { Sprunk } from "./Core/Initialisation/Sprunk.ts";
 
 const canvas: HTMLCanvasElement =
