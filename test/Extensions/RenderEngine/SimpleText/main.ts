@@ -3,22 +3,16 @@ import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEn
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { TextRenderBehavior } from "@extensions/RenderEngine/Text/TextRenderBehavior.ts";
-import { AnimationFrameTimeTicker } from "@core/Tickers/AnimationFrameTimeTicker.ts";
+import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const gameEngineWindow: GameEngineWindow = new GameEngineWindow(
-  new AnimationFrameTimeTicker(),
-);
+const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, false, [
+  "RenderGameEngineComponent",
+]);
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(
-    canvas,
-    navigator.gpu,
-    new AnimationFrameTimeTicker(),
-  );
-
-gameEngineWindow.addGameComponent(renderComponent);
+  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
 
 const go = new GameObject();
 gameEngineWindow.root.addChild(go);

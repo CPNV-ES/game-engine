@@ -2,6 +2,7 @@ import { Event } from "@core/EventSystem/Event.ts";
 
 /**
  * A component that triggers an event every tick (fixed or variable time step).
+ * Delta time should always be in seconds.
  */
 export interface Ticker {
   /**

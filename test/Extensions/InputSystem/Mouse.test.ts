@@ -59,9 +59,12 @@ describe("Mouse", (): void => {
     mouse.onMove.addObserver(callback);
     vi.spyOn(mouse.onMove, "emit");
 
-    InputUtility.triggerMouseMovement();
+    InputUtility.triggerMouseMovement(100, 200, 500, 500);
 
-    expect(mouse.onMove.emit).toHaveBeenCalledWith(new Vector2(100, 200));
+    expect(mouse.onMove.emit).toHaveBeenCalledWith({
+      position: new Vector2(100, 200),
+      delta: new Vector2(500, 500),
+    });
   });
 
   // Test for mouse scroll event

@@ -1,5 +1,4 @@
 import { Behavior } from "@core/Behavior.ts";
-import { GameEngineWindow } from "@core/GameEngineWindow.ts";
 import { GameObject } from "@core/GameObject.ts";
 import GUI from "lil-gui";
 
@@ -12,7 +11,7 @@ import GUI from "lil-gui";
  * const debugContainer = document.getElementById('debug-container');
  * const gameObjectDebugger = new GameObjectDebugger(debugContainer);
  *
- * gameObjectDebugger.render();
+ * gameObjectDebugger.render(root);
  * gameObjectDebugger.title("Game Object Debugger");
  * ```
  */
@@ -39,11 +38,11 @@ export class GameObjectDebugger {
    * Renders the GUI for the game objects.
    * The root game object from the GameEngineWindow is rendered with all its children and their behaviors.
    */
-  public render(): void {
+  public render(rootObject: GameObject): void {
     this._debugGUI.controllers.forEach((controller) => {
       controller.updateDisplay();
     });
-    this.renderGameObject(GameEngineWindow.instance.root, this._debugGUI);
+    this.renderGameObject(rootObject, this._debugGUI);
   }
 
   private renderGameObject(gameObject: GameObject, gui: GUI): GUI {
@@ -145,8 +144,8 @@ export class GameObjectDebugger {
     this.renderProperties(gameObjectFolder, gameObject);
   }
 
-  private renderProperties<T extends object>(folder: GUI, pbj: T): void {
-    const keys = (Reflect.ownKeys(pbj) as (keyof T)[]).filter(
+  private renderProperties<T extends object>(folder: GUI, obj: T): void {
+    const keys = (Reflect.ownKeys(obj) as (keyof T)[]).filter(
       (key) =>
         key !== "constructor" &&
         key !== "prototype" &&
@@ -166,18 +165,26 @@ export class GameObjectDebugger {
 
     const typeHandlers: Record<string, (key: keyof T) => void> = {
       number: (key) =>
-        folder.add(pbj, key).name(this.formatValueForDisplay(key)).listen(),
+        folder.add(obj, key).name(this.formatValueForDisplay(key)).listen(),
       string: (key) =>
-        folder.add(pbj, key).name(this.formatValueForDisplay(key)).listen(),
+        folder.add(obj, key).name(this.formatValueForDisplay(key)).listen(),
       boolean: (key) =>
-        folder.add(pbj, key).name(this.formatValueForDisplay(key)).listen(),
+        folder.add(obj, key).name(this.formatValueForDisplay(key)).listen(),
       object: (key) => {
-        const value = pbj[key];
+        const value: object = obj[key] as object;
         if (value instanceof Array) {
           const arrayFolder = folder.addFolder(this.formatValueForDisplay(key));
           value.forEach((item) => {
             this.renderProperties(arrayFolder, item);
           });
+        } else if (value instanceof Map) {
+          const mapFolder = folder.addFolder(this.formatValueForDisplay(key));
+          value.forEach((item, key) => {
+            const mapItemFolder = mapFolder.addFolder(key.toString());
+            this.renderProperties(mapItemFolder, item);
+          });
+        } else if (value instanceof GameObject) {
+          //Block infinite recursion (don't perform a full render if it's not the special children case)
         } else if (value instanceof Object) {
           const objectFolder = folder.addFolder(
             this.formatValueForDisplay(key),
@@ -189,7 +196,7 @@ export class GameObjectDebugger {
     };
 
     keys.forEach((key) => {
-      const value = pbj[key];
+      const value = obj[key];
       const type = typeof value;
 
       typeHandlers[type]?.(key);

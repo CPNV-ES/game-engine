@@ -37,12 +37,19 @@ export class GameObject {
 
   /**
    * The name of this GameObject
-   * @default "GameObject"
    */
-  public name: string = "GameObject";
+  public name: string;
 
   private _behaviors: Behavior[] = [];
   private _children: GameObject[] = [];
+
+  /**
+   * Create a new GameObject.
+   * @param name The name of the GameObject.
+   */
+  constructor(name: string = "GameObject") {
+    this.name = name;
+  }
 
   /**
    * Get only first-level children of this GameObject.

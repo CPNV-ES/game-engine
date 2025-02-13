@@ -9,7 +9,6 @@ import { Behavior } from "@core/Behavior.ts";
  * @property {GameEngineComponent[]} _engineComponents - Array of GameEngineComponents that are attached to the game engine window.
  */
 export class GameEngineWindow {
-  private static _instance: GameEngineWindow | null = null;
   private _engineComponents: GameEngineComponent[] = [];
   private _root: GameObject = new GameObject();
   private _logicTicker: Ticker;
@@ -49,7 +48,7 @@ export class GameEngineWindow {
    * @returns {GameEngineComponent | null}
    */
   public getEngineComponent<T extends GameEngineComponent>(
-    componentClass: abstract new () => T,
+    componentClass: abstract new (...args: any[]) => T,
   ): T | null {
     return (this._engineComponents.find(
       (component) => component instanceof componentClass,

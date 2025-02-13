@@ -9,30 +9,27 @@ import { Color } from "@extensions/RenderEngine/Color.ts";
 import { KeyboardMovableBehavior } from "@test/ExampleBehaviors/KeyboardMovableBehavior.ts";
 import { MovableLogicBehavior } from "@test/ExampleBehaviors/MovableLogicBehavior.ts";
 import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
-import { Mouse } from "@extensions/InputSystem/Mouse.ts";
-import { Keyboard } from "@extensions/InputSystem/Keyboard.ts";
+import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 import { Behavior } from "@core/Behavior.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, true, [
+  "InputGameEngineComponent",
+  "RenderGameEngineComponent",
+]);
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(canvas, navigator.gpu);
-const inputComponent: InputGameEngineComponent = new InputGameEngineComponent();
+  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
+const inputComponent: InputGameEngineComponent =
+  gameEngineWindow.getEngineComponent(InputGameEngineComponent)!;
 
-inputComponent.addDevice(new Keyboard());
-inputComponent.addDevice(new Mouse());
-
-gameEngineWindow.addGameComponent(renderComponent);
-gameEngineWindow.addGameComponent(inputComponent);
-
-const cameraGo = new GameObject();
+const cameraGo = new GameObject("Camera");
 gameEngineWindow.root.addChild(cameraGo);
-cameraGo.addBehavior(new Camera(17));
+cameraGo.addBehavior(new Camera(renderComponent, 17));
 
 // First object with collider
-const object1: GameObject = new GameObject();
+const object1: GameObject = new GameObject("Object1");
 const vertices1: Vector2[] = [
   new Vector2(-1, 2),
   new Vector2(-1, 6),
@@ -48,11 +45,11 @@ const debuggedPolygon1 = new PolygonRenderDebugger(
 object1.addBehavior(polygonCollider1);
 object1.addBehavior(debuggedPolygon1);
 object1.addBehavior(new MovableLogicBehavior());
-object1.addBehavior(new KeyboardMovableBehavior());
+object1.addBehavior(new KeyboardMovableBehavior(inputComponent));
 gameEngineWindow.root.addChild(object1);
 
 // Second object with collider
-const object2: GameObject = new GameObject();
+const object2: GameObject = new GameObject("Object2");
 const vertices2: Vector2[] = [
   new Vector2(1, 2),
   new Vector2(3, 4),

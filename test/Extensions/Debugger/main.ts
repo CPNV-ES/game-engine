@@ -3,8 +3,9 @@ import { GameObject } from "@core/GameObject.ts";
 import { TestBehavior } from "@test/Core/Mocks/TestBehavior.ts";
 import { TestInputBehavior } from "@test/Core/Mocks/TestInputBehavior.ts";
 import { TestLogicBehavior } from "@test/Core/Mocks/TestLogicBehavior.ts";
+import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 
-const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+const gameEngineWindow: GameEngineWindow = Sprunk.newGame(null, true, []);
 
 const childGameObject1: GameObject = new GameObject();
 const childGameObject2: GameObject = new GameObject();
