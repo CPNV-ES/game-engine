@@ -3,6 +3,7 @@ import { Collider } from "./Colliders/Collider.ts";
 import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
 import { GameObject } from "../../Core/GameObject.ts";
 import { PolygonCollider } from "./Colliders/PolygonCollider.ts";
+import { Collision } from "./Colliders/Collision.ts";
 import { SatCollisionHandler } from "./CollisionHandlers/SatCollisionHandler.ts";
 import { Ticker } from "../../Core/Tickers/Ticker.ts";
 
@@ -48,21 +49,20 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
           if (!this._pairColliders.has(pairKey)) {
             this._pairColliders.set(pairKey, [collider, otherCollider]);
 
-            const { depth: depth, normal: normal } =
+            const collision: Collision | boolean =
               this.satCollisionHandler.areColliding(collider, otherCollider);
 
-            if (depth != undefined && normal != undefined) {
+            if (typeof collision !== "boolean") {
               collidingColliders.push(otherCollider);
-              // TODO Move the colliders by depth/2
 
               collider.gameObject.transform.position =
                 collider.gameObject.transform.position.sub(
-                  normal.scale(depth / 2),
+                  collision.normal.scale(collision.depth / 2),
                 );
 
               otherCollider.gameObject.transform.position =
                 otherCollider.gameObject.transform.position.add(
-                  normal.scale(depth / 2),
+                  collision.normal.scale(collision.depth / 2),
                 );
             }
           }
