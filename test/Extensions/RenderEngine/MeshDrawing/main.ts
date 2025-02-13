@@ -7,7 +7,7 @@ import { Sprunk } from "../../../../src/Core/Initialisation/Sprunk";
 import { ObjLoader } from "../../../../src/Extensions/RenderEngine/MeshBased/ObjLoader";
 
 import BasicVertexMVPWithUV from "../../../../src/Extensions/RenderEngine/BasicShaders/BasicVertexMVPWithUV.vert.wgsl?raw";
-import BasicTextureSample from "../../../../src/Extensions/RenderEngine/BasicShaders/BasicTextureSample.frag.wgsl?raw";
+import BasicTextureSample from "../../../../src/Extensions/RenderEngine/BasicShaders/BasicTextureSample-OpenGL-Like.frag.wgsl?raw";
 import { FreeLookCameraController } from "../../../ExampleBehaviors/FreeLookCameraController";
 import { FreeLookCameraKeyboardMouseInput } from "../../../ExampleBehaviors/FreeLookCameraKeyboardMouseInput";
 import { Camera3D } from "../../../ExampleBehaviors/Camera3D";
