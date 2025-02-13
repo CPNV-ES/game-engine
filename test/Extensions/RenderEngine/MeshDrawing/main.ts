@@ -12,6 +12,7 @@ import { FreeLookCameraController } from "../../../ExampleBehaviors/FreeLookCame
 import { FreeLookCameraKeyboardMouseInput } from "../../../ExampleBehaviors/FreeLookCameraKeyboardMouseInput";
 import { Camera3D } from "../../../ExampleBehaviors/Camera3D";
 import { InputGameEngineComponent } from "../../../../src/Extensions/InputSystem/InputGameEngineComponent";
+import { Vector2 } from "../../../../src/Core/MathStructures/Vector2";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -40,7 +41,7 @@ ObjLoader.load("/test/CommonResources/bust.obj").then((obj) => {
   );
 });
 
-go.transform.position.x = 2;
+go.transform.position = new Vector2(0.1, -0.2);
 
 const cameraGo = new GameObject("Camera");
 cameraGo.addBehavior(new FreeLookCameraController());
