@@ -47,7 +47,11 @@ const debuggedPolygon1 = new PolygonRenderDebugger(
   polygonCollider1,
   Color.random(0.2),
 );
+
+const rigidBody1 = new Rigidbody(polygonCollider1);
+
 object1.addBehavior(polygonCollider1);
+object1.addBehavior(rigidBody1);
 object1.addBehavior(debuggedPolygon1);
 object1.addBehavior(new MovableLogicBehavior());
 object1.addBehavior(new KeyboardMovableBehavior(inputComponent));
@@ -68,10 +72,10 @@ const debuggedPolygon2 = new PolygonRenderDebugger(
   Color.random(0.2),
 );
 
-const rigidBody1 = new Rigidbody(polygonCollider1, new Vector2(0, 0));
-const rigidBody2 = new Rigidbody(polygonCollider2, new Vector2(0, 0));
+const rigidBody2 = new Rigidbody(polygonCollider2);
 
 object2.addBehavior(polygonCollider2);
+object2.addBehavior(rigidBody2);
 object2.addBehavior(debuggedPolygon2);
 gameEngineWindow.root.addChild(object2);
 
