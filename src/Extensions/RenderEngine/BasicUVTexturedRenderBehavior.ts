@@ -41,10 +41,11 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
     };
 
     const buffer: GPUVertexBufferLayout = {
-      arrayStride: 5 * 4, // 3 position floats + 2 UV floats
+      arrayStride: 8 * 4, // 3 position floats + 3 normal floats + 2 UV floats
       attributes: [
-        { shaderLocation: 0, format: "float32x3", offset: 0 },
-        { shaderLocation: 1, format: "float32x2", offset: 3 * 4 },
+        { shaderLocation: 0, format: "float32x3", offset: 0 }, // Position
+        { shaderLocation: 1, format: "float32x3", offset: 3 * 4 }, // Normal
+        { shaderLocation: 2, format: "float32x2", offset: 6 * 4 }, // UV
       ],
     };
 

@@ -129,7 +129,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       },
       primitive: primitiveState,
       depthStencil: {
-        depthWriteEnabled: false,
+        depthWriteEnabled: true,
         depthCompare: "less",
         format: this._depthTextureFormat!,
       },
