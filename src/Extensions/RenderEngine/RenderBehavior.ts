@@ -1,14 +1,15 @@
 import { OutputBehavior } from "../../Core/OutputBehavior.ts";
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
-import { RenderEngineUtiliy } from "./RenderEngineUtiliy.ts";
+import { RenderEngineUtility } from "./RenderEngineUtility.ts";
 import { Camera } from "./Camera.ts";
+import { Renderer } from "./Renderer.ts";
 
 /**
  * An object that can be rendered to the WebGPU screen.
  * Create the pipeline for rendering and set up the bind group layout.
  */
 export abstract class RenderBehavior extends OutputBehavior {
-  protected _renderEngine: RenderGameEngineComponent;
+  protected _renderEngine: Renderer;
   protected _pipeline: GPURenderPipeline | null = null;
   protected _bindGroupLayouts: GPUBindGroupLayout[] | null = null;
   protected _mvpUniformBuffer: GPUBuffer | null = null;
@@ -31,7 +32,7 @@ export abstract class RenderBehavior extends OutputBehavior {
    * @param targetBlend The blend state to use for the pipeline
    */
   public constructor(
-    renderEngine: RenderGameEngineComponent,
+    renderEngine: Renderer,
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
     primitiveState: GPUPrimitiveState,
@@ -77,7 +78,7 @@ export abstract class RenderBehavior extends OutputBehavior {
       this._targetBlend,
     );
     this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
-      RenderEngineUtiliy.toModelMatrix(this.transform),
+      RenderEngineUtility.toModelMatrix(this.transform),
     );
   }
 
@@ -90,7 +91,7 @@ export abstract class RenderBehavior extends OutputBehavior {
     if (!camera || !this._pipeline || !this._mvpUniformBuffer) return;
     this._renderEngine.fillUniformBuffer(
       this._mvpUniformBuffer,
-      camera.getMVPMatrix(RenderEngineUtiliy.toModelMatrix(this.transform)),
+      camera.getMVPMatrix(RenderEngineUtility.toModelMatrix(this.transform)),
     );
 
     renderpass.setPipeline(this._pipeline);

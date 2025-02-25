@@ -1,5 +1,6 @@
 import { RenderBehavior } from "./RenderBehavior.ts";
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
+import { Renderer } from "./Renderer.ts";
 
 /**
  * A RenderBehavior already set up to render a textured object with UV coordinates (GPUBindGroupLayoutDescriptor and GPUVertexBufferLayout are already set up).
@@ -25,7 +26,7 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
    * @param fragmentWGSLShader The fragment shader in WGSL (source code in string). Ensure that the shader has a texture and sampler and is compatible with the layout.
    */
   constructor(
-    renderEngine: RenderGameEngineComponent,
+    renderEngine: Renderer,
     spriteImageUrl: RequestInfo | URL,
     vertexData: Float32Array,
     indexData: Uint16Array,
