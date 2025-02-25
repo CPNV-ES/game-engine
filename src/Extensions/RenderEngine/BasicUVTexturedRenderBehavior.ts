@@ -1,5 +1,5 @@
 import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
 
 /**
  * A RenderBehavior already set up to render a textured object with UV coordinates (GPUBindGroupLayoutDescriptor and GPUVertexBufferLayout are already set up).
@@ -25,7 +25,7 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
    * @param fragmentWGSLShader The fragment shader in WGSL (source code in string). Ensure that the shader has a texture and sampler and is compatible with the layout.
    */
   constructor(
-    renderEngine: RenderGameEngineComponent,
+    renderEngine: Renderer,
     spriteImageUrl: RequestInfo | URL,
     vertexData: Float32Array,
     indexData: Uint16Array,
@@ -41,10 +41,11 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
     };
 
     const buffer: GPUVertexBufferLayout = {
-      arrayStride: 5 * 4, // 3 position floats + 2 UV floats
+      arrayStride: 8 * 4, // 3 position floats + 3 normal floats + 2 UV floats
       attributes: [
-        { shaderLocation: 0, format: "float32x3", offset: 0 },
-        { shaderLocation: 1, format: "float32x2", offset: 3 * 4 },
+        { shaderLocation: 0, format: "float32x3", offset: 0 }, // Position
+        { shaderLocation: 1, format: "float32x3", offset: 3 * 4 }, // Normal
+        { shaderLocation: 2, format: "float32x2", offset: 6 * 4 }, // UV
       ],
     };
 

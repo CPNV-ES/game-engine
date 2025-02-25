@@ -86,4 +86,7 @@ describe("WebGPU Rendering Test", () => {
   it("sprite should correspond to text, transformed, colored, centered, scaled", async () => {
     await runScreenshotTestCase("SimpleText");
   });
+  it("mesh should be drawn correctly, transformed, colored, centered, scaled", async () => {
+    await runScreenshotTestCase("MeshDrawing");
+  });
 });

@@ -4,11 +4,16 @@ import { Event } from "@core/EventSystem/Event.ts";
 import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { Ticker } from "@core/Tickers/Ticker.ts";
+import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * A unique game engine component responsible for rendering the game using WebGPU.
  */
-export class RenderGameEngineComponent extends GameEngineComponent {
+export class RenderGameEngineComponent
+  extends GameEngineComponent
+  implements Renderer
+{
   /**
    * Event that is triggered when an asynchronous error occurs.
    */
@@ -40,6 +45,14 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     if (this._isRenderingReady) {
       this.onRenderingReady.emit();
     }
+  }
+
+  /**
+   * The current screen size.
+   * @constructor
+   */
+  public get screenSize(): Vector2 {
+    return new Vector2(this._canvasToDrawOn.width, this._canvasToDrawOn.height);
   }
 
   private _canvasToDrawOn: HTMLCanvasElement;
@@ -129,7 +142,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       },
       primitive: primitiveState,
       depthStencil: {
-        depthWriteEnabled: false,
+        depthWriteEnabled: true,
         depthCompare: "less",
         format: this._depthTextureFormat!,
       },

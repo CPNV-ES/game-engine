@@ -9,6 +9,7 @@ import {
   MsdfTextMeasurements,
 } from "@extensions/RenderEngine/Text/MSDFFont/MsdfChar.ts";
 import { MsdfText } from "@extensions/RenderEngine/Text/MSDFFont/MsdfText.ts";
+import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
 
 export class TextRenderBehavior extends RenderBehavior {
   private readonly _fontJsonUrl: string;
@@ -24,7 +25,7 @@ export class TextRenderBehavior extends RenderBehavior {
    * @param options - Optional options for the text formatting (like color, pixel scale, etc.)
    */
   constructor(
-    renderEngine: RenderGameEngineComponent,
+    renderEngine: Renderer,
     fontJsonUrl: string,
     options?: MsdfTextFormattingOptions,
   ) {
