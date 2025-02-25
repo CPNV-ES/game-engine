@@ -1,7 +1,7 @@
 import { vec3, mat4, Mat4, Vec3, vec4 } from "wgpu-matrix";
 import { OutputBehavior } from "../../Core/OutputBehavior.ts";
 import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
-import { RenderEngineUtiliy } from "./RenderEngineUtiliy.ts";
+import { RenderEngineUtility } from "./RenderEngineUtility.ts";
 import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
 import { Renderer } from "./Renderer.ts";
 
@@ -80,7 +80,7 @@ export class Camera extends OutputBehavior {
     // Compute inverse matrices
     const invProj = mat4.inverse(this._projectionMatrix); // Inverse projection matrix
     const invView = mat4.inverse(
-      RenderEngineUtiliy.toModelMatrix(this.transform),
+      RenderEngineUtility.toModelMatrix(this.transform),
     ); // Inverse view matrix (camera's transform)
 
     // Transform NDC points to world space
@@ -170,7 +170,7 @@ export class Camera extends OutputBehavior {
    */
   public getMVPMatrix(modelMatrix: Mat4): Mat4 {
     // Compute the view matrix (lookAt)
-    let viewMatrix = RenderEngineUtiliy.toModelMatrix(this.transform);
+    let viewMatrix = RenderEngineUtility.toModelMatrix(this.transform);
     viewMatrix = mat4.translate(viewMatrix, vec3.fromValues(0, 0, 10));
 
     // Combine projection, view, and model matrices: MVP = Projection * View * Model

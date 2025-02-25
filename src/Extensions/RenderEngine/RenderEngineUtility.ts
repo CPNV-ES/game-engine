@@ -1,8 +1,8 @@
-import { mat4 } from "wgpu-matrix";
+import { mat4, vec3, Vec3 } from "wgpu-matrix";
 import { Transform } from "../../Core/MathStructures/Transform.ts";
 import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
 
-export class RenderEngineUtiliy {
+export class RenderEngineUtility {
   /**
    * Convert the Transform into a model matrix
    */

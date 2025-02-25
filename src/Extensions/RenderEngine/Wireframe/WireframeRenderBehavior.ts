@@ -1,7 +1,7 @@
 import { RenderBehavior } from "../RenderBehavior.ts";
 import { RenderGameEngineComponent } from "../RenderGameEngineComponent.ts";
 import { Camera } from "../Camera.ts";
-import { RenderEngineUtiliy } from "../RenderEngineUtiliy.ts";
+import { RenderEngineUtility } from "../RenderEngineUtility.ts";
 import { Event } from "../../../../src/Core/EventSystem/Event.ts";
 import { Color } from "../Color.ts";
 import { Renderer } from "../Renderer.ts";
@@ -74,7 +74,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
     );
     this._indexBuffer = this._renderEngine.createIndexBuffer(this._indexData);
     this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
-      RenderEngineUtiliy.toModelMatrix(this.transform),
+      RenderEngineUtility.toModelMatrix(this.transform),
     );
 
     this._colorBuffer = this._renderEngine.createUniformBuffer(
@@ -135,7 +135,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
 
     this._renderEngine.fillUniformBuffer(
       this._mvpUniformBuffer,
-      camera.getMVPMatrix(RenderEngineUtiliy.toModelMatrix(this.transform)),
+      camera.getMVPMatrix(RenderEngineUtility.toModelMatrix(this.transform)),
     );
 
     renderpass.setPipeline(this._pipeline);
