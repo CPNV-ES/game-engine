@@ -116,6 +116,6 @@ export class SatCollisionHandler implements CollisionHandler {
       normal = normal.scale(-1);
     }
 
-    return new Collision(depth, normal, b); // No separating axis found, polygons are colliding
+    return new Collision(depth, normal, a, b); // No separating axis found, polygons are colliding
   }
 }
