@@ -1,4 +1,4 @@
-import { Behavior } from "../../../src/Core/Behavior";
+import { Behavior } from "@core/Behavior.ts";
 
 export class TestBehavior extends Behavior {
   public enableCount = 0;

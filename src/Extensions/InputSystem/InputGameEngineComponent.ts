@@ -1,5 +1,5 @@
-import { GameEngineComponent } from "../../Core/GameEngineComponent.ts";
-import { Device } from "./Device.ts";
+import { GameEngineComponent } from "@core/GameEngineComponent.ts";
+import { Device } from "@extensions/InputSystem/Device.ts";
 
 /**
  * A game engine component that manages input devices.

@@ -1,9 +1,7 @@
 import { vec3, mat4, Mat4, Vec3, vec4 } from "wgpu-matrix";
-import { OutputBehavior } from "../../Core/OutputBehavior.ts";
-import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
-import { RenderEngineUtility } from "./RenderEngineUtility.ts";
-import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
-import { Renderer } from "./Renderer.ts";
+import { OutputBehavior } from "@core/OutputBehavior.ts";
+import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
+import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
 
 export class Camera extends OutputBehavior {
   private _fov: number; // Field of view in radians

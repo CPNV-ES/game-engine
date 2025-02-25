@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { GameObject } from "../../src/Core/GameObject";
-import { TestLogicBehavior } from "./Mocks/TestLogicBehavior";
+import { GameObject } from "@core/GameObject.ts";
+import { TestLogicBehavior } from "@test/Core/Mocks/TestLogicBehavior.ts";
 
 describe("LogicBehavior", () => {
   it("should throw explicit error if data was not instantiated on enable", () => {

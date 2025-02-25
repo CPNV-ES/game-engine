@@ -1,9 +1,9 @@
-import { GameEngineComponent } from "../../Core/GameEngineComponent";
-import { Collider } from "./Collider";
-import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
-import { GameObject } from "../../Core/GameObject.ts";
-import { PolygonCollider } from "./PolygonCollider.ts";
-import { SatCollisionHandler } from "./CollisionHandlers/SatCollisionHandler.ts";
+import { GameEngineComponent } from "@core/GameEngineComponent.ts";
+import { Collider } from "@extensions/PhysicsEngine/Collider.ts";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { PolygonCollider } from "@extensions/PhysicsEngine/PolygonCollider.ts";
+import { SatCollisionHandler } from "@extensions/PhysicsEngine/CollisionHandlers/SatCollisionHandler.ts";
 
 export class PhysicsGameEngineComponent extends GameEngineComponent {
   rootObject: GameObject;

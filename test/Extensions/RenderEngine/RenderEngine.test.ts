@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { ScreenshotTestUtility } from "../../ScreenshotTestUtility";
+import { ScreenshotTestUtility } from "@test/ScreenshotTestUtility.ts";
 
 const testPath = "test/Extensions/RenderEngine/";
 const actualFileName = "actual";

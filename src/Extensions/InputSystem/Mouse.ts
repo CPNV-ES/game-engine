@@ -1,6 +1,6 @@
-import { Device } from "./Device";
-import { Event } from "../../Core/EventSystem/Event.ts";
-import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
+import { Device } from "@extensions/InputSystem/Device.ts";
+import { Event } from "@core/EventSystem/Event.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * Represents a mouse device.

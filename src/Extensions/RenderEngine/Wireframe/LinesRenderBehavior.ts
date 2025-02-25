@@ -1,11 +1,10 @@
-import { WireframeRenderBehavior } from "./WireframeRenderBehavior.ts";
-import { RenderGameEngineComponent } from "../RenderGameEngineComponent.ts";
-import BasicColor from "../BasicShaders/BasicColor.frag.wgsl?raw";
-import BasicVertexMVP from "../BasicShaders/BasicVertexMVP.vert.wgsl?raw";
-import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
-import { RenderEngineUtility } from "../RenderEngineUtility.ts";
-import { Color } from "../Color.ts";
-import { Renderer } from "../Renderer.ts";
+import { WireframeRenderBehavior } from "@extensions/RenderEngine/Wireframe/WireframeRenderBehavior.ts";
+import BasicColor from "@extensions/RenderEngine/BasicShaders/BasicColor.frag.wgsl?raw";
+import BasicVertexMVP from "@extensions/RenderEngine/BasicShaders/BasicVertexMVP.vert.wgsl?raw";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
+import { Color } from "@extensions/RenderEngine/Color.ts";
+import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
 
 /**
  * A behavior to render lines with a dynamic color.

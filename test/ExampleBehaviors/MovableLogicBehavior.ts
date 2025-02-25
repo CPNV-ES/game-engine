@@ -1,5 +1,5 @@
-import { LogicBehavior } from "../../src/Core/LogicBehavior";
-import { Vector2 } from "../../src/Core/MathStructures/Vector2";
+import { LogicBehavior } from "@core/LogicBehavior.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * A behavior to move a GameObject based directly on it's transform position.

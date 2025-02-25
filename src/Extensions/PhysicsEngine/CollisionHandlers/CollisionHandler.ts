@@ -1,4 +1,4 @@
-import { Collider } from "../Collider.ts";
+import { Collider } from "@extensions/PhysicsEngine/Collider.ts";
 
 export interface CollisionHandler {
   /**

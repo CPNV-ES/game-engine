@@ -1,4 +1,7 @@
-import { KerningMap, MsdfChar } from "./MsdfChar.ts";
+import {
+  KerningMap,
+  MsdfChar,
+} from "@extensions/RenderEngine/Text/MSDFFont/MsdfChar.ts";
 
 export class MsdfFont {
   charCount: number;

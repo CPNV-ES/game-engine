@@ -1,6 +1,6 @@
-import { MovableLogicBehavior } from "./MovableLogicBehavior";
-import { DeviceInputBehavior } from "../../src/Extensions/InputSystem/DeviceInputBehavior";
-import { Vector2 } from "../../src/Core/MathStructures/Vector2";
+import { MovableLogicBehavior } from "@test/ExampleBehaviors/MovableLogicBehavior.ts";
+import { DeviceInputBehavior } from "@extensions/InputSystem/DeviceInputBehavior.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 export class KeyboardMovableBehavior extends DeviceInputBehavior {
   private _movableLogicBehavior: MovableLogicBehavior | null = null;

@@ -1,16 +1,16 @@
-import { GameEngineWindow } from "../../../../../src/Core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "../../../../../src/Extensions/RenderEngine/RenderGameEngineComponent.ts";
-import { GameObject } from "../../../../../src/Core/GameObject.ts";
-import { Camera } from "../../../../../src/Extensions/RenderEngine/Camera.ts";
-import { Vector2 } from "../../../../../src/Core/MathStructures/Vector2";
-import { PolygonCollider } from "../../../../../src/Extensions/PhysicsEngine/PolygonCollider";
-import { PolygonRenderDebugger } from "../../../../ExampleBehaviors/PolygonRenderDebugger";
-import { Color } from "../../../../../src/Extensions/RenderEngine/Color";
-import { KeyboardMovableBehavior } from "../../../../ExampleBehaviors/KeyboardMovableBehavior";
-import { MovableLogicBehavior } from "../../../../ExampleBehaviors/MovableLogicBehavior";
-import { InputGameEngineComponent } from "../../../../../src/Extensions/InputSystem/InputGameEngineComponent";
-import { Behavior } from "../../../../../src/Core/Behavior";
-import { Sprunk } from "../../../../../src/Core/Initialisation/Sprunk";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { PolygonCollider } from "@extensions/PhysicsEngine/PolygonCollider.ts";
+import { PolygonRenderDebugger } from "@test/ExampleBehaviors/PolygonRenderDebugger.ts";
+import { Color } from "@extensions/RenderEngine/Color.ts";
+import { KeyboardMovableBehavior } from "@test/ExampleBehaviors/KeyboardMovableBehavior.ts";
+import { MovableLogicBehavior } from "@test/ExampleBehaviors/MovableLogicBehavior.ts";
+import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
+import { Sprunk } from "@core/Initialisation/Sprunk.ts";
+import { Behavior } from "@core/Behavior.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Transform } from "../../../src/Core/MathStructures/Transform";
+import { Transform } from "@core/MathStructures/Transform.ts";
 
 describe("Transform", (): void => {
   it("should have default values on instanciate", () => {
