@@ -4,11 +4,16 @@ import { Event } from "../../Core/EventSystem/Event.ts";
 import { RenderBehavior } from "./RenderBehavior.ts";
 import { Camera } from "./Camera.ts";
 import { Ticker } from "../../Core/Tickers/Ticker.ts";
+import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
+import { Renderer } from "./Renderer.ts";
 
 /**
  * A unique game engine component responsible for rendering the game using WebGPU.
  */
-export class RenderGameEngineComponent extends GameEngineComponent {
+export class RenderGameEngineComponent
+  extends GameEngineComponent
+  implements Renderer
+{
   /**
    * Event that is triggered when an asynchronous error occurs.
    */
@@ -40,6 +45,14 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     if (this._isRenderingReady) {
       this.onRenderingReady.emit();
     }
+  }
+
+  /**
+   * The current screen size.
+   * @constructor
+   */
+  public get screenSize(): Vector2 {
+    return new Vector2(this._canvasToDrawOn.width, this._canvasToDrawOn.height);
   }
 
   private _canvasToDrawOn: HTMLCanvasElement;

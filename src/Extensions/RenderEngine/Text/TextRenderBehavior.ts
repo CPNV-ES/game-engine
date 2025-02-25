@@ -10,6 +10,7 @@ import {
 } from "./MSDFFont/MsdfChar.ts";
 import { MsdfText } from "./MSDFFont/MsdfText.ts";
 import { Mat4 } from "wgpu-matrix";
+import { Renderer } from "../Renderer.ts";
 
 export class TextRenderBehavior extends RenderBehavior {
   private readonly _fontJsonUrl: string;
@@ -25,7 +26,7 @@ export class TextRenderBehavior extends RenderBehavior {
    * @param options - Optional options for the text formatting (like color, pixel scale, etc.)
    */
   constructor(
-    renderEngine: RenderGameEngineComponent,
+    renderEngine: Renderer,
     fontJsonUrl: string,
     options?: MsdfTextFormattingOptions,
   ) {

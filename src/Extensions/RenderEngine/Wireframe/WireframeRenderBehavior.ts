@@ -4,6 +4,7 @@ import { Camera } from "../Camera.ts";
 import { RenderEngineUtiliy } from "../RenderEngineUtiliy.ts";
 import { Event } from "../../../../src/Core/EventSystem/Event.ts";
 import { Color } from "../Color.ts";
+import { Renderer } from "../Renderer.ts";
 
 /**
  * A RenderBehavior that renders a wireframe using line primitives.
@@ -29,7 +30,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
    * @param fragmentWGSLShader The fragment shader in WGSL (source code in string).
    */
   constructor(
-    renderEngine: RenderGameEngineComponent,
+    renderEngine: Renderer,
     vertexData: Float32Array,
     indexData: Uint16Array,
     color: Color,
