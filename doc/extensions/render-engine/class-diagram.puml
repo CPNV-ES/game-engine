@@ -1,6 +1,6 @@
 @startuml
 
-package sprunk.core{
+package sprunk.core {
     class OutputBehavior
     class GameEngineComponent
 }
@@ -113,6 +113,20 @@ package sprunk.extensions.renderengine {
         +constructor(renderEngine: RenderGameEngineComponent, lineData: Vector2[], color: Color)
     }
 
+    class ObjLoader {
+        +static load(url: string): Promise<MeshData>
+        -static parse(objText: string): MeshData
+    }
+
+    class MeshData {
+        +vertices: Float32Array
+        +indices: Uint16Array
+    }
+
+    class MeshRenderBehavior {
+        +constructor(renderEngine: RenderGameEngineComponent, meshData: MeshData, textureImageUrl: RequestInfo | URL, vertexWGSLShader: string, fragmentWGSLShader: string)
+    }
+
     RenderGameEngineComponent -up-|> GameEngineComponent
     RenderBehavior -up-|> OutputBehavior
     SpriteRenderBehavior -up-|> BasicUVTexturedRenderBehavior
@@ -120,6 +134,7 @@ package sprunk.extensions.renderengine {
     TextRenderBehavior -up-|> RenderBehavior
     WireframeRenderBehavior -up-|> RenderBehavior
     LinesRenderBehavior -up-|> WireframeRenderBehavior
+    MeshRenderBehavior -up-|> BasicUVTexturedRenderBehavior
 
     RenderGameEngineComponent --> Camera
     RenderGameEngineComponent ..> RenderBehavior : "uses"
@@ -127,6 +142,9 @@ package sprunk.extensions.renderengine {
     Camera ..> RenderEngineUtiliy : "uses"
     WireframeRenderBehavior ..> Color : "uses"
     LinesRenderBehavior ..> Color : "uses"
+    ObjLoader ..> MeshData : "returns"
+    MeshRenderBehavior ..> MeshData : "uses"
+    MeshRenderBehavior ..> RenderGameEngineComponent : "uses"
 }
 
 @enduml
