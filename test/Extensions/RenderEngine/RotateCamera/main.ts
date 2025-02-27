@@ -4,6 +4,7 @@ import { SpriteRenderBehavior } from "@extensions/RenderEngine/SpriteRenderBehav
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
+import { Quaternion } from "@core/MathStructures/Quaternion";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -31,4 +32,8 @@ const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.addBehavior(new Camera(renderComponent));
 cameraGo.transform.position.x = 3;
-cameraGo.transform.rotation = Math.PI / 4;
+cameraGo.transform.rotation = Quaternion.fromEulerAnglesSplit(
+  0,
+  0,
+  Math.PI / 4,
+);
