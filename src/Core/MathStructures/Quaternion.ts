@@ -1,6 +1,8 @@
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
+type EulerOrder = "XYZ" | "XZY" | "YXZ" | "YZX" | "ZXY" | "ZYX";
+
 /**
  * A class representing a quaternion, used for 3D rotations and transformations.
  * Quaternions avoid gimbal lock and provide smooth interpolation between rotations.
@@ -35,52 +37,123 @@ export class Quaternion {
   }
 
   /**
-   * Convert the quaternion to Euler angles (in radians) in ZXY order to match Game Engines (Unity Like) order
+   * Convert the quaternion to Euler angles (in radians) with a specified order (default ZXY).
    */
-  public toEulerAngles(): Vector3 {
-    // Extract Z (Roll)
-    let sinz_cosp = 2 * (this.w * this.z + this.x * this.y);
-    let cosz_cosp = 1 - 2 * (this.y * this.y + this.z * this.z);
-    let roll = Math.atan2(sinz_cosp, cosz_cosp);
+  public toEulerAngles(order: EulerOrder = "ZXY"): Vector3 {
+    let x, y, z;
 
-    // Extract X (Pitch)
-    let sinx = 2 * (this.w * this.x - this.y * this.z);
-    let pitch =
-      Math.abs(sinx) >= 1 ? (Math.sign(sinx) * Math.PI) / 2 : Math.asin(sinx);
+    switch (order) {
+      case "XYZ":
+        x = Math.atan2(
+          2 * (this.w * this.x - this.y * this.z),
+          1 - 2 * (this.x * this.x + this.y * this.y),
+        );
+        y = Math.asin(
+          Math.max(-1, Math.min(1, 2 * (this.w * this.y + this.z * this.x))),
+        );
+        z = Math.atan2(
+          2 * (this.w * this.z - this.x * this.y),
+          1 - 2 * (this.y * this.y + this.z * this.z),
+        );
+        break;
+      case "XZY":
+        x = Math.atan2(
+          2 * (this.w * this.x + this.y * this.z),
+          1 - 2 * (this.x * this.x + this.z * this.z),
+        );
+        z = Math.asin(
+          Math.max(-1, Math.min(1, 2 * (this.w * this.z - this.x * this.y))),
+        );
+        y = Math.atan2(
+          2 * (this.w * this.y + this.x * this.z),
+          1 - 2 * (this.y * this.y + this.z * this.z),
+        );
+        break;
+      case "YXZ":
+        y = Math.atan2(
+          2 * (this.w * this.y - this.x * this.z),
+          1 - 2 * (this.y * this.y + this.z * this.z),
+        );
+        x = Math.asin(
+          Math.max(-1, Math.min(1, 2 * (this.w * this.x + this.y * this.z))),
+        );
+        z = Math.atan2(
+          2 * (this.w * this.z - this.x * this.y),
+          1 - 2 * (this.x * this.x + this.z * this.z),
+        );
+        break;
+      case "YZX":
+        y = Math.atan2(
+          2 * (this.w * this.y + this.x * this.z),
+          1 - 2 * (this.y * this.y + this.z * this.z),
+        );
+        z = Math.asin(
+          Math.max(-1, Math.min(1, 2 * (this.w * this.z - this.x * this.y))),
+        );
+        x = Math.atan2(
+          2 * (this.w * this.x + this.y * this.z),
+          1 - 2 * (this.x * this.x + this.z * this.z),
+        );
+        break;
+      case "ZXY":
+        z = Math.atan2(
+          2 * (this.w * this.z + this.x * this.y),
+          1 - 2 * (this.y * this.y + this.z * this.z),
+        );
+        x = Math.asin(
+          Math.max(-1, Math.min(1, 2 * (this.w * this.x - this.y * this.z))),
+        );
+        y = Math.atan2(
+          2 * (this.w * this.y + this.z * this.x),
+          1 - 2 * (this.x * this.x + this.y * this.y),
+        );
+        break;
+      case "ZYX":
+        z = Math.atan2(
+          2 * (this.w * this.z - this.x * this.y),
+          1 - 2 * (this.z * this.z + this.y * this.y),
+        );
+        y = Math.asin(
+          Math.max(-1, Math.min(1, 2 * (this.w * this.y + this.x * this.z))),
+        );
+        x = Math.atan2(
+          2 * (this.w * this.x - this.y * this.z),
+          1 - 2 * (this.x * this.x + this.y * this.y),
+        );
+        break;
+    }
 
-    // Extract Y (Yaw)
-    let siny_cosp = 2 * (this.w * this.y + this.z * this.x);
-    let cosy_cosp = 1 - 2 * (this.x * this.x + this.y * this.y);
-    let yaw = Math.atan2(siny_cosp, cosy_cosp);
-
-    return new Vector3(pitch, yaw, roll); // Matches ZXY order (X = pitch, Y = yaw, Z = roll)
-  }
-
-  /*
-    Create a quaternion from Euler angles (in radians) in ZXY order to match Game Engines (Unity Like) order
-    @param vector3 Rotation encoded in vector3 structure (pitch, yaw, roll)
-   */
-  public static fromEulerAngles(vector3: Vector3) {
-    return Quaternion.fromEulerAnglesSplit(vector3.x, vector3.y, vector3.z);
+    return new Vector3(x, y, z);
   }
 
   /**
-   * Create a quaternion from Euler angles (in radians) in ZXY order to match Game Engines (Unity Like) order
-   * @param pitch Rotation around the X axis (in radians)
-   * @param yaw Rotation around the Y axis (in radians)
-   * @param roll Rotation around the Z axis (in radians)
+   * Create a quaternion from Euler angles (in radians) with a specified order (default ZXY).
+   */
+  public static fromEulerAngles(
+    vector3: Vector3,
+    order: EulerOrder = "ZXY",
+  ): Quaternion {
+    return Quaternion.fromEulerAnglesSplit(
+      vector3.x,
+      vector3.y,
+      vector3.z,
+      order,
+    );
+  }
+
+  /**
+   * Create a quaternion from Euler angles (in radians) with a specified order (default ZXY).
    */
   public static fromEulerAnglesSplit(
-    pitch: number, // X
-    yaw: number, // Y
-    roll: number, // Z
+    pitch: number,
+    yaw: number,
+    roll: number,
+    order: EulerOrder = "ZXY",
   ): Quaternion {
-    // Half angles for quaternion conversion
     const halfRoll = roll / 2;
     const halfPitch = pitch / 2;
     const halfYaw = yaw / 2;
 
-    // Trigonometric values
     const sinRoll = Math.sin(halfRoll);
     const cosRoll = Math.cos(halfRoll);
     const sinPitch = Math.sin(halfPitch);
@@ -88,11 +161,25 @@ export class Quaternion {
     const sinYaw = Math.sin(halfYaw);
     const cosYaw = Math.cos(halfYaw);
 
-    // Quaternion components (ZXY order)
-    const w = cosYaw * cosPitch * cosRoll - sinYaw * sinPitch * sinRoll;
-    const x = cosYaw * sinPitch * cosRoll + sinYaw * cosPitch * sinRoll;
-    const y = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
-    const z = cosYaw * cosPitch * sinRoll + sinYaw * sinPitch * cosRoll;
+    let w, x, y, z;
+
+    switch (order) {
+      case "XYZ":
+        w = cosYaw * cosPitch * cosRoll - sinYaw * sinPitch * sinRoll;
+        x = sinYaw * cosPitch * cosRoll + cosYaw * sinPitch * sinRoll;
+        y = cosYaw * sinPitch * cosRoll - sinYaw * cosPitch * sinRoll;
+        z = cosYaw * cosPitch * sinRoll + sinYaw * sinPitch * cosRoll;
+        break;
+      case "ZXY":
+        w = cosYaw * cosPitch * cosRoll - sinYaw * sinPitch * sinRoll;
+        x = cosYaw * sinPitch * cosRoll + sinYaw * cosPitch * sinRoll;
+        y = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
+        z = cosYaw * cosPitch * sinRoll + sinYaw * sinPitch * cosRoll;
+        break;
+      // Add other cases if needed
+      default:
+        throw new Error(`Euler order ${order} not implemented`);
+    }
 
     return new Quaternion(w, x, y, z).normalize();
   }
