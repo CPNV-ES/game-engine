@@ -67,4 +67,31 @@ export class Transform {
       return this.scale.clone().scaleAxis(parentWorldScale);
     }
   }
+
+  /**
+   * Returns the forward vector of the object in world space.
+   */
+  get forward(): Vector3 {
+    // Default forward vector in local space is (0, 0, 1)
+    const localForward = new Vector3(0, 0, 1);
+    return localForward.rotate(this.worldRotation).normalize();
+  }
+
+  /**
+   * Returns the right vector of the object in world space.
+   */
+  get right(): Vector3 {
+    // Default right vector in local space is (1, 0, 0)
+    const localRight = new Vector3(1, 0, 0);
+    return localRight.rotate(this.worldRotation).normalize();
+  }
+
+  /**
+   * Returns the top vector of the object in world space.
+   */
+  get top(): Vector3 {
+    // Default top vector in local space is (0, 1, 0)
+    const localTop = new Vector3(0, 1, 0);
+    return localTop.rotate(this.worldRotation).normalize();
+  }
 }
