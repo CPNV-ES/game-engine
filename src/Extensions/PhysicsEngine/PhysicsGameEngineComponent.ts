@@ -6,12 +6,12 @@ import { PolygonCollider } from "./Colliders/PolygonCollider.ts";
 import { Collision } from "./Colliders/Collision.ts";
 import { SatCollisionHandler } from "./CollisionHandlers/SatCollisionHandler.ts";
 import { Ticker } from "../../Core/Tickers/Ticker.ts";
+import { ArrayUtility } from "../../Core/Utilities/ArrayUtility.ts";
 
 export class PhysicsGameEngineComponent extends GameEngineComponent {
   rootObject: GameObject;
   satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
   private _ticker: Ticker;
-  private _pairColliders: Map<string, Collider[]> = new Map();
   private _collidersCollisions: Map<Collider, Collision[]> = new Map();
 
   constructor(ticker: Ticker) {
@@ -24,6 +24,11 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     this._ticker.onTick.addObserver(this.tick.bind(this));
   }
 
+  /**
+   * Set the colliders that are colliding with the given collider
+   * @param collider
+   * @private
+   */
   private setCollidersCollisionChildren(collider: Collider): void {
     if (this._collidersCollisions.has(collider)) return;
     this._collidersCollisions.set(collider, []);
@@ -46,42 +51,35 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
    * @param collider
    * @private
    */
-  private getPolygonColliderCollisions(collider: PolygonCollider): void {
-    const allColliders = this.getAllPolygonCollider();
-    for (const otherCollider of allColliders) {
-      if (otherCollider === collider) continue;
+  private getPolygonColliderCollisions(
+    colliderA: PolygonCollider,
+    colliderB: PolygonCollider,
+  ): void {
+    // Check if the colliders are colliding
+    const collision: Collision | boolean =
+      this.satCollisionHandler.areColliding(colliderA, colliderB);
 
-      // Check that the pair of colliders has not already been checked
-      const pairKey = [collider, otherCollider].sort().toString();
-      if (this._pairColliders.has(pairKey)) continue;
-      this._pairColliders.set(pairKey, [collider, otherCollider]);
+    // Take action only if the colliders are colliding
+    if (typeof collision == "boolean") return;
 
-      // Check if the colliders are colliding
-      const collision: Collision | boolean =
-        this.satCollisionHandler.areColliding(collider, otherCollider);
+    // Create the temp "storage" for collisions
+    this.setCollidersCollisionChildren(colliderA);
+    this.setCollidersCollisionChildren(colliderB);
 
-      // Take action only if the colliders are colliding
-      if (typeof collision == "boolean") continue;
-
-      // Create the temp "storage" for collisions
-      this.setCollidersCollisionChildren(collider);
-      this.setCollidersCollisionChildren(otherCollider);
-
-      // Store the collision data
-      this._collidersCollisions.get(collider).push(collision);
-      this._collidersCollisions
-        .get(otherCollider)
-        .push(collision.getOpposite());
-    }
+    // Store the collision data
+    this._collidersCollisions.get(colliderA).push(collision);
+    this._collidersCollisions.get(colliderB).push(collision.getOpposite());
   }
 
   private tick(): void {
-    //Check SAT collisions
-    this.getAllPolygonCollider().forEach((collider: PolygonCollider) => {
-      this.getPolygonColliderCollisions(collider);
-    });
+    // Check for collisions
+    ArrayUtility.combinations(this.getAllPolygonCollider(), 2).forEach(
+      (polygonsPair: PolygonCollider[]) => {
+        this.getPolygonColliderCollisions(...polygonsPair);
+      },
+    );
 
-    //Resolve collisions
+    // Resolve collisions
     this._collidersCollisions.forEach(
       (collisions: Collision[], collider: Collider) => {
         collider.collide(collisions);
@@ -89,7 +87,6 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     );
 
     //Clear tick's data
-    this._pairColliders.clear();
     this._collidersCollisions.clear();
   }
 }
