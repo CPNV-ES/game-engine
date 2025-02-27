@@ -10,7 +10,6 @@ import BasicVertexMVPWithUV from "@extensions/RenderEngine/BasicShaders/BasicVer
 import BasicTextureSample from "@extensions/RenderEngine/BasicShaders/BasicTextureSample-OpenGL-Like.frag.wgsl?raw";
 import { FreeLookCameraController } from "../../../ExampleBehaviors/FreeLookCameraController";
 import { FreeLookCameraKeyboardMouseInput } from "../../../ExampleBehaviors/FreeLookCameraKeyboardMouseInput";
-import { Camera3D } from "../../../ExampleBehaviors/Camera3D";
 import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent";
 import { Vector3 } from "@core/MathStructures/Vector3";
 
@@ -46,5 +45,5 @@ go.transform.position = new Vector3(0.1, -0.2, 0);
 const cameraGo = new GameObject("Camera");
 cameraGo.addBehavior(new FreeLookCameraController());
 cameraGo.addBehavior(new FreeLookCameraKeyboardMouseInput(inputComponent));
-cameraGo.addBehavior(new Camera3D(renderComponent));
+cameraGo.addBehavior(new Camera(renderComponent));
 gameEngineWindow.root.addChild(cameraGo);

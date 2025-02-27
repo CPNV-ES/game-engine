@@ -2,7 +2,7 @@ import { GameEngineWindow } from "@core/GameEngineWindow.ts";
 import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
 import { SpriteRenderBehavior } from "@extensions/RenderEngine/SpriteRenderBehavior.ts";
 import { GameObject } from "@core/GameObject.ts";
-import { Camera3D } from "@test/ExampleBehaviors/Camera3D.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { FreeLookCameraController } from "@test/ExampleBehaviors/FreeLookCameraController.ts";
 import { FreeLookCameraKeyboardMouseInput } from "@test/ExampleBehaviors/FreeLookCameraKeyboardMouseInput.ts";
 import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
@@ -30,5 +30,6 @@ go.addBehavior(
 const cameraGo = new GameObject("Camera");
 cameraGo.addBehavior(new FreeLookCameraController());
 cameraGo.addBehavior(new FreeLookCameraKeyboardMouseInput(inputComponent));
-cameraGo.addBehavior(new Camera3D(renderComponent));
+cameraGo.addBehavior(new Camera(renderComponent));
+cameraGo.transform.position.z = 10;
 gameEngineWindow.root.addChild(cameraGo);
