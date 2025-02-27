@@ -9,6 +9,7 @@ import { Quaternion } from "../../src/Core/MathStructures/Quaternion";
 export class FreeLookCameraController extends LogicBehavior<void> {
   private _movementSpeed: number;
   private _lookSensitivity: number;
+  private _target: Vector2 = Vector2.zero();
 
   constructor(movementSpeed: number = 0.1, lookSensitivity: number = 0.002) {
     super();
@@ -40,11 +41,12 @@ export class FreeLookCameraController extends LogicBehavior<void> {
    */
   public look(delta: Vector2): void {
     const transform = this.gameObject.transform;
-    const eulerRotation = transform.rotation.toEulerAngles();
 
-    eulerRotation.x += delta.y * this._lookSensitivity;
-    eulerRotation.y += delta.x * this._lookSensitivity;
+    this._target.add(delta.clone().scale(this._lookSensitivity));
 
-    transform.rotation = Quaternion.fromEulerAngles(eulerRotation);
+    transform.rotation = Quaternion.fromEulerAngles(
+      this._target.toVector3(),
+      "XYZ",
+    );
   }
 }
