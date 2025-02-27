@@ -11,6 +11,10 @@ import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRen
 import { Color } from "@extensions/RenderEngine/Color.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Quaternion } from "@core/MathStructures/Quaternion.ts";
+import { ObjLoader } from "@extensions/RenderEngine/MeshBased/ObjLoader.ts";
+import { MeshRenderBehavior } from "@extensions/RenderEngine/MeshBased/MeshRenderBehavior.ts";
+import BasicVertexMVPWithUV from "@extensions/RenderEngine/BasicShaders/BasicVertexMVPWithUVAndNormals.vert.wgsl?raw";
+import BasicTextureSample from "@extensions/RenderEngine/BasicShaders/BasicTextureSample-OpenGL-Like.frag.wgsl?raw";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -40,8 +44,8 @@ gameEngineWindow.root.addChild(cameraGo);
 
 const grid = new GameObject("Grid");
 const verticalGrid = new GameObject("VerticalGrid");
-const gridSize = 20; // Adjust the size of the grid (e.g., 20x20 units)
-const step = 2; // The step between grid lines (e.g., every 2 units)
+const gridSize = 200; // Adjust the size of the grid (e.g., 20x20 units)
+const step = 1; // The step between grid lines (e.g., every 2 units)
 
 // Generate vertices for grid lines
 const vertices: Vector2[] = [new Vector2(-gridSize, -gridSize)];
@@ -82,3 +86,17 @@ verticalGrid.addBehavior(lineRender2);
 
 gameEngineWindow.root.addChild(grid);
 gameEngineWindow.root.addChild(verticalGrid);
+
+const gizmo = new GameObject();
+gameEngineWindow.root.addChild(gizmo);
+ObjLoader.load("/test/CommonResources/gizmo.obj").then((obj) => {
+  gizmo.addBehavior(
+    new MeshRenderBehavior(
+      renderComponent,
+      obj,
+      "/test/CommonResources/gizmo.png",
+      BasicVertexMVPWithUV,
+      BasicTextureSample,
+    ),
+  );
+});
