@@ -114,4 +114,11 @@ export class Vector2 {
   public toVector3(z: number = 0): Vector3 {
     return new Vector3(this.x, this.y, z);
   }
+
+  /**
+   * Return a new vector 2 zeroed.
+   */
+  public static zero() {
+    return new Vector2(0, 0);
+  }
 }
