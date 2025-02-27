@@ -6,11 +6,19 @@ export class ArrayUtility {
    */
   static combinations(array, length) {
     const result = [];
-    for (let i = 0; i < array.length; i++) {
-      for (let j = i + 1; j < array.length; j++) {
-        result.push([array[i], array[j]]);
+
+    function generateCombinations(start, combo) {
+      if (combo.length === length) {
+        result.push(combo);
+        return;
+      }
+
+      for (let i = start; i < array.length; i++) {
+        generateCombinations(i + 1, combo.concat(array[i]));
       }
     }
+
+    generateCombinations(0, []);
     return result;
   }
 
