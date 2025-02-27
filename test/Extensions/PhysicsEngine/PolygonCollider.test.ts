@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { PolygonCollider } from "@extensions/PhysicsEngine/PolygonCollider.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { GameObject } from "@core/GameObject.ts";
+import { Quaternion } from "@core/MathStructures/Quaternion";
 
 describe("PolygonCollider", (): void => {
   let vertices: Vector2[];
@@ -19,7 +21,7 @@ describe("PolygonCollider", (): void => {
    * Tests if a polygonCollider can be successfully scaled.
    */
   it("should get a scaled polygonCollider without changing the original", () => {
-    gameObject.transform.scale = new Vector2(2, 3);
+    gameObject.transform.scale = new Vector3(2, 3, 1);
 
     const transformedPolygonCollider =
       polygonCollider.getVerticesWithTransform();
@@ -36,7 +38,11 @@ describe("PolygonCollider", (): void => {
    * Tests if a polygonCollider can be successfully rotated.
    */
   it("should get a rotated polygonCollider without changing the original", () => {
-    gameObject.transform.rotation = Math.PI / 2;
+    gameObject.transform.rotation = Quaternion.fromEulerAnglesSplit(
+      0,
+      0,
+      Math.PI / 2,
+    );
 
     const transformedPolygonCollider =
       polygonCollider.getVerticesWithTransform();
@@ -56,7 +62,7 @@ describe("PolygonCollider", (): void => {
    * Tests if a polygonCollider can be successfully translated.
    */
   it("should get a translated polygonCollider without changing the original", () => {
-    const position = new Vector2(1, 2);
+    const position = new Vector3(1, 2, 0);
     gameObject.transform.position = position;
 
     const transformedPolygonCollider =
