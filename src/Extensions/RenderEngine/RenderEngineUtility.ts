@@ -68,16 +68,16 @@ export class RenderEngineUtility {
     return new Float32Array([
       m00,
       m01,
-      m02,
-      0,
+      -m02,
+      0, // Flip Z-axis component signs
       m10,
       m11,
-      m12,
+      -m12,
       0,
-      m20,
-      m21,
+      -m20,
+      -m21,
       m22,
-      0,
+      0, // Flip X and Y components of Z-axis
       0,
       0,
       0,

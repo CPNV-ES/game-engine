@@ -73,7 +73,7 @@ export class Camera extends OutputBehavior {
     const ndcY = 1.0 - (2.0 * pointY) / screenHeight; // Invert Y axis
 
     // NDC coordinates in homogeneous space (assuming depth = 0 for near plane and 1 for far plane)
-    const nearPoint = vec3.fromValues(ndcX, ndcY, -1.0);
+    const nearPoint = vec3.fromValues(ndcX, ndcY, 0.0);
     const farPoint = vec3.fromValues(ndcX, ndcY, 1.0);
 
     // Compute inverse matrices
@@ -175,7 +175,10 @@ export class Camera extends OutputBehavior {
 
     // Compute VP matrix: Projection * View
     //TODO : We should cache the vpMatrix and only recompute it when the camera moves
-    const vpMatrix = mat4.multiply(this._projectionMatrix, viewMatrix);
+    const vpMatrix = mat4.multiply(
+      this._projectionMatrix,
+      mat4.scale(viewMatrix, [1, 1, -1]),
+    );
 
     // Compute final MVP matrix: VP * Model
     return mat4.multiply(vpMatrix, modelMatrix);
