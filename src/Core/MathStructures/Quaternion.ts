@@ -35,26 +35,29 @@ export class Quaternion {
   }
 
   /**
-   * Convert the quaternion to Euler angles (in radians)
+   * Convert the quaternion to Euler angles (in radians) in ZXY order to match Game Engines (Unity Like) order
    */
   public toEulerAngles(): Vector3 {
-    let sinr_cosp = 2 * (this.w * this.x + this.y * this.z);
-    let cosr_cosp = 1 - 2 * (this.x * this.x + this.y * this.y);
-    let roll = Math.atan2(sinr_cosp, cosr_cosp);
+    // Extract Z (Roll)
+    let sinz_cosp = 2 * (this.w * this.z + this.x * this.y);
+    let cosz_cosp = 1 - 2 * (this.y * this.y + this.z * this.z);
+    let roll = Math.atan2(sinz_cosp, cosz_cosp);
 
-    let sinp = 2 * (this.w * this.y - this.z * this.x);
+    // Extract X (Pitch)
+    let sinx = 2 * (this.w * this.x - this.y * this.z);
     let pitch =
-      Math.abs(sinp) >= 1 ? (Math.sign(sinp) * Math.PI) / 2 : Math.asin(sinp);
+      Math.abs(sinx) >= 1 ? (Math.sign(sinx) * Math.PI) / 2 : Math.asin(sinx);
 
-    let siny_cosp = 2 * (this.w * this.z + this.x * this.y);
-    let cosy_cosp = 1 - 2 * (this.y * this.y + this.z * this.z);
+    // Extract Y (Yaw)
+    let siny_cosp = 2 * (this.w * this.y + this.z * this.x);
+    let cosy_cosp = 1 - 2 * (this.x * this.x + this.y * this.y);
     let yaw = Math.atan2(siny_cosp, cosy_cosp);
 
-    return new Vector3(pitch, yaw, roll);
+    return new Vector3(pitch, yaw, roll); // Matches ZXY order (X = pitch, Y = yaw, Z = roll)
   }
 
   /*
-    Create a quaternion from Euler angles (in radians)
+    Create a quaternion from Euler angles (in radians) in ZXY order to match Game Engines (Unity Like) order
     @param vector3 Rotation encoded in vector3 structure (pitch, yaw, roll)
    */
   public static fromEulerAngles(vector3: Vector3) {
@@ -62,15 +65,15 @@ export class Quaternion {
   }
 
   /**
-   * Create a quaternion from Euler angles (in radians)
+   * Create a quaternion from Euler angles (in radians) in ZXY order to match Game Engines (Unity Like) order
    * @param pitch Rotation around the X axis (in radians)
    * @param yaw Rotation around the Y axis (in radians)
    * @param roll Rotation around the Z axis (in radians)
    */
   public static fromEulerAnglesSplit(
-    pitch: number,
-    yaw: number,
-    roll: number,
+    pitch: number, // X
+    yaw: number, // Y
+    roll: number, // Z
   ): Quaternion {
     // Half angles for quaternion conversion
     const halfRoll = roll / 2;
@@ -85,11 +88,11 @@ export class Quaternion {
     const sinYaw = Math.sin(halfYaw);
     const cosYaw = Math.cos(halfYaw);
 
-    // Quaternion components
-    const w = cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll;
-    const x = cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * cosRoll;
-    const y = sinYaw * cosPitch * sinRoll + cosYaw * sinPitch * cosRoll;
-    const z = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
+    // Quaternion components (ZXY order)
+    const w = cosYaw * cosPitch * cosRoll - sinYaw * sinPitch * sinRoll;
+    const x = cosYaw * sinPitch * cosRoll + sinYaw * cosPitch * sinRoll;
+    const y = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
+    const z = cosYaw * cosPitch * sinRoll + sinYaw * sinPitch * cosRoll;
 
     return new Quaternion(w, x, y, z).normalize();
   }
