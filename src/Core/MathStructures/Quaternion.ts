@@ -50,27 +50,27 @@ export class Quaternion {
     let cosy_cosp = 1 - 2 * (this.y * this.y + this.z * this.z);
     let yaw = Math.atan2(siny_cosp, cosy_cosp);
 
-    return new Vector3(roll, pitch, yaw);
+    return new Vector3(pitch, yaw, roll);
   }
 
   /*
     Create a quaternion from Euler angles (in radians)
-    @param vector3 Rotation encoded in vector3 structure (ROLL, PITCH, YAW)
+    @param vector3 Rotation encoded in vector3 structure (pitch, yaw, roll)
    */
-  public static fromEulerAngles(vector3: Vector2) {
+  public static fromEulerAngles(vector3: Vector3) {
     return Quaternion.fromEulerAnglesSplit(vector3.x, vector3.y, vector3.z);
   }
 
   /**
    * Create a quaternion from Euler angles (in radians)
-   * @param roll Rotation around the X axis (in radians)
-   * @param pitch Rotation around the Y axis (in radians)
-   * @param yaw Rotation around the Z axis (in radians)
+   * @param pitch Rotation around the X axis (in radians)
+   * @param yaw Rotation around the Y axis (in radians)
+   * @param roll Rotation around the Z axis (in radians)
    */
   public static fromEulerAnglesSplit(
-    roll: number,
     pitch: number,
     yaw: number,
+    roll: number,
   ): Quaternion {
     // Half angles for quaternion conversion
     const halfRoll = roll / 2;
