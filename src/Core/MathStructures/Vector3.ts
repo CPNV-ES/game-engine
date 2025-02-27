@@ -147,4 +147,11 @@ export class Vector3 {
   public toVector2() {
     return new Vector2(this.x, this.y);
   }
+
+  /**
+   * Get a new vector3 init to zero
+   */
+  public static zero() {
+    return new Vector3(0, 0, 0);
+  }
 }
