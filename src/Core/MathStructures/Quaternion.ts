@@ -1,4 +1,5 @@
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * A class representing a quaternion, used for 3D rotations and transformations.
@@ -50,6 +51,47 @@ export class Quaternion {
     let yaw = Math.atan2(siny_cosp, cosy_cosp);
 
     return new Vector3(roll, pitch, yaw);
+  }
+
+  /*
+    Create a quaternion from Euler angles (in radians)
+    @param vector3 Rotation encoded in vector3 structure (ROLL, PITCH, YAW)
+   */
+  public static fromEulerAngles(vector3: Vector2) {
+    return Quaternion.fromEulerAnglesSplit(vector3.x, vector3.y, vector3.z);
+  }
+
+  /**
+   * Create a quaternion from Euler angles (in radians)
+   * @param roll Rotation around the X axis (in radians)
+   * @param pitch Rotation around the Y axis (in radians)
+   * @param yaw Rotation around the Z axis (in radians)
+   */
+  public static fromEulerAnglesSplit(
+    roll: number,
+    pitch: number,
+    yaw: number,
+  ): Quaternion {
+    // Half angles for quaternion conversion
+    const halfRoll = roll / 2;
+    const halfPitch = pitch / 2;
+    const halfYaw = yaw / 2;
+
+    // Trigonometric values
+    const sinRoll = Math.sin(halfRoll);
+    const cosRoll = Math.cos(halfRoll);
+    const sinPitch = Math.sin(halfPitch);
+    const cosPitch = Math.cos(halfPitch);
+    const sinYaw = Math.sin(halfYaw);
+    const cosYaw = Math.cos(halfYaw);
+
+    // Quaternion components
+    const w = cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll;
+    const x = cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * cosRoll;
+    const y = sinYaw * cosPitch * sinRoll + cosYaw * sinPitch * cosRoll;
+    const z = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
+
+    return new Quaternion(w, x, y, z).normalize();
   }
 
   /**
