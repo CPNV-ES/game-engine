@@ -5,14 +5,22 @@ import { GameObject } from "../../../src/Core/GameObject";
 import { PolygonCollider } from "../../../src/Extensions/PhysicsEngine/Colliders/PolygonCollider";
 import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
 import { ManualTicker } from "../../ExampleBehaviors/ManualTicker";
+import { Collider } from "../../../src/Extensions/PhysicsEngine/Colliders/Collider";
+import { Collision } from "../../../src/Extensions/PhysicsEngine/Colliders/Collision";
 
 describe("PhysicsGameEngineComponent", (): void => {
   let gameEngineWindow: GameEngineWindow;
   let physicsGameEngineComponent: PhysicsGameEngineComponent;
+  const manualTicker = new ManualTicker();
+  const observer = (data: Collision[], collideWithCollider) => {
+    data.map((collision) => {
+      collideWithCollider.push(collision.collidingWith);
+    });
+  };
 
   beforeEach(() => {
-    gameEngineWindow = new GameEngineWindow(new ManualTicker());
-    physicsGameEngineComponent = new PhysicsGameEngineComponent();
+    gameEngineWindow = new GameEngineWindow(manualTicker);
+    physicsGameEngineComponent = new PhysicsGameEngineComponent(manualTicker);
   });
 
   /**
@@ -43,13 +51,26 @@ describe("PhysicsGameEngineComponent", (): void => {
     object2.addBehavior(polygonCollider2);
     gameEngineWindow.root.addChild(object2);
 
-    const observer: Mock = vi.fn();
-    polygonCollider2.onDataChanged.addObserver((data) => observer(data));
+    const collideWithCollider1: Collider[] = [];
+    const collideWithCollider2: Collider[] = [];
+
+    polygonCollider1.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider1),
+    );
+    polygonCollider2.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider2),
+    );
 
     // Fire the event
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
+    manualTicker.tick(1);
 
-    expect(observer).toHaveBeenCalledWith([polygonCollider1]);
+    // Assert the result
+    expect(collideWithCollider1.length).toBe(1);
+    expect(collideWithCollider1[0]).toBe(polygonCollider2);
+
+    expect(collideWithCollider2.length).toBe(1);
+    expect(collideWithCollider2[0]).toBe(polygonCollider1);
   });
 
   /**
@@ -80,19 +101,19 @@ describe("PhysicsGameEngineComponent", (): void => {
     object2.addBehavior(polygonCollider2);
     gameEngineWindow.root.addChild(object2);
 
-    let collisionsTriggered = 0;
-    const observer = (data) => {
-      collisionsTriggered++;
-    };
+    const collideWithCollider2: Collider[] = [];
 
     // Attach observer
-    polygonCollider2.onDataChanged.addObserver(observer);
+    polygonCollider2.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider2),
+    );
 
     // Fire the event
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
+    manualTicker.tick(1);
 
     // Assert the result
-    expect(collisionsTriggered).toBe(0);
+    expect(collideWithCollider2.length).toBe(0);
   });
 
   /**
@@ -156,45 +177,60 @@ describe("PhysicsGameEngineComponent", (): void => {
     object5.addBehavior(polygonCollider5);
     gameEngineWindow.root.addChild(object5);
 
-    let collisionsTriggered: number = 0;
-    let dataChanged: any[] = [];
-
-    const dataChangedObserver = (data) => {
-      dataChanged.push(data);
-    };
+    const collideWithCollider1: Collider[] = [];
+    const collideWithCollider2: Collider[] = [];
+    const collideWithCollider3: Collider[] = [];
+    const collideWithCollider4: Collider[] = [];
+    const collideWithCollider5: Collider[] = [];
 
     // Attach observer
-    polygonCollider1.onDataChanged.addObserver(dataChangedObserver);
-    polygonCollider2.onDataChanged.addObserver(dataChangedObserver);
-    polygonCollider3.onDataChanged.addObserver(dataChangedObserver);
-    polygonCollider4.onDataChanged.addObserver(dataChangedObserver);
-    polygonCollider5.onDataChanged.addObserver(dataChangedObserver);
+    polygonCollider1.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider1),
+    );
+    polygonCollider2.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider2),
+    );
+    polygonCollider3.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider3),
+    );
+    polygonCollider4.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider4),
+    );
+    polygonCollider5.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider5),
+    );
 
     // Fire the event
-    gameEngineWindow.addGameComponent(physicsGameEngineComponent);
 
-    // Assert the result (we expect 10 event because each collision will trigger event on 2 colliders)
-    expect(dataChanged.length).toBe(5);
+    gameEngineWindow.addGameComponent(physicsGameEngineComponent);
+    manualTicker.tick(1);
+
+    // Assert the result
+    expect(collideWithCollider1.length).toBe(3);
+    expect(collideWithCollider2.length).toBe(1);
+    expect(collideWithCollider3.length).toBe(2);
+    expect(collideWithCollider4.length).toBe(2);
+    expect(collideWithCollider5.length).toBe(2);
 
     // Assert that Collider1 has collided with Colliders 2, 3 and 5
-    expect(dataChanged[0]).toContain(polygonCollider2);
-    expect(dataChanged[0]).toContain(polygonCollider3);
-    expect(dataChanged[0]).toContain(polygonCollider5);
+    expect(collideWithCollider1).toContain(polygonCollider2);
+    expect(collideWithCollider1).toContain(polygonCollider3);
+    expect(collideWithCollider1).toContain(polygonCollider5);
 
     // Assert that Collider2 has collided with Collider1
-    expect(dataChanged[1]).toContain(polygonCollider1);
+    expect(collideWithCollider2).toContain(polygonCollider1);
 
     // Assert that Collider3 has collided with Colliders 1 and 4
-    expect(dataChanged[2]).toContain(polygonCollider1);
-    expect(dataChanged[2]).toContain(polygonCollider4);
+    expect(collideWithCollider3).toContain(polygonCollider1);
+    expect(collideWithCollider3).toContain(polygonCollider4);
 
     // Assert that Collider4 has collided with Colliders 3 and 5
-    expect(dataChanged[3]).toContain(polygonCollider3);
-    expect(dataChanged[3]).toContain(polygonCollider5);
+    expect(collideWithCollider4).toContain(polygonCollider3);
+    expect(collideWithCollider4).toContain(polygonCollider5);
 
     // Assert that Collider5 has collided with Colliders 1 and 4
-    expect(dataChanged[4]).toContain(polygonCollider1);
-    expect(dataChanged[4]).toContain(polygonCollider4);
+    expect(collideWithCollider5).toContain(polygonCollider1);
+    expect(collideWithCollider5).toContain(polygonCollider4);
   });
 
   /**
@@ -258,22 +294,38 @@ describe("PhysicsGameEngineComponent", (): void => {
     object5.addBehavior(polygonCollider5);
     gameEngineWindow.root.addChild(object5);
 
-    let collisionsTriggered = 0;
-    const observer = (data) => {
-      collisionsTriggered++;
-    };
+    const collideWithCollider1: Collider[] = [];
+    const collideWithCollider2: Collider[] = [];
+    const collideWithCollider3: Collider[] = [];
+    const collideWithCollider4: Collider[] = [];
+    const collideWithCollider5: Collider[] = [];
 
     // Attach observer
-    polygonCollider1.onDataChanged.addObserver(observer);
-    polygonCollider2.onDataChanged.addObserver(observer);
-    polygonCollider3.onDataChanged.addObserver(observer);
-    polygonCollider4.onDataChanged.addObserver(observer);
-    polygonCollider5.onDataChanged.addObserver(observer);
+    polygonCollider1.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider1),
+    );
+    polygonCollider2.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider2),
+    );
+    polygonCollider3.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider3),
+    );
+    polygonCollider4.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider4),
+    );
+    polygonCollider5.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider5),
+    );
 
     // Fire the event
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
+    manualTicker.tick(1);
 
     // Assert the result
-    expect(collisionsTriggered).toBe(0);
+    expect(collideWithCollider1.length).toBe(0);
+    expect(collideWithCollider2.length).toBe(0);
+    expect(collideWithCollider3.length).toBe(0);
+    expect(collideWithCollider4.length).toBe(0);
+    expect(collideWithCollider5.length).toBe(0);
   });
 });
