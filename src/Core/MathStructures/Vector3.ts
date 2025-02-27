@@ -1,3 +1,5 @@
+import { Quaternion } from "@core/MathStructures/Quaternion.ts";
+
 /**
  * A 3D vector class orthogonal to the x, y and z axis
  * Note that when something return this, the reference is the same as the original object and not copied. Use clone() to get a new instance.
@@ -109,5 +111,32 @@ export class Vector3 {
    */
   public clone(): Vector3 {
     return new Vector3(this.x, this.y, this.z);
+  }
+
+  /**
+   * Rotate this vector by a quaternion
+   * @param quaternion The quaternion representing the rotation
+   */
+  public rotate(quaternion: Quaternion): Vector3 {
+    // Convert this vector to a "pure" quaternion (w = 0)
+    const vectorQuaternion = new Quaternion(0, this.x, this.y, this.z);
+
+    // Perform the rotation: q * v * q^-1
+    const conjugate = new Quaternion(
+      quaternion.w,
+      -quaternion.x,
+      -quaternion.y,
+      -quaternion.z,
+    );
+    const rotatedQuaternion = quaternion
+      .rotate(vectorQuaternion) // q * v
+      .rotate(conjugate); // (q * v) * q^-1
+
+    // Extract the rotated vector from the resulting quaternion
+    this.x = rotatedQuaternion.x;
+    this.y = rotatedQuaternion.y;
+    this.z = rotatedQuaternion.z;
+
+    return this;
   }
 }
