@@ -1,3 +1,5 @@
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
+
 /**
  * A 2D vector class orthogonal to the x and y axis
  * Note that when something return this, the reference is the same as the original object and not copied. Use clone() to get a new instance.
@@ -103,5 +105,13 @@ export class Vector2 {
    */
   public clone(): Vector2 {
     return new Vector2(this.x, this.y);
+  }
+
+  /**
+   * Convert a vector2 to a vector 3. Return a new instance.
+   * @param z The z axis (default is 0)
+   */
+  public toVector3(z: number = 0): Vector3 {
+    return new Vector3(this.x, this.y, z);
   }
 }

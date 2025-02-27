@@ -1,4 +1,5 @@
 import { Quaternion } from "@core/MathStructures/Quaternion.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * A 3D vector class orthogonal to the x, y and z axis
@@ -138,5 +139,12 @@ export class Vector3 {
     this.z = rotatedQuaternion.z;
 
     return this;
+  }
+
+  /**
+   * Return a new Vector2 instance (without the Z component)
+   */
+  public toVector2() {
+    return new Vector2(this.x, this.y);
   }
 }
