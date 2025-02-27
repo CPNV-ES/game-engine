@@ -91,4 +91,119 @@ describe("Transform", (): void => {
       );
     });
   });
+
+  describe("forward, right, and top vectors", () => {
+    it("should return default forward vector when no rotation is applied", () => {
+      const gameObject = new GameObject();
+      const transform = new Transform(gameObject);
+
+      // Default forward vector is (0, 0, 1)
+      expect(transform.forward).toEqual(new Vector3(0, 0, 1));
+    });
+
+    it("should return default right vector when no rotation is applied", () => {
+      const gameObject = new GameObject();
+      const transform = new Transform(gameObject);
+
+      // Default right vector is (1, 0, 0)
+      expect(transform.right).toEqual(new Vector3(1, 0, 0));
+    });
+
+    it("should return default top vector when no rotation is applied", () => {
+      const gameObject = new GameObject();
+      const transform = new Transform(gameObject);
+
+      // Default top vector is (0, 1, 0)
+      expect(transform.top).toEqual(new Vector3(0, 1, 0));
+    });
+
+    it("should create correct quaternion for 90° Y-axis rotation", () => {
+      const quaternion = Quaternion.fromEulerAngles(
+        new Vector3(0, Math.PI / 2, 0),
+      );
+      expect(quaternion.w).toBeCloseTo(Math.sqrt(2) / 2);
+      expect(quaternion.x).toBeCloseTo(0);
+      expect(quaternion.y).toBeCloseTo(Math.sqrt(2) / 2);
+      expect(quaternion.z).toBeCloseTo(0);
+    });
+
+    it("should rotate forward vector correctly with 90° Y-axis rotation", () => {
+      const quaternion = Quaternion.fromEulerAngles(
+        new Vector3(0, Math.PI / 2, 0),
+      );
+      const forward = new Vector3(0, 0, 1);
+      const rotatedForward = forward.rotate(quaternion);
+
+      expect(rotatedForward.x).toBeCloseTo(1);
+      expect(rotatedForward.y).toBeCloseTo(0);
+      expect(rotatedForward.z).toBeCloseTo(0);
+    });
+
+    it("should compute forward vector correctly after rotation", () => {
+      const gameObject = new GameObject();
+      const transform = new Transform(gameObject);
+
+      // Rotate 90 degrees around Y-axis (yaw)
+      transform.rotation = Quaternion.fromEulerAngles(
+        new Vector3(0, Math.PI / 2, 0),
+      );
+
+      // Expected forward vector after 90° Y-axis rotation: (1, 0, 0)
+      expect(transform.forward.x).toBeCloseTo(1);
+      expect(transform.forward.y).toBeCloseTo(0);
+      expect(transform.forward.z).toBeCloseTo(0);
+    });
+
+    it("should compute right vector correctly after rotation", () => {
+      const gameObject = new GameObject();
+      const transform = new Transform(gameObject);
+
+      // Rotate 90 degrees around Y-axis (yaw)
+      transform.rotation = Quaternion.fromEulerAngles(
+        new Vector3(0, Math.PI / 2, 0),
+      );
+
+      // Expected right vector after 90° Y-axis rotation: (0, 0, -1)
+      expect(transform.right.x).toBeCloseTo(0);
+      expect(transform.right.y).toBeCloseTo(0);
+      expect(transform.right.z).toBeCloseTo(-1);
+    });
+
+    it("should compute top vector correctly after rotation", () => {
+      const gameObject = new GameObject();
+      const transform = new Transform(gameObject);
+
+      // Rotate 90 degrees around X-axis (pitch)
+      transform.rotation = Quaternion.fromEulerAngles(
+        new Vector3(Math.PI / 2, 0, 0),
+      );
+
+      // Expected top vector after 90° X-axis rotation: (0, 0, 1)
+      expect(transform.top.x).toBeCloseTo(0);
+      expect(transform.top.y).toBeCloseTo(0);
+      expect(transform.top.z).toBeCloseTo(1);
+    });
+
+    it("should compute forward vector correctly with parent rotation", () => {
+      const parentGameObject = new GameObject();
+      const childGameObject = new GameObject();
+
+      parentGameObject.addChild(childGameObject);
+
+      // Set parent's rotation (90° around Y-axis)
+      parentGameObject.transform.rotation = Quaternion.fromEulerAngles(
+        new Vector3(0, Math.PI / 2, 0),
+      );
+
+      // Set child's local rotation (90° around X-axis)
+      childGameObject.transform.rotation = Quaternion.fromEulerAngles(
+        new Vector3(Math.PI / 2, 0, 0),
+      );
+
+      // Expected forward vector after combined rotation: (0, 1, 0)
+      expect(childGameObject.transform.forward.x).toBeCloseTo(0);
+      expect(childGameObject.transform.forward.y).toBeCloseTo(1);
+      expect(childGameObject.transform.forward.z).toBeCloseTo(0);
+    });
+  });
 });
