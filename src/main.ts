@@ -15,6 +15,7 @@ import { ObjLoader } from "@extensions/RenderEngine/MeshBased/ObjLoader.ts";
 import { MeshRenderBehavior } from "@extensions/RenderEngine/MeshBased/MeshRenderBehavior.ts";
 import BasicVertexMVPWithUV from "@extensions/RenderEngine/BasicShaders/BasicVertexMVPWithUVAndNormals.vert.wgsl?raw";
 import BasicTextureSample from "@extensions/RenderEngine/BasicShaders/BasicTextureSample-OpenGL-Like.frag.wgsl?raw";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -77,20 +78,24 @@ const lineRender = new LinesRenderBehavior(
 grid.addBehavior(lineRender);
 grid.transform.rotation = Quaternion.fromEulerAnglesSplit(Math.PI / 2, 0, 0);
 
-const lineRender2 = new LinesRenderBehavior(
-  renderComponent,
-  vertices,
-  new Color(0.3, 0.6, 0.3),
-);
-verticalGrid.addBehavior(lineRender2);
-
 gameEngineWindow.root.addChild(grid);
-gameEngineWindow.root.addChild(verticalGrid);
 
-const gizmo = new GameObject();
+const gizmo = new GameObject("Gizmo");
+const gizmo2 = new GameObject("Gizmo2");
 gameEngineWindow.root.addChild(gizmo);
+cameraGo.addChild(gizmo2);
+gizmo2.transform.position = new Vector3(0, 0, 5);
 ObjLoader.load("/test/CommonResources/gizmo.obj").then((obj) => {
   gizmo.addBehavior(
+    new MeshRenderBehavior(
+      renderComponent,
+      obj,
+      "/test/CommonResources/gizmo.png",
+      BasicVertexMVPWithUV,
+      BasicTextureSample,
+    ),
+  );
+  gizmo2.addBehavior(
     new MeshRenderBehavior(
       renderComponent,
       obj,
