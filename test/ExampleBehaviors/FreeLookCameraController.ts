@@ -1,7 +1,7 @@
-import { LogicBehavior } from "../../src/Core/LogicBehavior";
-import { Vector2 } from "../../src/Core/MathStructures/Vector2";
-import { Vector3 } from "../../src/Core/MathStructures/Vector3";
-import { Quaternion } from "../../src/Core/MathStructures/Quaternion";
+import { LogicBehavior } from "@core/LogicBehavior";
+import { Vector2 } from "@core/MathStructures/Vector2";
+import { Vector3 } from "@core/MathStructures/Vector3";
+import { Quaternion } from "@core/MathStructures/Quaternion";
 
 /**
  * A logic behavior that controls a free look camera.

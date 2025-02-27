@@ -1,7 +1,7 @@
-import { DeviceInputBehavior } from "../../src/Extensions/InputSystem/DeviceInputBehavior";
+import { DeviceInputBehavior } from "@extensions/InputSystem/DeviceInputBehavior";
 import { Vec3, vec3 } from "wgpu-matrix";
 import { FreeLookCameraController } from "./FreeLookCameraController";
-import { Vector2 } from "../../src/Core/MathStructures/Vector2";
+import { Vector2 } from "@core/MathStructures/Vector2";
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
 
 /**
