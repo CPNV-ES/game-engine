@@ -157,4 +157,12 @@ export class RenderEngineUtility {
     // Compute intersection point
     return vec3.add(rayOrigin, vec3.scale(rayDir, t)) as Vec3;
   }
+
+  /**
+   * Transform the core Vector3 into the web-gpu Vec3
+   * @param vector
+   */
+  public static toVec3(vector: Vector3): Vec3 {
+    return vec3.fromValues(vector.x, vector.y, vector.z);
+  }
 }
