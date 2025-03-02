@@ -13,14 +13,26 @@ export class InputUtility {
     } as unknown as Document;
   }
 
+  private static animationFrameCallbacks: ((timestamp: number) => void)[] = [];
+  private static isExecutingCallbacks: boolean = false;
+  private static frameId: number = 0;
+
   public static mockWindowEventListeners(): void {
-    let frameId = 0;
-    let lastCallback: ((timestamp: number) => void) | null = null;
+    this.frameId = 0;
+    this.animationFrameCallbacks = [];
+    this.isExecutingCallbacks = false;
 
     const mockRequestAnimationFrame = vi.fn((callback) => {
-      // Store the callback for later execution
-      lastCallback = callback;
-      return ++frameId;
+      // Store callback in queue
+      this.animationFrameCallbacks.push(callback);
+      return ++this.frameId;
+    });
+
+    const mockCancelAnimationFrame = vi.fn((id: number) => {
+      // Remove callback with matching id
+      this.animationFrameCallbacks = this.animationFrameCallbacks.filter(
+        (_, index) => index + 1 !== id,
+      );
     });
 
     global.window = {
@@ -29,6 +41,7 @@ export class InputUtility {
       dispatchEvent: vi.fn(),
       navigator: global.navigator,
       requestAnimationFrame: mockRequestAnimationFrame,
+      cancelAnimationFrame: mockCancelAnimationFrame,
       // Add minimal required globalThis properties
       globalThis: global,
       eval: global.eval,
@@ -36,18 +49,55 @@ export class InputUtility {
       parseFloat: global.parseFloat,
     } as unknown as Window & typeof globalThis;
 
-    // Make requestAnimationFrame available globally
+    // Make requestAnimationFrame and cancelAnimationFrame available globally
     global.requestAnimationFrame = mockRequestAnimationFrame;
-
-    // Add a method to execute the last stored callback
-    InputUtility.executeLastAnimationFrame = () => {
-      if (lastCallback) {
-        lastCallback(performance.now());
-      }
-    };
+    global.cancelAnimationFrame = mockCancelAnimationFrame;
   }
 
-  private static executeLastAnimationFrame: () => void = () => {};
+  public static executeAnimationFrames(): void {
+    if (this.isExecutingCallbacks) return; // Prevent recursive execution
+
+    this.isExecutingCallbacks = true;
+    const startTime = performance.now();
+    const callbacks = [...this.animationFrameCallbacks]; // Create a copy of the callbacks
+    this.animationFrameCallbacks = []; // Clear the queue
+
+    try {
+      // Execute all queued callbacks
+      for (const callback of callbacks) {
+        try {
+          callback(startTime);
+        } catch (error) {
+          console.error("Error executing animation frame callback:", error);
+        }
+      }
+    } finally {
+      this.isExecutingCallbacks = false;
+    }
+  }
+
+  private static lastAnimationFrameCallback:
+    | ((timestamp: number) => void)
+    | null = null;
+
+  public static executeLastAnimationFrame(): void {
+    if (this.isExecutingCallbacks) return; // Prevent recursive execution
+
+    this.isExecutingCallbacks = true;
+    try {
+      const callback = this.lastAnimationFrameCallback;
+      if (callback) {
+        this.lastAnimationFrameCallback = null; // Clear before execution
+        try {
+          callback(performance.now());
+        } catch (error) {
+          console.error("Error executing animation frame callback:", error);
+        }
+      }
+    } finally {
+      this.isExecutingCallbacks = false;
+    }
+  }
 
   private static triggerMouseEvent(
     eventType: string,
@@ -203,9 +253,21 @@ export class InputUtility {
       timestamp: number;
       mapping: string;
       id: string;
+      vibrationActuator?: {
+        type: string;
+        playEffect: (type: string, params: any) => Promise<boolean>;
+      };
     }
 
     const createMockGamepad = (index: number): MockGamepad => {
+      // Xbox One controller has 17 buttons:
+      // 0: A, 1: B, 2: X, 3: Y
+      // 4: LB, 5: RB
+      // 6: LT (analog), 7: RT (analog)
+      // 8: Back/View, 9: Start/Menu
+      // 10: LS (left stick press), 11: RS (right stick press)
+      // 12-15: D-pad (up, down, left, right)
+      // 16: Xbox button
       const buttons: MockGamepadButton[] = Array(17)
         .fill(null)
         .map(() => ({
@@ -214,25 +276,45 @@ export class InputUtility {
           touched: false,
         }));
 
+      // Xbox One controller has 4 axes:
+      // 0: Left stick X (-1 = left, 1 = right)
+      // 1: Left stick Y (-1 = up, 1 = down)
+      // 2: Right stick X (-1 = left, 1 = right)
+      // 3: Right stick Y (-1 = up, 1 = down)
+      const axes = Array(4).fill(0);
+
       return {
         buttons,
-        axes: Array(4).fill(0),
+        axes,
         index,
         connected: true,
         timestamp: Date.now(),
-        mapping: "standard",
-        id: `Mock Gamepad ${index}`,
+        mapping: "standard", // Xbox controllers use the standard mapping
+        id:
+          index === 0
+            ? "Xbox One Controller (STANDARD GAMEPAD Vendor: 045e Product: 02ea)"
+            : `Mock Gamepad ${index}`,
+        vibrationActuator:
+          index === 0
+            ? {
+                type: "dual-rumble",
+                playEffect: async () => true,
+              }
+            : undefined,
       };
     };
 
-    // Create array of 4 gamepads
-    const gamepads = Array(4)
-      .fill(null)
-      .map((_, i) => createMockGamepad(i));
+    // Create array of 4 gamepads (only first one is Xbox)
+    const gamepads = [createMockGamepad(0), null, null, null];
 
+    // Mock the navigator.getGamepads() function
+    const getGamepadsMock = vi.fn(() => gamepads);
     vi.stubGlobal("navigator", {
-      getGamepads: vi.fn(() => gamepads),
+      getGamepads: getGamepadsMock,
     });
+
+    // Execute one frame to initialize states
+    this.executeLastAnimationFrame();
   }
 
   public static triggerGamepadButtonDown(buttonIndex: number): void {
@@ -251,10 +333,14 @@ export class InputUtility {
           writable: true,
           configurable: true,
         });
+        Object.defineProperty(button, "touched", {
+          value: true,
+          writable: true,
+          configurable: true,
+        });
       }
-
-      // Execute the last animation frame callback
-      InputUtility.executeLastAnimationFrame();
+      // Execute animation frames to trigger events
+      this.executeAnimationFrames();
     }
   }
 
@@ -274,35 +360,77 @@ export class InputUtility {
           writable: true,
           configurable: true,
         });
+        Object.defineProperty(button, "touched", {
+          value: false,
+          writable: true,
+          configurable: true,
+        });
       }
-
-      // Execute the last animation frame callback
-      InputUtility.executeLastAnimationFrame();
+      // Execute animation frames to trigger events
+      this.executeAnimationFrames();
     }
   }
 
   public static triggerGamepadAxisChange(
     axisIndex: number,
     xValue: number,
-    yValue: number,
+    yValue: number = 0,
   ): void {
     const gamepad = navigator.getGamepads()[0];
     if (gamepad) {
-      // Update axis values
-      const axes = gamepad.axes;
-      Object.defineProperty(axes, axisIndex * 2, {
-        value: xValue,
-        writable: true,
-        configurable: true,
-      });
-      Object.defineProperty(axes, axisIndex * 2 + 1, {
-        value: yValue,
-        writable: true,
-        configurable: true,
-      });
-
-      // Execute the last animation frame callback
-      InputUtility.executeLastAnimationFrame();
+      // Handle triggers (which are buttons 6 and 7 on Xbox controllers)
+      if (axisIndex === 4) {
+        // Left trigger
+        const button = gamepad.buttons[6];
+        if (button) {
+          Object.defineProperty(button, "value", {
+            value: xValue,
+            writable: true,
+            configurable: true,
+          });
+          Object.defineProperty(button, "pressed", {
+            value: xValue > 0.1, // Xbox triggers are considered pressed at about 10%
+            writable: true,
+            configurable: true,
+          });
+        }
+      } else if (axisIndex === 5) {
+        // Right trigger
+        const button = gamepad.buttons[7];
+        if (button) {
+          Object.defineProperty(button, "value", {
+            value: xValue,
+            writable: true,
+            configurable: true,
+          });
+          Object.defineProperty(button, "pressed", {
+            value: xValue > 0.1,
+            writable: true,
+            configurable: true,
+          });
+        }
+      } else {
+        // Handle analog sticks
+        const baseIndex = axisIndex * 2;
+        if (baseIndex < gamepad.axes.length) {
+          // X axis
+          Object.defineProperty(gamepad.axes, baseIndex, {
+            value: xValue,
+            writable: true,
+            configurable: true,
+          });
+          // Y axis
+          if (baseIndex + 1 < gamepad.axes.length) {
+            Object.defineProperty(gamepad.axes, baseIndex + 1, {
+              value: yValue,
+              writable: true,
+              configurable: true,
+            });
+          }
+        }
+      }
+      // Execute animation frames to trigger events
+      this.executeAnimationFrames();
     }
   }
 
