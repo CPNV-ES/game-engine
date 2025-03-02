@@ -81,7 +81,6 @@ export class XboxGamepad extends GamepadDevice {
   constructor(index: number) {
     super(index);
 
-    // Subscribe to base class events to emit Xbox-specific events
     this.onButtonDown.addObserver((buttonIndex: number) => {
       this.handleButtonDown(buttonIndex);
     });
@@ -96,7 +95,6 @@ export class XboxGamepad extends GamepadDevice {
       },
     );
 
-    // Start polling trigger values
     this.pollTriggers();
   }
 
@@ -222,9 +220,10 @@ export class XboxGamepad extends GamepadDevice {
 
   private handleAxisChange(index: number): void {
     switch (index) {
-      case XboxGamepad.AXIS_LEFT_TRIGGER:
-      case XboxGamepad.AXIS_RIGHT_TRIGGER:
-        // Triggers are now handled through buttons, not axes
+      case XboxGamepad.AXIS_LEFT_STICK_X:
+      case XboxGamepad.AXIS_LEFT_STICK_Y:
+      case XboxGamepad.AXIS_RIGHT_STICK_X:
+      case XboxGamepad.AXIS_RIGHT_STICK_Y:
         break;
     }
   }
