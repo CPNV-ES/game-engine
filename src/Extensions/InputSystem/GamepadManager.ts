@@ -1,5 +1,6 @@
 import { Event } from "@core/EventSystem/Event.ts";
 import { GamepadDevice } from "@extensions/InputSystem/Gamepad.ts";
+import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 
 /**
  * GamepadManager class manages the gamepad devices connected to the browser.
@@ -27,13 +28,13 @@ export class GamepadManager {
     this.initializeConnectedGamepads();
 
     window.addEventListener("gamepadconnected", (event: GamepadEvent) => {
-      const gamepad: GamepadDevice = new GamepadDevice(event.gamepad.index);
+      const gamepad = this.createGamepadDevice(event.gamepad);
       this.gamepads.push(gamepad);
       this.onGamepadConnected.emit(gamepad);
     });
 
     window.addEventListener("gamepaddisconnected", (event: GamepadEvent) => {
-      const gamepad: GamepadDevice = this.gamepads.find(
+      const gamepad = this.gamepads.find(
         (gp) => gp.index === event.gamepad.index,
       );
       if (gamepad) {
@@ -49,12 +50,39 @@ export class GamepadManager {
   private initializeConnectedGamepads(): void {
     const gamepads = navigator.getGamepads();
     for (let i = 0; i < gamepads.length; i++) {
-      if (gamepads[i]) {
-        const gamepad: GamepadDevice = new GamepadDevice(i);
-        this.gamepads.push(gamepad);
-        this.onGamepadConnected.emit(gamepad);
+      const gamepad = gamepads[i];
+      if (gamepad) {
+        const device = this.createGamepadDevice(gamepad);
+        this.gamepads.push(device);
+        this.onGamepadConnected.emit(device);
       }
     }
+  }
+
+  /**
+   * Creates the appropriate gamepad device based on the gamepad type.
+   * @param gamepad The browser's Gamepad object
+   * @returns GamepadDevice The created gamepad device
+   */
+  private createGamepadDevice(gamepad: Gamepad): GamepadDevice {
+    if (this.isXboxGamepad(gamepad)) {
+      return new XboxGamepad(gamepad.index);
+    }
+    return new GamepadDevice(gamepad.index);
+  }
+
+  /**
+   * Checks if a gamepad is an Xbox controller.
+   * @param gamepad The browser's Gamepad object
+   * @returns boolean True if the gamepad is an Xbox controller
+   */
+  private isXboxGamepad(gamepad: Gamepad): boolean {
+    const id = gamepad.id.toLowerCase();
+    return (
+      id.includes("xbox") ||
+      id.includes("xinput") ||
+      (id.includes("vendor: 045e") && id.includes("product: 02"))
+    ); // Microsoft vendor ID and Xbox product ID pattern
   }
 
   /**
@@ -63,5 +91,15 @@ export class GamepadManager {
    */
   public getAllGamepads(): GamepadDevice[] {
     return this.gamepads;
+  }
+
+  /**
+   * Returns all connected Xbox gamepads.
+   * @returns {XboxGamepad[]} Array of Xbox gamepad devices.
+   */
+  public getXboxGamepads(): XboxGamepad[] {
+    return this.gamepads.filter(
+      (gamepad): gamepad is XboxGamepad => gamepad instanceof XboxGamepad,
+    );
   }
 }
