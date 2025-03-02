@@ -5,6 +5,7 @@ import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 import { Quaternion } from "@core/MathStructures/Quaternion";
+import { Vector3 } from "../../../../src/Core/MathStructures/Vector3";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -29,6 +30,7 @@ for (let i = 0; i < 10; i++) {
 }
 
 const cameraGo = new GameObject();
+cameraGo.transform.position = new Vector3(0, 0, 10);
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.addBehavior(new Camera(renderComponent));
 cameraGo.transform.position.x = 3;

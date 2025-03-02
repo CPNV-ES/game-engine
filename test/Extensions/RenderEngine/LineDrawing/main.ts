@@ -69,4 +69,5 @@ polygonGo.transform.rotation = Quaternion.fromEulerAnglesSplit(
 
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
+cameraGo.transform.position = new Vector3(0, 0, 10);
 cameraGo.addBehavior(new Camera(renderComponent));

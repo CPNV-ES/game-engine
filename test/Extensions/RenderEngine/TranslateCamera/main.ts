@@ -4,6 +4,7 @@ import { SpriteRenderBehavior } from "@extensions/RenderEngine/SpriteRenderBehav
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
+import { Vector3 } from "../../../../src/Core/MathStructures/Vector3";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -24,6 +25,7 @@ go.addBehavior(
 go.transform.position.x = 0;
 
 const cameraGo = new GameObject();
+cameraGo.transform.position = new Vector3(0, 0, 10);
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.addBehavior(new Camera(renderComponent));
 cameraGo.transform.position.x = 2;
