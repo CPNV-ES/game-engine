@@ -13,6 +13,42 @@ export class InputUtility {
     } as unknown as Document;
   }
 
+  public static mockWindowEventListeners(): void {
+    let frameId = 0;
+    let lastCallback: ((timestamp: number) => void) | null = null;
+
+    const mockRequestAnimationFrame = vi.fn((callback) => {
+      // Store the callback for later execution
+      lastCallback = callback;
+      return ++frameId;
+    });
+
+    global.window = {
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+      navigator: global.navigator,
+      requestAnimationFrame: mockRequestAnimationFrame,
+      // Add minimal required globalThis properties
+      globalThis: global,
+      eval: global.eval,
+      parseInt: global.parseInt,
+      parseFloat: global.parseFloat,
+    } as unknown as Window & typeof globalThis;
+
+    // Make requestAnimationFrame available globally
+    global.requestAnimationFrame = mockRequestAnimationFrame;
+
+    // Add a method to execute the last stored callback
+    InputUtility.executeLastAnimationFrame = () => {
+      if (lastCallback) {
+        lastCallback(performance.now());
+      }
+    };
+  }
+
+  private static executeLastAnimationFrame: () => void = () => {};
+
   private static triggerMouseEvent(
     eventType: string,
     button: number = 0,
@@ -150,5 +186,236 @@ export class InputUtility {
    */
   public static triggerKeyboardKeyUp(key: string = "w"): void {
     this.triggerKeyboardEvent("keyup", key);
+  }
+
+  public static mockGamepadEventListeners(): void {
+    interface MockGamepadButton {
+      pressed: boolean;
+      value: number;
+      touched: boolean;
+    }
+
+    interface MockGamepad {
+      buttons: MockGamepadButton[];
+      axes: number[];
+      index: number;
+      connected: boolean;
+      timestamp: number;
+      mapping: string;
+      id: string;
+    }
+
+    const createMockGamepad = (index: number): MockGamepad => {
+      const buttons: MockGamepadButton[] = Array(17)
+        .fill(null)
+        .map(() => ({
+          pressed: false,
+          value: 0,
+          touched: false,
+        }));
+
+      return {
+        buttons,
+        axes: Array(4).fill(0),
+        index,
+        connected: true,
+        timestamp: Date.now(),
+        mapping: "standard",
+        id: `Mock Gamepad ${index}`,
+      };
+    };
+
+    // Create array of 4 gamepads
+    const gamepads = Array(4)
+      .fill(null)
+      .map((_, i) => createMockGamepad(i));
+
+    vi.stubGlobal("navigator", {
+      getGamepads: vi.fn(() => gamepads),
+    });
+  }
+
+  public static triggerGamepadButtonDown(buttonIndex: number): void {
+    const gamepad = navigator.getGamepads()[0];
+    if (gamepad) {
+      // Update button state
+      const button = gamepad.buttons[buttonIndex];
+      if (button) {
+        Object.defineProperty(button, "pressed", {
+          value: true,
+          writable: true,
+          configurable: true,
+        });
+        Object.defineProperty(button, "value", {
+          value: 1.0,
+          writable: true,
+          configurable: true,
+        });
+      }
+
+      // Execute the last animation frame callback
+      InputUtility.executeLastAnimationFrame();
+    }
+  }
+
+  public static triggerGamepadButtonUp(buttonIndex: number): void {
+    const gamepad = navigator.getGamepads()[0];
+    if (gamepad) {
+      // Update button state
+      const button = gamepad.buttons[buttonIndex];
+      if (button) {
+        Object.defineProperty(button, "pressed", {
+          value: false,
+          writable: true,
+          configurable: true,
+        });
+        Object.defineProperty(button, "value", {
+          value: 0.0,
+          writable: true,
+          configurable: true,
+        });
+      }
+
+      // Execute the last animation frame callback
+      InputUtility.executeLastAnimationFrame();
+    }
+  }
+
+  public static triggerGamepadAxisChange(
+    axisIndex: number,
+    xValue: number,
+    yValue: number,
+  ): void {
+    const gamepad = navigator.getGamepads()[0];
+    if (gamepad) {
+      // Update axis values
+      const axes = gamepad.axes;
+      Object.defineProperty(axes, axisIndex * 2, {
+        value: xValue,
+        writable: true,
+        configurable: true,
+      });
+      Object.defineProperty(axes, axisIndex * 2 + 1, {
+        value: yValue,
+        writable: true,
+        configurable: true,
+      });
+
+      // Execute the last animation frame callback
+      InputUtility.executeLastAnimationFrame();
+    }
+  }
+
+  public static triggerGamepadConnected(): void {
+    // Get the addEventListener mock
+    const addEventListenerMock = window.addEventListener as Mock;
+
+    // Find the gamepadconnected event handler
+    const gamepadConnectedHandler = addEventListenerMock.mock.calls.find(
+      (call) => call[0] === "gamepadconnected",
+    )?.[1];
+
+    // If we found the handler, call it with a mock event
+    if (gamepadConnectedHandler) {
+      gamepadConnectedHandler({
+        gamepad: {
+          axes: [0, 0, 0, 0],
+          buttons: Array(16).fill({ pressed: false }),
+          connected: true,
+          id: "Mock Gamepad",
+          index: 0,
+          mapping: "standard",
+          timestamp: Date.now(),
+        },
+      });
+    }
+  }
+
+  public static triggerGamepadDisconnected(): void {
+    // Get the addEventListener mock
+    const addEventListenerMock = window.addEventListener as Mock;
+
+    // Find the gamepaddisconnected event handler
+    const gamepadDisconnectedHandler = addEventListenerMock.mock.calls.find(
+      (call) => call[0] === "gamepaddisconnected",
+    )?.[1];
+
+    // If we found the handler, call it with a mock event
+    if (gamepadDisconnectedHandler) {
+      gamepadDisconnectedHandler({
+        gamepad: {
+          axes: [0, 0, 0, 0],
+          buttons: Array(16).fill({ pressed: false }),
+          connected: false,
+          id: "Mock Gamepad",
+          index: 0,
+          mapping: "standard",
+          timestamp: Date.now(),
+        },
+      });
+    }
+  }
+
+  public static triggerMultipleGamepadConnected(
+    numberOfGamepads: number = 4,
+  ): void {
+    // Get the addEventListener mock
+    const addEventListenerMock = window.addEventListener as Mock;
+
+    // Find the gamepadconnected event handler
+    const gamepadConnectedHandler = addEventListenerMock.mock.calls.find(
+      (call) => call[0] === "gamepadconnected",
+    )?.[1];
+
+    // If we found the handler, call it multiple times with different indices
+    if (gamepadConnectedHandler) {
+      for (let i = 0; i < numberOfGamepads; i++) {
+        gamepadConnectedHandler({
+          gamepad: {
+            axes: [0, 0, 0, 0],
+            buttons: Array(16).fill({ pressed: false }),
+            connected: true,
+            id: `Mock Gamepad ${i}`,
+            index: i,
+            mapping: "standard",
+            timestamp: Date.now(),
+          },
+        });
+      }
+    }
+  }
+
+  public static triggerMultipleGamepadDisconnected(
+    numberOfGamepads: number = 4,
+  ): void {
+    // Get the addEventListener mock
+    const addEventListenerMock = window.addEventListener as Mock;
+
+    // Find the gamepaddisconnected event handler
+    const gamepadDisconnectedHandler = addEventListenerMock.mock.calls.find(
+      (call) => call[0] === "gamepaddisconnected",
+    )?.[1];
+
+    // If we found the handler, call it multiple times with different indices
+    if (gamepadDisconnectedHandler) {
+      for (let i = 0; i < numberOfGamepads; i++) {
+        gamepadDisconnectedHandler({
+          gamepad: {
+            axes: [0, 0, 0, 0],
+            buttons: Array(16).fill({ pressed: false }),
+            connected: false,
+            id: `Mock Gamepad ${i}`,
+            index: i,
+            mapping: "standard",
+            timestamp: Date.now(),
+          },
+        });
+      }
+
+      // Update the mock gamepads array to be empty
+      vi.stubGlobal("navigator", {
+        getGamepads: vi.fn(() => []),
+      });
+    }
   }
 }
