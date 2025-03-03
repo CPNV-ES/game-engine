@@ -80,7 +80,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
     this._bindGroup = this._renderEngine.createBindGroup(
       this._bindGroupLayouts![0],
       [
-        { binding: 0, resource: { buffer: this._mvpUniformBuffer } },
+        { binding: 0, resource: { buffer: this._mvpUniformBuffer! } },
         { binding: 1, resource: { buffer: this._colorBuffer } },
       ],
     );
