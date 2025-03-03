@@ -72,9 +72,6 @@ export class WireframeRenderBehavior extends RenderBehavior {
       this._vertexData,
     );
     this._indexBuffer = this._renderEngine.createIndexBuffer(this._indexData);
-    this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
-      RenderEngineUtility.toModelMatrix(this.transform),
-    );
 
     this._colorBuffer = this._renderEngine.createUniformBuffer(
       this._color.toFloat32Array(),
