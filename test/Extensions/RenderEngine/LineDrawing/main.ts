@@ -60,10 +60,10 @@ const polygonRenderBehavior = new LinesRenderBehavior(
 );
 polygonGo.addBehavior(polygonRenderBehavior);
 polygonRenderBehavior.color = new Color(0, 1, 1, 1);
-polygonGo.transform.position = new Vector3(2, 1, 0);
-polygonGo.transform.rotation = Quaternion.fromEulerAngles(0, 0, Math.PI / 4);
+polygonGo.transform.position.set(2, 1, 0);
+polygonGo.transform.rotation.setFromEulerAngles(0, 0, Math.PI / 4);
 
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
-cameraGo.transform.position = new Vector3(0, 0, 10);
+cameraGo.transform.position.set(0, 0, 10);
 cameraGo.addBehavior(new Camera(renderComponent));

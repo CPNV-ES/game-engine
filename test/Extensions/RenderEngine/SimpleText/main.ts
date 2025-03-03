@@ -29,10 +29,10 @@ textRenderBehavior.text = "Happy SPRUNK day!";
 textRenderBehavior.color = [0.1, 1, 0.3, 1];
 textRenderBehavior.pixelScale = 1 / 64;
 textRenderBehavior.centered = true;
-go.transform.rotation = Quaternion.fromEulerAngles(0, 0, 0.25 * Math.PI);
+go.transform.rotation.setFromEulerAngles(0, 0, 0.25 * Math.PI);
 go.transform.position.x = 1;
 
 const cameraGo = new GameObject();
-cameraGo.transform.position = new Vector3(0, 0, 10);
+cameraGo.transform.position.set(0, 0, 10);
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.addBehavior(new Camera(renderComponent));

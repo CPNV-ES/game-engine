@@ -38,11 +38,7 @@ describe("PolygonCollider", (): void => {
    * Tests if a polygonCollider can be successfully rotated.
    */
   it("should get a rotated polygonCollider without changing the original", () => {
-    gameObject.transform.rotation = Quaternion.fromEulerAngles(
-      0,
-      0,
-      Math.PI / 2,
-    );
+    gameObject.transform.rotation.setFromEulerAngles(0, 0, Math.PI / 2);
 
     const transformedPolygonCollider =
       polygonCollider.getVerticesWithTransform();

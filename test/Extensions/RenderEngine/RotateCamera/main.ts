@@ -30,8 +30,8 @@ for (let i = 0; i < 10; i++) {
 }
 
 const cameraGo = new GameObject();
-cameraGo.transform.position = new Vector3(0, 0, 10);
+cameraGo.transform.position.set(0, 0, 10);
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.addBehavior(new Camera(renderComponent));
 cameraGo.transform.position.x = 3;
-cameraGo.transform.rotation = Quaternion.fromEulerAngles(0, 0, Math.PI / 4);
+cameraGo.transform.rotation.setFromEulerAngles(0, 0, Math.PI / 4);

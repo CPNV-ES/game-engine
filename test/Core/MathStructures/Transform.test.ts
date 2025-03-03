@@ -28,7 +28,7 @@ describe("Transform", (): void => {
       const gameObject = new GameObject();
       const transform = new Transform(gameObject);
 
-      transform.position = new Vector3(1, 2, 3);
+      transform.position.set(1, 2, 3);
       expect(transform.worldPosition).toEqual(new Vector3(1, 2, 3));
     });
 
@@ -39,11 +39,11 @@ describe("Transform", (): void => {
       parentGameObject.addChild(childGameObject);
 
       // Set parent's position and rotation
-      parentGameObject.transform.position = new Vector3(10, 20, 30);
-      parentGameObject.transform.rotation = new Quaternion(0.707, 0, 0.707, 0); // 90° around Y-axis
+      parentGameObject.transform.position.set(10, 20, 30);
+      parentGameObject.transform.rotation.set(0.707, 0, 0.707, 0); // 90° around Y-axis
 
       // Set child's local position
-      childGameObject.transform.position = new Vector3(1, 2, 3);
+      childGameObject.transform.position.set(1, 2, 3);
 
       // Expected world position:
       // Parent's position + (child's position rotated by parent's rotation)
@@ -62,7 +62,7 @@ describe("Transform", (): void => {
       const gameObject = new GameObject();
       const transform = new Transform(gameObject);
 
-      transform.rotation = new Quaternion(0.707, 0, 0.707, 0); // 90° around Y-axis
+      transform.rotation.set(0.707, 0, 0.707, 0); // 90° around Y-axis
       expect(transform.worldRotation).toEqual(
         new Quaternion(0.707, 0, 0.707, 0),
       );
@@ -75,10 +75,10 @@ describe("Transform", (): void => {
       parentGameObject.addChild(childGameObject);
 
       // Set parent's rotation
-      parentGameObject.transform.rotation = new Quaternion(0.707, 0, 0.707, 0); // 90° around Y-axis
+      parentGameObject.transform.rotation.set(0.707, 0, 0.707, 0); // 90° around Y-axis
 
       // Set child's local rotation
-      childGameObject.transform.rotation = new Quaternion(0.707, 0.707, 0, 0); // 90° around X-axis
+      childGameObject.transform.rotation.set(0.707, 0.707, 0, 0); // 90° around X-axis
 
       // Expected world rotation:
       // Parent's rotation * child's rotation
@@ -140,7 +140,7 @@ describe("Transform", (): void => {
       const transform = new Transform(gameObject);
 
       // Rotate 90 degrees around Y-axis (yaw)
-      transform.rotation = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
+      transform.rotation.setFromEulerAngles(0, Math.PI / 2, 0);
 
       // Expected forward vector after 90° Y-axis rotation: (1, 0, 0)
       expect(transform.forward.x).toBeCloseTo(1);
@@ -153,7 +153,7 @@ describe("Transform", (): void => {
       const transform = new Transform(gameObject);
 
       // Rotate 90 degrees around Y-axis (yaw)
-      transform.rotation = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
+      transform.rotation.setFromEulerAngles(0, Math.PI / 2, 0);
 
       // Expected right vector after 90° Y-axis rotation: (0, 0, -1)
       expect(transform.right.x).toBeCloseTo(0);
@@ -166,7 +166,7 @@ describe("Transform", (): void => {
       const transform = new Transform(gameObject);
 
       // Rotate 90 degrees around X-axis (pitch)
-      transform.rotation = Quaternion.fromEulerAngles(Math.PI / 2, 0, 0);
+      transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0);
 
       // Expected top vector after 90° X-axis rotation: (0, 0, 1)
       expect(transform.top.x).toBeCloseTo(0);
@@ -181,18 +181,10 @@ describe("Transform", (): void => {
       parentGameObject.addChild(childGameObject);
 
       // Set parent's rotation (90° around Y-axis)
-      parentGameObject.transform.rotation = Quaternion.fromEulerAngles(
-        0,
-        Math.PI / 2,
-        0,
-      );
+      parentGameObject.transform.rotation.setFromEulerAngles(0, Math.PI / 2, 0);
 
       // Set child's local rotation (90° around X-axis)
-      childGameObject.transform.rotation = Quaternion.fromEulerAngles(
-        Math.PI / 2,
-        0,
-        0,
-      );
+      childGameObject.transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0);
 
       // Expected forward vector after combined rotation: (0, 1, 0)
       expect(childGameObject.transform.forward.x).toBeCloseTo(0);

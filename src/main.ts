@@ -81,7 +81,7 @@ const gizmo = new GameObject("Gizmo");
 const gizmo2 = new GameObject("Gizmo2");
 gameEngineWindow.root.addChild(gizmo);
 cameraGo.addChild(gizmo2);
-gizmo2.transform.position = new Vector3(0, 0, 5);
+gizmo2.transform.position.set(0, 0, 5);
 ObjLoader.load("/test/CommonResources/gizmo.obj").then((obj) => {
   gizmo.addBehavior(
     new MeshRenderBehavior(

@@ -23,6 +23,6 @@ go.addBehavior(
 );
 
 const cameraGo = new GameObject();
-cameraGo.transform.position = new Vector3(0, 0, 10);
+cameraGo.transform.position.set(0, 0, 10);
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.addBehavior(new Camera(renderComponent));
