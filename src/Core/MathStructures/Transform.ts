@@ -33,10 +33,10 @@ export class Transform {
    */
   get worldPosition(): Vector3 {
     if (this.gameObject.parent == null) {
-      return this.position;
+      return this.position.clone();
     } else {
       const parentWorldPosition =
-        this.gameObject.parent.transform.worldPosition;
+        this.gameObject.parent.transform.worldPosition.clone();
       const rotatedPosition = this.position
         .clone()
         .rotate(this.gameObject.parent.transform.worldRotation);
@@ -49,11 +49,11 @@ export class Transform {
    */
   get worldRotation(): Quaternion {
     if (this.gameObject.parent == null) {
-      return this.rotation;
+      return this.rotation.clone();
     } else {
-      return this.gameObject.parent.transform.worldRotation.rotate(
-        this.rotation,
-      );
+      return this.gameObject.parent.transform.worldRotation
+        .rotate(this.rotation)
+        .clone();
     }
   }
 

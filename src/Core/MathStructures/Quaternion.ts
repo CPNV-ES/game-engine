@@ -188,6 +188,15 @@ export class Quaternion {
    * Rotate this quaternion by another quaternion
    */
   public rotate(q: Quaternion): Quaternion {
+    this.multiply(q);
+    this.normalize();
+    return this;
+  }
+
+  /**
+   * Rotate this quaternion by another quaternion
+   */
+  public multiply(q: Quaternion): Quaternion {
     const w = this.w * q.w - this.x * q.x - this.y * q.y - this.z * q.z;
     const x = this.w * q.x + this.x * q.w + this.y * q.z - this.z * q.y;
     const y = this.w * q.y - this.x * q.z + this.y * q.w + this.z * q.x;
@@ -198,7 +207,6 @@ export class Quaternion {
     this.y = y;
     this.z = z;
 
-    this.normalize();
     return this;
   }
 

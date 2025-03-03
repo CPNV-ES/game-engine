@@ -130,8 +130,9 @@ export class Vector3 {
       -quaternion.z,
     );
     const rotatedQuaternion = quaternion
-      .rotate(vectorQuaternion) // q * v
-      .rotate(conjugate); // (q * v) * q^-1
+      .clone()
+      .multiply(vectorQuaternion) // q * v
+      .multiply(conjugate); // (q * v) * q^-1
 
     // Extract the rotated vector from the resulting quaternion
     this.x = rotatedQuaternion.x;

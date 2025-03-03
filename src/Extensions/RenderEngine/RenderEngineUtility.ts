@@ -12,15 +12,18 @@ export class RenderEngineUtility {
     // Start with an identity matrix
     let modelMatrix = mat4.identity();
 
+    const worldPosition = transform.worldPosition;
+    const worldRotation = transform.worldRotation;
+
     // Apply translation (position)
     modelMatrix = mat4.translate(modelMatrix, [
-      transform.position.x,
-      transform.position.y,
-      transform.position.z,
+      worldPosition.x,
+      worldPosition.y,
+      worldPosition.z,
     ]);
 
     // Apply rotation (quaternion)
-    const rotationMatrix = this.quaternionToMatrix(transform.rotation);
+    const rotationMatrix = this.quaternionToMatrix(worldRotation);
     modelMatrix = mat4.multiply(modelMatrix, rotationMatrix);
 
     // Apply scale
