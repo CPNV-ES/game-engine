@@ -14,17 +14,17 @@ export class Transform {
   /**
    * The position of the object in 3D space (from the origin)
    */
-  public position: Vector3 = Vector3.zero();
+  public readonly position: Vector3 = Vector3.zero();
 
   /**
    * The rotation of the object represented as a quaternion
    */
-  public rotation: Quaternion = Quaternion.identity();
+  public readonly rotation: Quaternion = Quaternion.identity();
 
   /**
    * The scale of the object in 3D space
    */
-  public scale: Vector3 = new Vector3(1, 1, 1);
+  public readonly scale: Vector3 = new Vector3(1, 1, 1);
 
   private gameObject: GameObject;
 
