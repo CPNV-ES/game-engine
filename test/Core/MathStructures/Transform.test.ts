@@ -82,9 +82,9 @@ describe("Transform", (): void => {
 
       // Expected world rotation:
       // Parent's rotation * child's rotation
-      const expectedWorldRotation = parentGameObject.transform.rotation.rotate(
-        childGameObject.transform.rotation,
-      );
+      const expectedWorldRotation = parentGameObject.transform.rotation
+        .clone()
+        .rotate(childGameObject.transform.rotation);
 
       expect(childGameObject.transform.worldRotation).toEqual(
         expectedWorldRotation,
@@ -191,5 +191,108 @@ describe("Transform", (): void => {
       expect(childGameObject.transform.forward.y).toBeCloseTo(1);
       expect(childGameObject.transform.forward.z).toBeCloseTo(0);
     });
+  });
+
+  it("should compute world position correctly in a nested hierarchy", () => {
+    const grandparent = new GameObject();
+    const parent = new GameObject();
+    const child = new GameObject();
+
+    grandparent.addChild(parent);
+    parent.addChild(child);
+
+    grandparent.transform.position.set(10, 20, 30);
+    parent.transform.position.set(1, 2, 3);
+    child.transform.position.set(0.5, 0.5, 0.5);
+
+    const expectedWorldPosition = new Vector3(
+      10 + 1 + 0.5,
+      20 + 2 + 0.5,
+      30 + 3 + 0.5,
+    );
+    expect(child.transform.worldPosition).toEqual(expectedWorldPosition);
+  });
+
+  it("should apply non-uniform scaling correctly", () => {
+    const parent = new GameObject();
+    const child = new GameObject();
+
+    parent.addChild(child);
+
+    parent.transform.scale.set(2, 1, 1); // Scale only along X-axis
+    child.transform.position.set(1, 0, 0);
+
+    const expectedWorldPosition = new Vector3(2, 0, 0); // Scaled X position
+    expect(child.transform.worldPosition).toEqual(expectedWorldPosition);
+  });
+
+  it("should combine rotation and scaling correctly", () => {
+    const parent = new GameObject();
+    const child = new GameObject();
+
+    parent.addChild(child);
+
+    parent.transform.rotation.setFromEulerAngles(0, Math.PI / 2, 0); // 90° around Y-axis
+    parent.transform.scale.set(2, 1, 1); // Scale only along X-axis
+    child.transform.position.set(1, 0, 0);
+
+    // Expected world position: (0, 0, -2)
+    expect(child.transform.worldPosition.x).toBeCloseTo(0);
+    expect(child.transform.worldPosition.y).toBeCloseTo(0);
+    expect(child.transform.worldPosition.z).toBeCloseTo(-2);
+  });
+
+  it("should handle zero scaling correctly", () => {
+    const parent = new GameObject();
+    const child = new GameObject();
+
+    parent.addChild(child);
+
+    parent.transform.scale.set(0, 1, 1); // Zero scale along X-axis
+    child.transform.position.set(1, 0, 0);
+
+    const expectedWorldPosition = new Vector3(0, 0, 0); // X position scaled to zero
+    expect(child.transform.worldPosition).toEqual(expectedWorldPosition);
+  });
+
+  it("should handle negative scaling correctly", () => {
+    const parent = new GameObject();
+    const child = new GameObject();
+
+    parent.addChild(child);
+
+    parent.transform.scale.set(-1, 1, 1); // Negative scale along X-axis
+    child.transform.position.set(1, 0, 0);
+
+    const expectedWorldPosition = new Vector3(-1, 0, 0); // X position inverted
+    expect(child.transform.worldPosition).toEqual(expectedWorldPosition);
+  });
+
+  it("should normalize quaternions after operations", () => {
+    const quaternion = new Quaternion(1, 2, 3, 4);
+    quaternion.normalize();
+
+    const length = Math.sqrt(
+      quaternion.w * quaternion.w +
+        quaternion.x * quaternion.x +
+        quaternion.y * quaternion.y +
+        quaternion.z * quaternion.z,
+    );
+
+    expect(length).toBeCloseTo(1); // Length should be 1
+  });
+
+  it("should multiply quaternions in the correct order", () => {
+    const q1 = new Quaternion(0.707, 0, 0.707, 0); // 90° around Y-axis
+    const q2 = new Quaternion(0.707, 0.707, 0, 0); // 90° around X-axis
+
+    const result = q1.multiply(q2);
+
+    // Expected result of q1 * q2
+    const expected = new Quaternion(0.5, 0.5, 0.5, -0.5);
+    expect(result.w).toBeCloseTo(expected.w);
+    expect(result.x).toBeCloseTo(expected.x);
+    expect(result.y).toBeCloseTo(expected.y);
+    expect(result.z).toBeCloseTo(expected.z);
   });
 });
