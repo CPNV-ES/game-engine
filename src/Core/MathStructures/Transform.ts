@@ -1,7 +1,6 @@
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { Quaternion } from "@core/MathStructures/Quaternion.ts";
 import { GameObject } from "@core/GameObject.ts";
-import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * A class representing a 3D transformation applied to an object by vectors and quaternions.
@@ -35,12 +34,20 @@ export class Transform {
     if (this.gameObject.parent == null) {
       return this.position.clone();
     } else {
-      const parentWorldPosition =
-        this.gameObject.parent.transform.worldPosition.clone();
-      const rotatedPosition = this.position
+      // Apply parent's scale to the local position
+      const scaledPosition = this.position
         .clone()
-        .rotate(this.gameObject.parent.transform.worldRotation);
-      return parentWorldPosition.add(rotatedPosition);
+        .scaleAxis(this.gameObject.parent.transform.worldScale);
+
+      // Rotate the scaled position by the parent's rotation
+      const rotatedPosition = scaledPosition.rotate(
+        this.gameObject.parent.transform.worldRotation,
+      );
+
+      // Add the parent's world position
+      return this.gameObject.parent.transform.worldPosition
+        .clone()
+        .add(rotatedPosition);
     }
   }
 
@@ -62,7 +69,7 @@ export class Transform {
    */
   get worldScale(): Vector3 {
     if (this.gameObject.parent == null) {
-      return this.scale;
+      return this.scale.clone();
     } else {
       const parentWorldScale = this.gameObject.parent.transform.worldScale;
       return this.scale.clone().scaleAxis(parentWorldScale);
