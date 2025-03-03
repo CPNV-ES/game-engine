@@ -44,27 +44,24 @@ cameraGo.transform.position.z = 10;
 gameEngineWindow.root.addChild(cameraGo);
 
 const grid = new GameObject("Grid");
-const verticalGrid = new GameObject("VerticalGrid");
-const gridSize = 200; // Adjust the size of the grid (e.g., 20x20 units)
-const step = 1; // The step between grid lines (e.g., every 2 units)
+const gridSize = 200;
+const step = 1;
 
 // Generate vertices for grid lines
 const vertices: Vector2[] = [new Vector2(-gridSize, -gridSize)];
 
 // Horizontal lines
 for (let x = -gridSize; x <= gridSize; x += step) {
-  // Horizontal line (Y constant)
-  vertices.push(new Vector2(x, -gridSize)); // Start point
-  vertices.push(new Vector2(x, gridSize)); // End point
-  vertices.push(new Vector2(x + step, gridSize)); // End point
+  vertices.push(new Vector2(x, -gridSize));
+  vertices.push(new Vector2(x, gridSize));
+  vertices.push(new Vector2(x + step, gridSize));
 }
 
 // Vertical lines
 for (let y = -gridSize; y <= gridSize; y += step) {
-  // Vertical line (X constant)
-  vertices.push(new Vector2(-gridSize, y)); // Start point
-  vertices.push(new Vector2(gridSize, y)); // End point
-  vertices.push(new Vector2(gridSize, y + step)); // End point
+  vertices.push(new Vector2(-gridSize, y));
+  vertices.push(new Vector2(gridSize, y));
+  vertices.push(new Vector2(gridSize, y + step));
 }
 vertices.push(new Vector2(gridSize, gridSize));
 vertices.push(new Vector2(gridSize, -gridSize));
