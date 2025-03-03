@@ -118,9 +118,7 @@ describe("Transform", (): void => {
     });
 
     it("should create correct quaternion for 90° Y-axis rotation", () => {
-      const quaternion = Quaternion.fromEulerAngles(
-        new Vector3(0, Math.PI / 2, 0),
-      );
+      const quaternion = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
       expect(quaternion.w).toBeCloseTo(Math.sqrt(2) / 2);
       expect(quaternion.x).toBeCloseTo(0);
       expect(quaternion.y).toBeCloseTo(Math.sqrt(2) / 2);
@@ -128,9 +126,7 @@ describe("Transform", (): void => {
     });
 
     it("should rotate forward vector correctly with 90° Y-axis rotation", () => {
-      const quaternion = Quaternion.fromEulerAngles(
-        new Vector3(0, Math.PI / 2, 0),
-      );
+      const quaternion = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
       const forward = new Vector3(0, 0, 1);
       const rotatedForward = forward.rotate(quaternion);
 
@@ -144,9 +140,7 @@ describe("Transform", (): void => {
       const transform = new Transform(gameObject);
 
       // Rotate 90 degrees around Y-axis (yaw)
-      transform.rotation = Quaternion.fromEulerAngles(
-        new Vector3(0, Math.PI / 2, 0),
-      );
+      transform.rotation = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
 
       // Expected forward vector after 90° Y-axis rotation: (1, 0, 0)
       expect(transform.forward.x).toBeCloseTo(1);
@@ -159,9 +153,7 @@ describe("Transform", (): void => {
       const transform = new Transform(gameObject);
 
       // Rotate 90 degrees around Y-axis (yaw)
-      transform.rotation = Quaternion.fromEulerAngles(
-        new Vector3(0, Math.PI / 2, 0),
-      );
+      transform.rotation = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
 
       // Expected right vector after 90° Y-axis rotation: (0, 0, -1)
       expect(transform.right.x).toBeCloseTo(0);
@@ -174,9 +166,7 @@ describe("Transform", (): void => {
       const transform = new Transform(gameObject);
 
       // Rotate 90 degrees around X-axis (pitch)
-      transform.rotation = Quaternion.fromEulerAngles(
-        new Vector3(Math.PI / 2, 0, 0),
-      );
+      transform.rotation = Quaternion.fromEulerAngles(Math.PI / 2, 0, 0);
 
       // Expected top vector after 90° X-axis rotation: (0, 0, 1)
       expect(transform.top.x).toBeCloseTo(0);
@@ -192,12 +182,16 @@ describe("Transform", (): void => {
 
       // Set parent's rotation (90° around Y-axis)
       parentGameObject.transform.rotation = Quaternion.fromEulerAngles(
-        new Vector3(0, Math.PI / 2, 0),
+        0,
+        Math.PI / 2,
+        0,
       );
 
       // Set child's local rotation (90° around X-axis)
       childGameObject.transform.rotation = Quaternion.fromEulerAngles(
-        new Vector3(Math.PI / 2, 0, 0),
+        Math.PI / 2,
+        0,
+        0,
       );
 
       // Expected forward vector after combined rotation: (0, 1, 0)

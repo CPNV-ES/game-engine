@@ -73,7 +73,7 @@ const lineRender = new LinesRenderBehavior(
   new Color(0.3, 0.3, 0.6),
 );
 grid.addBehavior(lineRender);
-grid.transform.rotation = Quaternion.fromEulerAnglesSplit(Math.PI / 2, 0, 0);
+grid.transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0);
 
 gameEngineWindow.root.addChild(grid);
 

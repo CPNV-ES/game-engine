@@ -44,7 +44,7 @@ export class FreeLookCameraController extends LogicBehavior<void> {
 
     this._target.add(delta.clone().scale(-this._lookSensitivity));
 
-    transform.rotation = Quaternion.fromEulerAngles(
+    transform.rotation = Quaternion.identity().setFromVectorEulerAngles(
       this._target.toVector3(),
       "XYZ",
     );

@@ -1,5 +1,4 @@
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
-import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 type EulerOrder = "XYZ" | "XZY" | "YXZ" | "YZX" | "ZXY" | "ZYX";
 
@@ -14,7 +13,7 @@ export class Quaternion {
   public y: number;
   public z: number;
 
-  constructor(w: number, x: number, y: number, z: number) {
+  constructor(w: number = 1, x: number = 0, y: number = 0, z: number = 0) {
     this.w = w;
     this.x = x;
     this.y = y;
@@ -127,24 +126,20 @@ export class Quaternion {
   }
 
   /**
-   * Create a quaternion from Euler angles (in radians) with a specified order (default ZXY).
+   * Set this quaternion from Euler angles (in radians) with a specified order (default ZXY).
    */
-  public static fromEulerAngles(
+  public setFromVectorEulerAngles(
     vector3: Vector3,
     order: EulerOrder = "ZXY",
   ): Quaternion {
-    return Quaternion.fromEulerAnglesSplit(
-      vector3.x,
-      vector3.y,
-      vector3.z,
-      order,
-    );
+    this.setFromEulerAngles(vector3.x, vector3.y, vector3.z, order);
+    return this;
   }
 
   /**
-   * Create a quaternion from Euler angles (in radians) with a specified order (default ZXY).
+   * Set this quaternion from Euler angles (in radians) with a specified order (default ZXY).
    */
-  public static fromEulerAnglesSplit(
+  public setFromEulerAngles(
     pitch: number,
     yaw: number,
     roll: number,
@@ -181,30 +176,42 @@ export class Quaternion {
         throw new Error(`Euler order ${order} not implemented`);
     }
 
-    return new Quaternion(w, x, y, z).normalize();
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.w = w;
+    this.normalize();
+    return this;
   }
 
   /**
    * Rotate this quaternion by another quaternion
    */
   public rotate(q: Quaternion): Quaternion {
-    return new Quaternion(
-      this.w * q.w - this.x * q.x - this.y * q.y - this.z * q.z,
-      this.w * q.x + this.x * q.w + this.y * q.z - this.z * q.y,
-      this.w * q.y - this.x * q.z + this.y * q.w + this.z * q.x,
-      this.w * q.z + this.x * q.y - this.y * q.x + this.z * q.w,
-    ).normalize();
+    const w = this.w * q.w - this.x * q.x - this.y * q.y - this.z * q.z;
+    const x = this.w * q.x + this.x * q.w + this.y * q.z - this.z * q.y;
+    const y = this.w * q.y - this.x * q.z + this.y * q.w + this.z * q.x;
+    const z = this.w * q.z + this.x * q.y - this.y * q.x + this.z * q.w;
+
+    this.w = w;
+    this.x = x;
+    this.y = y;
+    this.z = z;
+
+    this.normalize();
+    return this;
   }
 
   /**
-   * Linearly interpolate between two quaternions
+   * Set the quaterion to linear interpolate between two quaternions
    */
-  public static lerp(q1: Quaternion, q2: Quaternion, t: number): Quaternion {
-    let w = q1.w * (1 - t) + q2.w * t;
-    let x = q1.x * (1 - t) + q2.x * t;
-    let y = q1.y * (1 - t) + q2.y * t;
-    let z = q1.z * (1 - t) + q2.z * t;
-    return new Quaternion(w, x, y, z).normalize();
+  public lerp(q1: Quaternion, q2: Quaternion, t: number): Quaternion {
+    this.w = q1.w * (1 - t) + q2.w * t;
+    this.x = q1.x * (1 - t) + q2.x * t;
+    this.y = q1.y * (1 - t) + q2.y * t;
+    this.z = q1.z * (1 - t) + q2.z * t;
+    this.normalize();
+    return this;
   }
 
   /**
@@ -212,5 +219,34 @@ export class Quaternion {
    */
   public clone(): Quaternion {
     return new Quaternion(this.w, this.x, this.y, this.z);
+  }
+
+  /**
+   * Get the identity quaternion
+   */
+  public static identity() {
+    return new Quaternion(1, 0, 0, 0);
+  }
+
+  /**
+   * Return a new quaternion from Euler angles (in radians) with a specified order (default ZXY).
+   */
+  public static fromEulerAngles(
+    pitch: number,
+    yaw: number,
+    roll: number,
+    order: EulerOrder = "ZXY",
+  ) {
+    return new Quaternion().setFromEulerAngles(pitch, yaw, roll, order);
+  }
+
+  /**
+   * Return a new quaternion from Euler angles (in radians, pitch yaw, roll order) with a specified order (default ZXY).
+   */
+  public static fromVectorEulerAngles(
+    vector3: Vector3,
+    order: EulerOrder = "ZXY",
+  ) {
+    return new Quaternion().setFromVectorEulerAngles(vector3, order);
   }
 }

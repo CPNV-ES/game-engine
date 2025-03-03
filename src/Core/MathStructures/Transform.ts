@@ -1,6 +1,7 @@
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { Quaternion } from "@core/MathStructures/Quaternion.ts";
 import { GameObject } from "@core/GameObject.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * A class representing a 3D transformation applied to an object by vectors and quaternions.
@@ -13,12 +14,12 @@ export class Transform {
   /**
    * The position of the object in 3D space (from the origin)
    */
-  public position: Vector3 = new Vector3(0, 0, 0);
+  public position: Vector3 = Vector3.zero();
 
   /**
    * The rotation of the object represented as a quaternion
    */
-  public rotation: Quaternion = new Quaternion(1, 0, 0, 0); // Identity quaternion
+  public rotation: Quaternion = Quaternion.identity();
 
   /**
    * The scale of the object in 3D space

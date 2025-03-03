@@ -34,8 +34,4 @@ cameraGo.transform.position = new Vector3(0, 0, 10);
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.addBehavior(new Camera(renderComponent));
 cameraGo.transform.position.x = 3;
-cameraGo.transform.rotation = Quaternion.fromEulerAnglesSplit(
-  0,
-  0,
-  Math.PI / 4,
-);
+cameraGo.transform.rotation = Quaternion.fromEulerAngles(0, 0, Math.PI / 4);

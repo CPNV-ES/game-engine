@@ -27,7 +27,7 @@ for (let i = 0; i < 10; i++) {
     ),
   );
   go.transform.position.x = i;
-  go.transform.rotation = Quaternion.fromEulerAnglesSplit(0, 0, Math.PI / 4);
+  go.transform.rotation = Quaternion.fromEulerAngles(0, 0, Math.PI / 4);
 }
 
 const cameraGo = new GameObject();
