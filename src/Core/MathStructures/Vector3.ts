@@ -149,6 +149,40 @@ export class Vector3 {
   }
 
   /**
+   * Set the vector from a Vector2 instance
+   * @param vector
+   */
+  public setFromVector2(vector: Vector2) {
+    this.x = vector.x;
+    this.y = vector.y;
+    return this;
+  }
+
+  /**
+   * Set the vector from a Vector3 instance
+   * @param vector
+   */
+  public setFromVector3(vector: Vector3) {
+    this.x = vector.x;
+    this.y = vector.y;
+    this.z = vector.z;
+    return;
+  }
+
+  /**
+   * Set the vector to the given values
+   * @param x
+   * @param y
+   * @param z
+   */
+  public set(x: number, y: number, z: number): Vector3 {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    return this;
+  }
+
+  /**
    * Get a new vector3 init to zero
    */
   public static zero() {

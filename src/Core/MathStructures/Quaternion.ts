@@ -222,6 +222,33 @@ export class Quaternion {
   }
 
   /**
+   * Set the quaternion from another quaternion
+   * @param q
+   */
+  public setFromQuaternion(q: Quaternion): Quaternion {
+    this.w = q.w;
+    this.x = q.x;
+    this.y = q.y;
+    this.z = q.z;
+    return this;
+  }
+
+  /**
+   * Set the quaternion from components
+   * @param w
+   * @param x
+   * @param y
+   * @param z
+   */
+  public set(w: number, x: number, y: number, z: number): Quaternion {
+    this.w = w;
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    return this;
+  }
+
+  /**
    * Get the identity quaternion
    */
   public static identity() {
