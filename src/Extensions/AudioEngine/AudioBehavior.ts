@@ -83,7 +83,6 @@ export class AudioBehavior extends OutputBehavior {
      * @throws {Error} If the audio source is not set.
      */
     public async play() : Promise<void> {
-        if (this.startFlag) throw new Error("Cannot call start() twice.");
         if (!this.audioBuffer) throw new Error("Audio buffer not set.");
         if (!this.source) throw new Error("Audio source not set.");
 
@@ -98,6 +97,7 @@ export class AudioBehavior extends OutputBehavior {
      * @throws {Error} If the audio source is not set.
      */
     private async start(): Promise<void> {
+        if (this.startFlag) throw new Error("Cannot call start() twice.");
         this.source!.start();
         this.isPlaying = true;
         this.startFlag = true;
