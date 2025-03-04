@@ -7,6 +7,7 @@ import {OutputBehavior} from "../../Core/OutputBehavior.ts";
 export class AudioBehavior extends OutputBehavior {
     protected audioContext: AudioContext;
     protected gainNode: GainNode;
+public loop: boolean = false;
 
     private source: AudioBufferSourceNode | null = null;
     private audioBuffer: AudioBuffer | null = null;
@@ -103,12 +104,14 @@ export class AudioBehavior extends OutputBehavior {
     /**
      * Sets whether the audio should loop.
      * @param loop true to loop, false to not loop.
+* @throws {Error} If the audio source is not set.
      */
     public setLoop(loop: boolean): void {
         if (this.source) {
+this.loop = loop;
             this.source.loop = loop;
-        }
-        else throw new Error("Audio source not set.");
+        }         else {
+throw new Error("Audio source not set.");
     }
 }
 
