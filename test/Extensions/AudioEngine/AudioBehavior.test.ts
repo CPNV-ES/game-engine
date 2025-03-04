@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { AudioContextMock, fetchMock } from "@mocks/AudioContextMock";
+import {
+  AudioContextMock,
+  fetchMock,
+} from "@test/Extensions/AudioEngine/Mocks";
 import { GameEngineWindow } from "@core/GameEngineWindow";
 import { AudioBehavior } from "@extensions/AudioEngine/AudioBehavior";
 
