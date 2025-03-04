@@ -122,12 +122,12 @@ export class AudioBehavior extends OutputBehavior {
     public async stop(): Promise<void> {
         if (!this.source) throw new Error("Audio source not set.");
         this.source.stop();
-        this.source.disconnect();
         this.source = null;
         this.isPlaying = false;
         await this.audioContext.suspend();
         this.playbackHistory = [];
         this.startFlag = false;
+
     }
 
     /**
