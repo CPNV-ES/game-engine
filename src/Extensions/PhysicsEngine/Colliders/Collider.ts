@@ -1,7 +1,9 @@
 import { PhysicsBehavior } from "../PhysicsBehavior.ts";
 import { Collision } from "./Collision.ts";
+import { Rigidbody } from "../Rigidbodies/Rigidbody.ts";
 
 export class Collider extends PhysicsBehavior<Collision[]> {
+  public rigidbody: Rigidbody;
   constructor() {
     super();
     this.data = [];
