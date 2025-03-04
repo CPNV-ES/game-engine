@@ -417,8 +417,6 @@ describe("PhysicsGameEngineComponent", (): void => {
     // Assert the new positions
     expect(object1.transform.position).toEqual(new Vector2(-0.5, 0));
     expect(object2.transform.position).toEqual(new Vector2(0.5, 0));
-
-    // Assert the result
   });
 
   /**
@@ -467,7 +465,5 @@ describe("PhysicsGameEngineComponent", (): void => {
     expect(object1.transform.position.y).toEqual(0);
     expect(object2.transform.position.x).toBeCloseTo(0.090909);
     expect(object2.transform.position.y).toEqual(0);
-
-    // Assert the result
   });
 });

@@ -9,6 +9,9 @@ export class PolygonCollider extends Collider {
     this.vertices = vertices;
   }
 
+  /**
+   * Get the gravitation center of the polygon
+   */
   public getGravitationCenter(): Vector2 {
     return this.vertices
       .reduce(
@@ -18,6 +21,9 @@ export class PolygonCollider extends Collider {
       .scale(1 / this.vertices.length);
   }
 
+  /**
+   * Get the vertices of the polygon with the transform of the game object
+   */
   public getVerticesWithTransform(): Vector2[] {
     return this.vertices.reduce(
       (computedVertices: Vector2[], vertex: Vector2) => {

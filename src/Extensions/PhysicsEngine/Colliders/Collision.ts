@@ -31,6 +31,9 @@ export class Collision {
     return this._collidingWith;
   }
 
+  /**
+   * Get a computed opposite collision that matches the second collider involved
+   */
   public getOpposite() {
     return new Collision(
       -this._depth,

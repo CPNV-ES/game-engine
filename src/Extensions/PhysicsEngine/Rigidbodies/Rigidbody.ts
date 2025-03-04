@@ -26,6 +26,10 @@ export class Rigidbody extends LogicBehavior<void> {
     );
   }
 
+  /**
+   * Resolve all the collisions
+   * @param collisions
+   */
   public resolveCollisions(collisions: Collision[]) {
     if (this.gameObject === undefined) return;
 
@@ -34,6 +38,10 @@ export class Rigidbody extends LogicBehavior<void> {
     });
   }
 
+  /**
+   * Resolve the collision by moving the game object (depending on the mass)
+   * @param collision
+   */
   public resolveCollision(collision: Collision) {
     const depth =
       (collision.depth * this.mass) /
