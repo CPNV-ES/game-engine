@@ -1,24 +1,36 @@
-@startuml AudioBehavior
+@startuml 
 
-class OutputBehavior
+
+class OutputBehavior {
+  // Base class for output behaviors
+}
 
 class AudioBehavior {
+  - audioContextFactory: () => AudioContext
   - audioContext: AudioContext
   - gainNode: GainNode
   - source: AudioBufferSourceNode | null = null
   - audioBuffer: AudioBuffer | null = null
   - isPlaying: boolean = false
+  - playbackHistory: { timestamp: number, playbackRate: number }[] = []
+  - startFlag: boolean = false
+  + loop: boolean = false
 
-  + constructor()
+  + constructor(audioContextFactory?: () => AudioContext)
+  + reinitialize(): void
   + setAudio(audio: string): Promise<void>
-  + start(): void
-  + stop(): void
+  + play(): Promise<void>
   + pause(): Promise<void>
-  + resume(): Promise<void>
+  + stop(): Promise<void>
   + setVolume(volume: number): void
   + setPitch(pitch: number): void
   + setLoop(loop: boolean): void
+  + getTimestamp(): number
+  - createSource(): void
+  - storePlaybackHistory(playbackRate: number): void
+  - getSegmentDurationMs(playbackRate: number, from: number, to: number): number
 }
 
-AudioBehavior --up|> OutputBehavior
+AudioBehavior -up-|> OutputBehavior
+
 @enduml
