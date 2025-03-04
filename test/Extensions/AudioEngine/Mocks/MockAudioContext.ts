@@ -6,13 +6,14 @@ export class AudioContextMock {
   public decodeAudioDataCalled = false;
   public suspendCalled = false;
   public resumeCalled = false;
-  public audioBufferSourceNode: AudioBufferSourceNodeMock;
-  public source: AudioBufferSourceNodeMock;
+  public audioBufferSourceNode: AudioBufferSourceNodeMock | null = null;
+  public source: AudioBufferSourceNodeMock | null = null;
 
   public gainNode: GainNodeMock;
   public destination: AudioDestinationNodeMock;
   private startTime: number | null = null;
   private audioStartTime: number | null = null;
+  private isPlaying: boolean = false;
 
   constructor() {
     this.gainNode = new GainNodeMock();
@@ -37,11 +38,13 @@ export class AudioContextMock {
 
   suspend(): Promise<void> {
     this.suspendCalled = true;
+    this.isPlaying = false;
     return Promise.resolve();
   }
 
   resume(): Promise<void> {
     this.resumeCalled = true;
+    this.isPlaying = true;
     return Promise.resolve();
   }
 
@@ -53,13 +56,21 @@ export class AudioContextMock {
   }
 
   public startAudio(): void {
+    if (!this.audioBufferSourceNode) {
+      throw new Error('AudioBufferSourceNode not created.');
+    }
     this.startTime = Date.now();
     this.audioStartTime = 0;
-    this.source = this.createBufferSource();
+    this.source = this.audioBufferSourceNode;
+    this.isPlaying = true;
   }
 
   public setAudioStartTime(time: number): void {
     this.audioStartTime = time;
+  }
+
+  public get playing(): boolean {
+    return this.isPlaying;
   }
 }
 
@@ -98,14 +109,21 @@ export class AudioBufferSourceNodeMock {
   }
 
   start(when?: number): void {
+    if (!this.buffer) {
+      throw new Error('AudioBuffer not set.');
+    }
     this.startCalled = true;
     this.audioContext.startAudio();
     this.audioContext.setAudioStartTime(when || 0);
   }
 
   stop(when?: number): void {
+    if (!this.audioContext.playing) {
+      throw new Error('Audio is not playing.');
+    }
     this.stopCalled = true;
     if (this.onended) this.onended();
+    this.audioContext.suspend();
   }
 
   connect(destination: AudioNode): void {
@@ -137,9 +155,9 @@ export class AudioDestinationNodeMock {
 }
 
 export const fetchMock = vi.fn(() =>
-  Promise.resolve({
-    arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
-  } as unknown as Response),
+    Promise.resolve({
+      arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+    } as unknown as Response),
 );
 
 global.fetch = fetchMock;
