@@ -4,7 +4,7 @@ export class AudioBehavior extends OutputBehavior {
     private audioContextFactory: () => AudioContext;
     private audioContext: AudioContext;
     private gainNode: GainNode;
-    public loop: boolean = false;
+    readonly loop: boolean = false;
 
     private source: AudioBufferSourceNode | null = null;
     private audioBuffer: AudioBuffer | null = null;
