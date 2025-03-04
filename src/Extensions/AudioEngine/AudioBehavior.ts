@@ -35,15 +35,15 @@ this.isPlaying = false;
     }
 
     /**
-     * Sets the audio source.
+     * Sets the audio to play.
      * @param audio The URL of the audio file.
      */
     public async setAudio(audio: string): Promise<void> {
         const response = await fetch(audio);
         const arrayBuffer = await response.arrayBuffer();
-        console.log(arrayBuffer);
-        this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-    }
+                this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+this.createSource();
+            }
 
     /**
      * Starts playback of the audio.
