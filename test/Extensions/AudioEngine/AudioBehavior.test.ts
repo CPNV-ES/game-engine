@@ -29,25 +29,23 @@ describe('AudioBehavior', () => {
 
   describe('Setting Audio', () => {
     it('should load and decode audio from a URL', async () => {
-      await audioBehavior.setAudio('test.mp3');
+      await audioBehavior.setAudio('./Assets/audio.ogg');
       expect(audioContextMock.decodeAudioDataCalled).toBe(true);
     });
 
     it('should throw an error if fetching audio fails', async () => {
       fetchMock.mockRejectedValueOnce(new Error('Failed to fetch'));
-      await expect(audioBehavior.setAudio('test.mp3')).rejects.toThrow('Failed to fetch');
+      await expect(audioBehavior.setAudio('./Assets/audio.ogg')).rejects.toThrow('Failed to fetch');
     });
   });
 
   describe('Playback Control', () => {
     beforeEach(async () => {
-      await audioBehavior.setAudio('test.mp3');
+      await audioBehavior.setAudio('./Assets/audio.ogg');
     });
 
     it('should start playback when play is called for the first time', async () => {
       await audioBehavior.play();
-      console.log(audioContextMock.resumeCalled);
-      console.log(audioBehavior.isPlaying);
       expect(audioBehavior.isPlaying).toBe(true);
       expect(audioContextMock.source!.startCalled).toBe(true);
     });
@@ -96,7 +94,7 @@ describe('AudioBehavior', () => {
 
   describe('Pitch Control', () => {
     beforeEach(async () => {
-      await audioBehavior.setAudio('test.mp3');
+      await audioBehavior.setAudio('./Assets/audio.ogg');
     });
 
     it('should set the playback rate when pitch is updated', () => {
@@ -112,7 +110,7 @@ describe('AudioBehavior', () => {
 
   describe('Looping', () => {
     beforeEach(async () => {
-      await audioBehavior.setAudio('test.mp3');
+      await audioBehavior.setAudio('./Assets/audio.ogg');
     });
 
     it('should enable looping when setLoop is called with true', () => {
@@ -135,7 +133,7 @@ describe('AudioBehavior', () => {
 
   describe('Playback History', () => {
     beforeEach(async () => {
-      await audioBehavior.setAudio('test.mp3');
+      await audioBehavior.setAudio('./Assets/audio.ogg');
     });
 
     it('should calculate the correct timestamp during playback', async () => {
