@@ -33,8 +33,8 @@ export class Rigidbody extends LogicBehavior<void> {
   }
 
   public resolveCollision(collision: Collision) {
-    this.gameObject.transform.position = this.gameObject.transform.position.sub(
-      collision.normal.scale(collision.depth / 2),
+    this.gameObject.transform.position.sub(
+      collision.normal.clone().scale(collision.depth / 2),
     );
   }
 }
