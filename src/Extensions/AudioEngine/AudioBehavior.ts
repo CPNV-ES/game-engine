@@ -1,23 +1,37 @@
-import {OutputBehavior} from "../../Core/OutputBehavior.ts";
+import { OutputBehavior } from "../../Core/OutputBehavior";
 
-/**
- * A behavior that handles audio playback.
- * @extends {OutputBehavior}
- */
 export class AudioBehavior extends OutputBehavior {
-    protected audioContext: AudioContext;
-    protected gainNode: GainNode;
+    private audioContextFactory: () => AudioContext;
+    private audioContext: AudioContext;
+    private gainNode: GainNode;
 public loop: boolean = false;
 
     private source: AudioBufferSourceNode | null = null;
     private audioBuffer: AudioBuffer | null = null;
-    private isPlaying: boolean = false;
+    public isPlaying: boolean = false;
+public playbackHistory: { timestamp: number, playbackRate: number }[] = [];
 
-    constructor() {
+    private startFlag: boolean = false;
+
+    constructor(audioContextFactory: () => AudioContext = () => new AudioContext()) {
         super();
-        this.audioContext = new AudioContext();
+this.audioContextFactory = audioContextFactory;
+        this.reinitialize();
+    }
+
+    /**
+     * Method to reinitialize the behavior
+     */
+    public reinitialize(){
+        this.audioContext = this.audioContextFactory();
         this.gainNode = this.audioContext.createGain();
         this.gainNode.connect(this.audioContext.destination);
+this.isPlaying = false;
+        this.playbackHistory = [];
+        this.startFlag = false;
+        this.loop = false;
+        this.audioBuffer = null;
+        this.source = null;
     }
 
     /**
