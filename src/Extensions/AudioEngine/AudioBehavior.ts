@@ -46,21 +46,18 @@ this.createSource();
             }
 
     /**
-     * Starts playback of the audio.
-     * @throws {Error} If the audio buffer is not set.
+     * Creates a new AudioBufferSourceNode and connects it to the gain node.
      */
-    public start(): void {
+    private createSource(): void {
         if (!this.audioBuffer) throw new Error("Audio buffer not set.");
-
-        this.stop();
         this.source = this.audioContext.createBufferSource();
         this.source.buffer = this.audioBuffer;
         this.source.connect(this.gainNode);
-        this.source.start();
-        this.isPlaying = true;
+        this.source.loop =         this.loop;
 
         this.source.onended = () => {
-            this.isPlaying = false;
+            this.storePlaybackHistory(0);
+            this.reinitialize();
         };
     }
 
