@@ -7,6 +7,7 @@ import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
 import { ManualTicker } from "../../ExampleBehaviors/ManualTicker";
 import { Collider } from "../../../src/Extensions/PhysicsEngine/Colliders/Collider";
 import { Collision } from "../../../src/Extensions/PhysicsEngine/Colliders/Collision";
+import { Rigidbody } from "../../../src/Extensions/PhysicsEngine/Rigidbodies/Rigidbody";
 
 describe("PhysicsGameEngineComponent", (): void => {
   let gameEngineWindow: GameEngineWindow;
@@ -327,5 +328,96 @@ describe("PhysicsGameEngineComponent", (): void => {
     expect(collideWithCollider3.length).toBe(0);
     expect(collideWithCollider4.length).toBe(0);
     expect(collideWithCollider5.length).toBe(0);
+  });
+
+  /**
+   * Tests if a PhysicsGameEngineComponent does not trigger collision if there is not.
+   */
+  it("should not emit an event from a Collider", () => {
+    // First object with collider
+    const object1 = new GameObject();
+    const vertices1 = [
+      new Vector2(-1, 2),
+      new Vector2(-1, 6),
+      new Vector2(-5, 5),
+      new Vector2(-4, 2),
+    ];
+    const polygonCollider1 = new PolygonCollider(vertices1);
+    object1.addBehavior(polygonCollider1);
+    gameEngineWindow.root.addChild(object1);
+
+    // Second object with collider
+    const object2 = new GameObject();
+    const vertices2 = [
+      new Vector2(1, 2),
+      new Vector2(3, 4),
+      new Vector2(2, 6),
+      new Vector2(0, 4),
+    ];
+    const polygonCollider2 = new PolygonCollider(vertices2);
+    object2.addBehavior(polygonCollider2);
+    gameEngineWindow.root.addChild(object2);
+
+    const collideWithCollider2: Collider[] = [];
+
+    // Attach observer
+    polygonCollider2.onDataChanged.addObserver((data) =>
+      observer(data, collideWithCollider2),
+    );
+
+    // Fire the event
+    gameEngineWindow.addGameComponent(physicsGameEngineComponent);
+    manualTicker.tick(1);
+
+    // Assert the result
+    expect(collideWithCollider2.length).toBe(0);
+  });
+
+  /**
+   * Tests if a PhysicsGameEngineComponent can push away two colliding polygons.
+   */
+  it("should react to collision between collider", () => {
+    // First object with collider
+    const object1: GameObject = new GameObject();
+    const vertices1: Vector2[] = [
+      new Vector2(-1, 2),
+      new Vector2(-1, 6),
+      new Vector2(-5, 5),
+      new Vector2(-4, 2),
+    ];
+    const polygonCollider1: PolygonCollider = new PolygonCollider(vertices1);
+    const rigidBody1 = new Rigidbody(polygonCollider1);
+    object1.addBehavior(polygonCollider1);
+    object1.addBehavior(rigidBody1);
+
+    gameEngineWindow.root.addChild(object1);
+
+    // Second object with collider
+    const object2: GameObject = new GameObject();
+    const vertices2: Vector2[] = [
+      new Vector2(1, 2),
+      new Vector2(3, 4),
+      new Vector2(2, 6),
+      new Vector2(-2, 4),
+    ];
+    const polygonCollider2: PolygonCollider = new PolygonCollider(vertices2);
+    const rigidBody2 = new Rigidbody(polygonCollider2);
+    object2.addBehavior(polygonCollider2);
+    object2.addBehavior(rigidBody2);
+    gameEngineWindow.root.addChild(object2);
+
+    // Assert the initial positions
+    expect(object1.transform.position).toEqual(new Vector2(0, 0));
+    expect(object2.transform.position).toEqual(new Vector2(0, 0));
+
+    // Fire the event
+    gameEngineWindow.addGameComponent(physicsGameEngineComponent);
+    manualTicker.tick(1);
+
+    // Assert the new positions
+    expect(object1.transform.position).toEqual(new Vector2(-0.5, 0));
+    expect(object2.transform.position).toEqual(new Vector2(0.5, 0));
+
+    // Assert the result
   });
 });
