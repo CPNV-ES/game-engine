@@ -1,6 +1,6 @@
-import { Behavior } from "./Behavior";
-import { GameObject } from "./GameObject";
-import { Event } from "./EventSystem/Event.ts";
+import { Behavior } from "@core/Behavior";
+import { GameObject } from "@core/GameObject";
+import { Event } from "@core/EventSystem/Event.ts";
 
 /**
  * A behavior that contains logic to modify an owned data state object.
@@ -12,8 +12,8 @@ export class LogicBehavior<T> extends Behavior {
   protected data!: T;
 
   override setup(attachedOn: GameObject): void {
-    super.setup(attachedOn);
     this.gameObject = attachedOn;
+    super.setup(attachedOn);
     if (!this.data) {
       throw new Error("Data must be initialized in the constructor.");
     }

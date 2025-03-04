@@ -1,5 +1,6 @@
 /**
  * A 2D vector class orthogonal to the x and y axis
+ * Note that when something return this, the reference is the same as the original object and not copied. Use clone() to get a new instance.
  */
 export class Vector2 {
   public x: number;

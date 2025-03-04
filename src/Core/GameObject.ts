@@ -1,6 +1,6 @@
-import { Behavior } from "./Behavior.ts";
-import { Event } from "./EventSystem/Event.ts";
-import { Transform } from "./MathStructures/Transform.ts";
+import { Behavior } from "@core/Behavior.ts";
+import { Event } from "@core/EventSystem/Event.ts";
+import { Transform } from "@core/MathStructures/Transform.ts";
 
 /**
  * A GameObject is the base class for all entities objects in the game. It is a container for behaviors and other GameObjects.
@@ -15,12 +15,41 @@ export class GameObject {
    */
   public readonly onBehaviorListChanged: Event<void> = new Event<void>();
   /**
+   * Event that is triggered when a behavior is added to this GameObject. The behavior is passed as an argument.
+   */
+  public readonly onBehaviorAdded: Event<Behavior> = new Event<Behavior>();
+  /**
+   * Event that is triggered when a behavior is removed from this GameObject. The behavior is passed as an argument.
+   */
+  public readonly onBehaviorRemoved: Event<Behavior> = new Event<Behavior>();
+  /**
+   * Event that is triggered when a child is added to this GameObject. The child is passed as an argument.
+   */
+  public readonly onChildAdded: Event<GameObject> = new Event<GameObject>();
+  /**
+   * Event that is triggered when a child is removed from this GameObject. The child is passed as an argument.
+   */
+  public readonly onChildRemoved: Event<GameObject> = new Event<GameObject>();
+  /**
    * Optional parent of this GameObject. If set, the transform should follow the parent's transform.
    */
   protected _parent: GameObject | null = null;
 
+  /**
+   * The name of this GameObject
+   */
+  public name: string;
+
   private _behaviors: Behavior[] = [];
   private _children: GameObject[] = [];
+
+  /**
+   * Create a new GameObject.
+   * @param name The name of the GameObject.
+   */
+  constructor(name: string = "GameObject") {
+    this.name = name;
+  }
 
   /**
    * Get only first-level children of this GameObject.
@@ -49,6 +78,7 @@ export class GameObject {
     if (this.children.includes(gameObject)) return;
     this.children.push(gameObject);
     gameObject._parent = this;
+    this.onChildAdded.emit(gameObject);
   }
 
   /**
@@ -60,6 +90,7 @@ export class GameObject {
     if (index === -1) return;
     this.children.splice(index, 1);
     gameObject._parent = null;
+    this.onChildRemoved.emit(gameObject);
   }
 
   /**
@@ -71,6 +102,7 @@ export class GameObject {
     this._behaviors.push(behavior);
     behavior.setup(this);
     this.onBehaviorListChanged.emit();
+    this.onBehaviorAdded.emit(behavior);
   }
 
   /**
@@ -83,6 +115,7 @@ export class GameObject {
     this._behaviors.splice(index, 1);
     behavior.detach(this);
     this.onBehaviorListChanged.emit();
+    this.onBehaviorRemoved.emit(behavior);
   }
 
   /**
@@ -103,6 +136,13 @@ export class GameObject {
     BehaviorClass: abstract new (...args: any[]) => T,
   ): T[] {
     return this._behaviors.filter((b) => b instanceof BehaviorClass) as T[];
+  }
+
+  /**
+   * Get all behaviors attached to this GameObject.
+   */
+  public getAllBehaviors(): Behavior[] {
+    return this._behaviors;
   }
 
   /**

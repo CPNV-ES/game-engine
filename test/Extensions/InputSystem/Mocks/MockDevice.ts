@@ -1,5 +1,4 @@
-import { Device } from "../../../../src/Extensions/InputSystem/Device";
-
+import { Device } from "@extensions/InputSystem/Device.ts";
 /**
  * MockDevice is a mock class for Device.
  * It is used to test the Device class.

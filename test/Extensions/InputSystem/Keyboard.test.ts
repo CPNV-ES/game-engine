@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, Mock, beforeAll, afterAll } from "vitest";
-import { Keyboard } from "../../../src/Extensions/InputSystem/Keyboard";
-import { InputUtility } from "./InputUtility";
+import { describe, it, expect, vi, Mock, beforeAll } from "vitest";
+import { Keyboard } from "@extensions/InputSystem/Keyboard.ts";
+import { InputUtility } from "@test/Extensions/InputSystem/InputUtility.ts";
 
 describe("Keyboard", (): void => {
   let keyboard: Keyboard;
@@ -31,7 +31,12 @@ describe("Keyboard", (): void => {
     expect(keyboard.onKeyUp.emit).toHaveBeenCalledWith("w");
   });
 
-  afterAll((): void => {
-    keyboard = null;
+  it("should not emit an event when keyDown is called with repeat", (): void => {
+    keyboard.onKeyDown.addObserver(callback);
+    vi.spyOn(keyboard.onKeyDown, "emit");
+
+    InputUtility.triggerKeyboardKeyDown("w", true);
+
+    expect(keyboard.onKeyDown.emit).not.toHaveBeenCalled();
   });
 });

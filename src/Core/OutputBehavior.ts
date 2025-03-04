@@ -1,14 +1,14 @@
-import { Behavior } from "./Behavior";
-import { GameObject } from "./GameObject";
-import { LogicBehavior } from "./LogicBehavior";
-import { Transform } from "./MathStructures/Transform.ts";
+import { Behavior } from "@core/Behavior";
+import { GameObject } from "@core/GameObject";
+import { LogicBehavior } from "@core/LogicBehavior";
+import { Transform } from "@core/MathStructures/Transform.ts";
 
 export abstract class OutputBehavior extends Behavior {
   private _gameObject!: GameObject;
 
   override setup(attachedOn: GameObject): void {
-    super.setup(attachedOn);
     this._gameObject = attachedOn;
+    super.setup(attachedOn);
   }
 
   /**

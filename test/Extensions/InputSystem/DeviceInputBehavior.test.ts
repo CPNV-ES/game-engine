@@ -1,11 +1,12 @@
-import { Mouse } from "../../../src/Extensions/InputSystem/Mouse";
+import { Mouse } from "@extensions/InputSystem/Mouse.ts";
 import { describe, it, expect, beforeAll, beforeEach } from "vitest";
-import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
-import { InputGameEngineComponent } from "../../../src/Extensions/InputSystem/InputGameEngineComponent";
-import { InputUtility } from "./InputUtility";
-import { Keyboard } from "../../../src/Extensions/InputSystem/Keyboard";
-import { MockDeviceInputBehavior } from "./Mocks/MockDeviceInputBehavior";
-import { GameObject } from "../../../src/Core/GameObject";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
+import { InputUtility } from "@test/Extensions/InputSystem/InputUtility.ts";
+import { Keyboard } from "@extensions/InputSystem/Keyboard.ts";
+import { MockDeviceInputBehavior } from "@test/Extensions/InputSystem/Mocks/MockDeviceInputBehavior.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { ManualTicker } from "@test/ExampleBehaviors/ManualTicker.ts";
 
 describe("DeviceInputBehavior", (): void => {
   let mouse: Mouse;
@@ -20,7 +21,7 @@ describe("DeviceInputBehavior", (): void => {
     mouse = new Mouse();
 
     inputGameEngineComponent = new InputGameEngineComponent();
-    gameEngineWindow = GameEngineWindow.instance;
+    gameEngineWindow = new GameEngineWindow(new ManualTicker());
 
     inputGameEngineComponent.addDevice(keyboard);
     inputGameEngineComponent.addDevice(mouse);
@@ -28,7 +29,7 @@ describe("DeviceInputBehavior", (): void => {
   });
 
   beforeEach((): void => {
-    deviceInputBehavior = new MockDeviceInputBehavior();
+    deviceInputBehavior = new MockDeviceInputBehavior(inputGameEngineComponent);
   });
 
   it("should change the value of last function called to onMouseLeftClickUp", (): void => {

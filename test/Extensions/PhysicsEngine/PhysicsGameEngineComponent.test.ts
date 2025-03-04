@@ -1,16 +1,17 @@
 import { describe, it, expect, vi, Mock, beforeEach } from "vitest";
-import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
-import { PhysicsGameEngineComponent } from "../../../src/Extensions/PhysicsEngine/PhysicsGameEngineComponent";
-import { GameObject } from "../../../src/Core/GameObject";
-import { PolygonCollider } from "../../../src/Extensions/PhysicsEngine/PolygonCollider";
-import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { PhysicsGameEngineComponent } from "@extensions/PhysicsEngine/PhysicsGameEngineComponent.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { PolygonCollider } from "@extensions/PhysicsEngine/PolygonCollider.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { ManualTicker } from "@test/ExampleBehaviors/ManualTicker.ts";
 
 describe("PhysicsGameEngineComponent", (): void => {
   let gameEngineWindow: GameEngineWindow;
   let physicsGameEngineComponent: PhysicsGameEngineComponent;
 
   beforeEach(() => {
-    gameEngineWindow = new GameEngineWindow();
+    gameEngineWindow = new GameEngineWindow(new ManualTicker());
     physicsGameEngineComponent = new PhysicsGameEngineComponent();
   });
 

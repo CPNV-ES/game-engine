@@ -1,13 +1,19 @@
-import { GameEngineComponent } from "../../Core/GameEngineComponent.ts";
-import { GameEngineWindow } from "../../Core/GameEngineWindow.ts";
-import { Event } from "../../Core/EventSystem/Event.ts";
-import { RenderBehavior } from "./RenderBehavior.ts";
-import { Camera } from "./Camera.ts";
+import { GameEngineComponent } from "@core/GameEngineComponent.ts";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { Event } from "@core/EventSystem/Event.ts";
+import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
+import { Ticker } from "@core/Tickers/Ticker.ts";
+import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * A unique game engine component responsible for rendering the game using WebGPU.
  */
-export class RenderGameEngineComponent extends GameEngineComponent {
+export class RenderGameEngineComponent
+  extends GameEngineComponent
+  implements Renderer
+{
   /**
    * Event that is triggered when an asynchronous error occurs.
    */
@@ -41,8 +47,17 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     }
   }
 
+  /**
+   * The current screen size.
+   * @constructor
+   */
+  public get screenSize(): Vector2 {
+    return new Vector2(this._canvasToDrawOn.width, this._canvasToDrawOn.height);
+  }
+
   private _canvasToDrawOn: HTMLCanvasElement;
   private _gpu: GPU;
+  private _ticker: Ticker;
   private _context: GPUCanvasContext | undefined;
   private _presentationTextureFormat: GPUTextureFormat | undefined;
   private _depthTextureFormat: GPUTextureFormat | undefined;
@@ -54,12 +69,14 @@ export class RenderGameEngineComponent extends GameEngineComponent {
   constructor(
     canvasToDrawOn: HTMLCanvasElement | null = null,
     gpu: GPU | null = null,
+    ticker: Ticker,
   ) {
     super();
     if (!canvasToDrawOn) throw new Error("Canvas to draw on is required");
     if (!gpu) throw new Error("GPU is required");
     this._canvasToDrawOn = canvasToDrawOn;
     this._gpu = gpu;
+    this._ticker = ticker;
   }
 
   public createBindGroupLayout(
@@ -125,7 +142,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
       },
       primitive: primitiveState,
       depthStencil: {
-        depthWriteEnabled: false,
+        depthWriteEnabled: true,
         depthCompare: "less",
         format: this._depthTextureFormat!,
       },
@@ -276,7 +293,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     window.addEventListener("resize", () => {
       this.resizeCanvasToMatchDisplaySize();
     });
-    requestAnimationFrame((deltaTime: number) => this.frame(deltaTime));
+    this._ticker.onTick.addObserver(this.frame.bind(this));
     this.resizeCanvasToMatchDisplaySize();
     this.IsRenderingReady = true;
   }
@@ -353,7 +370,7 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     const renderPassEncoder: GPURenderPassEncoder =
       commandEncoder.beginRenderPass(renderPassDescriptor);
 
-    GameEngineWindow.instance.root.getAllChildren().forEach((gameObject) => {
+    this.attachedEngine!.root.getAllChildren().forEach((gameObject) => {
       gameObject.getBehaviors(RenderBehavior).forEach((behavior) => {
         behavior.render(renderPassEncoder);
       });
@@ -362,6 +379,5 @@ export class RenderGameEngineComponent extends GameEngineComponent {
     renderPassEncoder.end();
 
     this._device.queue.submit([commandEncoder.finish()]);
-    requestAnimationFrame((deltaTime: number) => this.frame(deltaTime));
   }
 }

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, Mock, beforeAll, afterAll } from "vitest";
-import { Mouse } from "../../../src/Extensions/InputSystem/Mouse";
-import { InputUtility } from "./InputUtility";
-import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
+import { Mouse } from "@extensions/InputSystem/Mouse.ts";
+import { InputUtility } from "@test/Extensions/InputSystem/InputUtility.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 describe("Mouse", (): void => {
   let mouse: Mouse;
@@ -59,9 +59,12 @@ describe("Mouse", (): void => {
     mouse.onMove.addObserver(callback);
     vi.spyOn(mouse.onMove, "emit");
 
-    InputUtility.triggerMouseMovement();
+    InputUtility.triggerMouseMovement(100, 200, 500, 500);
 
-    expect(mouse.onMove.emit).toHaveBeenCalledWith(new Vector2(100, 200));
+    expect(mouse.onMove.emit).toHaveBeenCalledWith({
+      position: new Vector2(100, 200),
+      delta: new Vector2(500, 500),
+    });
   });
 
   // Test for mouse scroll event

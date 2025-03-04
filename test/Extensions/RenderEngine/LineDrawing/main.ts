@@ -1,19 +1,20 @@
-import { GameEngineWindow } from "../../../../src/Core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "../../../../src/Extensions/RenderEngine/RenderGameEngineComponent.ts";
-import { GameObject } from "../../../../src/Core/GameObject.ts";
-import { Camera } from "../../../../src/Extensions/RenderEngine/Camera.ts";
-import { LinesRenderBehavior } from "../../../../src/Extensions/RenderEngine/Wireframe/LinesRenderBehavior";
-import { Vector2 } from "../../../../src/Core/MathStructures/Vector2";
-import { Color } from "../../../../src/Extensions/RenderEngine/Color";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
+import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Color } from "@extensions/RenderEngine/Color.ts";
+import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, false, [
+  "RenderGameEngineComponent",
+]);
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(canvas, navigator.gpu);
-
-gameEngineWindow.addGameComponent(renderComponent);
+  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
 
 const go = new GameObject();
 gameEngineWindow.root.addChild(go);
@@ -62,4 +63,4 @@ polygonGo.transform.rotation = Math.PI / 4;
 
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
-cameraGo.addBehavior(new Camera());
+cameraGo.addBehavior(new Camera(renderComponent));

@@ -1,5 +1,5 @@
-import { InputBehavior } from "../../../src/Core/InputBehavior";
-import { TestLogicBehavior } from "./TestLogicBehavior";
+import { InputBehavior } from "@core/InputBehavior.ts";
+import { TestLogicBehavior } from "@test/Core/Mocks/TestLogicBehavior.ts";
 
 export class TestInputBehavior extends InputBehavior {
   protected onEnable() {
@@ -10,7 +10,7 @@ export class TestInputBehavior extends InputBehavior {
     super.onDisable();
   }
 
-  protected tick(deltaTime: number) {
+  public tick(deltaTime: number) {
     super.tick(deltaTime);
   }
 

@@ -1,8 +1,9 @@
-import { OutputBehavior } from "../../../src/Core/OutputBehavior";
-import { LogicBehavior } from "../../../src/Core/LogicBehavior";
+import { OutputBehavior } from "@core/OutputBehavior.ts";
+import { LogicBehavior } from "@core/LogicBehavior.ts";
+import { Transform } from "@core/MathStructures/Transform.ts";
 
 export class TestOutputBehavior extends OutputBehavior {
-  public inspectTransform(): null {
+  public inspectTransform(): Transform {
     return this.transform;
   }
 

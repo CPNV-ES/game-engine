@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeAll, beforeEach } from "vitest";
-import { InputGameEngineComponent } from "../../../src/Extensions/InputSystem/InputGameEngineComponent";
-import { Device } from "../../../src/Extensions/InputSystem/Device";
-import { MockDevice } from "./Mocks/MockDevice";
-import { Mouse } from "../../../src/Extensions/InputSystem/Mouse";
-import { Keyboard } from "../../../src/Extensions/InputSystem/Keyboard";
-import { InputUtility } from "./InputUtility";
+import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
+import { Device } from "@extensions/InputSystem/Device.ts";
+import { MockDevice } from "@test/Extensions/InputSystem/Mocks/MockDevice.ts";
+import { Mouse } from "@extensions/InputSystem/Mouse.ts";
+import { Keyboard } from "@extensions/InputSystem/Keyboard.ts";
+import { InputUtility } from "@test/Extensions/InputSystem/InputUtility.ts";
 
 describe("InputGameEngineComponent", (): void => {
   let inputGameEngineComponent: InputGameEngineComponent;

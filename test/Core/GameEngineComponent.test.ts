@@ -1,10 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { GameEngineWindow } from "../../src/Core/GameEngineWindow";
-import { MockGameEngineComponent } from "./Mocks/MockGameEngineComponent";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { MockGameEngineComponent } from "@test/Core/Mocks/MockGameEngineComponent.ts";
+import { ManualTicker } from "@test/ExampleBehaviors/ManualTicker.ts";
 
 describe("GameEngineComponent", (): void => {
   it("should attach on addGameComponent", (): void => {
-    let gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+    let gameEngineWindow: GameEngineWindow = new GameEngineWindow(
+      new ManualTicker(),
+    );
     let gameEngineComponent: MockGameEngineComponent =
       new MockGameEngineComponent();
 
@@ -13,7 +16,9 @@ describe("GameEngineComponent", (): void => {
   });
 
   it("should not attach on addGameComponent if already attached", (): void => {
-    let gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+    let gameEngineWindow: GameEngineWindow = new GameEngineWindow(
+      new ManualTicker(),
+    );
     let gameEngineComponent: MockGameEngineComponent =
       new MockGameEngineComponent();
 

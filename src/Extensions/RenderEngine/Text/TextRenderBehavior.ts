@@ -1,15 +1,15 @@
-import { RenderBehavior } from "../RenderBehavior.ts";
-import { RenderGameEngineComponent } from "../RenderGameEngineComponent.ts";
-import MsdfTextVert from "../BasicShaders/MsdfText.vert.wgsl?raw";
-import MsdfTextFrag from "../BasicShaders/MsdfText.frag.wgsl?raw";
-import { MsdfFont } from "./MSDFFont/MsdfFont.ts";
+import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import MsdfTextVert from "@extensions/RenderEngine/BasicShaders/MsdfText.vert.wgsl?raw";
+import MsdfTextFrag from "@extensions/RenderEngine/BasicShaders/MsdfText.frag.wgsl?raw";
+import { MsdfFont } from "@extensions/RenderEngine/Text/MSDFFont/MsdfFont.ts";
 import {
   MsdfChar,
   MsdfTextFormattingOptions,
   MsdfTextMeasurements,
-} from "./MSDFFont/MsdfChar.ts";
-import { MsdfText } from "./MSDFFont/MsdfText.ts";
-import { Mat4 } from "wgpu-matrix";
+} from "@extensions/RenderEngine/Text/MSDFFont/MsdfChar.ts";
+import { MsdfText } from "@extensions/RenderEngine/Text/MSDFFont/MsdfText.ts";
+import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
 
 export class TextRenderBehavior extends RenderBehavior {
   private readonly _fontJsonUrl: string;
@@ -25,7 +25,7 @@ export class TextRenderBehavior extends RenderBehavior {
    * @param options - Optional options for the text formatting (like color, pixel scale, etc.)
    */
   constructor(
-    renderEngine: RenderGameEngineComponent,
+    renderEngine: Renderer,
     fontJsonUrl: string,
     options?: MsdfTextFormattingOptions,
   ) {

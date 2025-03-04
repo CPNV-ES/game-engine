@@ -1,6 +1,6 @@
-import { Behavior } from "./Behavior.ts";
-import { GameObject } from "./GameObject.ts";
-import { LogicBehavior } from "./LogicBehavior.ts";
+import { Behavior } from "@core/Behavior.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { LogicBehavior } from "@core/LogicBehavior.ts";
 
 /**
  * A behavior that subscribes to input events and converts them into a game logic.
@@ -10,8 +10,8 @@ export abstract class InputBehavior extends Behavior {
   private _gameObject!: GameObject;
 
   override setup(attachedOn: GameObject): void {
-    super.setup(attachedOn);
     this._gameObject = attachedOn;
+    super.setup(attachedOn);
   }
 
   /**

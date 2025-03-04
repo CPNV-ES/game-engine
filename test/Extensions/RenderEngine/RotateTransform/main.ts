@@ -1,17 +1,18 @@
-import { GameEngineWindow } from "../../../../src/Core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "../../../../src/Extensions/RenderEngine/RenderGameEngineComponent.ts";
-import { SpriteRenderBehavior } from "../../../../src/Extensions/RenderEngine/SpriteRenderBehavior.ts";
-import { GameObject } from "../../../../src/Core/GameObject.ts";
-import { Camera } from "../../../../src/Extensions/RenderEngine/Camera.ts";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { SpriteRenderBehavior } from "@extensions/RenderEngine/SpriteRenderBehavior.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
+import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
 
-const gameEngineWindow: GameEngineWindow = GameEngineWindow.instance;
+const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, false, [
+  "RenderGameEngineComponent",
+]);
 const renderComponent: RenderGameEngineComponent =
-  new RenderGameEngineComponent(canvas, navigator.gpu);
-
-gameEngineWindow.addGameComponent(renderComponent);
+  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
 
 for (let i = 0; i < 10; i++) {
   const go = new GameObject();
@@ -29,4 +30,4 @@ for (let i = 0; i < 10; i++) {
 
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
-cameraGo.addBehavior(new Camera());
+cameraGo.addBehavior(new Camera(renderComponent));

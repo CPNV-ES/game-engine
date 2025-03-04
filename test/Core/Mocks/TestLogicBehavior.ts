@@ -1,6 +1,6 @@
-import { LogicBehavior } from "../../../src/Core/LogicBehavior";
-import { TestData } from "./TestData";
-import { GameObject } from "../../../src/Core/GameObject";
+import { LogicBehavior } from "@core/LogicBehavior.ts";
+import { TestData } from "@test/Core/Mocks/TestData.ts";
+import { GameObject } from "@core/GameObject.ts";
 
 export class TestLogicBehavior extends LogicBehavior<TestData> {
   public initDataOnEnable = true;
@@ -15,7 +15,7 @@ export class TestLogicBehavior extends LogicBehavior<TestData> {
     super.onDisable();
   }
 
-  protected tick(deltaTime: number) {
+  public tick(deltaTime: number) {
     super.tick(deltaTime);
   }
 

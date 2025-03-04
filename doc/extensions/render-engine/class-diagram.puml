@@ -1,6 +1,6 @@
 @startuml
 
-package sprunk.core{
+package sprunk.core {
     class OutputBehavior
     class GameEngineComponent
 }
@@ -113,6 +113,63 @@ package sprunk.extensions.renderengine {
         +constructor(renderEngine: RenderGameEngineComponent, lineData: Vector2[], color: Color)
     }
 
+    class ObjLoader {
+        +static load(url: string): Promise<MeshData>
+        -static parse(objText: string): MeshData
+    }
+
+    class MeshData {
+        +vertices: Float32Array
+        +indices: Uint16Array
+    }
+
+    class MeshRenderBehavior {
+        +constructor(renderEngine: RenderGameEngineComponent, meshData: MeshData, textureImageUrl: RequestInfo | URL, vertexWGSLShader: string, fragmentWGSLShader: string)
+    }
+
+    class MsdfText {
+        +constructor(engine: Renderer, renderBundle: GPURenderBundle, measurements: MsdfTextMeasurements, font: MsdfFont, textBuffer: GPUBuffer)
+        +getRenderBundle(): GPURenderBundle
+        +setTransform(matrix: Mat4): void
+        +setColor(r: number, g: number, b: number, a: number): void
+        +setPixelScale(pixelScale: number): void
+    }
+
+    class MsdfFont {
+        +constructor(pipeline: GPURenderPipeline, bindGroup: GPUBindGroup, lineHeight: number, chars: { [x: number]: MsdfChar }, kernings: KerningMap)
+        +getChar(charCode: number): MsdfChar
+        +getXAdvance(charCode: number, nextCharCode: number): number
+    }
+
+    class MsdfChar {
+        +id: number
+        +index: number
+        +char: string
+        +width: number
+        +height: number
+        +xoffset: number
+        +yoffset: number
+        +xadvance: number
+        +chnl: number
+        +x: number
+        +y: number
+        +page: number
+        +charIndex: number
+    }
+
+    class MsdfTextMeasurements {
+        +width: number
+        +height: number
+        +lineWidths: number[]
+        +printedCharCount: number
+    }
+
+    class MsdfTextFormattingOptions {
+        +centered?: boolean
+        +pixelScale?: number
+        +color?: [number, number, number, number]
+    }
+
     RenderGameEngineComponent -up-|> GameEngineComponent
     RenderBehavior -up-|> OutputBehavior
     SpriteRenderBehavior -up-|> BasicUVTexturedRenderBehavior
@@ -120,6 +177,7 @@ package sprunk.extensions.renderengine {
     TextRenderBehavior -up-|> RenderBehavior
     WireframeRenderBehavior -up-|> RenderBehavior
     LinesRenderBehavior -up-|> WireframeRenderBehavior
+    MeshRenderBehavior -up-|> BasicUVTexturedRenderBehavior
 
     RenderGameEngineComponent --> Camera
     RenderGameEngineComponent ..> RenderBehavior : "uses"
@@ -127,6 +185,15 @@ package sprunk.extensions.renderengine {
     Camera ..> RenderEngineUtiliy : "uses"
     WireframeRenderBehavior ..> Color : "uses"
     LinesRenderBehavior ..> Color : "uses"
+    ObjLoader ..> MeshData : "returns"
+    MeshRenderBehavior ..> MeshData : "uses"
+    MeshRenderBehavior ..> RenderGameEngineComponent : "uses"
+    TextRenderBehavior ..> MsdfText : "uses"
+    TextRenderBehavior ..> MsdfFont : "uses"
+    MsdfText ..> MsdfFont : "uses"
+    MsdfFont ..> MsdfChar : "uses"
+    MsdfText ..> MsdfTextMeasurements : "uses"
+    TextRenderBehavior ..> MsdfTextFormattingOptions : "uses"
 }
 
 @enduml

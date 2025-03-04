@@ -1,7 +1,7 @@
-import { RenderGameEngineComponent } from "./RenderGameEngineComponent.ts";
-import BasicVertexMVPWithUV from "./BasicShaders/BasicVertexMVPWithUV.vert.wgsl?raw";
-import BasicTextureSample from "./BasicShaders/BasicTextureSample.frag.wgsl?raw";
-import { BasicUVTexturedRenderBehavior } from "./BasicUVTexturedRenderBehavior.ts";
+import BasicVertexMVPWithUV from "@extensions/RenderEngine/BasicShaders/BasicVertexMVPWithUVAndNormals.vert.wgsl?raw";
+import BasicTextureSample from "@extensions/RenderEngine/BasicShaders/BasicTextureSample.frag.wgsl?raw";
+import { BasicUVTexturedRenderBehavior } from "@extensions/RenderEngine/BasicUVTexturedRenderBehavior.ts";
+import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
 
 /**
  * A UVTextured object, designed to be rendered with a sprite texture (no repeat, transparency, etc).
@@ -13,31 +13,40 @@ export class SpriteRenderBehavior extends BasicUVTexturedRenderBehavior {
    * @param renderEngine
    * @param spriteImageUrl
    */
-  constructor(
-    renderEngine: RenderGameEngineComponent,
-    spriteImageUrl: RequestInfo | URL,
-  ) {
+  constructor(renderEngine: Renderer, spriteImageUrl: RequestInfo | URL) {
     // Vertex data for a quad (sprite) with UV coordinates and z = 0
     const vertexData = new Float32Array([
-      // Position        // UV
+      // Position        // Normal          // UV
       -0.5,
       -0.5,
       0.0,
+      0.0,
+      0.0,
+      1.0,
       0.0,
       1.0, // Bottom-left
       0.5,
       -0.5,
       0.0,
+      0.0,
+      0.0,
+      1.0,
       1.0,
       1.0, // Bottom-right
       0.5,
       0.5,
       0.0,
+      0.0,
+      0.0,
+      1.0,
       1.0,
       0.0, // Top-right
       -0.5,
       0.5,
       0.0,
+      0.0,
+      0.0,
+      1.0,
       0.0,
       0.0, // Top-left
     ]);

@@ -1,6 +1,6 @@
-import { Device } from "./Device";
-import { Event } from "../../Core/EventSystem/Event.ts";
-import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
+import { Device } from "@extensions/InputSystem/Device.ts";
+import { Event } from "@core/EventSystem/Event.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * Represents a mouse device.
@@ -26,7 +26,8 @@ export class Mouse extends Device {
    * Event triggered when the mouse is moved.
    * @type {Event<Vector2>}
    */
-  public readonly onMove: Event<Vector2> = new Event<Vector2>();
+  public readonly onMove: Event<{ position: Vector2; delta: Vector2 }> =
+    new Event<{ position: Vector2; delta: Vector2 }>();
 
   /**
    * Event triggered when the mouse is scrolled.
@@ -66,7 +67,10 @@ export class Mouse extends Device {
 
     document.addEventListener("mousemove", (event: MouseEvent) => {
       this.onAnyChange.emit();
-      this.onMove.emit(new Vector2(event.clientX, event.clientY));
+      this.onMove.emit({
+        position: new Vector2(event.clientX, event.clientY),
+        delta: new Vector2(event.movementX, event.movementY),
+      });
     });
     document.addEventListener("scroll", () => {
       this.onAnyChange.emit();

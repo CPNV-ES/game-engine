@@ -1,9 +1,9 @@
-import { RenderBehavior } from "../RenderBehavior.ts";
-import { RenderGameEngineComponent } from "../RenderGameEngineComponent.ts";
-import { Camera } from "../Camera.ts";
-import { RenderEngineUtiliy } from "../RenderEngineUtiliy.ts";
-import { Event } from "../../../../src/Core/EventSystem/Event.ts";
-import { Color } from "../Color.ts";
+import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
+import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
+import { Event } from "@core/EventSystem/Event.ts";
+import { Color } from "@extensions/RenderEngine/Color.ts";
+import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
 
 /**
  * A RenderBehavior that renders a wireframe using line primitives.
@@ -29,7 +29,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
    * @param fragmentWGSLShader The fragment shader in WGSL (source code in string).
    */
   constructor(
-    renderEngine: RenderGameEngineComponent,
+    renderEngine: Renderer,
     vertexData: Float32Array,
     indexData: Uint16Array,
     color: Color,
@@ -73,7 +73,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
     );
     this._indexBuffer = this._renderEngine.createIndexBuffer(this._indexData);
     this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
-      RenderEngineUtiliy.toModelMatrix(this.transform),
+      RenderEngineUtility.toModelMatrix(this.transform),
     );
 
     this._colorBuffer = this._renderEngine.createUniformBuffer(
@@ -134,7 +134,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
 
     this._renderEngine.fillUniformBuffer(
       this._mvpUniformBuffer,
-      camera.getMVPMatrix(RenderEngineUtiliy.toModelMatrix(this.transform)),
+      camera.getMVPMatrix(RenderEngineUtility.toModelMatrix(this.transform)),
     );
 
     renderpass.setPipeline(this._pipeline);

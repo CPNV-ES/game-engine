@@ -1,5 +1,5 @@
-import { Device } from "./Device";
-import { Event } from "../../Core/EventSystem/Event.ts";
+import { Device } from "@extensions/InputSystem/Device.ts";
+import { Event } from "@core/EventSystem/Event.ts";
 
 /**
  * Represents a keyboard device.
@@ -26,10 +26,12 @@ export class Keyboard extends Device {
   constructor() {
     super();
     document.addEventListener("keyup", (event: KeyboardEvent) => {
+      if (event.repeat) return;
       this.onAnyChange.emit();
       this.onKeyUp.emit(event.key);
     });
     document.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.repeat) return;
       this.onAnyChange.emit();
       this.onKeyDown.emit(event.key);
     });

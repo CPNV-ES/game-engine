@@ -1,4 +1,4 @@
-import { GameObject } from "./GameObject";
+import { GameObject } from "@core/GameObject";
 
 /**
  * A behavior is a component that can be attached to a GameObject.
