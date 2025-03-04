@@ -4,18 +4,18 @@ export class AudioBehavior extends OutputBehavior {
     private audioContextFactory: () => AudioContext;
     private audioContext: AudioContext;
     private gainNode: GainNode;
-public loop: boolean = false;
+    public loop: boolean = false;
 
     private source: AudioBufferSourceNode | null = null;
     private audioBuffer: AudioBuffer | null = null;
     public isPlaying: boolean = false;
-public playbackHistory: { timestamp: number, playbackRate: number }[] = [];
+    public playbackHistory: { timestamp: number, playbackRate: number }[] = [];
 
     private startFlag: boolean = false;
 
     constructor(audioContextFactory: () => AudioContext = () => new AudioContext()) {
         super();
-this.audioContextFactory = audioContextFactory;
+        this.audioContextFactory = audioContextFactory;
         this.reinitialize();
     }
 
@@ -26,7 +26,7 @@ this.audioContextFactory = audioContextFactory;
         this.audioContext = this.audioContextFactory();
         this.gainNode = this.audioContext.createGain();
         this.gainNode.connect(this.audioContext.destination);
-this.isPlaying = false;
+        this.isPlaying = false;
         this.playbackHistory = [];
         this.startFlag = false;
         this.loop = false;
@@ -41,9 +41,9 @@ this.isPlaying = false;
     public async setAudio(audio: string): Promise<void> {
         const response = await fetch(audio);
         const arrayBuffer = await response.arrayBuffer();
-                this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-this.createSource();
-            }
+        this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+        this.createSource();
+    }
 
     /**
      * Creates a new AudioBufferSourceNode and connects it to the gain node.
@@ -53,7 +53,7 @@ this.createSource();
         this.source = this.audioContext.createBufferSource();
         this.source.buffer = this.audioBuffer;
         this.source.connect(this.gainNode);
-        this.source.loop =         this.loop;
+        this.source.loop = this.loop;
 
         this.source.onended = () => {
             this.storePlaybackHistory(0);
@@ -76,21 +76,71 @@ this.createSource();
         return duration % (this.audioBuffer!.duration);
     }
 
+    /**
+     * Plays the audio.
+     * @throws {Error} If the start method has already been called.
+     * @throws {Error} If the audio buffer is not set.
+     * @throws {Error} If the audio source is not set.
+     */
     public async play() : Promise<void> {
-        if (!this.isPlaying) return;
-        await this.audioContext.suspend();
-        this.isPlaying = false;
+        if (this.startFlag) throw new Error("Cannot call start() twice.");
+        if (!this.audioBuffer) throw new Error("Audio buffer not set.");
+        if (!this.source) throw new Error("Audio source not set.");
+
+        if (this.startFlag) await this.resume();
+        else await this.start();
+    }
+
+    /**
+     * Starts playback of the audio.
+     * @throws {Error} If the start method has already been called.
+     * @throws {Error} If the audio buffer is not set.
+     * @throws {Error} If the audio source is not set.
+     */
+    private async start(): Promise<void> {
+        this.source!.start();
+        this.isPlaying = true;
+        this.startFlag = true;
+        this.storePlaybackHistory(this.source!.playbackRate.value);
     }
 
     /**
      * Resumes playback of the audio.
      * @throws {Error} If the audio buffer is not set.
      */
-    public async resume(): Promise<void> {
-        if (!this.audioBuffer) throw new Error("Audio buffer not set.");
+    private async resume(): Promise<void> {
         if (this.isPlaying) return;
         await this.audioContext.resume()
         this.isPlaying = true;
+        this.storePlaybackHistory(this.source!.playbackRate.value);
+    }
+
+    /**
+     * Stops playback of the audio. (This method will also disconnect the audio source.)
+     * @throws {Error} If the audio source is not set.
+     */
+    public async stop(): Promise<void> {
+        if (!this.source) throw new Error("Audio source not set.");
+        this.source.stop();
+        this.source.disconnect();
+        this.source = null;
+        this.isPlaying = false;
+        await this.audioContext.suspend();
+        this.playbackHistory = [];
+        this.startFlag = false;
+    }
+
+    /**
+     * Pauses playback of the audio.
+     * @throws {Error} If the audio is not playing.
+     * @throws {Error} If the audio source is not set.
+     */
+    public async pause(): Promise<void> {
+        if (!this.isPlaying) throw new Error("Audio is not playing.");
+        if (!this.source) throw new Error("Audio source not set.");
+        await this.audioContext.suspend();
+        this.isPlaying = false;
+        this.storePlaybackHistory(0);
     }
 
     /**
@@ -104,10 +154,12 @@ this.createSource();
     /**
      * Sets the playback rate of the audio.
      * @param pitch a float.
+     * @throws {Error} If the audio source is not set.
      */
     public setPitch(pitch: number): void {
         if (this.source) {
             this.source.playbackRate.value = pitch;
+            this.storePlaybackHistory(pitch);
         }
         else throw new Error("Audio source not set.");
     }
@@ -115,16 +167,16 @@ this.createSource();
     /**
      * Sets whether the audio should loop.
      * @param loop true to loop, false to not loop.
-* @throws {Error} If the audio source is not set.
+     * @throws {Error} If the audio source is not set.
      */
     public setLoop(loop: boolean): void {
         if (this.source) {
-this.loop = loop;
+            this.loop = loop;
             this.source.loop = loop;
-        }         else {
-throw new Error("Audio source not set.");
+        } else {
+            throw new Error("Audio source not set.");
+        }
     }
-}
 
     /**
      * Saves the current playback rate and timestamp to the playback history.
