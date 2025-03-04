@@ -50,20 +50,21 @@ export class AudioBehavior extends OutputBehavior {
     }
 
     /**
-     * Stops playback of the audio.
+     * Gets the current timestamp of the audio.
+     * @returns {number} The current timestamp of the audio.
      */
-    public stop(): void {
-        if (!this.source) return;
-        this.source.stop();
-        this.source.disconnect();
-        this.source = null;
-        this.isPlaying = false;
+    public getTimestamp(): number {
+        let duration: number = 0;
+
+        if (this.playbackHistory.length <= 0) return 0;
+        for (let i = 0; i < this.playbackHistory.length - 1; i++) {
+            duration += this.getSegmentDurationMs(this.playbackHistory[i].playbackRate, this.playbackHistory[i].timestamp, this.playbackHistory[i + 1].timestamp);
+        }
+        duration += this.getSegmentDurationMs(this.playbackHistory[this.playbackHistory.length - 1].playbackRate, this.playbackHistory[this.playbackHistory.length - 1].timestamp, this.audioContext.currentTime);
+        return duration % (this.audioBuffer!.duration);
     }
 
-    /**
-     * Pauses playback of the audio.
-     */
-    public async pause(): Promise<void> {
+    public async play() : Promise<void> {
         if (!this.isPlaying) return;
         await this.audioContext.suspend();
         this.isPlaying = false;
@@ -108,5 +109,25 @@ export class AudioBehavior extends OutputBehavior {
             this.source.loop = loop;
         }
         else throw new Error("Audio source not set.");
+    }
+}
+
+    /**
+     * Saves the current playback rate and timestamp to the playback history.
+     * @param playbackRate float representing the playback rate
+     */
+    private storePlaybackHistory(playbackRate: number): void {
+        this.playbackHistory.push({ timestamp: this.audioContext.currentTime, playbackRate });
+    }
+
+    /**
+     * Calculates the duration of a playback segment.
+     * @param playbackRate float representing the playback rate
+     * @param from number representing the start timestamp
+     * @param to number representing the end timestamp
+     * @returns duration of the segment in milliseconds
+     */
+    private getSegmentDurationMs(playbackRate: number, from: number, to: number): number {
+        return (to - from) * playbackRate;
     }
 }
