@@ -81,7 +81,7 @@ const gizmo = new GameObject("Gizmo");
 const gizmo2 = new GameObject("Gizmo2");
 gameEngineWindow.root.addChild(gizmo);
 cameraGo.addChild(gizmo2);
-gizmo2.transform.position.set(0, 0, 5);
+gizmo2.transform.position.set(0, 0, -1);
 ObjLoader.load("/test/CommonResources/gizmo.obj").then((obj) => {
   gizmo.addBehavior(
     new MeshRenderBehavior(
@@ -102,3 +102,13 @@ ObjLoader.load("/test/CommonResources/gizmo.obj").then((obj) => {
     ),
   );
 });
+
+// Create a quaternion for 90° yaw (Y-axis)
+const yawQuaternion = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
+
+// Create a quaternion for 45° pitch (X-axis)
+//const pitchQuaternion = Quaternion.fromEulerAngles(Math.PI / 4, 0, 0);
+
+// Combine the rotations: pitch * yaw
+//const quaternion = yawQuaternion.multiply(pitchQuaternion);
+gizmo.transform.rotation.setFromQuaternion(yawQuaternion);

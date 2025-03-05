@@ -175,10 +175,7 @@ export class Camera extends OutputBehavior {
 
     // Compute VP matrix: Projection * View
     //TODO : We should cache the vpMatrix and only recompute it when the camera moves
-    const vpMatrix = mat4.multiply(
-      this._projectionMatrix,
-      mat4.scale(viewMatrix, [1, 1, -1]),
-    );
+    const vpMatrix = mat4.multiply(this._projectionMatrix, viewMatrix);
 
     // Compute final MVP matrix: VP * Model
     return mat4.multiply(vpMatrix, modelMatrix);
