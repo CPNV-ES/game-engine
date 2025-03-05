@@ -55,6 +55,49 @@ describe("Transform", (): void => {
         expectedWorldPosition,
       );
     });
+
+    it("should compute world position correctly in a nested hierarchy with rotation and scaling", () => {
+      const grandparent = new GameObject();
+      const parent = new GameObject();
+      const child = new GameObject();
+
+      grandparent.addChild(parent);
+      parent.addChild(child);
+
+      // Set grandparent's position, rotation, and scale
+      grandparent.transform.position.set(10, 20, 30);
+      grandparent.transform.rotation.setFromEulerAngles(0, Math.PI / 2, 0); // 90° around Y-axis
+      grandparent.transform.scale.set(2, 1, 1); // Scale only along X-axis
+
+      // Set parent's local position, rotation, and scale
+      parent.transform.position.set(1, 2, 3);
+      parent.transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0); // 90° around X-axis
+      parent.transform.scale.set(1, 2, 1); // Scale only along Y-axis
+
+      // Set child's local position
+      child.transform.position.set(0.5, 0.5, 0.5);
+
+      // Expected world position:
+      // grandparent's position + (parent's position rotated and scaled by grandparent) + (child's position rotated and scaled by parent and grandparent)
+      const parentWorldPosition = grandparent.transform.worldPosition.clone();
+      const parentWorldRotation = grandparent.transform.worldRotation.clone();
+      const parentWorldScale = grandparent.transform.worldScale.clone();
+
+      const parentTransformedPosition = parent.transform.position
+        .clone()
+        .scaleAxis(parentWorldScale)
+        .rotate(parentWorldRotation)
+        .add(parentWorldPosition);
+
+      const childWorldPosition = parentTransformedPosition.add(
+        child.transform.position
+          .clone()
+          .scaleAxis(parent.transform.worldScale)
+          .rotate(parent.transform.worldRotation),
+      );
+
+      expect(child.transform.worldPosition).toEqual(childWorldPosition);
+    });
   });
 
   describe("worldRotation", () => {
@@ -89,6 +132,33 @@ describe("Transform", (): void => {
       expect(childGameObject.transform.worldRotation).toEqual(
         expectedWorldRotation,
       );
+    });
+
+    it("should combine parent's world rotation with local rotation in a nested hierarchy", () => {
+      const grandparent = new GameObject();
+      const parent = new GameObject();
+      const child = new GameObject();
+
+      grandparent.addChild(parent);
+      parent.addChild(child);
+
+      // Set grandparent's rotation (90° around Y-axis)
+      grandparent.transform.rotation.setFromEulerAngles(0, Math.PI / 2, 0);
+
+      // Set parent's local rotation (90° around X-axis)
+      parent.transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0);
+
+      // Set child's local rotation (90° around Z-axis)
+      child.transform.rotation.setFromEulerAngles(0, 0, Math.PI / 2);
+
+      // Expected world rotation:
+      // grandparent's rotation * parent's rotation * child's rotation
+      const expectedWorldRotation = grandparent.transform.rotation
+        .clone()
+        .rotate(parent.transform.rotation)
+        .rotate(child.transform.rotation);
+
+      expect(child.transform.worldRotation).toEqual(expectedWorldRotation);
     });
   });
 
@@ -132,6 +202,40 @@ describe("Transform", (): void => {
 
       expect(rotatedForward.x).toBeCloseTo(1);
       expect(rotatedForward.y).toBeCloseTo(0);
+      expect(rotatedForward.z).toBeCloseTo(0);
+    });
+
+    it("should rotate forward vector correctly with 90° yaw then 45° pitch rotation", () => {
+      const quaternion = Quaternion.fromEulerAngles(
+        0,
+        Math.PI / 2,
+        Math.PI / 4,
+      );
+      const forward = new Vector3(0, 0, 1);
+      const rotatedForward = forward.rotate(quaternion);
+
+      expect(rotatedForward.x).toBeCloseTo(1 / Math.sqrt(2));
+      expect(rotatedForward.y).toBeCloseTo(-(1 / Math.sqrt(2)));
+      expect(rotatedForward.z).toBeCloseTo(0);
+    });
+
+    it("should rotate forward vector correctly with 90° yaw then 45° pitch rotation", () => {
+      // Create a quaternion for 90° yaw (Y-axis)
+      const yawQuaternion = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
+
+      // Create a quaternion for 45° pitch (X-axis)
+      const pitchQuaternion = Quaternion.fromEulerAngles(Math.PI / 4, 0, 0);
+
+      // Combine the rotations: pitch * yaw
+      const quaternion = yawQuaternion.multiply(pitchQuaternion);
+
+      // Rotate the forward vector
+      const forward = new Vector3(0, 0, 1);
+      const rotatedForward = forward.rotate(quaternion);
+
+      // Verify the result
+      expect(rotatedForward.x).toBeCloseTo(1 / Math.sqrt(2));
+      expect(rotatedForward.y).toBeCloseTo(-(1 / Math.sqrt(2)));
       expect(rotatedForward.z).toBeCloseTo(0);
     });
 
