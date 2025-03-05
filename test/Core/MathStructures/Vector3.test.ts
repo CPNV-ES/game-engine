@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
+import { Quaternion } from "@core/MathStructures/Quaternion";
 
 describe("Vector3", (): void => {
   it("should instance a vector", () => {
@@ -98,5 +99,70 @@ describe("Vector3", (): void => {
     expect(clone.x).toBe(vector.x);
     expect(clone.y).toBe(vector.y);
     expect(clone.z).toBe(vector.z);
+  });
+
+  describe("rotate", (): void => {
+    it("should rotate a vector around the X-axis by 90 degrees", (): void => {
+      const vector = new Vector3(0, 1, 0); // Vector along the Y-axis
+      const axis = new Vector3(1, 0, 0); // X-axis
+      const angle = Math.PI / 2; // 90 degrees in radians
+
+      // Create a quaternion representing a 90-degree rotation around the X-axis
+      const quaternion = Quaternion.fromAxisAngle(axis, angle);
+
+      // Rotate the vector
+      vector.rotate(quaternion);
+
+      // Expected result: (0, 0, 1) because the coordinate system is left-handed
+      expect(vector.x).toBeCloseTo(0, 4);
+      expect(vector.y).toBeCloseTo(0, 4);
+      expect(vector.z).toBeCloseTo(1, 4);
+    });
+
+    it("should rotate a vector around the Y-axis by 90 degrees", (): void => {
+      const vector = new Vector3(1, 0, 0); // Vector along the X-axis
+      const axis = new Vector3(0, 1, 0); // Y-axis
+      const angle = Math.PI / 2; // 90 degrees in radians
+
+      // Create a quaternion representing a 90-degree rotation around the Y-axis
+      const quaternion = Quaternion.fromAxisAngle(axis, angle);
+
+      vector.rotate(quaternion);
+
+      expect(vector.x).toBeCloseTo(0, 4);
+      expect(vector.y).toBeCloseTo(0, 4);
+      expect(vector.z).toBeCloseTo(-1, 4);
+    });
+
+    it("should rotate a vector around the Z-axis by 90 degrees", (): void => {
+      const vector = new Vector3(1, 0, 0); // Vector along the X-axis
+      const axis = new Vector3(0, 0, 1); // Z-axis
+      const angle = Math.PI / 2; // 90 degrees in radians
+
+      // Create a quaternion representing a 90-degree rotation around the Z-axis
+      const quaternion = Quaternion.fromAxisAngle(axis, angle);
+
+      vector.rotate(quaternion);
+
+      expect(vector.x).toBeCloseTo(0, 4);
+      expect(vector.y).toBeCloseTo(1, 4);
+      expect(vector.z).toBeCloseTo(0, 4);
+    });
+
+    it("should rotate a vector around an arbitrary axis by 45 degrees", (): void => {
+      const vector = new Vector3(1, 0, 0); // Vector along the X-axis
+      const axis = new Vector3(1, 1, 0).normalize(); // Arbitrary axis
+      const angle = Math.PI / 4; // 45 degrees in radians
+
+      // Create a quaternion representing a 45-degree rotation around the arbitrary axis
+      const quaternion = Quaternion.fromAxisAngle(axis, angle);
+
+      // Rotate the vector
+      vector.rotate(quaternion);
+
+      expect(vector.x).toBeCloseTo(0.853553, 4);
+      expect(vector.y).toBeCloseTo(0.146447, 4);
+      expect(vector.z).toBeCloseTo(-0.5, 4);
+    });
   });
 });
