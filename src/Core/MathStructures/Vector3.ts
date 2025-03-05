@@ -189,4 +189,25 @@ export class Vector3 {
   public static zero() {
     return new Vector3(0, 0, 0);
   }
+
+  /**
+   * Get a new vector3 with Y component set to 1
+   */
+  public static up() {
+    return new Vector3(0, 1, 0);
+  }
+
+  /**
+   * Get a new vector3 with Z component set to 1
+   */
+  public static forward() {
+    return new Vector3(0, 0, 1);
+  }
+
+  /**
+   * Get a new vector3 with X component set to 1
+   */
+  public static right() {
+    return new Vector3(1, 0, 0);
+  }
 }
