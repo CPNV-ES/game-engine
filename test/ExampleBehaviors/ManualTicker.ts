@@ -1,5 +1,5 @@
-import { Ticker } from "../../src/Core/Tickers/Ticker";
-import { Event } from "../../src/Core/EventSystem/Event";
+import { Ticker } from "@core/Tickers/Ticker.ts";
+import { Event } from "@core/EventSystem/Event.ts";
 
 /**
  * A manual ticker that can be used for testing.

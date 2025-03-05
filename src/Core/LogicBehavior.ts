@@ -1,6 +1,6 @@
-import { Behavior } from "./Behavior";
-import { GameObject } from "./GameObject";
-import { Event } from "./EventSystem/Event.ts";
+import { Behavior } from "@core/Behavior";
+import { GameObject } from "@core/GameObject";
+import { Event } from "@core/EventSystem/Event.ts";
 
 /**
  * A behavior that contains logic to modify an owned data state object.

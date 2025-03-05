@@ -1,12 +1,11 @@
-import { GameEngineWindow } from "../../../../src/Core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "../../../../src/Extensions/RenderEngine/RenderGameEngineComponent.ts";
-import { GameObject } from "../../../../src/Core/GameObject.ts";
-import { Camera } from "../../../../src/Extensions/RenderEngine/Camera.ts";
-import { LinesRenderBehavior } from "../../../../src/Extensions/RenderEngine/Wireframe/LinesRenderBehavior";
-import { Vector2 } from "../../../../src/Core/MathStructures/Vector2";
-import { Color } from "../../../../src/Extensions/RenderEngine/Color";
-import { AnimationFrameTimeTicker } from "../../../../src/Core/Tickers/AnimationFrameTimeTicker";
-import { Sprunk } from "../../../../src/Core/Initialisation/Sprunk";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
+import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Color } from "@extensions/RenderEngine/Color.ts";
+import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;

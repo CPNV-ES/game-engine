@@ -1,4 +1,4 @@
-import { GameEngineWindow } from "./GameEngineWindow";
+import { GameEngineWindow } from "@core/GameEngineWindow";
 
 /**
  * @class GameEngineComponent

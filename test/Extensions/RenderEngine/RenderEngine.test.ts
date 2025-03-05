@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { ScreenshotTestUtility } from "../../ScreenshotTestUtility";
+import { ScreenshotTestUtility } from "@test/ScreenshotTestUtility.ts";
 
 const testPath = "test/Extensions/RenderEngine/";
 const actualFileName = "actual";
@@ -85,5 +85,8 @@ describe("WebGPU Rendering Test", () => {
   });
   it("sprite should correspond to text, transformed, colored, centered, scaled", async () => {
     await runScreenshotTestCase("SimpleText");
+  });
+  it("mesh should be drawn correctly, transformed, colored, centered, scaled", async () => {
+    await runScreenshotTestCase("MeshDrawing");
   });
 });

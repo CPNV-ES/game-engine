@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { PolygonCollider } from "../../../src/Extensions/PhysicsEngine/Colliders/PolygonCollider";
-import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
-import { Transform } from "../../../src/Core/MathStructures/Transform";
-import { GameObject } from "../../../src/Core/GameObject";
+import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { GameObject } from "@core/GameObject.ts";
 
 describe("PolygonCollider", (): void => {
   let vertices: Vector2[];

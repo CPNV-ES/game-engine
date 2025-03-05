@@ -1,4 +1,4 @@
-import { DeviceInputBehavior } from "../../../../src/Extensions/InputSystem/DeviceInputBehavior";
+import { DeviceInputBehavior } from "@extensions/InputSystem/DeviceInputBehavior.ts";
 
 /**
  * MockDeviceInputBehavior is a mock class for DeviceInputBehavior.

@@ -1,6 +1,6 @@
-import { Behavior } from "./Behavior.ts";
-import { Event } from "./EventSystem/Event.ts";
-import { Transform } from "./MathStructures/Transform.ts";
+import { Behavior } from "@core/Behavior.ts";
+import { Event } from "@core/EventSystem/Event.ts";
+import { Transform } from "@core/MathStructures/Transform.ts";
 
 /**
  * A GameObject is the base class for all entities objects in the game. It is a container for behaviors and other GameObjects.
@@ -37,12 +37,19 @@ export class GameObject {
 
   /**
    * The name of this GameObject
-   * @default "GameObject"
    */
-  public name: string = "GameObject";
+  public name: string;
 
   private _behaviors: Behavior[] = [];
   private _children: GameObject[] = [];
+
+  /**
+   * Create a new GameObject.
+   * @param name The name of the GameObject.
+   */
+  constructor(name: string = "GameObject") {
+    this.name = name;
+  }
 
   /**
    * Get only first-level children of this GameObject.

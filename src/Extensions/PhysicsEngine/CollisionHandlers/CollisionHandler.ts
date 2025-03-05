@@ -1,5 +1,5 @@
-import { Collider } from "../Colliders/Collider.ts";
-import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
+import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 export interface CollisionHandler {
   /**

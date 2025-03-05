@@ -1,14 +1,14 @@
-import { LinesRenderBehavior } from "../../src/Extensions/RenderEngine/Wireframe/LinesRenderBehavior";
-import { PolygonCollider } from "../../src/Extensions/PhysicsEngine/Colliders/PolygonCollider";
-import { RenderGameEngineComponent } from "../../src/Extensions/RenderEngine/RenderGameEngineComponent";
-import { Color } from "../../src/Extensions/RenderEngine/Color";
+import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior";
+import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider";
+import { Renderer } from "@extensions/RenderEngine/Renderer";
+import { Color } from "@extensions/RenderEngine/Color";
 
 /**
  * A behavior to render a polygon collider as a wireframe.
  */
 export class PolygonRenderDebugger extends LinesRenderBehavior {
   constructor(
-    renderEngine: RenderGameEngineComponent,
+    renderEngine: Renderer,
     polygonCollider: PolygonCollider,
     color: Color,
   ) {

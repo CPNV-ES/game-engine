@@ -1,19 +1,19 @@
-import { GameEngineWindow } from "../GameEngineWindow.ts";
-import { GameEngineComponent } from "../GameEngineComponent.ts";
-import { AnimationFrameTimeTicker } from "../Tickers/AnimationFrameTimeTicker.ts";
-import { RenderGameEngineComponent } from "../../Extensions/RenderEngine/RenderGameEngineComponent.ts";
-import { InputGameEngineComponent } from "../../Extensions/InputSystem/InputGameEngineComponent.ts";
-import { FixedTimeTicker } from "../Tickers/FixedTimeTicker.ts";
-import { Ticker } from "../Tickers/Ticker.ts";
-import { Keyboard } from "../../Extensions/InputSystem/Keyboard.ts";
-import { Mouse } from "../../Extensions/InputSystem/Mouse.ts";
-import { PhysicsGameEngineComponent } from "../../Extensions/PhysicsEngine/PhysicsGameEngineComponent.ts";
-import { GameObjectDebugger } from "../../Extensions/Debugger/GameObjectDebugger.ts";
-import { DraggableElement } from "../../Extensions/Debugger/DraggableElement.ts";
-import { ResizableElement } from "../../Extensions/Debugger/ResizableElement.ts";
-import { GameObject } from "../GameObject.ts";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { GameEngineComponent } from "@core/GameEngineComponent.ts";
+import { AnimationFrameTimeTicker } from "@core/Tickers/AnimationFrameTimeTicker.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
+import { FixedTimeTicker } from "@core/Tickers/FixedTimeTicker.ts";
+import { Ticker } from "@core/Tickers/Ticker.ts";
+import { Keyboard } from "@extensions/InputSystem/Keyboard.ts";
+import { Mouse } from "@extensions/InputSystem/Mouse.ts";
+import { PhysicsGameEngineComponent } from "@extensions/PhysicsEngine/PhysicsGameEngineComponent.ts";
+import { GameObjectDebugger } from "@extensions/Debugger/GameObjectDebugger.ts";
+import { DraggableElement } from "@extensions/Debugger/DraggableElement.ts";
+import { ResizableElement } from "@extensions/Debugger/ResizableElement.ts";
+import { GameObject } from "@core/GameObject.ts";
 
-import "../../Extensions/Debugger/debugger.css";
+import "@extensions/Debugger/debugger.css";
 
 /**
  * All supported sprunk engine component names.

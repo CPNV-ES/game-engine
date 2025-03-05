@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, Mock, beforeEach } from "vitest";
-import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
-import { PhysicsGameEngineComponent } from "../../../src/Extensions/PhysicsEngine/PhysicsGameEngineComponent";
-import { GameObject } from "../../../src/Core/GameObject";
-import { PolygonCollider } from "../../../src/Extensions/PhysicsEngine/Colliders/PolygonCollider";
-import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
-import { ManualTicker } from "../../ExampleBehaviors/ManualTicker";
-import { Collider } from "../../../src/Extensions/PhysicsEngine/Colliders/Collider";
-import { Collision } from "../../../src/Extensions/PhysicsEngine/Colliders/Collision";
-import { Rigidbody } from "../../../src/Extensions/PhysicsEngine/Rigidbodies/Rigidbody";
+import { GameEngineWindow } from "@core/GameEngineWindow";
+import { PhysicsGameEngineComponent } from "@extensions/PhysicsEngine/PhysicsGameEngineComponent";
+import { GameObject } from "@core/GameObject";
+import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider";
+import { Vector2 } from "@core/MathStructures/Vector2";
+import { ManualTicker } from "@test/ExampleBehaviors/ManualTicker";
+import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider";
+import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision";
+import { Rigidbody } from "@extensions/PhysicsEngine/Rigidbodies/Rigidbody";
 
 describe("PhysicsGameEngineComponent", (): void => {
   let gameEngineWindow: GameEngineWindow;

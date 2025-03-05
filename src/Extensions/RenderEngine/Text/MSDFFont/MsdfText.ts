@@ -1,14 +1,14 @@
-import { MsdfTextMeasurements } from "./MsdfChar.ts";
-import { MsdfFont } from "./MsdfFont.ts";
+import { MsdfTextMeasurements } from "@extensions/RenderEngine/Text/MSDFFont/MsdfChar.ts";
+import { MsdfFont } from "@extensions/RenderEngine/Text/MSDFFont/MsdfFont.ts";
 import { Mat4, mat4 } from "wgpu-matrix";
-import { RenderGameEngineComponent } from "../../RenderGameEngineComponent.ts";
+import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
 
 export class MsdfText {
   private bufferArray = new Float32Array(24);
   private bufferArrayDirty = true;
 
   constructor(
-    public engine: RenderGameEngineComponent,
+    public engine: Renderer,
     private renderBundle: GPURenderBundle,
     public measurements: MsdfTextMeasurements,
     public font: MsdfFont,

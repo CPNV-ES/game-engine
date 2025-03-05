@@ -1,18 +1,18 @@
-import { GameEngineWindow } from "../../../../../src/Core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "../../../../../src/Extensions/RenderEngine/RenderGameEngineComponent.ts";
-import { GameObject } from "../../../../../src/Core/GameObject.ts";
-import { Camera } from "../../../../../src/Extensions/RenderEngine/Camera.ts";
-import { Vector2 } from "../../../../../src/Core/MathStructures/Vector2";
-import { PolygonCollider } from "../../../../../src/Extensions/PhysicsEngine/Colliders/PolygonCollider";
-import { PolygonRenderDebugger } from "../../../../ExampleBehaviors/PolygonRenderDebugger";
-import { Color } from "../../../../../src/Extensions/RenderEngine/Color";
-import { KeyboardMovableBehavior } from "../../../../ExampleBehaviors/KeyboardMovableBehavior";
-import { MovableLogicBehavior } from "../../../../ExampleBehaviors/MovableLogicBehavior";
-import { InputGameEngineComponent } from "../../../../../src/Extensions/InputSystem/InputGameEngineComponent";
-import { PhysicsGameEngineComponent } from "../../../../../src/Extensions/PhysicsEngine/PhysicsGameEngineComponent";
-import { Behavior } from "../../../../../src/Core/Behavior";
-import { Sprunk } from "../../../../../src/Core/Initialisation/Sprunk";
-import { Rigidbody } from "../../../../../src/Extensions/PhysicsEngine/Rigidbodies/Rigidbody";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
+import { Vector2 } from "@core/MathStructures/Vector2";
+import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider";
+import { PolygonRenderDebugger } from "@test/ExampleBehaviors/PolygonRenderDebugger";
+import { Color } from "@extensions/RenderEngine/Color";
+import { KeyboardMovableBehavior } from "@test/ExampleBehaviors/KeyboardMovableBehavior";
+import { MovableLogicBehavior } from "@test/ExampleBehaviors/MovableLogicBehavior";
+import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent";
+import { PhysicsGameEngineComponent } from "@extensions/PhysicsEngine/PhysicsGameEngineComponent";
+import { Behavior } from "@core/Behavior";
+import { Sprunk } from "@core/Initialisation/Sprunk";
+import { Rigidbody } from "@extensions/PhysicsEngine/Rigidbodies/Rigidbody";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -29,12 +29,12 @@ const inputComponent: InputGameEngineComponent =
 const physicsComponent: PhysicsGameEngineComponent =
   gameEngineWindow.getEngineComponent(PhysicsGameEngineComponent)!;
 
-const cameraGo = new GameObject();
+const cameraGo = new GameObject("Camera");
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.addBehavior(new Camera(renderComponent, 17));
 
 // First object with collider
-const object1: GameObject = new GameObject();
+const object1: GameObject = new GameObject("Object1");
 const vertices1: Vector2[] = [
   new Vector2(-6, 2),
   new Vector2(-6, 6),
@@ -58,7 +58,7 @@ object1.addBehavior(new KeyboardMovableBehavior(inputComponent));
 gameEngineWindow.root.addChild(object1);
 
 // Second object with collider
-const object2: GameObject = new GameObject();
+const object2: GameObject = new GameObject("Object2");
 const vertices2: Vector2[] = [
   new Vector2(1, 2),
   new Vector2(3, 4),

@@ -1,8 +1,8 @@
-import { PolygonCollider } from "../Colliders/PolygonCollider.ts";
-import { Collider } from "../Colliders/Collider.ts";
-import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
-import { CollisionHandler } from "./CollisionHandler.ts";
-import { Collision } from "../Colliders/Collision.ts";
+import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider.ts";
+import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { CollisionHandler } from "@extensions/PhysicsEngine/CollisionHandlers/CollisionHandler.ts";
+import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
 
 export class SatCollisionHandler implements CollisionHandler {
   /**

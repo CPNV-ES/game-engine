@@ -1,4 +1,4 @@
-import { Event } from "../../Core/EventSystem/Event.ts";
+import { Event } from "@core/EventSystem/Event.ts";
 
 /**
  * Device is the base class for all input devices.

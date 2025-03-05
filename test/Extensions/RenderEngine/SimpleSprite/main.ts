@@ -1,10 +1,9 @@
-import { GameEngineWindow } from "../../../../src/Core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "../../../../src/Extensions/RenderEngine/RenderGameEngineComponent.ts";
-import { SpriteRenderBehavior } from "../../../../src/Extensions/RenderEngine/SpriteRenderBehavior.ts";
-import { GameObject } from "../../../../src/Core/GameObject.ts";
-import { Camera } from "../../../../src/Extensions/RenderEngine/Camera.ts";
-import { AnimationFrameTimeTicker } from "../../../../src/Core/Tickers/AnimationFrameTimeTicker";
-import { Sprunk } from "../../../../src/Core/Initialisation/Sprunk";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { SpriteRenderBehavior } from "@extensions/RenderEngine/SpriteRenderBehavior.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
+import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;

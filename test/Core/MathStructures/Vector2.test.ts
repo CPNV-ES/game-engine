@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, Mock } from "vitest";
-import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 describe("Vector2", (): void => {
   /**

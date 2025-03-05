@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { GameObject } from "../../src/Core/GameObject";
-import { TestBehavior } from "./Mocks/TestBehavior";
-import { TestBehaviorOtherType } from "./Mocks/TestBehaviorOtherType";
+import { GameObject } from "@core/GameObject.ts";
+import { TestBehavior } from "@test/Core/Mocks/TestBehavior.ts";
+import { TestBehaviorOtherType } from "@test/Core/Mocks/TestBehaviorOtherType.ts";
 
 describe("GameObject", () => {
   describe("Child Management", () => {

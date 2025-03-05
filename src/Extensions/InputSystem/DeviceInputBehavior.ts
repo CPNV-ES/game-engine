@@ -1,8 +1,8 @@
-import { InputBehavior } from "../../Core/InputBehavior";
-import { InputGameEngineComponent } from "./InputGameEngineComponent.ts";
-import { Mouse } from "./Mouse.ts";
-import { Keyboard } from "./Keyboard.ts";
-import { Vector2 } from "../../Core/MathStructures/Vector2.ts";
+import { InputBehavior } from "@core/InputBehavior.ts";
+import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
+import { Mouse } from "@extensions/InputSystem/Mouse.ts";
+import { Keyboard } from "@extensions/InputSystem/Keyboard.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * @class DeviceInputBehavior

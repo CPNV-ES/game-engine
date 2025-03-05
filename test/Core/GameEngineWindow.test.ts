@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { GameEngineComponent } from "../../src/Core/GameEngineComponent";
-import { GameEngineWindow } from "../../src/Core/GameEngineWindow";
-import { GameObject } from "../../src/Core/GameObject";
-import { MockGameEngineComponent } from "./Mocks/MockGameEngineComponent";
-import { ManualTicker } from "../ExampleBehaviors/ManualTicker";
+import { GameEngineComponent } from "@core/GameEngineComponent.ts";
+import { GameEngineWindow } from "@core/GameEngineWindow.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { MockGameEngineComponent } from "@test/Core/Mocks/MockGameEngineComponent.ts";
+import { ManualTicker } from "@test/ExampleBehaviors/ManualTicker.ts";
 
 describe("GameEngineWindow", () => {
   it("should return the same root GameObject every time", () => {
