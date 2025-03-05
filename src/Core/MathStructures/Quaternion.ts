@@ -1,6 +1,6 @@
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
 
-type EulerOrder = "XYZ" | "XZY" | "YXZ" | "YZX" | "ZXY" | "ZYX";
+type EulerOrder = "XYZ" | "ZXY";
 
 /**
  * A class representing a quaternion, used for 3D rotations and transformations.
@@ -55,45 +55,6 @@ export class Quaternion {
           1 - 2 * (this.y * this.y + this.z * this.z),
         );
         break;
-      case "XZY":
-        x = Math.atan2(
-          2 * (this.w * this.x + this.y * this.z),
-          1 - 2 * (this.x * this.x + this.z * this.z),
-        );
-        z = Math.asin(
-          Math.max(-1, Math.min(1, 2 * (this.w * this.z - this.x * this.y))),
-        );
-        y = Math.atan2(
-          2 * (this.w * this.y + this.x * this.z),
-          1 - 2 * (this.y * this.y + this.z * this.z),
-        );
-        break;
-      case "YXZ":
-        y = Math.atan2(
-          2 * (this.w * this.y - this.x * this.z),
-          1 - 2 * (this.y * this.y + this.z * this.z),
-        );
-        x = Math.asin(
-          Math.max(-1, Math.min(1, 2 * (this.w * this.x + this.y * this.z))),
-        );
-        z = Math.atan2(
-          2 * (this.w * this.z - this.x * this.y),
-          1 - 2 * (this.x * this.x + this.z * this.z),
-        );
-        break;
-      case "YZX":
-        y = Math.atan2(
-          2 * (this.w * this.y + this.x * this.z),
-          1 - 2 * (this.y * this.y + this.z * this.z),
-        );
-        z = Math.asin(
-          Math.max(-1, Math.min(1, 2 * (this.w * this.z - this.x * this.y))),
-        );
-        x = Math.atan2(
-          2 * (this.w * this.x + this.y * this.z),
-          1 - 2 * (this.x * this.x + this.z * this.z),
-        );
-        break;
       case "ZXY":
         z = Math.atan2(
           2 * (this.w * this.z + this.x * this.y),
@@ -104,19 +65,6 @@ export class Quaternion {
         );
         y = Math.atan2(
           2 * (this.w * this.y + this.z * this.x),
-          1 - 2 * (this.x * this.x + this.y * this.y),
-        );
-        break;
-      case "ZYX":
-        z = Math.atan2(
-          2 * (this.w * this.z - this.x * this.y),
-          1 - 2 * (this.z * this.z + this.y * this.y),
-        );
-        y = Math.asin(
-          Math.max(-1, Math.min(1, 2 * (this.w * this.y + this.x * this.z))),
-        );
-        x = Math.atan2(
-          2 * (this.w * this.x - this.y * this.z),
           1 - 2 * (this.x * this.x + this.y * this.y),
         );
         break;
@@ -171,7 +119,6 @@ export class Quaternion {
         y = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
         z = cosYaw * cosPitch * sinRoll + sinYaw * sinPitch * cosRoll;
         break;
-      // Add other cases if needed
       default:
         throw new Error(`Euler order ${order} not implemented`);
     }
