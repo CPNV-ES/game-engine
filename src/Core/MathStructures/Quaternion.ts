@@ -257,6 +257,49 @@ export class Quaternion {
   }
 
   /**
+   * Create a quaternion from an axis and an angle (in radians).
+   * @param axis - The axis of rotation (must be normalized).
+   * @param angle - The angle of rotation in radians.
+   * @returns A new quaternion representing the rotation.
+   */
+  public static fromAxisAngle(axis: Vector3, angle: number): Quaternion {
+    // Normalize the axis to ensure it's a unit vector
+    const normalizedAxis = axis.clone().normalize();
+
+    // Compute the half angle
+    const halfAngle = angle / 2;
+
+    // Compute the quaternion components
+    const sinHalfAngle = Math.sin(halfAngle);
+    const w = Math.cos(halfAngle);
+    const x = normalizedAxis.x * sinHalfAngle;
+    const y = normalizedAxis.y * sinHalfAngle;
+    const z = normalizedAxis.z * sinHalfAngle;
+
+    // Return the new quaternion
+    return new Quaternion(w, x, y, z);
+  }
+
+  /**
+   * Rotate this quaternion around a given axis by a specified angle (in radians).
+   * @param axis - The axis of rotation (must be normalized).
+   * @param angle - The angle of rotation in radians.
+   * @returns This quaternion after applying the rotation.
+   */
+  public rotateAroundAxis(axis: Vector3, angle: number): Quaternion {
+    // Create a quaternion from the axis-angle representation
+    const rotationQuaternion = Quaternion.fromAxisAngle(axis, angle);
+
+    // Multiply this quaternion by the rotation quaternion
+    this.multiply(rotationQuaternion);
+
+    // Normalize the result to maintain unit length
+    this.normalize();
+
+    return this;
+  }
+
+  /**
    * Get the identity quaternion
    */
   public static identity() {
