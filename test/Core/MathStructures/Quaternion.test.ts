@@ -137,4 +137,89 @@ describe("Quaternion", (): void => {
       expect(quaternion.z).toBeCloseTo(expected.z, 4);
     });
   });
+
+  describe("rotateAroundAxis match eulerAngles", (): void => {
+    it("should match rotation around X-axis with Euler angles (pitch)", (): void => {
+      const axis = new Vector3(1, 0, 0); // X-axis
+      const angle = Math.PI / 2; // 90 degrees in radians
+
+      // Rotate around X-axis
+      const quaternionFromAxis = Quaternion.identity().rotateAroundAxis(
+        axis,
+        angle,
+      );
+
+      // Set from Euler angles (pitch = 90 degrees)
+      const quaternionFromEuler = Quaternion.fromEulerAngles(Math.PI / 2, 0, 0);
+
+      // Compare the two quaternions
+      expect(quaternionFromAxis.w).toBeCloseTo(quaternionFromEuler.w, 4);
+      expect(quaternionFromAxis.x).toBeCloseTo(quaternionFromEuler.x, 4);
+      expect(quaternionFromAxis.y).toBeCloseTo(quaternionFromEuler.y, 4);
+      expect(quaternionFromAxis.z).toBeCloseTo(quaternionFromEuler.z, 4);
+    });
+
+    it("should match rotation around Y-axis with Euler angles (yaw)", (): void => {
+      const axis = new Vector3(0, 1, 0); // Y-axis
+      const angle = Math.PI / 2; // 90 degrees in radians
+
+      // Rotate around Y-axis
+      const quaternionFromAxis = Quaternion.identity().rotateAroundAxis(
+        axis,
+        angle,
+      );
+
+      // Set from Euler angles (yaw = 90 degrees)
+      const quaternionFromEuler = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
+
+      // Compare the two quaternions
+      expect(quaternionFromAxis.w).toBeCloseTo(quaternionFromEuler.w, 4);
+      expect(quaternionFromAxis.x).toBeCloseTo(quaternionFromEuler.x, 4);
+      expect(quaternionFromAxis.y).toBeCloseTo(quaternionFromEuler.y, 4);
+      expect(quaternionFromAxis.z).toBeCloseTo(quaternionFromEuler.z, 4);
+    });
+
+    it("should match rotation around Z-axis with Euler angles (roll)", (): void => {
+      const axis = new Vector3(0, 0, 1); // Z-axis
+      const angle = Math.PI / 2; // 90 degrees in radians
+
+      // Rotate around Z-axis
+      const quaternionFromAxis = Quaternion.identity().rotateAroundAxis(
+        axis,
+        angle,
+      );
+
+      // Set from Euler angles (roll = 90 degrees)
+      const quaternionFromEuler = Quaternion.fromEulerAngles(0, 0, Math.PI / 2);
+
+      // Compare the two quaternions
+      expect(quaternionFromAxis.w).toBeCloseTo(quaternionFromEuler.w, 4);
+      expect(quaternionFromAxis.x).toBeCloseTo(quaternionFromEuler.x, 4);
+      expect(quaternionFromAxis.y).toBeCloseTo(quaternionFromEuler.y, 4);
+      expect(quaternionFromAxis.z).toBeCloseTo(quaternionFromEuler.z, 4);
+    });
+
+    it("should match rotation around an arbitrary axis with Euler angles", (): void => {
+      const angle = Math.PI / 4; // 45 degrees in radians
+
+      // Rotate around the arbitrary axis
+      const quaternionFromAxis = Quaternion.identity();
+      quaternionFromAxis.rotateAroundAxis(Vector3.right(), angle);
+      quaternionFromAxis.rotateAroundAxis(Vector3.up(), angle);
+
+      // Set from Euler angles
+      const quaternionFromEuler = Quaternion.fromEulerAngles(
+        angle,
+        angle,
+        0,
+        "XYZ",
+      );
+
+      // Compare the two quaternions
+      expect(quaternionFromAxis.w).toBeCloseTo(quaternionFromEuler.w, 1);
+      expect(quaternionFromAxis.x).toBeCloseTo(quaternionFromEuler.x, 1);
+      expect(quaternionFromAxis.y).toBeCloseTo(quaternionFromEuler.y, 1);
+      expect(quaternionFromAxis.z).toBeCloseTo(quaternionFromEuler.z, 1);
+    });
+  });
 });
