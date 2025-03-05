@@ -216,10 +216,10 @@ describe("Quaternion", (): void => {
       );
 
       // Compare the two quaternions
-      expect(quaternionFromAxis.w).toBeCloseTo(quaternionFromEuler.w, 1);
-      expect(quaternionFromAxis.x).toBeCloseTo(quaternionFromEuler.x, 1);
-      expect(quaternionFromAxis.y).toBeCloseTo(quaternionFromEuler.y, 1);
-      expect(quaternionFromAxis.z).toBeCloseTo(quaternionFromEuler.z, 1);
+      expect(quaternionFromAxis.w).toBeCloseTo(quaternionFromEuler.w, 4);
+      expect(quaternionFromAxis.x).toBeCloseTo(quaternionFromEuler.x, 4);
+      expect(quaternionFromAxis.y).toBeCloseTo(quaternionFromEuler.y, 4);
+      expect(quaternionFromAxis.z).toBeCloseTo(quaternionFromEuler.z, 4);
     });
   });
 });
