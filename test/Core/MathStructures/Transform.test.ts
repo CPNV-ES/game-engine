@@ -187,14 +187,6 @@ describe("Transform", (): void => {
       expect(transform.top).toEqual(new Vector3(0, 1, 0));
     });
 
-    it("should create correct quaternion for 90° Y-axis rotation", () => {
-      const quaternion = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
-      expect(quaternion.w).toBeCloseTo(Math.sqrt(2) / 2);
-      expect(quaternion.x).toBeCloseTo(0);
-      expect(quaternion.y).toBeCloseTo(Math.sqrt(2) / 2);
-      expect(quaternion.z).toBeCloseTo(0);
-    });
-
     it("should rotate forward vector correctly with 90° Y-axis rotation", () => {
       const quaternion = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
       const forward = new Vector3(0, 0, 1);

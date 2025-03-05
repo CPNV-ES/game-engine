@@ -138,6 +138,16 @@ describe("Quaternion", (): void => {
     });
   });
 
+  describe("eulerAngles", (): void => {
+    it("should create correct quaternion for 90° Y-axis rotation", () => {
+      const quaternion = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
+      expect(quaternion.w).toBeCloseTo(Math.sqrt(2) / 2);
+      expect(quaternion.x).toBeCloseTo(0);
+      expect(quaternion.y).toBeCloseTo(Math.sqrt(2) / 2);
+      expect(quaternion.z).toBeCloseTo(0);
+    });
+  });
+
   describe("rotateAroundAxis match eulerAngles", (): void => {
     it("should match rotation around X-axis with Euler angles (pitch)", (): void => {
       const axis = new Vector3(1, 0, 0); // X-axis
