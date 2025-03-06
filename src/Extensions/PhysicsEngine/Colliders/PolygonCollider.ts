@@ -55,6 +55,9 @@ export class PolygonCollider extends Collider {
     centroidX /= 6 * area;
     centroidY /= 6 * area;
 
+    if (centroidX == -0) centroidX = 0;
+    if (centroidY == -0) centroidY = 0;
+
     return new Vector2(centroidX, centroidY);
   }
 
