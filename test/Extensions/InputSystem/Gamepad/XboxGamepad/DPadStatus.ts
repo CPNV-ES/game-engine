@@ -2,9 +2,9 @@ import { GameObject } from "@core/GameObject.ts";
 import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 import { DPadDirection, GAMEPAD_COLORS } from "./types";
-import { UIComponent } from "./UIComponent";
+import { UIGamepadDebugger } from "./UIGamepadDebugger";
 
-export class DPadStatus extends UIComponent {
+export class DPadStatus extends UIGamepadDebugger {
   private activeDirections: Set<DPadDirection>;
 
   constructor(

@@ -2,9 +2,9 @@ import { GameObject } from "@core/GameObject.ts";
 import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 import { TriggerLabel } from "./types";
-import { UIComponent } from "./UIComponent";
+import { UIGamepadDebugger } from "./UIGamepadDebugger";
 
-export class TriggerStatus extends UIComponent {
+export class TriggerStatus extends UIGamepadDebugger {
   constructor(
     container: GameObject,
     renderComponent: RenderGameEngineComponent,

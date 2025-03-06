@@ -5,7 +5,7 @@ import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { FONT_PATH } from "./types";
 import { Color } from "@extensions/RenderEngine/Color";
 
-export abstract class UIComponent {
+export abstract class UIGamepadDebugger {
   protected gameObject: GameObject;
   protected text: TextRenderBehavior;
 

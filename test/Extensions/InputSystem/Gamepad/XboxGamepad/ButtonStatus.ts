@@ -4,9 +4,9 @@ import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 import { TextRenderBehavior } from "@extensions/RenderEngine/Text/TextRenderBehavior.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { ButtonLabel, GAMEPAD_COLORS, FONT_PATH } from "./types";
-import { UIComponent } from "./UIComponent";
+import { UIGamepadDebugger } from "./UIGamepadDebugger";
 
-export class ButtonStatus extends UIComponent {
+export class ButtonStatus extends UIGamepadDebugger {
   constructor(
     container: GameObject,
     renderComponent: RenderGameEngineComponent,

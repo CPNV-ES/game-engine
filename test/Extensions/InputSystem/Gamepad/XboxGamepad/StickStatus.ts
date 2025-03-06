@@ -2,9 +2,9 @@ import { GameObject } from "@core/GameObject.ts";
 import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 import { StickLabel, GAMEPAD_COLORS, STICK_DEADZONE } from "./types";
-import { UIComponent } from "./UIComponent";
+import { UIGamepadDebugger } from "./UIGamepadDebugger";
 
-export class StickStatus extends UIComponent {
+export class StickStatus extends UIGamepadDebugger {
   constructor(
     container: GameObject,
     renderComponent: RenderGameEngineComponent,
