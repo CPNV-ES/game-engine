@@ -1,10 +1,11 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   AudioContextMock,
   fetchMock,
-} from "@test/Extensions/AudioEngine/Mocks";
+} from "@test/Extensions/AudioEngine/Mocks/MockAudioContext";
 import { GameEngineWindow } from "@core/GameEngineWindow";
 import { AudioBehavior } from "@extensions/AudioEngine/AudioBehavior";
+import { ManualTicker } from "@test/ExampleBehaviors/ManualTicker.ts";
 
 describe("AudioBehavior", () => {
   let audioBehavior: AudioBehavior;
@@ -12,7 +13,8 @@ describe("AudioBehavior", () => {
   let audioContextMock: AudioContextMock;
 
   beforeEach(() => {
-    gameEngineWindow = new GameEngineWindow();
+    const fixedTimeTicker = new ManualTicker();
+    gameEngineWindow = new GameEngineWindow(fixedTimeTicker);
     audioContextMock = new AudioContextMock();
     audioBehavior = new AudioBehavior(
       () => audioContextMock as unknown as AudioContext,
