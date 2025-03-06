@@ -29,8 +29,7 @@ describe("AudioBehavior", () => {
   describe("Initialization", () => {
     it("should initialize with default values", async () => {
       await audioBehavior.setAudio("./Assets/audio.ogg");
-      console.log(audioBehavior.getLoop());
-      //expect(audioBehavior.getLoop()).toBe(false);
+      expect(audioBehavior.getLoop()).toBe(false);
       expect(audioBehavior.isPlaying).toBe(false);
     });
   });
@@ -58,6 +57,13 @@ describe("AudioBehavior", () => {
       await audioBehavior.play();
       expect(audioBehavior.isPlaying).toBe(true);
       expect(audioContextMock.source!.startCalled).toBe(true);
+    });
+
+    it("should set the audio to play when play is called with an audio URL", async () => {
+      await audioBehavior.play("./Assets/audio2.ogg");
+      expect(audioContextMock.source!.startCalled).toBe(true);
+      expect(audioContextMock.decodeAudioDataCalled).toBe(true);
+      expect(audioBehavior.isPlaying).toBe(true);
     });
 
     it("should pause playback when pause is called", async () => {

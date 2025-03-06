@@ -91,11 +91,13 @@ export class AudioBehavior extends OutputBehavior {
 
   /**
    * Plays the audio.
+   * If the audio is passed in, it will set the audio to play.
    * @throws {Error} If the start method has already been called.
    * @throws {Error} If the audio buffer is not set.
    * @throws {Error} If the audio source is not set.
    */
-  public async play(): Promise<void> {
+  public async play(audio: string | null = null): Promise<void> {
+    if (audio && !this.startFlag) await this.setAudio(audio);
     if (!this.audioBuffer) throw new Error("Audio buffer not set.");
     if (!this.source) throw new Error("Audio source not set.");
 
