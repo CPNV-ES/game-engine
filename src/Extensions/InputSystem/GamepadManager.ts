@@ -3,43 +3,82 @@ import { GamepadDevice } from "@extensions/InputSystem/Gamepad.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 
 /**
- * GamepadManager class manages the gamepad devices connected to the browser.
- * It will create as many GamepadDevice as the number of gamepads connected.
- * It provides events for gamepad connected and disconnected.
+ * GamepadManager is the central manager for handling gamepad input in browser-based games.
+ * It provides an abstraction for working with gamepads, supporting both generic
+ * gamepads and Xbox-specific controllers.
+ *
+ * @example
+ * ```typescript
+ * // Create GamepadManager instance
+ * const gamepadManager = new GamepadManager();
+ *
+ * // Listen for gamepad connections
+ * gamepadManager.onGamepadConnected.addObserver((gamepad) => {
+ *   console.log(`Gamepad ${gamepad.index} connected`);
+ * });
+ *
+ * // Get all connected gamepads
+ * const gamepads = gamepadManager.getAllGamepads();
+ * ```
  */
 export class GamepadManager {
   /**
-   * Event emit a gamepad: GamepadDevice when it is connected.
-   * @type {Event<GamepadDevice>}
+   * Event emitted when a gamepad is connected.
+   * The event provides the connected GamepadDevice instance.
+   *
+   * @example
+   * ```typescript
+   * gamepadManager.onGamepadConnected.addObserver((gamepad) => {
+   *   console.log(`Gamepad ${gamepad.index} connected`);
+   * });
+   * ```
    */
   public readonly onGamepadConnected: Event<GamepadDevice> =
     new Event<GamepadDevice>();
 
   /**
-   * Event emit a gamepad: GamepadDevice when it is disconnected.
-   * @type {Event<GamepadDevice>}
+   * Event emitted when a gamepad is disconnected.
+   * The event provides the disconnected GamepadDevice instance.
+   *
+   * @example
+   * ```typescript
+   * gamepadManager.onGamepadDisconnected.addObserver((gamepad) => {
+   *   console.log(`Gamepad ${gamepad.index} disconnected`);
+   * });
+   * ```
    */
   public readonly onGamepadDisconnected: Event<GamepadDevice> =
     new Event<GamepadDevice>();
 
-  private gamepads: GamepadDevice[] = [];
+  /**
+   * Array of currently connected gamepad devices
+   * @private
+   */
+  private _gamepads: GamepadDevice[] = [];
 
+  /**
+   * Creates a new GamepadManager instance.
+   * Upon creation, it:
+   * - Checks for already connected gamepads
+   * - Sets up event listeners for gamepad connections/disconnections
+   * - Creates appropriate device instances for each connected gamepad
+   */
   constructor() {
     this.initializeConnectedGamepads();
 
     window.addEventListener("gamepadconnected", (event: GamepadEvent) => {
       const gamepad = this.createGamepadDevice(event.gamepad);
-      this.gamepads.push(gamepad);
+      this._gamepads.push(gamepad);
       this.onGamepadConnected.emit(gamepad);
     });
 
     window.addEventListener("gamepaddisconnected", (event: GamepadEvent) => {
-      const gamepad = this.gamepads.find(
+      const gamepad = this._gamepads.find(
         (gp) => gp.index === event.gamepad.index,
       );
       if (gamepad) {
         this.onGamepadDisconnected.emit(gamepad);
-        this.gamepads = this.gamepads.filter(
+        this._gamepads = this._gamepads.filter(
           (gp) => gp.index !== event.gamepad.index,
         );
         gamepad.destroy();
@@ -53,17 +92,12 @@ export class GamepadManager {
       const gamepad = gamepads[i];
       if (gamepad) {
         const device = this.createGamepadDevice(gamepad);
-        this.gamepads.push(device);
+        this._gamepads.push(device);
         this.onGamepadConnected.emit(device);
       }
     }
   }
 
-  /**
-   * Creates the appropriate gamepad device based on the gamepad type.
-   * @param gamepad The browser's Gamepad object
-   * @returns GamepadDevice The created gamepad device
-   */
   private createGamepadDevice(gamepad: Gamepad): GamepadDevice {
     if (this.isXboxGamepad(gamepad)) {
       return new XboxGamepad(gamepad.index);
@@ -71,11 +105,6 @@ export class GamepadManager {
     return new GamepadDevice(gamepad.index);
   }
 
-  /**
-   * Checks if a gamepad is an Xbox controller.
-   * @param gamepad The browser's Gamepad object
-   * @returns boolean True if the gamepad is an Xbox controller
-   */
   private isXboxGamepad(gamepad: Gamepad): boolean {
     const id = gamepad.id.toLowerCase();
     return (
@@ -86,19 +115,39 @@ export class GamepadManager {
   }
 
   /**
-   * Returns all the gamepads connected to the browser.
-   * @returns {GamepadDevice[]} Array of gamepad devices.
+   * Gets all currently connected gamepad devices.
+   * This includes both generic and Xbox-specific gamepads.
+   *
+   * @returns {GamepadDevice[]} An array of all connected gamepad devices
+   * @example
+   * ```typescript
+   * const gamepads = gamepadManager.getAllGamepads();
+   * gamepads.forEach(gamepad => {
+   *   console.log(`Gamepad ${gamepad.index} is connected`);
+   * });
+   * ```
    */
   public getAllGamepads(): GamepadDevice[] {
-    return this.gamepads;
+    return this._gamepads;
   }
 
   /**
-   * Returns all connected Xbox gamepads.
-   * @returns {XboxGamepad[]} Array of Xbox gamepad devices.
+   * Gets all connected Xbox gamepads.
+   * This method filters the connected gamepads to return only Xbox controllers.
+   *
+   * @returns {XboxGamepad[]} An array of all connected Xbox gamepads
+   * @example
+   * ```typescript
+   * const xboxGamepads = gamepadManager.getXboxGamepads();
+   * xboxGamepads.forEach(xbox => {
+   *   xbox.onAButtonDown.addObserver(() => {
+   *     console.log('A button pressed');
+   *   });
+   * });
+   * ```
    */
   public getXboxGamepads(): XboxGamepad[] {
-    return this.gamepads.filter(
+    return this._gamepads.filter(
       (gamepad): gamepad is XboxGamepad => gamepad instanceof XboxGamepad,
     );
   }

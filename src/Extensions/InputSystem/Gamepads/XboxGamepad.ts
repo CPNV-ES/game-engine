@@ -75,8 +75,6 @@ export class XboxGamepad extends GamepadDevice {
   private static readonly AXIS_LEFT_STICK_Y = 1;
   private static readonly AXIS_RIGHT_STICK_X = 2;
   private static readonly AXIS_RIGHT_STICK_Y = 3;
-  private static readonly AXIS_LEFT_TRIGGER = 4;
-  private static readonly AXIS_RIGHT_TRIGGER = 5;
 
   constructor(index: number) {
     super(index);

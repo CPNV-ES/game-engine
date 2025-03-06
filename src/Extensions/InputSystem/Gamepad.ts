@@ -21,8 +21,8 @@ export class GamepadDevice extends Device {
   public readonly onButtonUp: Event<number> = new Event<number>();
 
   /**
-   * Event emitted when any button is pressed down or released.
-   * @type {Event<void>}
+   * Event emitted when any axis is changed with the index of the axis and the value of the axis.
+   * @type {Event<{index: number, xValue: number, yValue: number}>}
    */
   public readonly onAxisChange: Event<{
     index: number;
@@ -41,11 +41,11 @@ export class GamepadDevice extends Device {
    */
   public index: number;
 
-  private buttonStates: boolean[] = [];
-  private axisStates: number[] = [];
-  private isPolling: boolean = false;
-  private isPollingInProgress: boolean = false;
-  private animationFrameId: number | null = null;
+  private _buttonStates: boolean[] = [];
+  private _axisStates: number[] = [];
+  private _isPolling: boolean = false;
+  private _isPollingInProgress: boolean = false;
+  private _animationFrameId: number | null = null;
 
   constructor(index: number) {
     super();
@@ -57,43 +57,46 @@ export class GamepadDevice extends Device {
   /**
    * Start polling the gamepad state.
    * This will continuously check for button and axis changes.
+   * @returns {void}
    */
   public startPolling(): void {
-    if (this.isPolling) return;
-    this.isPolling = true;
+    if (this._isPolling) return;
+    this._isPolling = true;
     this.pollGamepad();
   }
 
   /**
    * Stop polling the gamepad state.
    * This will stop checking for button and axis changes.
+   * @returns {void}
    */
   public stopPolling(): void {
-    this.isPolling = false;
-    if (this.animationFrameId !== null) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
+    this._isPolling = false;
+    if (this._animationFrameId !== null) {
+      cancelAnimationFrame(this._animationFrameId);
+      this._animationFrameId = null;
     }
   }
 
   /**
    * Manually poll the gamepad state once.
    * This will check for button and axis changes exactly one time.
+   * @returns {void}
    */
   public pollGamepadOnce(): void {
-    if (this.isPollingInProgress) return;
+    if (this._isPollingInProgress) return;
 
-    this.isPollingInProgress = true;
+    this._isPollingInProgress = true;
     try {
       const gamepad: Gamepad | null = navigator.getGamepads()[this.index];
       if (gamepad) {
         gamepad.buttons.forEach(
           (button: GamepadButton, index: number): void => {
-            const wasPressed = this.buttonStates[index] || false;
+            const wasPressed = this._buttonStates[index] || false;
             const isPressed = button.pressed;
 
             if (isPressed !== wasPressed) {
-              this.buttonStates[index] = isPressed;
+              this._buttonStates[index] = isPressed;
               if (isPressed) {
                 this.onButtonDown.emit(index);
               } else {
@@ -107,40 +110,33 @@ export class GamepadDevice extends Device {
           const xValue: number = gamepad.axes[i];
           const yValue: number = gamepad.axes[i + 1];
           if (
-            xValue !== this.axisStates[i] ||
-            yValue !== this.axisStates[i + 1]
+            xValue !== this._axisStates[i] ||
+            yValue !== this._axisStates[i + 1]
           ) {
-            this.axisStates[i] = xValue;
-            this.axisStates[i + 1] = yValue;
+            this._axisStates[i] = xValue;
+            this._axisStates[i + 1] = yValue;
             this.onAxisChange.emit({ index: i / 2, xValue, yValue });
           }
         }
       }
     } finally {
-      this.isPollingInProgress = false;
+      this._isPollingInProgress = false;
     }
   }
 
   private pollGamepad(): void {
-    if (!this.isPolling) return;
+    if (!this._isPolling) return;
 
     this.pollGamepadOnce();
-    this.animationFrameId = requestAnimationFrame(() => this.pollGamepad());
+    this._animationFrameId = requestAnimationFrame(() => this.pollGamepad());
   }
 
   /**
    * Stops polling the gamepad.
    * It should be called when the gamepad is disconnected.
+   * @returns {void}
    */
   public destroy(): void {
     this.stopPolling();
-  }
-
-  public isButtonPressed(buttonIndex: number): boolean {
-    const gamepad = navigator.getGamepads()[this.index];
-    if (gamepad) {
-      return gamepad.buttons[buttonIndex].pressed;
-    }
-    return false;
   }
 }
