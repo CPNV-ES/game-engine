@@ -46,12 +46,8 @@ export class Rigidbody extends LogicBehavior<void> {
    * @param collision
    */
   public resolveCollision(collision: Collision) {
-    const depth =
-      (collision.depth * this.mass) /
-      (this.mass + collision.otherCollider.rigidbody.mass);
-
     this.gameObject.transform.position.sub(
-      collision.normal.clone().scale(depth),
+      collision.normal.clone().scale(collision.getMassByDepthRatio()),
     );
   }
 }

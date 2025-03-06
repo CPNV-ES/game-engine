@@ -35,6 +35,18 @@ export class Collision {
   }
 
   /**
+   * Get the mass ratio of the current collider in the collision
+   * TODO: should remove the collider.rigidbody because it's a hack
+   */
+  public getMassByDepthRatio(): number {
+    return (
+      (this._depth * this._currentCollider.rigidbody.mass) /
+      (this._currentCollider.rigidbody.mass +
+        this._otherCollider.rigidbody.mass)
+    );
+  }
+
+  /**
    * Get a computed opposite collision that matches the second collider involved POV
    */
   public getOpposite() {
