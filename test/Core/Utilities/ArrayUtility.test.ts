@@ -57,4 +57,56 @@ describe("ArrayUtility", (): void => {
     // Then
     expect(res).toEqual(expectedRes);
   });
+
+  /**
+   * Tests if the array can remove a specific object from itself
+   */
+  it("should remove the object from the array", () => {
+    // Given
+    const objectToRemove = { porp2: "prop2" };
+    const array: any[] = [
+      { porp1: "prop1" },
+      objectToRemove,
+      { porp3: "prop3" },
+      { porp4: "prop4" },
+    ];
+    const expectedRes: any[] = [
+      { porp1: "prop1" },
+      { porp3: "prop3" },
+      { porp4: "prop4" },
+    ];
+
+    // When
+    ArrayUtility.removeElement(array, objectToRemove);
+
+    // Then
+    expect(array).toEqual(expectedRes);
+  });
+
+  /**
+   * Tests if the array only remove first of a specific object from itself
+   */
+  it("should remove the first given object from the array", () => {
+    // Given
+    const objectToRemove = { porp2: "prop2" };
+    const array: any[] = [
+      { porp1: "prop1" },
+      objectToRemove,
+      { porp3: "prop3" },
+      { porp4: "prop4" },
+      objectToRemove,
+    ];
+    const expectedRes: any[] = [
+      { porp1: "prop1" },
+      { porp3: "prop3" },
+      { porp4: "prop4" },
+      objectToRemove,
+    ];
+
+    // When
+    ArrayUtility.removeElement(array, objectToRemove);
+
+    // Then
+    expect(array).toEqual(expectedRes);
+  });
 });
