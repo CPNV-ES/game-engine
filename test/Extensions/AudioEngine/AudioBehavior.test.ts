@@ -83,12 +83,6 @@ describe("AudioBehavior", () => {
         "Audio source not set.",
       );
     });
-
-    it("should throw an error when trying to pause without playing", async () => {
-      await expect(audioBehavior.pause()).rejects.toThrow(
-        "Audio is not playing.",
-      );
-    });
   });
 
   describe("Volume Control", () => {
