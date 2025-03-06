@@ -4,8 +4,8 @@ import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { TextRenderBehavior } from "@extensions/RenderEngine/Text/TextRenderBehavior.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
-import { Quaternion } from "../../../../src/Core/MathStructures/Quaternion";
-import { Vector3 } from "../../../../src/Core/MathStructures/Vector3";
+import { Quaternion } from "@core/MathStructures/Quaternion";
+import { Vector3 } from "@core/MathStructures/Vector3";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;

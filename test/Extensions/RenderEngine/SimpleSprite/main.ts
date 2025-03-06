@@ -4,7 +4,7 @@ import { SpriteRenderBehavior } from "@extensions/RenderEngine/SpriteRenderBehav
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
-import { Vector3 } from "../../../../src/Core/MathStructures/Vector3";
+import { Vector3 } from "@core/MathStructures/Vector3";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;

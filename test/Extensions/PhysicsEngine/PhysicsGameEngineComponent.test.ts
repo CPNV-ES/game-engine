@@ -8,7 +8,7 @@ import { ManualTicker } from "@test/ExampleBehaviors/ManualTicker";
 import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider";
 import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision";
 import { Rigidbody } from "@extensions/PhysicsEngine/Rigidbodies/Rigidbody";
-import { Vector3 } from "../../../src/Core/MathStructures/Vector3";
+import { Vector3 } from "@core/MathStructures/Vector3";
 
 describe("PhysicsGameEngineComponent", (): void => {
   let gameEngineWindow: GameEngineWindow;

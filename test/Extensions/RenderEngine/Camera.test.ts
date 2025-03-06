@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { Camera } from "../../../src/Extensions/RenderEngine/Camera";
-import { RenderGameEngineComponent } from "../../../src/Extensions/RenderEngine/RenderGameEngineComponent";
-import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
+import { Camera } from "@extensions/RenderEngine/Camera";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent";
+import { Vector2 } from "@core/MathStructures/Vector2";
 import { vec3, mat4 } from "wgpu-matrix";
-import { GameObject } from "../../../src/Core/GameObject";
+import { GameObject } from "@core/GameObject";
 import "../../TestUtils";
 import { MockRenderer } from "./MockRenderer";
-import { Renderer } from "../../../src/Extensions/RenderEngine/Renderer";
+import { Renderer } from "@extensions/RenderEngine/Renderer";
 
 describe("Camera", () => {
   let mockRenderEngine: Renderer;

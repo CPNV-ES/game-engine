@@ -2,9 +2,10 @@ import { describe, it, expect, vi, Mock, beforeEach } from "vitest";
 import { GameObject } from "@core/GameObject";
 
 import { Vector2 } from "@core/MathStructures/Vector2";
+import { Vector3 } from "@core/MathStructures/Vector3";
 import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider";
-import { PolygonCollider } from "../../../../src/Extensions/PhysicsEngine/Colliders/PolygonCollider";
-import { GameEngineWindow } from "../../../../src/Core/GameEngineWindow";
+import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider";
+import { GameEngineWindow } from "@core/GameEngineWindow";
 import { ManualTicker } from "../../../ExampleBehaviors/ManualTicker";
 
 describe("Collider", (): void => {
@@ -26,7 +27,7 @@ describe("Collider", (): void => {
 
     // When
     const center: Vector2 = polygonCollider.getGravitationCenter();
-    const expectedCenter: Vector2 = new Vector2(1, 1);
+    const expectedCenter: Vector2 = new Vector3(1, 1, 0);
 
     // Then
     expect(center).toStrictEqual(expectedCenter);
@@ -54,7 +55,7 @@ describe("Collider", (): void => {
 
     // When
     const center: Vector2 = polygonCollider.getGravitationCenter();
-    const expectedCenter: Vector2 = new Vector2(1, 1);
+    const expectedCenter: Vector2 = new Vector3(1, 1, 0);
 
     // Then
     expect(center).toStrictEqual(expectedCenter);
