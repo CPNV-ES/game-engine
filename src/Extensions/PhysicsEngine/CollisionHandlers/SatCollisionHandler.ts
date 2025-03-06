@@ -1,6 +1,7 @@
 import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider.ts";
 import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { CollisionHandler } from "@extensions/PhysicsEngine/CollisionHandlers/CollisionHandler.ts";
 import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
 
@@ -56,8 +57,8 @@ export class SatCollisionHandler implements CollisionHandler {
     a: PolygonCollider,
     b: PolygonCollider,
   ): Collision | null {
-    let normal: Vector2;
-    let depth: number;
+    let normal: Vector3 | undefined;
+    let depth: number | undefined;
 
     // Get transformed vertices
     const verticesA: Vector2[] = a.getVerticesWithTransform();
@@ -85,7 +86,7 @@ export class SatCollisionHandler implements CollisionHandler {
         projectionA.max < projectionB.min ||
         projectionB.max < projectionA.min
       ) {
-        return;
+        return null;
       }
 
       // Resolve the depth of the collision
@@ -96,18 +97,18 @@ export class SatCollisionHandler implements CollisionHandler {
       // Keep the smallest depth and normal throughout the iterations
       if (depth === undefined || axisDepth < depth) {
         depth = axisDepth;
-        normal = axis;
+        normal = axis.toVector3();
       }
     }
 
-    depth /= normal.length;
-    normal = normal.normalize();
+    depth! /= normal!.length;
+    normal = normal!.normalize();
 
     // Calculate a vector from the center of A to the center of B
-    const worldCenterA: Vector2 = a
+    const worldCenterA: Vector3 = a
       .getGravitationCenter()
       .add(a.gameObject.transform.worldPosition);
-    const worldCenterB: Vector2 = b
+    const worldCenterB: Vector3 = b
       .getGravitationCenter()
       .add(b.gameObject.transform.worldPosition);
 
@@ -116,6 +117,6 @@ export class SatCollisionHandler implements CollisionHandler {
       normal = normal.scale(-1);
     }
 
-    return new Collision(depth, normal, a, b); // No separating axis found, polygons are colliding
+    return new Collision(depth!, normal, a, b); // No separating axis found, polygons are colliding
   }
 }

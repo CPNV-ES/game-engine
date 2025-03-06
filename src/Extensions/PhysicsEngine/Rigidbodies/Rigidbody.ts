@@ -21,8 +21,6 @@ export class Rigidbody extends LogicBehavior<void> {
     this._collider = collider;
     this.collider.rigidbody = this;
     this.mass = mass;
-    // TODO: remove this hack by fixing stuff in the inheritance chain
-    this.data = true;
 
     this._collider.onDataChanged.addObserver((data: Collision[]) =>
       this.resolveCollisions(data),

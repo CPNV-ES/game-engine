@@ -454,8 +454,8 @@ describe("PhysicsGameEngineComponent", (): void => {
     gameEngineWindow.root.addChild(object2);
 
     // Assert the initial positions
-    expect(object1.transform.position).toEqual(new Vector2(0, 0));
-    expect(object2.transform.position).toEqual(new Vector2(0, 0));
+    expect(object1.transform.position).toEqual(Vector3.zero());
+    expect(object2.transform.position).toEqual(Vector3.zero());
 
     // Fire the event
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);

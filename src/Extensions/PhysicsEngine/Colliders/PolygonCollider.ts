@@ -1,4 +1,5 @@
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
 
 /**
@@ -24,7 +25,7 @@ export class PolygonCollider extends Collider {
    * - $(x_i, y_i)$ are the coordinates of the vertices.
    * - $n$ is the number of vertices.
    */
-  public getGravitationCenter(): Vector2 {
+  public getGravitationCenter(): Vector3 {
     let area = 0;
     let centroidX = 0;
     let centroidY = 0;
@@ -58,7 +59,7 @@ export class PolygonCollider extends Collider {
     if (centroidX == -0) centroidX = 0;
     if (centroidY == -0) centroidY = 0;
 
-    return new Vector2(centroidX, centroidY);
+    return new Vector3(centroidX, centroidY, 0);
   }
 
   /**
