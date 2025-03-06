@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { PolygonCollider } from "@extensions/PhysicsEngine/PolygonCollider.ts";
+import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { GameObject } from "@core/GameObject.ts";
 
