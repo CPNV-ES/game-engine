@@ -3,7 +3,7 @@ import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEn
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 import { TextRenderBehavior } from "@extensions/RenderEngine/Text/TextRenderBehavior.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
-import { ButtonLabel, COLORS, FONT_PATH } from "./types";
+import { ButtonLabel, GAMEPAD_COLORS, FONT_PATH } from "./types";
 import { UIComponent } from "./UIComponent";
 
 export class ButtonStatus extends UIComponent {
@@ -46,7 +46,9 @@ export class ButtonStatus extends UIComponent {
   private updateButtonState(): void {
     const isPressed = this.getButtonState();
     this.setText(`${this.label}: ${isPressed ? "Pressed" : "Not Pressed"}`);
-    this.setColor(isPressed ? COLORS.ACTIVE_BUTTON : COLORS.INACTIVE);
+    this.setColor(
+      isPressed ? GAMEPAD_COLORS.ACTIVE_BUTTON : GAMEPAD_COLORS.INACTIVE,
+    );
   }
 
   private getButtonState(): boolean {
@@ -80,12 +82,12 @@ export class ButtonStatus extends UIComponent {
     const events = eventMap[this.label];
     this.gamepad[events.down].addObserver(() => {
       this.setText(`${this.label}: Pressed`);
-      this.setColor(COLORS.ACTIVE_BUTTON);
+      this.setColor(GAMEPAD_COLORS.ACTIVE_BUTTON);
     });
 
     this.gamepad[events.up].addObserver(() => {
       this.setText(`${this.label}: Not Pressed`);
-      this.setColor(COLORS.INACTIVE);
+      this.setColor(GAMEPAD_COLORS.INACTIVE);
     });
   }
 }

@@ -1,7 +1,7 @@
 import { GameObject } from "@core/GameObject.ts";
 import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
-import { DPadDirection, COLORS } from "./types";
+import { DPadDirection, GAMEPAD_COLORS } from "./types";
 import { UIComponent } from "./UIComponent";
 
 export class DPadStatus extends UIComponent {
@@ -41,7 +41,9 @@ export class DPadStatus extends UIComponent {
         : `D-Pad: ${directions.join("+")}`,
     );
     this.setColor(
-      directions.length === 0 ? COLORS.INACTIVE : COLORS.ACTIVE_DPAD,
+      directions.length === 0
+        ? GAMEPAD_COLORS.INACTIVE
+        : GAMEPAD_COLORS.ACTIVE_DPAD,
     );
   }
 

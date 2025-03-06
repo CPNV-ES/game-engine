@@ -16,7 +16,7 @@ export type StickLabel = "Left" | "Right";
 export type DPadDirection = "Up" | "Right" | "Down" | "Left";
 
 // Constants
-export const COLORS = {
+export const GAMEPAD_COLORS = {
   WHITE: new Color(1, 1, 1, 1),
   INACTIVE: new Color(0.7, 0.7, 0.7, 1),
   ACTIVE_BUTTON: new Color(0, 1, 0, 1),

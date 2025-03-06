@@ -8,7 +8,7 @@ import {
   ButtonLabel,
   TriggerLabel,
   StickLabel,
-  COLORS,
+  GAMEPAD_COLORS,
   FONT_PATH,
 } from "./types";
 import { ButtonStatus } from "./ButtonStatus";
@@ -50,10 +50,10 @@ export class XboxGamepadVisualization {
     const titleText = new TextRenderBehavior(this.renderComponent, FONT_PATH);
     titleText.text = "Xbox Controller";
     titleText.color = [
-      COLORS.WHITE.r,
-      COLORS.WHITE.g,
-      COLORS.WHITE.b,
-      COLORS.WHITE.a,
+      GAMEPAD_COLORS.WHITE.r,
+      GAMEPAD_COLORS.WHITE.g,
+      GAMEPAD_COLORS.WHITE.b,
+      GAMEPAD_COLORS.WHITE.a,
     ];
     titleText.pixelScale = 1 / 128;
     titleText.centered = true;

@@ -1,7 +1,7 @@
 import { GameObject } from "@core/GameObject.ts";
 import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
-import { StickLabel, COLORS, STICK_DEADZONE } from "./types";
+import { StickLabel, GAMEPAD_COLORS, STICK_DEADZONE } from "./types";
 import { UIComponent } from "./UIComponent";
 
 export class StickStatus extends UIComponent {
@@ -35,7 +35,9 @@ export class StickStatus extends UIComponent {
 
     this.setText(`${this.side} Stick: X: ${x.toFixed(2)}, Y: ${y.toFixed(2)}`);
     const moving = Math.abs(x) > STICK_DEADZONE || Math.abs(y) > STICK_DEADZONE;
-    this.setColor(moving ? COLORS.ACTIVE_STICK : COLORS.INACTIVE);
+    this.setColor(
+      moving ? GAMEPAD_COLORS.ACTIVE_STICK : GAMEPAD_COLORS.INACTIVE,
+    );
     requestAnimationFrame(this.updateStickDisplay);
   };
 
@@ -50,7 +52,7 @@ export class StickStatus extends UIComponent {
         : { down: "onRightStickButtonDown", up: "onRightStickButtonUp" };
 
     this.gamepad[buttonEvents.down].addObserver(() => {
-      this.setColor(COLORS.PRESSED_STICK);
+      this.setColor(GAMEPAD_COLORS.PRESSED_STICK);
     });
 
     this.gamepad[buttonEvents.up].addObserver(() => {
@@ -60,7 +62,9 @@ export class StickStatus extends UIComponent {
           : this.gamepad.getRightStickPosition();
       const moving =
         Math.abs(x) > STICK_DEADZONE || Math.abs(y) > STICK_DEADZONE;
-      this.setColor(moving ? COLORS.ACTIVE_STICK : COLORS.INACTIVE);
+      this.setColor(
+        moving ? GAMEPAD_COLORS.ACTIVE_STICK : GAMEPAD_COLORS.INACTIVE,
+      );
     });
   }
 }
