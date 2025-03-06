@@ -88,7 +88,7 @@ export class Sprunk {
         inputComponent.addDevice(new Mouse());
         return inputComponent;
       case "PhysicsGameEngineComponent":
-        return new PhysicsGameEngineComponent(frameTicker);
+        return new PhysicsGameEngineComponent(fixedTicker);
       default:
         throw new Error(`Component ${componentName} does not exist.`);
     }
