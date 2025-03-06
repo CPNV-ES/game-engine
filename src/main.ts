@@ -14,6 +14,7 @@ import { ObjLoader } from "@extensions/RenderEngine/MeshBased/ObjLoader.ts";
 import { MeshRenderBehavior } from "@extensions/RenderEngine/MeshBased/MeshRenderBehavior.ts";
 import BasicVertexMVPWithUV from "@extensions/RenderEngine/BasicShaders/BasicVertexMVPWithUVAndNormals.vert.wgsl?raw";
 import BasicTextureSample from "@extensions/RenderEngine/BasicShaders/BasicTextureSample-OpenGL-Like.frag.wgsl?raw";
+import { GridRenderBehavior } from "@test/ExampleBehaviors/GridRenderBehavior.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -42,35 +43,9 @@ cameraGo.transform.position.z = 10;
 gameEngineWindow.root.addChild(cameraGo);
 
 const grid = new GameObject("Grid");
-const gridSize = 200;
-const step = 1;
-
-// Generate vertices for grid lines
-const vertices: Vector2[] = [new Vector2(-gridSize, -gridSize)];
-
-// Horizontal lines
-for (let x = -gridSize; x <= gridSize; x += step) {
-  vertices.push(new Vector2(x, -gridSize));
-  vertices.push(new Vector2(x, gridSize));
-  vertices.push(new Vector2(x + step, gridSize));
-}
-
-// Vertical lines
-for (let y = -gridSize; y <= gridSize; y += step) {
-  vertices.push(new Vector2(-gridSize, y));
-  vertices.push(new Vector2(gridSize, y));
-  vertices.push(new Vector2(gridSize, y + step));
-}
-vertices.push(new Vector2(gridSize, gridSize));
-vertices.push(new Vector2(gridSize, -gridSize));
-vertices.push(new Vector2(-gridSize, -gridSize));
-
-const lineRender = new LinesRenderBehavior(
-  renderComponent,
-  vertices,
-  new Color(0.3, 0.3, 0.6),
+grid.addBehavior(
+  new GridRenderBehavior(renderComponent, 200, 1, new Color(0.3, 0.3, 0.6)),
 );
-grid.addBehavior(lineRender);
 grid.transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0);
 
 gameEngineWindow.root.addChild(grid);
