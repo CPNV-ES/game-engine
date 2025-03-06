@@ -1,9 +1,11 @@
 import { describe, it, expect, vi, Mock, beforeAll, beforeEach } from "vitest";
 import { GamepadDevice } from "@extensions/InputSystem/Gamepad.ts";
 import { InputUtility } from "@test/Extensions/InputSystem/InputUtility.ts";
+import { GamepadManager } from "@extensions/InputSystem/GamepadManager.ts";
 
 describe("GamepadDevice", (): void => {
   let gamepad: GamepadDevice;
+  let gamepadManager: GamepadManager;
   let buttonDownCallback: Mock;
   let buttonUpCallback: Mock;
   let axisChangeCallback: Mock;
@@ -12,6 +14,8 @@ describe("GamepadDevice", (): void => {
   beforeAll((): void => {
     InputUtility.mockWindowEventListeners();
     InputUtility.mockGamepadEventListeners();
+    gamepadManager = new GamepadManager();
+    gamepad = gamepadManager.getAllGamepads()[0];
   });
 
   beforeEach((): void => {
@@ -19,14 +23,6 @@ describe("GamepadDevice", (): void => {
     buttonUpCallback = vi.fn();
     axisChangeCallback = vi.fn();
 
-    // Mock requestAnimationFrame to execute callback immediately
-    mockRAF = vi.fn((callback) => {
-      callback();
-      return 1;
-    });
-    window.requestAnimationFrame = mockRAF;
-
-    gamepad = new GamepadDevice(0);
     expect(gamepad).toBeInstanceOf(GamepadDevice);
 
     // Add observers
@@ -102,17 +98,5 @@ describe("GamepadDevice", (): void => {
       expect(gamepadInstance.axes[2]).toBe(-0.7); // Right stick X
       expect(gamepadInstance.axes[3]).toBe(-0.7); // Right stick Y
     }
-  });
-
-  it("should stop polling when destroyed", (): void => {
-    const originalRequestAnimationFrame = window.requestAnimationFrame;
-    const mockRAF = vi.fn();
-    window.requestAnimationFrame = mockRAF;
-
-    gamepad.destroy();
-
-    expect(mockRAF).not.toHaveBeenCalled();
-
-    window.requestAnimationFrame = originalRequestAnimationFrame;
   });
 });

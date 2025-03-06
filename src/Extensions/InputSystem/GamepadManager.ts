@@ -56,6 +56,9 @@ export class GamepadManager {
    */
   private _gamepads: GamepadDevice[] = [];
 
+  private _isPolling: boolean = false;
+  private _animationFrameId: number | null = null;
+
   /**
    * Creates a new GamepadManager instance.
    * Upon creation, it:
@@ -65,6 +68,7 @@ export class GamepadManager {
    */
   constructor() {
     this.initializeConnectedGamepads();
+    this.startPolling();
 
     window.addEventListener("gamepadconnected", (event: GamepadEvent) => {
       const gamepad = this.createGamepadDevice(event.gamepad);
@@ -74,16 +78,37 @@ export class GamepadManager {
 
     window.addEventListener("gamepaddisconnected", (event: GamepadEvent) => {
       const gamepad = this._gamepads.find(
-        (gp) => gp.index === event.gamepad.index,
+        (gp) => gp.gamepad.index === event.gamepad.index,
       );
       if (gamepad) {
         this.onGamepadDisconnected.emit(gamepad);
         this._gamepads = this._gamepads.filter(
-          (gp) => gp.index !== event.gamepad.index,
+          (gp) => gp.gamepad.index !== event.gamepad.index,
         );
         gamepad.destroy();
       }
     });
+  }
+
+  private startPolling(): void {
+    if (this._isPolling) return;
+    this._isPolling = true;
+    this.poll();
+  }
+
+  private stopPolling(): void {
+    this._isPolling = false;
+    if (this._animationFrameId !== null) {
+      cancelAnimationFrame(this._animationFrameId);
+      this._animationFrameId = null;
+    }
+  }
+
+  private poll(): void {
+    if (!this._isPolling) return;
+
+    this.updateGamepadStates();
+    this._animationFrameId = requestAnimationFrame(() => this.poll());
   }
 
   private initializeConnectedGamepads(): void {
@@ -100,9 +125,9 @@ export class GamepadManager {
 
   private createGamepadDevice(gamepad: Gamepad): GamepadDevice {
     if (this.isXboxGamepad(gamepad)) {
-      return new XboxGamepad(gamepad.index);
+      return new XboxGamepad(gamepad);
     }
-    return new GamepadDevice(gamepad.index);
+    return new GamepadDevice(gamepad);
   }
 
   private isXboxGamepad(gamepad: Gamepad): boolean {
@@ -115,17 +140,24 @@ export class GamepadManager {
   }
 
   /**
+   * Gets fresh gamepad state from the browser API and updates all device states
+   * @private
+   */
+  private updateGamepadStates(): void {
+    const freshGamepads = Array.from(navigator.getGamepads());
+    this._gamepads.forEach((device) => {
+      const freshGamepad = freshGamepads[device.gamepad.index];
+      if (freshGamepad) {
+        device.pollGamepadOnce(freshGamepad);
+      }
+    });
+  }
+
+  /**
    * Gets all currently connected gamepad devices.
    * This includes both generic and Xbox-specific gamepads.
    *
    * @returns {GamepadDevice[]} An array of all connected gamepad devices
-   * @example
-   * ```typescript
-   * const gamepads = gamepadManager.getAllGamepads();
-   * gamepads.forEach(gamepad => {
-   *   console.log(`Gamepad ${gamepad.index} is connected`);
-   * });
-   * ```
    */
   public getAllGamepads(): GamepadDevice[] {
     return this._gamepads;
@@ -150,5 +182,11 @@ export class GamepadManager {
     return this._gamepads.filter(
       (gamepad): gamepad is XboxGamepad => gamepad instanceof XboxGamepad,
     );
+  }
+
+  public destroy(): void {
+    this.stopPolling();
+    this._gamepads.forEach((gamepad) => gamepad.destroy());
+    this._gamepads = [];
   }
 }

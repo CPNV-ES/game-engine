@@ -76,8 +76,8 @@ export class XboxGamepad extends GamepadDevice {
   private static readonly AXIS_RIGHT_STICK_X = 2;
   private static readonly AXIS_RIGHT_STICK_Y = 3;
 
-  constructor(index: number) {
-    super(index);
+  constructor(gamepad: Gamepad) {
+    super(gamepad);
 
     this.onButtonDown.addObserver((buttonIndex: number) => {
       this.handleButtonDown(buttonIndex);

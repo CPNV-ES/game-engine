@@ -39,58 +39,37 @@ export class GamepadDevice extends Device {
    * It is the index of the gamepad in the array returned by navigator.getGamepads().
    * @type {number}
    */
-  public index: number;
+  public gamepad: Gamepad;
 
   private _buttonStates: boolean[] = [];
   private _axisStates: number[] = [];
-  private _isPolling: boolean = false;
   private _isPollingInProgress: boolean = false;
-  private _animationFrameId: number | null = null;
 
-  constructor(index: number) {
+  constructor(gamepad: Gamepad) {
     super();
-    this.index = index;
-
-    this.startPolling();
+    this.gamepad = gamepad;
   }
 
   /**
-   * Start polling the gamepad state.
-   * This will continuously check for button and axis changes.
-   * @returns {void}
+   * Get the index of the gamepad
    */
-  public startPolling(): void {
-    if (this._isPolling) return;
-    this._isPolling = true;
-    this.pollGamepad();
+  public get index(): number {
+    return this.gamepad.index;
   }
 
   /**
-   * Stop polling the gamepad state.
-   * This will stop checking for button and axis changes.
-   * @returns {void}
+   * Updates the gamepad state with fresh data and emits events for changes
+   * @param freshGamepad The fresh gamepad state from GamepadManager
    */
-  public stopPolling(): void {
-    this._isPolling = false;
-    if (this._animationFrameId !== null) {
-      cancelAnimationFrame(this._animationFrameId);
-      this._animationFrameId = null;
-    }
-  }
-
-  /**
-   * Manually poll the gamepad state once.
-   * This will check for button and axis changes exactly one time.
-   * @returns {void}
-   */
-  public pollGamepadOnce(): void {
+  public pollGamepadOnce(freshGamepad: Gamepad): void {
     if (this._isPollingInProgress) return;
 
     this._isPollingInProgress = true;
     try {
-      const gamepad: Gamepad | null = navigator.getGamepads()[this.index];
-      if (gamepad) {
-        gamepad.buttons.forEach(
+      if (freshGamepad && freshGamepad.connected) {
+        this.gamepad = freshGamepad;
+
+        freshGamepad.buttons.forEach(
           (button: GamepadButton, index: number): void => {
             const wasPressed = this._buttonStates[index] || false;
             const isPressed = button.pressed;
@@ -106,9 +85,9 @@ export class GamepadDevice extends Device {
           },
         );
 
-        for (let i: number = 0; i < gamepad.axes.length; i += 2) {
-          const xValue: number = gamepad.axes[i];
-          const yValue: number = gamepad.axes[i + 1];
+        for (let i: number = 0; i < freshGamepad.axes.length; i += 2) {
+          const xValue: number = freshGamepad.axes[i];
+          const yValue: number = freshGamepad.axes[i + 1];
           if (
             xValue !== this._axisStates[i] ||
             yValue !== this._axisStates[i + 1]
@@ -124,19 +103,12 @@ export class GamepadDevice extends Device {
     }
   }
 
-  private pollGamepad(): void {
-    if (!this._isPolling) return;
-
-    this.pollGamepadOnce();
-    this._animationFrameId = requestAnimationFrame(() => this.pollGamepad());
-  }
-
   /**
    * Stops polling the gamepad.
    * It should be called when the gamepad is disconnected.
    * @returns {void}
    */
   public destroy(): void {
-    this.stopPolling();
+    // Clean up any resources if needed
   }
 }
