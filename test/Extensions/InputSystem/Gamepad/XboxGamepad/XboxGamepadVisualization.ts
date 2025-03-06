@@ -5,25 +5,26 @@ import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 import { TextRenderBehavior } from "@extensions/RenderEngine/Text/TextRenderBehavior.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import {
-  ButtonLabel,
-  TriggerLabel,
-  StickLabel,
   GAMEPAD_COLORS,
-  FONT_PATH,
-} from "./types";
-import { ButtonStatus } from "./ButtonStatus";
-import { TriggerStatus } from "./TriggerStatus";
-import { StickStatus } from "./StickStatus";
-import { DPadStatus } from "./DPadStatus";
+  GamepadConfig,
+  DEFAULT_GAMEPAD_CONFIG,
+} from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/config.ts";
+import { ButtonStatus } from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/ButtonStatus.ts";
+import { TriggerStatus } from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/TriggerStatus.ts";
+import { StickStatus } from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/StickStatus.ts";
+import { DPadStatus } from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/DPadStatus.ts";
 
 export class XboxGamepadVisualization {
   private container: GameObject;
+  private config: GamepadConfig;
 
   constructor(
     private gamepad: XboxGamepad,
     private renderComponent: RenderGameEngineComponent,
     private gameEngineWindow: GameEngineWindow,
+    config?: Partial<GamepadConfig>,
   ) {
+    this.config = { ...DEFAULT_GAMEPAD_CONFIG, ...config };
     this.container = this.createContainer();
     this.initialize();
   }
@@ -45,78 +46,73 @@ export class XboxGamepadVisualization {
   private createTitle(): void {
     const titleGo = new GameObject("Title");
     this.container.addChild(titleGo);
-    titleGo.transform.position = new Vector2(0, 2);
+    titleGo.transform.position = new Vector2(
+      this.config.title.position.x,
+      this.config.title.position.y,
+    );
 
-    const titleText = new TextRenderBehavior(this.renderComponent, FONT_PATH);
-    titleText.text = "Xbox Controller";
+    const titleText = new TextRenderBehavior(
+      this.renderComponent,
+      this.config.fontPath,
+    );
+    titleText.text = this.config.title.text;
     titleText.color = [
       GAMEPAD_COLORS.WHITE.r,
       GAMEPAD_COLORS.WHITE.g,
       GAMEPAD_COLORS.WHITE.b,
       GAMEPAD_COLORS.WHITE.a,
     ];
-    titleText.pixelScale = 1 / 128;
-    titleText.centered = true;
+    titleText.pixelScale = this.config.title.style.pixelScale;
+    titleText.centered = this.config.title.style.centered;
     titleGo.addBehavior(titleText);
   }
 
   private createButtons(): void {
-    const buttons: ButtonLabel[] = [
-      "A",
-      "B",
-      "X",
-      "Y",
-      "LB",
-      "RB",
-      "Start",
-      "Back",
-      "Xbox",
-    ];
-    const offsets = [0.6, 0.4, 0.2, 0.0, -0.2, -0.4, 1.0, 0.8, -1.6];
-
-    buttons.forEach((label, index) => {
+    this.config.buttons.forEach(({ label, offset }) => {
       new ButtonStatus(
         this.container,
         this.renderComponent,
         this.gamepad,
         label,
-        offsets[index],
+        offset,
+        this.config,
       );
     });
   }
 
   private createTriggers(): void {
-    const triggers: TriggerLabel[] = ["LT", "RT"];
-    const offsets = [-0.6, -0.8];
-
-    triggers.forEach((label, index) => {
+    this.config.triggers.forEach(({ label, offset }) => {
       new TriggerStatus(
         this.container,
         this.renderComponent,
         this.gamepad,
         label,
-        offsets[index],
+        offset,
+        this.config,
       );
     });
   }
 
   private createSticks(): void {
-    const sticks: StickLabel[] = ["Left", "Right"];
-    const offsets = [-1.2, -1];
-
-    sticks.forEach((side, index) => {
+    this.config.sticks.forEach(({ label, offset }) => {
       new StickStatus(
         this.container,
         this.renderComponent,
         this.gamepad,
-        side,
-        offsets[index],
+        label,
+        offset,
+        this.config,
       );
     });
   }
 
   private createDPad(): void {
-    new DPadStatus(this.container, this.renderComponent, this.gamepad);
+    new DPadStatus(
+      this.container,
+      this.renderComponent,
+      this.gamepad,
+      this.config,
+    );
   }
 
   public destroy(): void {

@@ -1,8 +1,14 @@
 import { GameObject } from "@core/GameObject.ts";
 import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
-import { DPadDirection, GAMEPAD_COLORS } from "./types";
-import { UIGamepadDebugger } from "./UIGamepadDebugger";
+import {
+  DPadDirection,
+  GAMEPAD_COLORS,
+  GamepadConfig,
+  DEFAULT_GAMEPAD_CONFIG,
+} from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/config.ts";
+import { UIGamepadDebugger } from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/UIGamepadDebugger.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 export class DPadStatus extends UIGamepadDebugger {
   private activeDirections: Set<DPadDirection>;
@@ -11,8 +17,15 @@ export class DPadStatus extends UIGamepadDebugger {
     container: GameObject,
     renderComponent: RenderGameEngineComponent,
     private gamepad: XboxGamepad,
+    config: GamepadConfig = DEFAULT_GAMEPAD_CONFIG,
   ) {
-    super(container, "DPadStatus", { x: -0.5, y: -1.4 }, renderComponent);
+    super(
+      container,
+      "DPadStatus",
+      new Vector2(config.dpad.position.x, config.dpad.position.y),
+      renderComponent,
+      config,
+    );
     this.activeDirections = new Set();
     this.initializeDPad();
   }
@@ -52,9 +65,7 @@ export class DPadStatus extends UIGamepadDebugger {
   }
 
   private subscribeToEvents(): void {
-    const directions: DPadDirection[] = ["Up", "Right", "Down", "Left"];
-
-    directions.forEach((dir) => {
+    this.config.dpad.directions.forEach((dir) => {
       this.gamepad[`onDPad${dir}Down`].addObserver(() => {
         this.activeDirections.add(dir);
         this.updateDisplay(Array.from(this.activeDirections));

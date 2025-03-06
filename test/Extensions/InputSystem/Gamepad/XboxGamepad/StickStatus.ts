@@ -1,7 +1,7 @@
 import { GameObject } from "@core/GameObject.ts";
 import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
-import { StickLabel, GAMEPAD_COLORS, STICK_DEADZONE } from "./types";
+import { StickLabel, GAMEPAD_COLORS, STICK_DEADZONE } from "./config";
 import { UIGamepadDebugger } from "./UIGamepadDebugger";
 
 export class StickStatus extends UIGamepadDebugger {

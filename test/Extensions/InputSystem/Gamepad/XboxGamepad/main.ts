@@ -6,7 +6,8 @@ import { GamepadManager } from "@extensions/InputSystem/GamepadManager.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
-import { XboxGamepadVisualization } from "./XboxGamepadVisualization";
+import { XboxGamepadVisualization } from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/XboxGamepadVisualization.ts";
+import { GamepadConfig } from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/config.ts";
 
 class GamepadApp {
   private visualization: XboxGamepadVisualization | null = null;
@@ -15,6 +16,7 @@ class GamepadApp {
     private gamepadManager: GamepadManager,
     private renderComponent: RenderGameEngineComponent,
     private gameEngineWindow: GameEngineWindow,
+    private config?: Partial<GamepadConfig>,
   ) {
     this.initialize();
   }
@@ -33,6 +35,7 @@ class GamepadApp {
         xboxGamepad,
         this.renderComponent,
         this.gameEngineWindow,
+        this.config,
       );
     } else if (!xboxGamepad && this.visualization) {
       this.visualization.destroy();
@@ -49,6 +52,7 @@ class GamepadApp {
           gamepad,
           this.renderComponent,
           this.gameEngineWindow,
+          this.config,
         );
       }
     });
@@ -62,7 +66,6 @@ class GamepadApp {
   }
 }
 
-// Application entry point
 const canvas = document.querySelector<HTMLCanvasElement>("#app")!;
 const gameEngineWindow = Sprunk.newGame(canvas, true, [
   "RenderGameEngineComponent",
@@ -72,7 +75,6 @@ const renderComponent = gameEngineWindow.getEngineComponent(
 )!;
 const gamepadManager = new GamepadManager();
 
-// Create camera
 const cameraGo = new GameObject("Camera");
 const camera = new Camera(renderComponent, Math.PI / 4);
 cameraGo.addBehavior(camera);
@@ -80,5 +82,4 @@ cameraGo.transform.position = new Vector2(0, 0);
 cameraGo.transform.scale = new Vector2(1.0, 1.0);
 gameEngineWindow.root.addChild(cameraGo);
 
-// Initialize the application
 new GamepadApp(gamepadManager, renderComponent, gameEngineWindow);

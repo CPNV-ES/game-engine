@@ -2,8 +2,11 @@ import { GameObject } from "@core/GameObject.ts";
 import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
 import { TextRenderBehavior } from "@extensions/RenderEngine/Text/TextRenderBehavior.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
-import { FONT_PATH } from "./types";
-import { Color } from "@extensions/RenderEngine/Color";
+import {
+  GamepadConfig,
+  DEFAULT_GAMEPAD_CONFIG,
+} from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/config.ts";
+import { Color } from "@extensions/RenderEngine/Color.ts";
 
 export abstract class UIGamepadDebugger {
   protected gameObject: GameObject;
@@ -14,14 +17,15 @@ export abstract class UIGamepadDebugger {
     name: string,
     position: Vector2,
     renderComponent: RenderGameEngineComponent,
+    protected config: GamepadConfig = DEFAULT_GAMEPAD_CONFIG,
   ) {
     this.gameObject = new GameObject(name);
     container.addChild(this.gameObject);
     this.gameObject.transform.position = position;
 
-    this.text = new TextRenderBehavior(renderComponent, FONT_PATH);
-    this.text.color = [0.7, 0.7, 0.7, 1];
-    this.text.pixelScale = 1 / 256;
+    this.text = new TextRenderBehavior(renderComponent, this.config.fontPath);
+    this.text.color = this.config.textStyle.defaultColor;
+    this.text.pixelScale = this.config.textStyle.pixelScale;
     this.gameObject.addBehavior(this.text);
   }
 

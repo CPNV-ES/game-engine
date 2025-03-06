@@ -3,36 +3,57 @@ import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEn
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 import { TextRenderBehavior } from "@extensions/RenderEngine/Text/TextRenderBehavior.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
-import { ButtonLabel, GAMEPAD_COLORS, FONT_PATH } from "./types";
-import { UIGamepadDebugger } from "./UIGamepadDebugger";
+import {
+  ButtonLabel,
+  GAMEPAD_COLORS,
+  GamepadConfig,
+  DEFAULT_GAMEPAD_CONFIG,
+  ButtonConfig,
+} from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/config.ts";
+import { UIGamepadDebugger } from "@test/Extensions/InputSystem/Gamepad/XboxGamepad/UIGamepadDebugger.ts";
 
 export class ButtonStatus extends UIGamepadDebugger {
+  private buttonConfig: ButtonConfig;
+
   constructor(
     container: GameObject,
     renderComponent: RenderGameEngineComponent,
     private gamepad: XboxGamepad,
     private label: ButtonLabel,
     yOffset: number,
+    config: GamepadConfig = DEFAULT_GAMEPAD_CONFIG,
   ) {
+    const buttonConfig = config.buttons.find((b) => b.label === label)!;
+
     super(
       container,
       `${label}Status`,
-      new Vector2(-0.5, yOffset),
+      new Vector2(
+        buttonConfig.position?.x ?? -0.5,
+        buttonConfig.position?.y ?? yOffset,
+      ),
       renderComponent,
+      config,
     );
+
+    this.buttonConfig = buttonConfig;
     this.initializeButton();
 
-    // Add warning message for Xbox button
-    if (this.label === "Xbox") {
+    if (this.buttonConfig.warning) {
       const warningGo = new GameObject("XboxWarning");
       container.addChild(warningGo);
-      warningGo.transform.position = new Vector2(-3.3, 1.7);
+      warningGo.transform.position = new Vector2(
+        this.buttonConfig.warning.position.x,
+        this.buttonConfig.warning.position.y,
+      );
 
-      const warningText = new TextRenderBehavior(renderComponent, FONT_PATH);
-      warningText.text =
-        "Note: Disable 'Open Game Bar using Xbox button' in Windows settings";
-      warningText.color = [1, 0.7, 0, 1];
-      warningText.pixelScale = 1 / 256;
+      const warningText = new TextRenderBehavior(
+        renderComponent,
+        this.config.fontPath,
+      );
+      warningText.text = this.buttonConfig.warning.text;
+      warningText.color = this.buttonConfig.warning.color;
+      warningText.pixelScale = this.buttonConfig.warning.pixelScale;
       warningGo.addBehavior(warningText);
     }
   }
