@@ -12,8 +12,8 @@ import { ArrayUtility } from "@core/Utilities/ArrayUtility.ts";
  * A unique game engine component responsible for handling the physics of the game at runtime. (works by Tick)
  */
 export class PhysicsGameEngineComponent extends GameEngineComponent {
-  rootObject: GameObject;
-  satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
+  public rootObject: GameObject;
+  public satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
   private _ticker: Ticker;
   private _collidersCollisions: Map<Collider, Collision[]> = new Map();
 
