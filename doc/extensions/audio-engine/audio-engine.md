@@ -41,6 +41,9 @@ Load an audio file from a URL:
 
 ```typescript
 await audioBehavior.setAudio('./Assets/background_music.ogg');
+// OR
+await audioBehavior.play('./Assets/background_music.ogg');
+// this only works if the audio hasn't been set yet
 ```
 
 ### **Playback Control**
@@ -134,7 +137,7 @@ console.log(`Current timestamp: ${audioBehavior.getTimestamp()}`);
 | Method               | Description                                                                 |
 |----------------------|-----------------------------------------------------------------------------|
 | `setAudio(url)`      | Loads and decodes an audio file from the specified URL.                     |
-| `play()`             | Starts or resumes audio playback.                                           |
+| `play()`             | Starts or resumes audio playback, if url is passed for an audio, it also sets the audio before playing it.                                           |
 | `pause()`            | Pauses audio playback.                                                      |
 | `stop()`             | Stops audio playback and resets the state.                                  |
 | `setVolume(volume)`  | Sets the volume (clamped between 0 and 1).                                  |
@@ -154,8 +157,69 @@ The class throws errors in the following scenarios:
 - **`setPitch`**: Fails if the audio source is not set.
 - **`setLoop`**: Fails if the audio source is not set.
 
+--- 
+
+## **Implementation**
+
+The `AudioBehavior` class is implemented using the Web Audio API. It uses an `AudioContext` to manage audio playback and decoding. The class encapsulates the audio buffer, source, and other properties required for audio playback.
+
+The issue that `AudioContext` class solves is the playback, but it's very minimalistic. For example, it can't handle multiple sources as a class. Instead the solution to that issue is to create a new instance of `AudioContext` for each source. This is a limitation of the Web Audio API itself.
+
+
+### **Calculate timestamp**
+```typescript
+  private storePlaybackHistory(playbackRate: number): void {
+    this.playbackHistory.push({
+      timestamp: this.audioContext.currentTime,
+      playbackRate,
+    });
+  }
+```
+```typescript
+  private getSegmentDurationMs(
+    playbackRate: number,
+    from: number,
+    to: number,
+  ): number {
+    return (to - from) * playbackRate;
+  }
+```
+```typescript
+  public getTimestamp(): number {
+    let duration: number = 0;
+
+    if (this.playbackHistory.length <= 0) return 0;
+    for (let i = 0; i < this.playbackHistory.length - 1; i++) {
+      duration += this.getSegmentDurationMs(
+        this.playbackHistory[i].playbackRate,
+        this.playbackHistory[i].timestamp,
+        this.playbackHistory[i + 1].timestamp,
+      );
+    }
+    duration += this.getSegmentDurationMs(
+      this.playbackHistory[this.playbackHistory.length - 1].playbackRate,
+      this.playbackHistory[this.playbackHistory.length - 1].timestamp,
+      this.audioContext.currentTime,
+    );
+    return duration % this.audioBuffer!.duration;
+  }
+```
+
+getTimeStamp returns the current playback timestamp. It doesn't represent the actual time that has passed, but rather the playback position in the sound file. It considers pauses and pitch changes.
+
+It works by saving the pitch and timestamp in an array. In every playback it logs the history. For pauses it sets pitch at 0 making it easier to calculate timestamp since time passed paused multiplied by 0 is 0.
+
+Since loop is just playing and the time just continues to count, we have to use modulo to get the timestamp.
+
 ---
 
-## **Summary**
+## **External Classes Used in `AudioBehavior`**
 
-The `AudioBehavior` class provides a robust and easy-to-use interface for managing audio playback in a game engine. It supports loading audio files, controlling playback, adjusting volume and pitch, enabling looping, and tracking playback history. The example above demonstrates how to integrate this class into a game engine for background music or sound effects.
+| **Class Name**             | **Description**                                                                 | **MDN Documentation**                                                                 |
+|----------------------------|---------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| **`AudioContext`**         | Represents an audio-processing graph. It is used to manage and play audio.      | [MDN: AudioContext](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)   |
+| **`GainNode`**             | Controls the volume of audio signals. It is used to adjust the gain (volume).    | [MDN: GainNode](https://developer.mozilla.org/en-US/docs/Web/API/GainNode)           |
+| **`AudioBufferSourceNode`**| Represents an audio source from an in-memory audio buffer. Used for playback.    | [MDN: AudioBufferSourceNode](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode) |
+| **`AudioBuffer`**          | Represents an in-memory audio resource. It stores decoded audio data.            | [MDN: AudioBuffer](https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer)      |
+| **`AudioParam`**           | Represents an audio-related parameter (e.g., playback rate, gain).               | [MDN: AudioParam](https://developer.mozilla.org/en-US/docs/Web/API/AudioParam)        |
+| **`fetch`**                | A global function for making HTTP requests. Used to load audio files.            | [MDN: fetch](https://developer.mozilla.org/en-US/docs/Web/API/fetch)                  |
