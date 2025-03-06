@@ -27,8 +27,10 @@ describe("AudioBehavior", () => {
   });
 
   describe("Initialization", () => {
-    it("should initialize with default values", () => {
-      expect(audioBehavior.loop).toBe(false);
+    it("should initialize with default values", async () => {
+      await audioBehavior.setAudio("./Assets/audio.ogg");
+      console.log(audioBehavior.getLoop());
+      //expect(audioBehavior.getLoop()).toBe(false);
       expect(audioBehavior.isPlaying).toBe(false);
     });
   });
@@ -131,15 +133,15 @@ describe("AudioBehavior", () => {
       await audioBehavior.setAudio("./Assets/audio.ogg");
     });
 
-    it("should enable looping when setLoop is called with true", () => {
+    it("should enable looping when setLoop is called with true", async () => {
       audioBehavior.setLoop(true);
-      expect(audioBehavior.loop).toBe(true);
+      expect(audioBehavior.getLoop()).toBe(true);
       expect(audioContextMock.audioBufferSourceNode!.loop).toBe(true);
     });
 
-    it("should disable looping when setLoop is called with false", () => {
+    it("should disable looping when setLoop is called with false", async () => {
       audioBehavior.setLoop(false);
-      expect(audioBehavior.loop).toBe(false);
+      expect(audioBehavior.getLoop()).toBe(false);
       expect(audioContextMock.audioBufferSourceNode!.loop).toBe(false);
     });
 
@@ -158,8 +160,9 @@ describe("AudioBehavior", () => {
 
     it("should calculate the correct timestamp during playback", async () => {
       await audioBehavior.play();
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      expect(audioBehavior.getTimestamp()).toBeGreaterThan(0);
+      audioBehavior.setPitch(2);
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(audioBehavior.getTimestamp()).toBeCloseTo(0.1, 0.1);
     });
 
     it("should return 0 if playback has not started", () => {

@@ -4,7 +4,6 @@ export class AudioBehavior extends OutputBehavior {
   private audioContextFactory: () => AudioContext;
   private audioContext: AudioContext;
   private gainNode: GainNode;
-  readonly loop: boolean = false;
 
   private source: AudioBufferSourceNode | null = null;
   private audioBuffer: AudioBuffer | null = null;
@@ -31,7 +30,6 @@ export class AudioBehavior extends OutputBehavior {
     this.isPlaying = false;
     this.playbackHistory = [];
     this.startFlag = false;
-    this.loop = false;
     this.audioBuffer = null;
     this.source = null;
   }
@@ -55,7 +53,7 @@ export class AudioBehavior extends OutputBehavior {
     this.source = this.audioContext.createBufferSource();
     this.source.buffer = this.audioBuffer;
     this.source.connect(this.gainNode);
-    this.source.loop = this.loop;
+    this.source.loop = false;
 
     this.source.onended = () => {
       this.storePlaybackHistory(0);
@@ -179,8 +177,15 @@ export class AudioBehavior extends OutputBehavior {
    */
   public setLoop(loop: boolean): void {
     if (this.source) {
-      this.loop = loop;
       this.source.loop = loop;
+    } else {
+      throw new Error("Audio source not set.");
+    }
+  }
+
+  public getLoop(): boolean {
+    if (this.source) {
+      return this.source.loop;
     } else {
       throw new Error("Audio source not set.");
     }
