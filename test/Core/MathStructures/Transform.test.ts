@@ -197,35 +197,14 @@ describe("Transform", (): void => {
       expect(rotatedForward.z).toBeCloseTo(0);
     });
 
-    it("should rotate forward vector correctly with 90° yaw then 45° pitch rotation", () => {
-      const quaternion = Quaternion.fromEulerAngles(
-        0,
-        Math.PI / 2,
-        Math.PI / 4,
-      );
+    it("should rotate forward vector correctly with 90° yaw rotation then 45° pitch", () => {
+      const quaternion = Quaternion.identity();
+      quaternion.rotateAroundAxis(Vector3.up(), Math.PI / 2);
+      quaternion.rotateAroundAxis(Vector3.right(), Math.PI / 4);
       const forward = new Vector3(0, 0, 1);
       const rotatedForward = forward.rotate(quaternion);
 
-      expect(rotatedForward.x).toBeCloseTo(1 / Math.sqrt(2));
-      expect(rotatedForward.y).toBeCloseTo(-(1 / Math.sqrt(2)));
-      expect(rotatedForward.z).toBeCloseTo(0);
-    });
-
-    it("should rotate forward vector correctly with 90° yaw then 45° pitch rotation", () => {
-      // Create a quaternion for 90° yaw (Y-axis)
-      const yawQuaternion = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
-
-      // Create a quaternion for 45° pitch (X-axis)
-      const pitchQuaternion = Quaternion.fromEulerAngles(Math.PI / 4, 0, 0);
-
-      // Combine the rotations: pitch * yaw
-      const quaternion = yawQuaternion.multiply(pitchQuaternion);
-
-      // Rotate the forward vector
-      const forward = new Vector3(0, 0, 1);
-      const rotatedForward = forward.rotate(quaternion);
-
-      // Verify the result
+      console.log(rotatedForward);
       expect(rotatedForward.x).toBeCloseTo(1 / Math.sqrt(2));
       expect(rotatedForward.y).toBeCloseTo(-(1 / Math.sqrt(2)));
       expect(rotatedForward.z).toBeCloseTo(0);
