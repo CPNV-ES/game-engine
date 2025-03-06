@@ -1,5 +1,10 @@
 import { OutputBehavior } from "@core/OutputBehavior.ts";
 
+/**
+ * AudioBehavior is a behavior that allows for the playback of audio files for a game object.
+ * It uses the Web Audio API to play audio files.
+ * @extends OutputBehavior
+ */
 export class AudioBehavior extends OutputBehavior {
   private audioContextFactory: () => AudioContext;
   private audioContext: AudioContext;
