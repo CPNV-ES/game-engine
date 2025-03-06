@@ -143,41 +143,6 @@ const [leftX, leftY] = xbox.getLeftStickPosition();
 const [rightX, rightY] = xbox.getRightStickPosition();
 ```
 
-## Input Mappings
-
-### Button Mappings
-
-For Xbox controllers, the following button indices are used:
-
-```typescript
-A Button: 0
-B Button: 1
-X Button: 2
-Y Button: 3
-Left Bumper: 4
-Right Bumper: 5
-Back Button: 8
-Start Button: 9
-Left Stick Button: 10
-Right Stick Button: 11
-D-Pad Up: 12
-D-Pad Down: 13
-D-Pad Left: 14
-D-Pad Right: 15
-Xbox Button: 16
-```
-
-### Axis Mappings
-
-```typescript
-Left Stick X: 0
-Left Stick Y: 1
-Right Stick X: 2
-Right Stick Y: 3
-Left Trigger: 4
-Right Trigger: 5
-```
-
 ## Example Implementation
 
 Here's a complete example showing how to visualize gamepad input:
