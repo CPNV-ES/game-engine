@@ -23,8 +23,8 @@
     "types": ["@webgpu/types"],
     "baseUrl": ".",
     "paths": {
-      "@core/*": ["./src/core/*"],
-      "@extensions/*": ["./src/extensions/*"],
+      "@core/*": ["./src/Core/*"],
+      "@extensions/*": ["./src/Extensions/*"],
       "@test/*": ["./test/*"]
     }
   },
