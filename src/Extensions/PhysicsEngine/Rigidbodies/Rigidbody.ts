@@ -1,7 +1,7 @@
-import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
-import { Collider } from "../Colliders/Collider.ts";
-import { Collision } from "../Colliders/Collision.ts";
-import { LogicBehavior } from "../../../Core/LogicBehavior.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
+import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
+import { LogicBehavior } from "@core/LogicBehavior.ts";
 
 export class Rigidbody extends LogicBehavior<void> {
   public velocity: Vector2 = new Vector2(0, 0);

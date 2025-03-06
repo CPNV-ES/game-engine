@@ -1,5 +1,5 @@
-import { Vector2 } from "../../../Core/MathStructures/Vector2.ts";
-import { Collider } from "./Collider.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
 
 export class Collision {
   private _depth: number;
