@@ -10,12 +10,10 @@ import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior.ts";
 import { Color } from "@extensions/RenderEngine/Color.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
-import { Quaternion } from "@core/MathStructures/Quaternion.ts";
 import { ObjLoader } from "@extensions/RenderEngine/MeshBased/ObjLoader.ts";
 import { MeshRenderBehavior } from "@extensions/RenderEngine/MeshBased/MeshRenderBehavior.ts";
 import BasicVertexMVPWithUV from "@extensions/RenderEngine/BasicShaders/BasicVertexMVPWithUVAndNormals.vert.wgsl?raw";
 import BasicTextureSample from "@extensions/RenderEngine/BasicShaders/BasicTextureSample-OpenGL-Like.frag.wgsl?raw";
-import { Vector3 } from "@core/MathStructures/Vector3.ts";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -102,29 +100,3 @@ ObjLoader.load("/test/CommonResources/gizmo.obj").then((obj) => {
     ),
   );
 });
-
-// Create a quaternion for 90° yaw (Y-axis)
-const yawQuaternion = Quaternion.fromEulerAngles(0, Math.PI / 2, 0);
-
-// Create a quaternion for 45° pitch (X-axis)
-//const pitchQuaternion = Quaternion.fromEulerAngles(Math.PI / 4, 0, 0);
-
-// Combine the rotations: pitch * yaw
-//const quaternion = yawQuaternion.multiply(pitchQuaternion);
-//gizmo.transform.rotation.rotateAroundAxis(new Vector3(0, 1, 0), Math.PI / 4);
-//gizmo.transform.rotation.rotateAroundAxis(new Vector3(1, 0, 0), Math.PI / 4);
-//gizmo.transform.rotation.rotateAroundAxis(new Vector3(0, 0, 1), Math.PI / 4);
-
-let i = 0;
-setInterval(() => {
-  gizmo.transform.rotation.setFromQuaternion(
-    Quaternion.fromAxisAngle(new Vector3(0, 1, 0), i).multiply(
-      Quaternion.fromAxisAngle(Vector3.right(), Math.PI / 4),
-    ),
-  );
-
-  //gizmo.transform.position.set(0, 0, 1);
-  gizmo.transform.position.set(0, 0, 1).rotate(gizmo.transform.rotation);
-
-  i += 0.05;
-}, 16);

@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { PolygonCollider } from "@extensions/PhysicsEngine/PolygonCollider.ts";
-import { Vector3 } from "@core/MathStructures/Vector3.ts";
+import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { GameObject } from "@core/GameObject.ts";
 import { Quaternion } from "@core/MathStructures/Quaternion";
@@ -21,7 +20,7 @@ describe("PolygonCollider", (): void => {
    * Tests if a polygonCollider can be successfully scaled.
    */
   it("should get a scaled polygonCollider without changing the original", () => {
-    gameObject.transform.scale = new Vector3(2, 3, 1);
+    gameObject.transform.scale.set(2, 3, 1);
 
     const transformedPolygonCollider =
       polygonCollider.getVerticesWithTransform();
@@ -58,8 +57,7 @@ describe("PolygonCollider", (): void => {
    * Tests if a polygonCollider can be successfully translated.
    */
   it("should get a translated polygonCollider without changing the original", () => {
-    const position = new Vector3(1, 2, 0);
-    gameObject.transform.position = position;
+    gameObject.transform.position.set(1, 2, 0);
 
     const transformedPolygonCollider =
       polygonCollider.getVerticesWithTransform();
@@ -67,8 +65,14 @@ describe("PolygonCollider", (): void => {
     expect(polygonCollider.vertices[0]).toBe(vertices[0]);
     expect(polygonCollider.vertices[1]).toBe(vertices[1]);
     expect(polygonCollider.vertices[2]).toBe(vertices[2]);
-    expect(transformedPolygonCollider[0]).toEqual(vertices[0].add(position));
-    expect(transformedPolygonCollider[1]).toEqual(vertices[1].add(position));
-    expect(transformedPolygonCollider[2]).toEqual(vertices[2].add(position));
+    expect(transformedPolygonCollider[0]).toEqual(
+      vertices[0].add(gameObject.transform.position.toVector2()),
+    );
+    expect(transformedPolygonCollider[1]).toEqual(
+      vertices[1].add(gameObject.transform.position.toVector2()),
+    );
+    expect(transformedPolygonCollider[2]).toEqual(
+      vertices[2].add(gameObject.transform.position.toVector2()),
+    );
   });
 });

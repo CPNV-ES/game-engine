@@ -14,10 +14,10 @@ import {
   GPURenderBundleEncoderDescriptor,
   GPUTextureFormat,
 } from "webgpu";
-import { Renderer } from "../../../src/Extensions/RenderEngine/Renderer";
-import { Camera } from "../../../src/Extensions/RenderEngine/Camera";
-import { Event } from "../../../src/Core/EventSystem/Event";
-import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
+import { Renderer } from "@extensions/RenderEngine/Renderer";
+import { Camera } from "@extensions/RenderEngine/Camera";
+import { Event } from "@core/EventSystem/Event";
+import { Vector2 } from "@core/MathStructures/Vector2";
 
 export class MockRenderer implements Renderer {
   /**

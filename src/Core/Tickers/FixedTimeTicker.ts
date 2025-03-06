@@ -24,6 +24,7 @@ export class FixedTimeTicker implements Ticker {
       this.onTick.emit(this._fixedTimeStep);
       this._timeAccumulator -= this._fixedTimeStep;
     }
+    this._lastTimestamp = timestamp;
     requestAnimationFrame((timestamp: number) => this.onFrame(timestamp));
   }
 }

@@ -88,8 +88,7 @@ export class Sprunk {
         inputComponent.addDevice(new Mouse());
         return inputComponent;
       case "PhysicsGameEngineComponent":
-        //TODO : Add fixed time ticker when physics has been merged
-        return new PhysicsGameEngineComponent();
+        return new PhysicsGameEngineComponent(fixedTicker);
       default:
         throw new Error(`Component ${componentName} does not exist.`);
     }

@@ -4,6 +4,9 @@ import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtilit
 import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
+/**
+ * A 3D camera class that manages projection, view transformations, and screen-to-world raycasting for a rendering engine.
+ */
 export class Camera extends OutputBehavior {
   private _fov: number; // Field of view in radians
   private _aspect: number; // Aspect ratio (width / height)

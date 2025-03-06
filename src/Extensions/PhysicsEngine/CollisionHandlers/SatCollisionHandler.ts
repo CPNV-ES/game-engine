@@ -1,8 +1,14 @@
-import { PolygonCollider } from "@extensions/PhysicsEngine/PolygonCollider.ts";
-import { Collider } from "@extensions/PhysicsEngine/Collider.ts";
+import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider.ts";
+import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { CollisionHandler } from "@extensions/PhysicsEngine/CollisionHandlers/CollisionHandler.ts";
+import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
 
+/**
+ * SatCollisionHandler class is a collision handler that uses the Separating Axis Theorem (SAT) to check for collisions
+ * Colliders MUST be convex!!
+ */
 export class SatCollisionHandler implements CollisionHandler {
   /**
    * Helper function to calculate projection of vertices onto an axis
@@ -35,11 +41,7 @@ export class SatCollisionHandler implements CollisionHandler {
     }, []);
   }
 
-  /** Check if two Colliders are colliding
-   * @param a
-   * @param b
-   */
-  public areColliding(a: Collider, b: Collider): boolean {
+  public areColliding(a: Collider, b: Collider): Collision | null {
     if (a instanceof PolygonCollider && b instanceof PolygonCollider) {
       return this.areCollidingPolygonToPolygon(a, b);
     }
@@ -54,7 +56,10 @@ export class SatCollisionHandler implements CollisionHandler {
   public areCollidingPolygonToPolygon(
     a: PolygonCollider,
     b: PolygonCollider,
-  ): boolean {
+  ): Collision | null {
+    let normal: Vector3 | undefined;
+    let depth: number | undefined;
+
     // Get transformed vertices
     const verticesA: Vector2[] = a.getVerticesWithTransform();
     const verticesB: Vector2[] = b.getVerticesWithTransform();
@@ -81,10 +86,37 @@ export class SatCollisionHandler implements CollisionHandler {
         projectionA.max < projectionB.min ||
         projectionB.max < projectionA.min
       ) {
-        return false;
+        return null;
+      }
+
+      // Resolve the depth of the collision
+      const axisDepth =
+        Math.min(projectionA.max, projectionB.max) -
+        Math.max(projectionA.min, projectionB.min);
+
+      // Keep the smallest depth and normal throughout the iterations
+      if (depth === undefined || axisDepth < depth) {
+        depth = axisDepth;
+        normal = axis.toVector3();
       }
     }
 
-    return true; // No separating axis found, polygons are colliding
+    depth! /= normal!.length;
+    normal = normal!.normalize();
+
+    // Calculate a vector from the center of A to the center of B
+    const worldCenterA: Vector3 = a
+      .getGravitationCenter()
+      .add(a.gameObject.transform.worldPosition);
+    const worldCenterB: Vector3 = b
+      .getGravitationCenter()
+      .add(b.gameObject.transform.worldPosition);
+
+    // Adjust the normal direction if necessary
+    if (worldCenterB.sub(worldCenterA).dotProduct(normal) < 0) {
+      normal = normal.scale(-1);
+    }
+
+    return new Collision(depth!, normal, a, b); // No separating axis found, polygons are colliding
   }
 }
