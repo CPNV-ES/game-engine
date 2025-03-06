@@ -19,7 +19,7 @@ class AudioBehavior {
   + constructor(audioContextFactory?: () => AudioContext)
   + reinitialize(): void
   + setAudio(audio: string): Promise<void>
-  + play(): Promise<void>
+  + play(audio: string | null): Promise<void>
   + pause(): Promise<void>
   + stop(): Promise<void>
   + setVolume(volume: number): void
