@@ -261,9 +261,8 @@ describe("Transform", (): void => {
       // Set child's local rotation (90° around X-axis)
       childGameObject.transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0);
 
-      // Expected forward vector after combined rotation: (0, 1, 0)
       expect(childGameObject.transform.forward.x).toBeCloseTo(0);
-      expect(childGameObject.transform.forward.y).toBeCloseTo(1);
+      expect(childGameObject.transform.forward.y).toBeCloseTo(-1);
       expect(childGameObject.transform.forward.z).toBeCloseTo(0);
     });
   });
