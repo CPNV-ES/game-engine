@@ -29,6 +29,7 @@ The system consists of three main components:
 
 1. `GamepadManager`: The central manager that handles gamepad connections and device creation
 
+   - Checks for already connected gamepads
    - Manages gamepad connections/disconnections
    - Creates appropriate device instances
    - Provides methods to access connected gamepads
