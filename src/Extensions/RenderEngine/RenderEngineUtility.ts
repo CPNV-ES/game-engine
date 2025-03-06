@@ -67,20 +67,20 @@ export class RenderEngineUtility {
     const m21 = 2 * (yz + xw);
     const m22 = 1 - 2 * (xx + yy);
 
-    // Construct the rotation matrix
+    // Construct the rotation matrix in column-major order! (OpenGL style)
     return new Float32Array([
       m00,
-      m01,
-      -m02,
-      0, // Flip Z-axis component signs
       m10,
-      m11,
-      -m12,
+      m20,
       0,
-      -m20,
-      -m21,
+      m01,
+      m11,
+      m21,
+      0,
+      m02,
+      m12,
       m22,
-      0, // Flip X and Y components of Z-axis
+      0,
       0,
       0,
       0,
