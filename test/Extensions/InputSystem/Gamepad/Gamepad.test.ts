@@ -9,7 +9,6 @@ describe("GamepadDevice", (): void => {
   let buttonDownCallback: Mock;
   let buttonUpCallback: Mock;
   let axisChangeCallback: Mock;
-  let mockRAF: Mock;
 
   beforeAll((): void => {
     InputUtility.mockWindowEventListeners();
@@ -25,7 +24,6 @@ describe("GamepadDevice", (): void => {
 
     expect(gamepad).toBeInstanceOf(GamepadDevice);
 
-    // Add observers
     gamepad.onButtonDown.addObserver(buttonDownCallback);
     gamepad.onButtonUp.addObserver(buttonUpCallback);
     gamepad.onAxisChange.addObserver(axisChangeCallback);
@@ -54,7 +52,6 @@ describe("GamepadDevice", (): void => {
   });
 
   it("should handle multiple simultaneous button presses", (): void => {
-    // Simulate pressing multiple buttons in quick succession
     InputUtility.triggerGamepadButtonDown(0);
     InputUtility.triggerGamepadButtonDown(1);
     InputUtility.triggerGamepadButtonDown(3);
@@ -73,10 +70,7 @@ describe("GamepadDevice", (): void => {
   });
 
   it("should handle multiple simultaneous axis movements", (): void => {
-    // Simulate moving both analog sticks simultaneously
-    // Left stick
     InputUtility.triggerGamepadAxisChange(0, 0.7, 0.7);
-    // Right stick
     InputUtility.triggerGamepadAxisChange(1, -0.7, -0.7);
 
     expect(axisChangeCallback).toHaveBeenCalledWith({
@@ -93,10 +87,10 @@ describe("GamepadDevice", (): void => {
 
     const gamepadInstance = navigator.getGamepads()[0];
     if (gamepadInstance) {
-      expect(gamepadInstance.axes[0]).toBe(0.7); // Left stick X
-      expect(gamepadInstance.axes[1]).toBe(0.7); // Left stick Y
-      expect(gamepadInstance.axes[2]).toBe(-0.7); // Right stick X
-      expect(gamepadInstance.axes[3]).toBe(-0.7); // Right stick Y
+      expect(gamepadInstance.axes[0]).toBe(0.7);
+      expect(gamepadInstance.axes[1]).toBe(0.7);
+      expect(gamepadInstance.axes[2]).toBe(-0.7);
+      expect(gamepadInstance.axes[3]).toBe(-0.7);
     }
   });
 });

@@ -103,15 +103,6 @@ export class XboxGamepad extends GamepadDevice {
     );
   }
 
-  /**
-   * Override reset to handle Xbox-specific states
-   */
-  protected reset(): void {
-    super.reset();
-    this.lastLeftTrigger = 0;
-    this.lastRightTrigger = 0;
-  }
-
   private handleButtonDown(buttonIndex: number): void {
     switch (buttonIndex) {
       case XboxGamepad.BUTTON_A:
@@ -373,7 +364,6 @@ export class XboxGamepad extends GamepadDevice {
    */
   public pollGamepadOnce(freshGamepad: Gamepad): void {
     if (!freshGamepad || !freshGamepad.connected) {
-      this.reset();
       return;
     }
 
