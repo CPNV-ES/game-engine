@@ -1,6 +1,7 @@
 import { Event } from "@core/EventSystem/Event.ts";
 import { GamepadDevice } from "@extensions/InputSystem/Gamepad.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
+import { AnimationFrameTimeTicker } from "@core/Tickers/AnimationFrameTimeTicker.ts";
 
 /**
  * GamepadManager is the central manager for handling gamepad input in browser-based games.
@@ -57,7 +58,8 @@ export class GamepadManager {
   private _gamepads: GamepadDevice[] = [];
 
   private _isPolling: boolean = false;
-  private _animationFrameId: number | null = null;
+  private _ticker: AnimationFrameTimeTicker | null = null;
+  private _tickerObserver: (() => void) | null = null;
 
   /**
    * Creates a new GamepadManager instance.
@@ -85,7 +87,7 @@ export class GamepadManager {
         this._gamepads = this._gamepads.filter(
           (gp) => gp.gamepad.index !== event.gamepad.index,
         );
-        gamepad.destroy();
+        this.destroy(gamepad);
       }
     });
   }
@@ -93,22 +95,18 @@ export class GamepadManager {
   private startPolling(): void {
     if (this._isPolling) return;
     this._isPolling = true;
-    this.poll();
+    this._ticker = new AnimationFrameTimeTicker();
+    this._tickerObserver = () => this.updateGamepadStates();
+    this._ticker.onTick.addObserver(this._tickerObserver);
   }
 
   private stopPolling(): void {
     this._isPolling = false;
-    if (this._animationFrameId !== null) {
-      cancelAnimationFrame(this._animationFrameId);
-      this._animationFrameId = null;
+    if (this._ticker && this._tickerObserver) {
+      this._ticker.onTick.removeObserver(this._tickerObserver);
+      this._ticker = null;
+      this._tickerObserver = null;
     }
-  }
-
-  private poll(): void {
-    if (!this._isPolling) return;
-
-    this.updateGamepadStates();
-    this._animationFrameId = requestAnimationFrame(() => this.poll());
   }
 
   private initializeConnectedGamepads(): void {
@@ -184,9 +182,8 @@ export class GamepadManager {
     );
   }
 
-  public destroy(): void {
+  public destroy(gamepad: GamepadDevice): void {
     this.stopPolling();
-    this._gamepads.forEach((gamepad) => gamepad.destroy());
-    this._gamepads = [];
+    this._gamepads = this._gamepads.filter((gp) => gp !== gamepad);
   }
 }

@@ -102,13 +102,4 @@ export class GamepadDevice extends Device {
       this._isPollingInProgress = false;
     }
   }
-
-  /**
-   * Stops polling the gamepad.
-   * It should be called when the gamepad is disconnected.
-   * @returns {void}
-   */
-  public destroy(): void {
-    // Clean up any resources if needed
-  }
 }
