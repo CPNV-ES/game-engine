@@ -13,6 +13,8 @@ These transformations are applied hierarchically, meaning child objects inherit 
 *Keep in mind that position, rotation and scale are readonly in the transform so the reference cannot change!*
 **This implies that you will be using in-place changing methods like .set or .rotateAroundAxis**
 
+![Right-handed coordinate system](img/coordinate-space.png)
+
 ## FAQ
 
 ### **Position**
