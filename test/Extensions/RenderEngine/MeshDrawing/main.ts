@@ -43,7 +43,7 @@ ObjLoader.load("/test/CommonResources/bust.obj").then((obj) => {
 go.transform.position.set(0.1, -0.2, 0);
 
 const cameraGo = new GameObject("Camera");
-cameraGo.transform.position.set(0, 0, 10);
+cameraGo.transform.position.set(0, 0, 3);
 cameraGo.addBehavior(new FreeLookCameraController());
 cameraGo.addBehavior(new FreeLookCameraKeyboardMouseInput(inputComponent));
 cameraGo.addBehavior(new Camera(renderComponent));
