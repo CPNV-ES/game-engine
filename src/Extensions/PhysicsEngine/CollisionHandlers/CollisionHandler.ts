@@ -13,5 +13,5 @@ export interface CollisionHandler {
   areColliding(
     a: Collider,
     b: Collider,
-  ): { depth: number; normal: Vector2 } | boolean;
+  ): { depth: number; normal: Vector2 } | null;
 }
