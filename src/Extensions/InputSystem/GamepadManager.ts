@@ -87,7 +87,6 @@ export class GamepadManager {
         this._gamepads = this._gamepads.filter(
           (gp) => gp.gamepad.index !== event.gamepad.index,
         );
-        this.destroy(gamepad);
       }
     });
   }
@@ -98,15 +97,6 @@ export class GamepadManager {
     this._ticker = new AnimationFrameTimeTicker();
     this._tickerObserver = () => this.updateGamepadStates();
     this._ticker.onTick.addObserver(this._tickerObserver);
-  }
-
-  private stopPolling(): void {
-    this._isPolling = false;
-    if (this._ticker && this._tickerObserver) {
-      this._ticker.onTick.removeObserver(this._tickerObserver);
-      this._ticker = null;
-      this._tickerObserver = null;
-    }
   }
 
   private initializeConnectedGamepads(): void {
@@ -142,12 +132,10 @@ export class GamepadManager {
    * @private
    */
   private updateGamepadStates(): void {
-    const freshGamepads = Array.from(navigator.getGamepads());
+    const freshGamepads = navigator.getGamepads();
     this._gamepads.forEach((device) => {
       const freshGamepad = freshGamepads[device.gamepad.index];
-      if (freshGamepad) {
-        device.pollGamepadOnce(freshGamepad);
-      }
+      device.pollGamepadOnce(freshGamepad || device.gamepad);
     });
   }
 
@@ -159,10 +147,5 @@ export class GamepadManager {
    */
   public getAllGamepads(): GamepadDevice[] {
     return this._gamepads;
-  }
-
-  public destroy(gamepad: GamepadDevice): void {
-    this.stopPolling();
-    this._gamepads = this._gamepads.filter((gp) => gp !== gamepad);
   }
 }

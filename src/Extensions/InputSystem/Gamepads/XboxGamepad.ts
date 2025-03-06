@@ -76,9 +76,18 @@ export class XboxGamepad extends GamepadDevice {
   private static readonly AXIS_RIGHT_STICK_X = 2;
   private static readonly AXIS_RIGHT_STICK_Y = 3;
 
+  private lastLeftTrigger: number = 0;
+  private lastRightTrigger: number = 0;
+
   constructor(gamepad: Gamepad) {
     super(gamepad);
+    this.setupEventHandlers();
+  }
 
+  /**
+   * Set up the event handlers for button and axis changes
+   */
+  private setupEventHandlers(): void {
     this.onButtonDown.addObserver((buttonIndex: number) => {
       this.handleButtonDown(buttonIndex);
     });
@@ -92,28 +101,15 @@ export class XboxGamepad extends GamepadDevice {
         this.handleAxisChange(index);
       },
     );
-
-    this.pollTriggers();
   }
 
-  private lastLeftTrigger = 0;
-  private lastRightTrigger = 0;
-
-  private pollTriggers(): void {
-    const leftTrigger = this.getLeftTriggerValue();
-    const rightTrigger = this.getRightTriggerValue();
-
-    if (leftTrigger !== this.lastLeftTrigger) {
-      this.onLeftTriggerChange.emit(leftTrigger);
-      this.lastLeftTrigger = leftTrigger;
-    }
-
-    if (rightTrigger !== this.lastRightTrigger) {
-      this.onRightTriggerChange.emit(rightTrigger);
-      this.lastRightTrigger = rightTrigger;
-    }
-
-    requestAnimationFrame(() => this.pollTriggers());
+  /**
+   * Override reset to handle Xbox-specific states
+   */
+  protected reset(): void {
+    super.reset();
+    this.lastLeftTrigger = 0;
+    this.lastRightTrigger = 0;
   }
 
   private handleButtonDown(buttonIndex: number): void {
@@ -369,5 +365,36 @@ export class XboxGamepad extends GamepadDevice {
    */
   public isBackButtonPressed(): boolean {
     return this.isButtonPressed(XboxGamepad.BUTTON_BACK);
+  }
+
+  /**
+   * Updates the gamepad state with fresh data and emits events for changes
+   * @param freshGamepad The fresh gamepad state from GamepadManager
+   */
+  public pollGamepadOnce(freshGamepad: Gamepad): void {
+    if (!freshGamepad || !freshGamepad.connected) {
+      this.reset();
+      return;
+    }
+
+    // Update the gamepad reference
+    this.gamepad = freshGamepad;
+
+    // Call base class polling
+    super.pollGamepadOnce(freshGamepad);
+
+    // Poll triggers
+    const leftTrigger = freshGamepad.buttons[6]?.value ?? 0;
+    const rightTrigger = freshGamepad.buttons[7]?.value ?? 0;
+
+    if (leftTrigger !== this.lastLeftTrigger) {
+      this.onLeftTriggerChange.emit(leftTrigger);
+      this.lastLeftTrigger = leftTrigger;
+    }
+
+    if (rightTrigger !== this.lastRightTrigger) {
+      this.onRightTriggerChange.emit(rightTrigger);
+      this.lastRightTrigger = rightTrigger;
+    }
   }
 }

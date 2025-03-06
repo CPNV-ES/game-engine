@@ -48,6 +48,16 @@ export class GamepadDevice extends Device {
   constructor(gamepad: Gamepad) {
     super();
     this.gamepad = gamepad;
+    this.reset();
+  }
+
+  /**
+   * Resets all internal states. Used when reconnecting or cleaning up.
+   */
+  protected reset(): void {
+    this._buttonStates = [];
+    this._axisStates = [];
+    this._isPollingInProgress = false;
   }
 
   /**
