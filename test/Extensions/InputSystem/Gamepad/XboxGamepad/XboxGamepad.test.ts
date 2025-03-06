@@ -24,7 +24,7 @@ describe("XboxGamepad B Button Events", (): void => {
     InputUtility.mockGamepadEventListeners();
     gamepadManager = new GamepadManager();
     InputUtility.triggerGamepadConnected();
-    gamepad = gamepadManager.getXboxGamepads()[0];
+    gamepad = gamepadManager.getAllGamepads()[0];
   });
 
   beforeEach((): void => {

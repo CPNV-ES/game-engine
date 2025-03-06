@@ -25,7 +25,7 @@ class GamepadApp {
   }
 
   private startGamepadPolling = (): void => {
-    const gamepads = this.gamepadManager.getXboxGamepads();
+    const gamepads = this.gamepadManager.getAllGamepads();
     const xboxGamepad = gamepads[0];
 
     if (xboxGamepad && !this.visualization) {

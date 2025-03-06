@@ -161,27 +161,6 @@ export class GamepadManager {
     return this._gamepads;
   }
 
-  /**
-   * Gets all connected Xbox gamepads.
-   * This method filters the connected gamepads to return only Xbox controllers.
-   *
-   * @returns {XboxGamepad[]} An array of all connected Xbox gamepads
-   * @example
-   * ```typescript
-   * const xboxGamepads = gamepadManager.getXboxGamepads();
-   * xboxGamepads.forEach(xbox => {
-   *   xbox.onAButtonDown.addObserver(() => {
-   *     console.log('A button pressed');
-   *   });
-   * });
-   * ```
-   */
-  public getXboxGamepads(): XboxGamepad[] {
-    return this._gamepads.filter(
-      (gamepad): gamepad is XboxGamepad => gamepad instanceof XboxGamepad,
-    );
-  }
-
   public destroy(gamepad: GamepadDevice): void {
     this.stopPolling();
     this._gamepads = this._gamepads.filter((gp) => gp !== gamepad);
