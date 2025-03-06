@@ -17,7 +17,7 @@ export class ButtonStatus extends UIComponent {
     super(
       container,
       `${label}Status`,
-      { x: -0.5, y: yOffset },
+      new Vector2(-0.5, yOffset),
       renderComponent,
     );
     this.initializeButton();
