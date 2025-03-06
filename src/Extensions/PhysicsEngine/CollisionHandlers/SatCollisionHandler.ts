@@ -40,7 +40,7 @@ export class SatCollisionHandler implements CollisionHandler {
     }, []);
   }
 
-  public areColliding(a: Collider, b: Collider): Collision | boolean {
+  public areColliding(a: Collider, b: Collider): Collision | null {
     if (a instanceof PolygonCollider && b instanceof PolygonCollider) {
       return this.areCollidingPolygonToPolygon(a, b);
     }
@@ -55,7 +55,7 @@ export class SatCollisionHandler implements CollisionHandler {
   public areCollidingPolygonToPolygon(
     a: PolygonCollider,
     b: PolygonCollider,
-  ): Collision | boolean {
+  ): Collision | null {
     let normal: Vector2;
     let depth: number;
 
@@ -85,7 +85,7 @@ export class SatCollisionHandler implements CollisionHandler {
         projectionA.max < projectionB.min ||
         projectionB.max < projectionA.min
       ) {
-        return false;
+        return;
       }
 
       // Resolve the depth of the collision

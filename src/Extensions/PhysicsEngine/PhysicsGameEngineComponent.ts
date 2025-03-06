@@ -59,11 +59,13 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     colliderB: PolygonCollider,
   ): void {
     // Check if the colliders are colliding
-    const collision: Collision | boolean =
-      this.satCollisionHandler.areColliding(colliderA, colliderB);
+    const collision: Collision | null = this.satCollisionHandler.areColliding(
+      colliderA,
+      colliderB,
+    );
 
     // Take action only if the colliders are colliding
-    if (typeof collision == "boolean") return;
+    if (!collision) return;
 
     // Create the temp "storage" for collisions
     this.setCollidersCollisionChildren(colliderA);
