@@ -1,11 +1,14 @@
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
 
+/**
+ * Represents a collision between two colliders from the POV of a collider.
+ */
 export class Collision {
-  private _depth: number;
-  private _normal: Vector2;
+  private _depth: number; // penetration depth between the colliders
+  private _normal: Vector2; // axis that represents the direction of the collision (always from otherCollider to currentCollider)
   private _currentCollider: Collider;
-  private _collidingWith: Collider;
+  private _otherCollider: Collider;
 
   public get depth(): number {
     return this._depth;
@@ -15,30 +18,30 @@ export class Collision {
     return this._normal;
   }
 
+  get otherCollider(): Collider {
+    return this._otherCollider;
+  }
+
   constructor(
     depth: number,
     normal: Vector2,
     currentCollider: Collider,
-    collidingWith: Collider,
+    otherCollider: Collider,
   ) {
     this._depth = depth;
     this._normal = normal;
     this._currentCollider = currentCollider;
-    this._collidingWith = collidingWith;
-  }
-
-  get collidingWith(): Collider {
-    return this._collidingWith;
+    this._otherCollider = otherCollider;
   }
 
   /**
-   * Get a computed opposite collision that matches the second collider involved
+   * Get a computed opposite collision that matches the second collider involved POV
    */
   public getOpposite() {
     return new Collision(
-      -this._depth,
-      this._normal,
-      this.collidingWith,
+      this._depth,
+      this._normal.clone().scale(-1),
+      this.otherCollider,
       this._currentCollider,
     );
   }

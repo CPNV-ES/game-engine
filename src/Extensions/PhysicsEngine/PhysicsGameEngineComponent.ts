@@ -8,6 +8,9 @@ import { SatCollisionHandler } from "@extensions/PhysicsEngine/CollisionHandlers
 import { Ticker } from "@core/Tickers/Ticker.ts";
 import { ArrayUtility } from "@core/Utilities/ArrayUtility.ts";
 
+/**
+ * A unique game engine component responsible for handling the physics of the game at runtime. (works by Tick)
+ */
 export class PhysicsGameEngineComponent extends GameEngineComponent {
   rootObject: GameObject;
   satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
@@ -47,7 +50,7 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   }
 
   /**
-   * Get all the colliders that are colliding with the given collider
+   * Store in "this._collidersCollisions" all the colliders that are colliding with the given collider
    * @param collider
    * @private
    */

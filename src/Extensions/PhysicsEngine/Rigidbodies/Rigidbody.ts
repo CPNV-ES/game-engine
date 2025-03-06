@@ -3,10 +3,13 @@ import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
 import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
 import { LogicBehavior } from "@core/LogicBehavior.ts";
 
+/**
+ * Rigibodies are physics handlers for game objects that have colliders
+ */
 export class Rigidbody extends LogicBehavior<void> {
-  public velocity: Vector2 = new Vector2(0, 0);
   public mass: number;
-  public restitution: number = 1;
+  public velocity: Vector2 = new Vector2(0, 0); // not implemented
+  public restitution: number = 1; // not implemented
   private _collider: Collider;
 
   public get collider(): Collider {
@@ -45,7 +48,7 @@ export class Rigidbody extends LogicBehavior<void> {
   public resolveCollision(collision: Collision) {
     const depth =
       (collision.depth * this.mass) /
-      (this.mass + collision.collidingWith.rigidbody.mass);
+      (this.mass + collision.otherCollider.rigidbody.mass);
 
     this.gameObject.transform.position.sub(
       collision.normal.clone().scale(depth),

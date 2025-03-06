@@ -4,6 +4,10 @@ import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { CollisionHandler } from "@extensions/PhysicsEngine/CollisionHandlers/CollisionHandler.ts";
 import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
 
+/**
+ * SatCollisionHandler class is a collision handler that uses the Separating Axis Theorem (SAT) to check for collisions
+ * Colliders MUST be convex!!
+ */
 export class SatCollisionHandler implements CollisionHandler {
   /**
    * Helper function to calculate projection of vertices onto an axis
@@ -36,10 +40,6 @@ export class SatCollisionHandler implements CollisionHandler {
     }, []);
   }
 
-  /** Check if two Colliders are colliding
-   * @param a
-   * @param b
-   */
   public areColliding(a: Collider, b: Collider): Collision | boolean {
     if (a instanceof PolygonCollider && b instanceof PolygonCollider) {
       return this.areCollidingPolygonToPolygon(a, b);

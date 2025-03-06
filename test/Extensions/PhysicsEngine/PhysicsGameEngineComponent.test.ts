@@ -15,7 +15,7 @@ describe("PhysicsGameEngineComponent", (): void => {
   const manualTicker = new ManualTicker();
   const observer = (data: Collision[], collideWithCollider) => {
     data.map((collision) => {
-      collideWithCollider.push(collision.collidingWith);
+      collideWithCollider.push(collision.otherCollider);
     });
   };
 

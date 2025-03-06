@@ -1,6 +1,9 @@
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
-import { Collider } from "@extensions/PhysicsEngine/Collider.ts";
+import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
 
+/**
+ * PolygonCollider class is a collider that represents a polygon shape
+ */
 export class PolygonCollider extends Collider {
   public vertices: Vector2[];
 
