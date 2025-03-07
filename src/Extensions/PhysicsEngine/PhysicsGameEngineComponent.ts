@@ -81,7 +81,9 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     // Check for collisions
     ArrayUtility.combinations(this.getAllPolygonCollider(), 2).forEach(
       (polygonsPair: PolygonCollider[]) => {
-        this.getPolygonColliderCollisions(...polygonsPair);
+        this.getPolygonColliderCollisions(
+          ...(polygonsPair as [PolygonCollider, PolygonCollider]),
+        );
       },
     );
 
