@@ -7,8 +7,8 @@ import { OutputBehavior } from "@core/OutputBehavior.ts";
  */
 export class AudioBehavior extends OutputBehavior {
   private audioContextFactory: () => AudioContext;
-  private audioContext: AudioContext;
-  private gainNode: GainNode;
+  private audioContext!: AudioContext;
+  private gainNode!: GainNode;
 
   private source: AudioBufferSourceNode | null = null;
   private audioBuffer: AudioBuffer | null = null;
