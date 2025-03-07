@@ -12,7 +12,7 @@ import { ArrayUtility } from "@core/Utilities/ArrayUtility.ts";
  * A unique game engine component responsible for handling the physics of the game at runtime. (works by Tick)
  */
 export class PhysicsGameEngineComponent extends GameEngineComponent {
-  public rootObject: GameObject;
+  public rootObject?: GameObject;
   public satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
   private _ticker: Ticker;
   private _collidersCollisions: Map<Collider, Collision[]> = new Map();
@@ -42,11 +42,12 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
    * @private
    */
   private getAllPolygonCollider(): Collider[] {
-    return this.rootObject
-      .getAllChildren()
-      .reduce((colliders: Collider[], gameObject: GameObject) => {
+    return this.rootObject!.getAllChildren().reduce(
+      (colliders: Collider[], gameObject: GameObject) => {
         return colliders.concat(gameObject.getBehaviors(PolygonCollider));
-      }, []);
+      },
+      [],
+    );
   }
 
   /**
@@ -72,8 +73,8 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     this.setCollidersCollisionChildren(colliderB);
 
     // Store the collision data
-    this._collidersCollisions.get(colliderA).push(collision);
-    this._collidersCollisions.get(colliderB).push(collision.getOpposite());
+    this._collidersCollisions.get(colliderA)?.push(collision);
+    this._collidersCollisions.get(colliderB)?.push(collision.getOpposite());
   }
 
   private tick(): void {
