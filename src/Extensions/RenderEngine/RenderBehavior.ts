@@ -2,6 +2,7 @@ import { OutputBehavior } from "@core/OutputBehavior.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { mat4 } from "wgpu-matrix";
 
 /**
  * An object that can be rendered to the WebGPU screen.
@@ -77,7 +78,7 @@ export abstract class RenderBehavior extends OutputBehavior {
       this._targetBlend,
     );
     this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
-      RenderEngineUtility.toModelMatrix(this.transform),
+      mat4.identity(),
     );
   }
 

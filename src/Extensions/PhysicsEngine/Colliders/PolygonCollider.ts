@@ -1,4 +1,5 @@
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
 
 /**
@@ -24,7 +25,7 @@ export class PolygonCollider extends Collider {
    * - $(x_i, y_i)$ are the coordinates of the vertices.
    * - $n$ is the number of vertices.
    */
-  public getGravitationCenter(): Vector2 {
+  public getGravitationCenter(): Vector3 {
     let area = 0;
     let centroidX = 0;
     let centroidY = 0;
@@ -58,7 +59,7 @@ export class PolygonCollider extends Collider {
     if (centroidX == -0) centroidX = 0;
     if (centroidY == -0) centroidY = 0;
 
-    return new Vector2(centroidX, centroidY);
+    return new Vector3(centroidX, centroidY, 0);
   }
 
   /**
@@ -67,13 +68,19 @@ export class PolygonCollider extends Collider {
   public getVerticesWithTransform(): Vector2[] {
     return this.vertices.reduce(
       (computedVertices: Vector2[], vertex: Vector2) => {
-        computedVertices.push(
-          vertex
-            .clone()
-            .scaleAxis(this.gameObject.transform.scale)
-            .rotate(this.gameObject.transform.rotation)
-            .add(this.gameObject.transform.position),
-        );
+        // Extract Z-axis rotation (yaw) from the quaternion
+        const eulerAngles =
+          this.gameObject.transform.worldRotation.toEulerAngles();
+        const zRotation = eulerAngles.z; // Z-axis rotation in radians
+
+        // Apply world scale, Z-axis rotation, and world position
+        const transformedVertex = vertex
+          .clone()
+          .scaleAxis(this.gameObject.transform.worldScale.toVector2()) // Apply world scale (2D)
+          .rotate(zRotation) // Apply Z-axis rotation (2D)
+          .add(this.gameObject.transform.worldPosition.toVector2()); // Apply world position (2D)
+
+        computedVertices.push(transformedVertex);
         return computedVertices;
       },
       [],

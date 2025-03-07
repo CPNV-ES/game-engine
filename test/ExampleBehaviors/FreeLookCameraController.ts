@@ -1,23 +1,18 @@
-import { LogicBehavior } from "../../src/Core/LogicBehavior";
-import { vec3, Vec3 } from "wgpu-matrix";
-import { Vector2 } from "../../src/Core/MathStructures/Vector2";
+import { LogicBehavior } from "@core/LogicBehavior";
+import { Vector2 } from "@core/MathStructures/Vector2";
+import { Vector3 } from "@core/MathStructures/Vector3";
+import { Quaternion } from "@core/MathStructures/Quaternion";
 
 /**
  * A logic behavior that controls a free look camera.
  */
-export class FreeLookCameraController extends LogicBehavior<{
-  position: Vec3;
-  rotation: Vec3;
-}> {
+export class FreeLookCameraController extends LogicBehavior<void> {
   private _movementSpeed: number;
   private _lookSensitivity: number;
+  private _target: Vector2 = Vector2.zero();
 
   constructor(movementSpeed: number = 0.1, lookSensitivity: number = 0.002) {
     super();
-    this.data = {
-      position: vec3.create(0, 0, 3),
-      rotation: vec3.create(0, 0, 0),
-    };
     this._movementSpeed = movementSpeed;
     this._lookSensitivity = lookSensitivity;
   }
@@ -26,31 +21,18 @@ export class FreeLookCameraController extends LogicBehavior<{
    * Move the camera in the direction of the given vector (relative to the camera's rotation).
    * @param direction
    */
-  public move(direction: Vec3): void {
-    const forward = vec3.normalize(
-      vec3.create(
-        -(Math.cos(this.data.rotation[0]) * Math.sin(this.data.rotation[1])),
-        Math.sin(this.data.rotation[0]), // Inclut l'inclinaison
-        Math.cos(this.data.rotation[0]) * Math.cos(this.data.rotation[1]),
-      ),
-    );
+  public move(direction: Vector3): void {
+    const transform = this.gameObject.transform;
 
-    const right = vec3.normalize(vec3.cross(vec3.create(0, 1, 0), forward));
+    const forward = transform.forward
+      .clone()
+      .scale(direction.z * this._movementSpeed);
+    const right = transform.right
+      .clone()
+      .scale(direction.x * this._movementSpeed);
+    const top = transform.top.clone().scale(direction.y * this._movementSpeed);
 
-    this.data.position = vec3.add(
-      this.data.position,
-      vec3.scale(forward, direction[2] * this._movementSpeed), // Avancer/Reculer
-    );
-    this.data.position = vec3.add(
-      this.data.position,
-      vec3.scale(right, direction[0] * this._movementSpeed), // Gauche/Droite
-    );
-    this.data.position = vec3.add(
-      this.data.position,
-      vec3.create(0, direction[1] * this._movementSpeed, 0), // Monter/Descendre
-    );
-
-    this.notifyDataChanged();
+    transform.position.add(forward).add(right).add(top);
   }
 
   /**
@@ -58,8 +40,14 @@ export class FreeLookCameraController extends LogicBehavior<{
    * @param delta
    */
   public look(delta: Vector2): void {
-    this.data.rotation[0] += delta.y * this._lookSensitivity;
-    this.data.rotation[1] += delta.x * this._lookSensitivity;
-    this.notifyDataChanged();
+    const transform = this.gameObject.transform;
+
+    this._target.add(delta.clone().scale(-this._lookSensitivity));
+
+    transform.rotation.setFromQuaternion(
+      Quaternion.fromAxisAngle(new Vector3(0, 1, 0), this._target.x).multiply(
+        Quaternion.fromAxisAngle(Vector3.right(), this._target.y),
+      ),
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
 
 /**
@@ -6,7 +6,7 @@ import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
  */
 export class Collision {
   private _depth: number; // penetration depth between the colliders
-  private _normal: Vector2; // axis that represents the direction of the collision (always from otherCollider to currentCollider)
+  private _normal: Vector3; // axis that represents the direction of the collision (always from otherCollider to currentCollider)
   private _currentCollider: Collider;
   private _otherCollider: Collider;
 
@@ -14,7 +14,7 @@ export class Collision {
     return this._depth;
   }
 
-  public get normal(): Vector2 {
+  public get normal(): Vector3 {
     return this._normal;
   }
 
@@ -24,7 +24,7 @@ export class Collision {
 
   constructor(
     depth: number,
-    normal: Vector2,
+    normal: Vector3,
     currentCollider: Collider,
     otherCollider: Collider,
   ) {

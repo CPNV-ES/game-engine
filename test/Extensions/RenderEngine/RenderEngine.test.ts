@@ -91,4 +91,7 @@ describe("WebGPU Rendering Test", () => {
   it("mesh should be drawn correctly, transformed, colored, centered, scaled", async () => {
     await runScreenshotTestCase("MeshDrawing");
   });
+  it("should render a grid with gizmos in global and local space", async () => {
+    await runScreenshotTestCase("ComplexTransformations");
+  });
 });

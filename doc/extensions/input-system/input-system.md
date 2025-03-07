@@ -73,7 +73,7 @@ Those functions have default values but can be overridden in the arguments of th
 
 #### **Keyboard Example**
 ```typescript
-import { Keyboard } from "../../../src/Extensions/InputSystem/Keyboard";
+import { Keyboard } from "@extensions/InputSystem/Keyboard";
 
 const keyboard = new Keyboard();
 
@@ -97,7 +97,7 @@ keyboard.onKeyUp.addObserver((key) => {
 
 #### **Mouse Example**
 ```typescript
-import { Mouse } from "../../../src/Extensions/InputSystem/Mouse";
+import { Mouse } from "@extensions/InputSystem/Mouse";
 
 const mouse = new Mouse();
 

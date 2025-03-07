@@ -2,7 +2,11 @@ import { vec3, mat4, Mat4, Vec3, vec4 } from "wgpu-matrix";
 import { OutputBehavior } from "@core/OutputBehavior.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
 import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
+/**
+ * A 3D camera class that manages projection, view transformations, and screen-to-world raycasting for a rendering engine.
+ */
 export class Camera extends OutputBehavior {
   private _fov: number; // Field of view in radians
   private _aspect: number; // Aspect ratio (width / height)
@@ -72,7 +76,7 @@ export class Camera extends OutputBehavior {
     const ndcY = 1.0 - (2.0 * pointY) / screenHeight; // Invert Y axis
 
     // NDC coordinates in homogeneous space (assuming depth = 0 for near plane and 1 for far plane)
-    const nearPoint = vec3.fromValues(ndcX, ndcY, -1.0);
+    const nearPoint = vec3.fromValues(ndcX, ndcY, 0.0);
     const farPoint = vec3.fromValues(ndcX, ndcY, 1.0);
 
     // Compute inverse matrices
@@ -167,20 +171,16 @@ export class Camera extends OutputBehavior {
    * @returns The MVP matrix as a mat4.
    */
   public getMVPMatrix(modelMatrix: Mat4): Mat4 {
-    // Compute the view matrix (lookAt)
-    let viewMatrix = RenderEngineUtility.toModelMatrix(this.transform);
-    viewMatrix = mat4.translate(viewMatrix, vec3.fromValues(0, 0, 10));
-
-    // Combine projection, view, and model matrices: MVP = Projection * View * Model
-    const vpMatrix = mat4.multiply(
-      this._projectionMatrix,
-      mat4.inverse(viewMatrix),
+    // Compute the view matrix (inverse of camera transform)
+    const viewMatrix = mat4.inverse(
+      RenderEngineUtility.toModelMatrix(this.transform),
     );
 
+    // Compute VP matrix: Projection * View
     //TODO : We should cache the vpMatrix and only recompute it when the camera moves
+    const vpMatrix = mat4.multiply(this._projectionMatrix, viewMatrix);
 
-    const mvpMatrix = mat4.multiply(vpMatrix, modelMatrix);
-
-    return mvpMatrix;
+    // Compute final MVP matrix: VP * Model
+    return mat4.multiply(vpMatrix, modelMatrix);
   }
 }

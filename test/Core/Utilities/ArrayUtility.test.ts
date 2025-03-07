@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ArrayUtility } from "../../../src/Core/Utilities/ArrayUtility";
+import { ArrayUtility } from "@core/Utilities/ArrayUtility";
 
 describe("ArrayUtility", (): void => {
   /**

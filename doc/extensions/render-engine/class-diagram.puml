@@ -6,7 +6,7 @@ package sprunk.core {
 }
 
 package sprunk.extensions.renderengine {
-    class RenderGameEngineComponent {
+    class Renderer {
         +onError: Event<Error>
         +onRenderingReady: Event<void>
         +camera: Camera | null
@@ -15,7 +15,7 @@ package sprunk.extensions.renderengine {
         +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
         +createBindGroup(bindGroupLayout: GPUBindGroupLayout, entries: GPUBindGroupEntry[]): GPUBindGroup
         +createSampler(descriptor: GPUSamplerDescriptor): GPUSampler
-        +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayouts: Iterable<GPUBindGroupLayout | null>, buffers?: Iterable<GPUVertexBufferLayout | null>): GPURenderPipeline
+        +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayouts: Iterable<GPUBindGroupLayout | null>, buffers?: Iterable<GPUVertexBufferLayout | null>, targetBlend?: GPUBlendState): GPURenderPipeline
         +createTexture(url: RequestInfo | URL): GPUTexture
         +createUniformBuffer(data: Float32Array): GPUBuffer
         +fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void
@@ -33,36 +33,49 @@ package sprunk.extensions.renderengine {
         +frame(_deltaTime: number): void
     }
 
-    class SpriteRenderBehavior {
-        +constructor(renderEngine: RenderGameEngineComponent, spriteImageUrl: RequestInfo | URL)
-    }
-
-    class RenderEngineUtiliy {
-        +static toModelMatrix(transform: Transform): Float32Array
-    }
-
     class RenderBehavior {
-        #_renderEngine: RenderGameEngineComponent
+        #_renderEngine: Renderer
         #_pipeline: GPURenderPipeline | null
-        #_bindGroupLayout: GPUBindGroupLayout | null
+        #_bindGroupLayouts: GPUBindGroupLayout[] | null
+        #_mvpUniformBuffer: GPUBuffer | null
         #_vertexWGSLShader: string
         #_fragmentWGSLShader: string
-        #_topology: GPUPrimitiveTopology
-        #_bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor
-        #_bufferLayout: GPUVertexBufferLayout
-        +constructor(renderEngine: RenderGameEngineComponent, vertexWGSLShader: string, fragmentWGSLShader: string, topology: GPUPrimitiveTopology, bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor, buffer: GPUVertexBufferLayout)
-        +asyncInit(): void
+        #_primitiveState: GPUPrimitiveState
+        #_bindGroupLayoutDescriptors: GPUBindGroupLayoutDescriptor[]
+        #_buffers: Iterable<GPUVertexBufferLayout | null> | undefined
+        #_targetBlend: GPUBlendState | undefined
+        +constructor(renderEngine: Renderer, vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayoutDescriptors: GPUBindGroupLayoutDescriptor[], buffers?: Iterable<GPUVertexBufferLayout | null>, targetBlend?: GPUBlendState)
+        +asyncInit(): Promise<void>
         +render(renderpass: GPURenderPassEncoder): void
     }
 
-    class RenderEngineUtiliy {
-        +static toModelMatrix(transform: Transform): Float32Array
-        +static toFloat32Attay(points: Vector2[]): Float32Array
-        +static createLineIndicesForPoints(pointsDataFloat32: Float32Array): Uint16Array
+    class Camera {
+        #_fov: number
+        #_aspect: number
+        #_near: number
+        #_far: number
+        #_projectionMatrix: Mat4
+        #_renderEngine: Renderer
+        +constructor(renderGameEngineComponent: Renderer, fov: number, aspect: number, near: number, far: number)
+        +screenPointToWorldDirection(screenSpacePosition: Vector2): Vec3
+        +getMVPMatrix(modelMatrix: Mat4): Mat4
+        +fov: number
+        +aspect: number
+        +near: number
+        +far: number
     }
 
-    class Camera {
-        +constructor(fov: number, aspect: number, near: number, far: number)
+    class RenderEngineUtility {
+        +static toModelMatrix(transform: Transform): Float32Array
+        +static quaternionToMatrix(quaternion: Quaternion): Float32Array
+        +static toFloat32Attay(points: Vector2[]): Float32Array
+        +static createLineIndicesForPoints(pointsDataFloat32: Float32Array): Uint16Array
+        +static rayPlaneIntersection(rayOrigin: Vec3, rayDir: Vec3, planeNormal: Vec3, planePoint: Vec3): Vec3 | null
+        +static toVec3(vector: Vector3): Vec3
+    }
+
+    class SpriteRenderBehavior {
+        +constructor(renderEngine: Renderer, spriteImageUrl: RequestInfo | URL)
     }
 
     class BasicUVTexturedRenderBehavior {
@@ -73,7 +86,7 @@ package sprunk.extensions.renderengine {
         #_bindGroup: GPUBindGroup | null
         #_spriteImageUrl: RequestInfo | URL
         #_vertexData: Float32Array
-        +constructor(renderEngine: RenderGameEngineComponent, spriteImageUrl: RequestInfo | URL, vertexData: Float32Array, indexData: Uint16Array, vertexWGSLShader: string, fragmentWGSLShader: string)
+        +constructor(renderEngine: Renderer, spriteImageUrl: RequestInfo | URL, vertexData: Float32Array, indexData: Uint16Array, vertexWGSLShader: string, fragmentWGSLShader: string)
         +asyncInit(): Promise<void>
         +render(renderpass: GPURenderPassEncoder): void
     }
@@ -84,7 +97,7 @@ package sprunk.extensions.renderengine {
         #_text: MsdfText | null
         #_textString: string
         #_options: MsdfTextFormattingOptions
-        +constructor(renderEngine: RenderGameEngineComponent, fontJsonUrl: string, options?: MsdfTextFormattingOptions)
+        +constructor(renderEngine: Renderer, fontJsonUrl: string, options?: MsdfTextFormattingOptions)
         +text: string
         +color: [number, number, number, number]
         +pixelScale: number
@@ -103,14 +116,14 @@ package sprunk.extensions.renderengine {
         #_color: Color
         #_colorBuffer: GPUBuffer | null
         #_onReady: Event<void> | null
-        +constructor(renderEngine: RenderGameEngineComponent, vertexData: Float32Array, indexData: Uint16Array, color: Color, vertexWGSLShader: string, fragmentWGSLShader: string)
+        +constructor(renderEngine: Renderer, vertexData: Float32Array, indexData: Uint16Array, color: Color, vertexWGSLShader: string, fragmentWGSLShader: string)
         +asyncInit(): Promise<void>
         +render(renderpass: GPURenderPassEncoder): void
         +color: Color
     }
 
     class LinesRenderBehavior {
-        +constructor(renderEngine: RenderGameEngineComponent, lineData: Vector2[], color: Color)
+        +constructor(renderEngine: Renderer, lineData: Vector2[], color: Color)
     }
 
     class ObjLoader {
