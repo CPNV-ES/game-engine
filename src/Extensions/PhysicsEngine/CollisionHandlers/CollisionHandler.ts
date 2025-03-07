@@ -1,5 +1,4 @@
 import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
-import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
 
 /**
