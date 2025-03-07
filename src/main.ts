@@ -7,9 +7,7 @@ import { FreeLookCameraController } from "@test/ExampleBehaviors/FreeLookCameraC
 import { FreeLookCameraKeyboardMouseInput } from "@test/ExampleBehaviors/FreeLookCameraKeyboardMouseInput.ts";
 import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
-import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior.ts";
 import { Color } from "@extensions/RenderEngine/Color.ts";
-import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { ObjLoader } from "@extensions/RenderEngine/MeshBased/ObjLoader.ts";
 import { MeshRenderBehavior } from "@extensions/RenderEngine/MeshBased/MeshRenderBehavior.ts";
 import BasicVertexMVPWithUV from "@extensions/RenderEngine/BasicShaders/BasicVertexMVPWithUVAndNormals.vert.wgsl?raw";
