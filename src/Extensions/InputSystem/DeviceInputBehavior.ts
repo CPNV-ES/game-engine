@@ -11,7 +11,7 @@ import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
  * @classdesc DeviceInputBehavior is a behavior that listens to input events from devices, it is a helper like an accessor to the devices contained in the InputGameEngineComponent for easier access to the input events.
  */
 export class DeviceInputBehavior extends InputBehavior {
-  private inputEngineComponent: InputGameEngineComponent;
+  protected readonly inputEngineComponent: InputGameEngineComponent;
   // Class-level properties to store observer references
   private onAnyChangeObserver = () => this.onAnyChange();
   private onMouseLeftClickUpObserver = () => this.onMouseLeftClickUp();
@@ -35,11 +35,6 @@ export class DeviceInputBehavior extends InputBehavior {
     axis: number;
     value: number;
   }) => this.onGamepadAxisChange(data);
-  private onGamepadConnectedObserver = (gamepad: GamepadDevice | XboxGamepad) =>
-    this.onGamepadConnected(gamepad);
-  private onGamepadDisconnectedObserver = (
-    gamepad: GamepadDevice | XboxGamepad,
-  ) => this.onGamepadDisconnected(gamepad);
 
   /**
    * Creates an instance of DeviceInputBehavior.
@@ -78,16 +73,9 @@ export class DeviceInputBehavior extends InputBehavior {
 
     const gamepadManager = this.inputEngineComponent.getGamepadManager();
     if (gamepadManager) {
-      gamepadManager.onGamepadConnected.addObserver(
-        this.onGamepadConnectedObserver,
-      );
-      gamepadManager.onGamepadDisconnected.addObserver(
-        this.onGamepadDisconnectedObserver,
-      );
-
       // Add observers to existing gamepads
       const gamepads = gamepadManager.getAllGamepads();
-      gamepads.forEach((gamepad: GamepadDevice | XboxGamepad) => {
+      gamepads.forEach((gamepad: GamepadDevice) => {
         this.setupGamepadObservers(gamepad);
       });
     }
@@ -122,28 +110,21 @@ export class DeviceInputBehavior extends InputBehavior {
 
     const gamepadManager = this.inputEngineComponent.getGamepadManager();
     if (gamepadManager) {
-      gamepadManager.onGamepadConnected.removeObserver(
-        this.onGamepadConnectedObserver,
-      );
-      gamepadManager.onGamepadDisconnected.removeObserver(
-        this.onGamepadDisconnectedObserver,
-      );
-
       const gamepads = gamepadManager.getAllGamepads();
-      gamepads.forEach((gamepad: GamepadDevice | XboxGamepad) => {
+      gamepads.forEach((gamepad: GamepadDevice) => {
         this.removeGamepadObservers(gamepad);
       });
     }
   }
 
-  private setupGamepadObservers(gamepad: GamepadDevice | XboxGamepad): void {
+  private setupGamepadObservers(gamepad: GamepadDevice): void {
     gamepad.onAnyChange.addObserver(this.onAnyChangeObserver);
     gamepad.onButtonDown.addObserver(this.onGamepadButtonDownObserver);
     gamepad.onButtonUp.addObserver(this.onGamepadButtonUpObserver);
     gamepad.onAxisChange.addObserver(this.onGamepadAxisChangeObserver);
   }
 
-  private removeGamepadObservers(gamepad: GamepadDevice | XboxGamepad): void {
+  private removeGamepadObservers(gamepad: GamepadDevice): void {
     gamepad.onAnyChange.removeObserver(this.onAnyChangeObserver);
     gamepad.onButtonDown.removeObserver(this.onGamepadButtonDownObserver);
     gamepad.onButtonUp.removeObserver(this.onGamepadButtonUpObserver);
