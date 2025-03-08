@@ -1,7 +1,6 @@
 {
-  "name": "webgpu",
-  "private": true,
-  "version": "0.0.0",
+  "name": "sprunk",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -25,13 +24,48 @@
     "puppeteer": "^23.10.0",
     "typescript": "~5.6.2",
     "vite": "^5.4.10",
-    "vitest": "^2.1.4",
-    "lil-gui": "^0.20.0"
+    "vitest": "^2.1.4"
   },
   "lint-staged": {
     "**/*.{ts,html}": "prettier --write"
   },
   "dependencies": {
-    "wgpu-matrix": "^3.3.0"
+    "wgpu-matrix": "^3.3.0",
+    "lil-gui": "^0.20.0"
+  },
+  "keywords": [
+    "webgpu",
+    "engine",
+    "game engine",
+    "3d",
+    "2d",
+    "graphics"
+  ],
+  "author": {
+    "name": "Eliott Jaquier",
+    "url": "https://eliott.pro"
+  },
+  "contributors": [
+    {
+      "name": "Cyprien Jaquier",
+      "url": "https://jaquier.dev"
+    },
+    {
+      "name": "Philippe Moeckli",
+      "url": "https://www.linkedin.com/in/philippe-moeckli-356278266"
+    },
+    {
+      "name": "Philippe Moeckli",
+      "url": "https://github.com/MinusW"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CPNV-ES/game-engine/issues"
+  },
+  "homepage": "https://github.com/CPNV-ES/game-engine#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CPNV-ES/game-engine.git"
   }
 }
