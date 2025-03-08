@@ -79,7 +79,6 @@ export class GamepadMovableBehavior extends DeviceInputBehavior {
     // Left stick X-axis
     if (data.axis === 0) {
       const xSpeed = data.value * this.MOVEMENT_SPEED;
-      console.log("Setting X speed:", xSpeed);
       this._movableLogicBehavior.translationSpeed = new Vector3(
         xSpeed,
         this._movableLogicBehavior.translationSpeed.y,
@@ -89,70 +88,11 @@ export class GamepadMovableBehavior extends DeviceInputBehavior {
     // Left stick Y-axis
     else if (data.axis === 1) {
       const ySpeed = data.value * this.MOVEMENT_SPEED;
-      console.log("Setting Y speed:", ySpeed);
       this._movableLogicBehavior.translationSpeed = new Vector3(
         this._movableLogicBehavior.translationSpeed.x,
         ySpeed,
         0,
       );
     }
-  }
-
-  public override onGamepadButtonDown(buttonIndex: number): void {
-    console.log("Gamepad button down:", buttonIndex);
-
-    const currentSpeed = this._movableLogicBehavior.translationSpeed;
-    let newSpeed = new Vector3(currentSpeed.x, currentSpeed.y, 0);
-
-    switch (buttonIndex) {
-      // A button - Move up
-      case 0:
-        newSpeed.y -= this.MOVEMENT_SPEED;
-        break;
-      // B button - Move right
-      case 1:
-        newSpeed.x += this.MOVEMENT_SPEED;
-        break;
-      // X button - Move left
-      case 2:
-        newSpeed.x -= this.MOVEMENT_SPEED;
-        break;
-      // Y button - Move down
-      case 3:
-        newSpeed.y += this.MOVEMENT_SPEED;
-        break;
-    }
-
-    console.log("Setting new speed:", newSpeed);
-    this._movableLogicBehavior.translationSpeed = newSpeed;
-  }
-
-  public override onGamepadButtonUp(buttonIndex: number): void {
-    console.log("Gamepad button up:", buttonIndex);
-
-    const currentSpeed = this._movableLogicBehavior.translationSpeed;
-    let newSpeed = new Vector3(currentSpeed.x, currentSpeed.y, 0);
-
-    switch (buttonIndex) {
-      // A button - Stop up movement
-      case 0:
-        newSpeed.y += this.MOVEMENT_SPEED;
-        break;
-      // B button - Stop right movement
-      case 1:
-        newSpeed.x -= this.MOVEMENT_SPEED;
-        break;
-      // X button - Stop left movement
-      case 2:
-        newSpeed.x += this.MOVEMENT_SPEED;
-        break;
-      // Y button - Stop down movement
-      case 3:
-        newSpeed.y -= this.MOVEMENT_SPEED;
-        break;
-    }
-
-    console.log("Setting new speed after button release:", newSpeed);
-    this._movableLogicBehavior.translationSpeed = newSpeed;
   }
 }
