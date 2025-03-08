@@ -1,5 +1,6 @@
 import { GamepadDevice } from "@extensions/InputSystem/GamepadDevice.ts";
 import { Event } from "@core/EventSystem/Event.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * XboxGamepad class represents an Xbox gamepad device.
@@ -43,6 +44,10 @@ export class XboxGamepad extends GamepadDevice {
   public readonly onDPadRightDown: Event<void> = new Event<void>();
   public readonly onDPadRightUp: Event<void> = new Event<void>();
 
+  // Axis Events
+  public readonly onLeftStickChange: Event<Vector2> = new Event<Vector2>();
+  public readonly onRightStickChange: Event<Vector2> = new Event<Vector2>();
+
   // Stick Button Events
   public readonly onLeftStickButtonDown: Event<void> = new Event<void>();
   public readonly onLeftStickButtonUp: Event<void> = new Event<void>();
@@ -60,6 +65,8 @@ export class XboxGamepad extends GamepadDevice {
   public static readonly BUTTON_Y = 3;
   public static readonly BUTTON_LB = 4;
   public static readonly BUTTON_RB = 5;
+  public static readonly BUTTON_LT = 6;
+  public static readonly BUTTON_RT = 7;
   public static readonly BUTTON_BACK = 8;
   public static readonly BUTTON_START = 9;
   public static readonly BUTTON_LEFT_STICK = 10;
@@ -71,10 +78,8 @@ export class XboxGamepad extends GamepadDevice {
   public static readonly BUTTON_XBOX = 16;
 
   // Axis mappings
-  private static readonly AXIS_LEFT_STICK_X = 0;
-  private static readonly AXIS_LEFT_STICK_Y = 1;
-  private static readonly AXIS_RIGHT_STICK_X = 2;
-  private static readonly AXIS_RIGHT_STICK_Y = 3;
+  private static readonly AXIS_LEFT_STICK = 0;
+  private static readonly AXIS_RIGHT_STICK = 1;
 
   private lastLeftTrigger: number = 0;
   private lastRightTrigger: number = 0;
@@ -96,11 +101,9 @@ export class XboxGamepad extends GamepadDevice {
       this.handleButtonUp(buttonIndex);
     });
 
-    this.onAxisChange.addObserver(
-      ({ index }: { index: number; yValue: number }) => {
-        this.handleAxisChange(index);
-      },
-    );
+    this.onAxisChange.addObserver((data: { index: number; value: Vector2 }) => {
+      this.handleAxisChange(data.index, data.value);
+    });
   }
 
   private handleButtonDown(buttonIndex: number): void {
@@ -203,12 +206,13 @@ export class XboxGamepad extends GamepadDevice {
     }
   }
 
-  private handleAxisChange(index: number): void {
+  private handleAxisChange(index: number, value: Vector2): void {
     switch (index) {
-      case XboxGamepad.AXIS_LEFT_STICK_X:
-      case XboxGamepad.AXIS_LEFT_STICK_Y:
-      case XboxGamepad.AXIS_RIGHT_STICK_X:
-      case XboxGamepad.AXIS_RIGHT_STICK_Y:
+      case XboxGamepad.AXIS_LEFT_STICK:
+        this.onLeftStickChange.emit(value);
+        break;
+      case XboxGamepad.AXIS_RIGHT_STICK:
+        this.onRightStickChange.emit(value);
         break;
     }
   }
@@ -362,20 +366,14 @@ export class XboxGamepad extends GamepadDevice {
    * Updates the gamepad state with fresh data and emits events for changes
    * @param freshGamepad The fresh gamepad state from GamepadManager
    */
-  public pollGamepadOnce(freshGamepad: Gamepad): void {
-    if (!freshGamepad || !freshGamepad.connected) {
-      return;
-    }
-
-    // Update the gamepad reference
-    this.gamepad = freshGamepad;
-
-    // Call base class polling
+  public override pollGamepadOnce(freshGamepad: Gamepad): void {
+    if (!freshGamepad || !freshGamepad.connected) return;
     super.pollGamepadOnce(freshGamepad);
 
     // Poll triggers
-    const leftTrigger = freshGamepad.buttons[6]?.value ?? 0;
-    const rightTrigger = freshGamepad.buttons[7]?.value ?? 0;
+    const leftTrigger = freshGamepad.buttons[XboxGamepad.BUTTON_LT]?.value ?? 0;
+    const rightTrigger =
+      freshGamepad.buttons[XboxGamepad.BUTTON_RT]?.value ?? 0;
 
     if (leftTrigger !== this.lastLeftTrigger) {
       this.onLeftTriggerChange.emit(leftTrigger);

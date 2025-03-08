@@ -83,12 +83,12 @@ export class GamepadManager {
 
     window.addEventListener("gamepaddisconnected", (event: GamepadEvent) => {
       const gamepad = this._gamepads.find(
-        (gp) => gp.gamepad.index === event.gamepad.index,
+        (gp) => gp.index === event.gamepad.index,
       );
       if (gamepad) {
         this.onGamepadDisconnected.emit(gamepad);
         this._gamepads = this._gamepads.filter(
-          (gp) => gp.gamepad.index !== event.gamepad.index,
+          (gp) => gp.index !== event.gamepad.index,
         );
       }
     });
@@ -136,8 +136,8 @@ export class GamepadManager {
   private updateGamepadStates(): void {
     const freshGamepads = navigator.getGamepads();
     this._gamepads.forEach((device) => {
-      const freshGamepad = freshGamepads[device.gamepad.index];
-      device.pollGamepadOnce(freshGamepad || device.gamepad);
+      const freshGamepad = freshGamepads[device.index];
+      device.pollGamepadOnce(freshGamepad!);
     });
   }
 

@@ -3,6 +3,7 @@ import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEn
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 import { StickLabel, GAMEPAD_COLORS, STICK_DEADZONE } from "./config";
 import { UIGamepadDebugger } from "./UIGamepadDebugger";
+import { Vector2 } from "@core/MathStructures/Vector2";
 
 export class StickStatus extends UIGamepadDebugger {
   constructor(
@@ -10,14 +11,9 @@ export class StickStatus extends UIGamepadDebugger {
     renderComponent: RenderGameEngineComponent,
     private gamepad: XboxGamepad,
     private side: StickLabel,
-    yOffset: number,
+    position: Vector2,
   ) {
-    super(
-      container,
-      `${side}StickStatus`,
-      { x: -0.5, y: yOffset },
-      renderComponent,
-    );
+    super(container, `${side}StickStatus`, position, renderComponent);
     this.initializeStick();
   }
 

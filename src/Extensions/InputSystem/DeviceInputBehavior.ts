@@ -32,8 +32,8 @@ export class DeviceInputBehavior extends InputBehavior {
   private onGamepadButtonUpObserver = (data: number) =>
     this.onGamepadButtonUp(data);
   private onGamepadAxisChangeObserver = (data: {
-    axis: number;
-    value: number;
+    index: number;
+    value: Vector2;
   }) => this.onGamepadAxisChange(data);
 
   /**
@@ -71,14 +71,11 @@ export class DeviceInputBehavior extends InputBehavior {
       keyboard.onKeyUp.addObserver(this.onKeyboardKeyUpObserver);
     }
 
-    const gamepadManager = this.inputEngineComponent.getGamepadManager();
-    if (gamepadManager) {
-      // Add observers to existing gamepads
-      const gamepads = gamepadManager.getAllGamepads();
-      gamepads.forEach((gamepad: GamepadDevice) => {
-        this.setupGamepadObservers(gamepad);
-      });
-    }
+    // Add observers to existing gamepads
+    const gamepads = this.inputEngineComponent.getDevices(GamepadDevice);
+    gamepads.forEach((gamepad: GamepadDevice) => {
+      this.setupGamepadObservers(gamepad);
+    });
   }
 
   /**
@@ -108,13 +105,11 @@ export class DeviceInputBehavior extends InputBehavior {
       keyboard.onKeyUp.removeObserver(this.onKeyboardKeyUpObserver);
     }
 
-    const gamepadManager = this.inputEngineComponent.getGamepadManager();
-    if (gamepadManager) {
-      const gamepads = gamepadManager.getAllGamepads();
-      gamepads.forEach((gamepad: GamepadDevice) => {
-        this.removeGamepadObservers(gamepad);
-      });
-    }
+    // Remove observers from existing gamepads
+    const gamepads = this.inputEngineComponent.getDevices(GamepadDevice);
+    gamepads.forEach((gamepad: GamepadDevice) => {
+      this.removeGamepadObservers(gamepad);
+    });
   }
 
   private setupGamepadObservers(gamepad: GamepadDevice): void {
@@ -148,7 +143,7 @@ export class DeviceInputBehavior extends InputBehavior {
 
   public onGamepadButtonDown(_buttonIndex: number): void {}
   public onGamepadButtonUp(_buttonIndex: number): void {}
-  public onGamepadAxisChange(_data: { axis: number; value: number }): void {}
+  public onGamepadAxisChange(_data: { index: number; value: Vector2 }): void {}
   public onGamepadConnected(_gamepad: GamepadDevice | XboxGamepad): void {}
   public onGamepadDisconnected(_gamepad: GamepadDevice | XboxGamepad): void {}
 }

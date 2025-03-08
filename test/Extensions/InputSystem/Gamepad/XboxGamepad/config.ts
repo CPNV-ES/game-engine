@@ -1,11 +1,12 @@
 import { Color } from "@extensions/RenderEngine/Color";
+import { Vector2 } from "@core/MathStructures/Vector2";
 
 /**
  * Configuration for the XboxGamepadVisualization.
  */
 export interface ButtonConfig {
   label: ButtonLabel;
-  offset: number;
+  offset: Vector2;
   position?: { x: number; y: number };
   warning?: {
     text: string;
@@ -43,8 +44,8 @@ export interface GamepadConfig {
   stickDeadzone: number;
   title: TitleConfig;
   buttons: ButtonConfig[];
-  triggers: { label: TriggerLabel; offset: number }[];
-  sticks: { label: StickLabel; offset: number }[];
+  triggers: { label: TriggerLabel; offset: Vector2 }[];
+  sticks: { label: StickLabel; offset: Vector2 }[];
   dpad: DPadConfig;
   textStyle: {
     defaultColor: [number, number, number, number];
@@ -109,17 +110,17 @@ export const DEFAULT_GAMEPAD_CONFIG: GamepadConfig = {
     pixelScale: 1 / 256,
   },
   buttons: [
-    { label: "A", offset: 0.6 },
-    { label: "B", offset: 0.4 },
-    { label: "X", offset: 0.2 },
-    { label: "Y", offset: 0.0 },
-    { label: "LB", offset: -0.2 },
-    { label: "RB", offset: -0.4 },
-    { label: "Start", offset: 1.0 },
-    { label: "Back", offset: 0.8 },
+    { label: "A", offset: new Vector2(0, 0.6) },
+    { label: "B", offset: new Vector2(0, 0.4) },
+    { label: "X", offset: new Vector2(0, 0.2) },
+    { label: "Y", offset: new Vector2(0, 0.0) },
+    { label: "LB", offset: new Vector2(0, -0.2) },
+    { label: "RB", offset: new Vector2(0, -0.4) },
+    { label: "Start", offset: new Vector2(0, 1.0) },
+    { label: "Back", offset: new Vector2(0, 0.8) },
     {
       label: "Xbox",
-      offset: -1.6,
+      offset: new Vector2(0, -1.6),
       warning: {
         text: "Note: Disable 'Open Game Bar using Xbox button' in Windows settings",
         position: { x: -3.3, y: 1.7 },
@@ -129,12 +130,12 @@ export const DEFAULT_GAMEPAD_CONFIG: GamepadConfig = {
     },
   ],
   triggers: [
-    { label: "LT", offset: -0.6 },
-    { label: "RT", offset: -0.8 },
+    { label: "LT", offset: new Vector2(0, -0.6) },
+    { label: "RT", offset: new Vector2(0, -0.8) },
   ],
   sticks: [
-    { label: "Left", offset: -1.2 },
-    { label: "Right", offset: -1.0 },
+    { label: "Left", offset: new Vector2(0, -1.2) },
+    { label: "Right", offset: new Vector2(0, -1.0) },
   ],
   dpad: {
     directions: ["Up", "Right", "Down", "Left"],
