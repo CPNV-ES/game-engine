@@ -5,7 +5,43 @@ This is a [Vite](https://vitejs.dev/) project that aims to create a 2D game engi
 The project is based on the [WebGPU](https://gpuweb.github.io/gpuweb/) API and is intended to be used in the browser. 
 The engine is designed to be modular and extensible, with a focus on enforcing a strict separation of concerns between the different components of the engine.
 
-## Getting Started
+## Features
+* WebGPU rendering engine
+* 2D polygon physics engine
+* Audio engine
+* Input system supporting multiple gamepads, keyboard, and mouse
+* Debugging tools
+
+## Use sprunk in your project
+### Prerequisites
+* npm 10.2+ [official doc](https://docs.npmjs.com/try-the-latest-stable-version-of-npm)
+* node v21+ [official doc](https://nodejs.org/en/download)
+* Google Chrome 130+ (or any other browser that runs WebGPU)
+### Install the package with npm
+```shell
+npm i sprunk-engine
+```
+### How to use ?
+Depending on what you want to do, you can check these examples:
+* [Basic usage (3D engine)](src/main.ts)
+* [Gamepad visualizer](test/Extensions/InputSystem/Gamepad/main.ts)
+* [Physics engine example](test/Extensions/PhysicsEngine/Integration/PhysicsSandbox/main.ts)
+
+### Documentation
+The documentation is available in the [doc](doc) folder.
+Here are some useful links:
+* [Game Window Components](doc/game-window-components.md)
+* [Events and Callbacks](doc/events.md)
+* [Rendering Engine](doc/extensions/render-engine/render-engine.md)
+  * [Transform, parenting and 3d transformations](doc/extensions/render-engine/3d-transformations-usage.md)
+  * [Text Rendering](doc/extensions/render-engine/text-render-behavior.md)
+* [Physics Engine](doc/extensions/physics-engine/physics-engine.md)
+* [Input System](doc/extensions/input-system/input-system.md)
+  * [Gamepad System](doc/extensions/input-system/gamepads/gamepad-system.md)
+* [Game Object Debugger](doc/extensions/debugger/game-object-debugger.md)
+* [Audio Engine](doc/extensions/audio-engine/audio-engine.md)
+
+## Getting Started (for maintainers)
 
 ### Prerequisites
 * IDE used PhpStorm 2024.2 or Webstorm 2024.2
