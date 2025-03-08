@@ -55,6 +55,16 @@ describe("GamepadDevice", (): void => {
     });
   });
 
+  it("should emit a 0,0 event when an axis nearly changes (dead zone)", (): void => {
+    InputUtility.triggerGamepadAxisChange(0, 0.01, 0.01);
+    ticker.tick(1);
+
+    expect(axisChangeCallback).toHaveBeenCalledWith({
+      index: 0,
+      value: { x: 0, y: 0 },
+    });
+  });
+
   it("should handle multiple simultaneous button presses", (): void => {
     InputUtility.triggerGamepadButtonDown(0);
     InputUtility.triggerGamepadButtonDown(1);

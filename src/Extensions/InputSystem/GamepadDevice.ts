@@ -32,6 +32,8 @@ export class GamepadDevice extends Device {
     value: Vector2;
   }>();
 
+  public static readonly DEAD_ZONE: number = 0.1;
+
   protected gamepad: Gamepad;
 
   private _buttonStates: boolean[] = [];
@@ -74,8 +76,14 @@ export class GamepadDevice extends Device {
     );
 
     for (let i: number = 0; i < freshGamepad.axes.length; i += 2) {
-      const xValue: number = freshGamepad.axes[i];
-      const yValue: number = freshGamepad.axes[i + 1];
+      let xValue: number = freshGamepad.axes[i];
+      let yValue: number = freshGamepad.axes[i + 1];
+      if (Math.abs(xValue) < GamepadDevice.DEAD_ZONE) {
+        xValue = 0;
+      }
+      if (Math.abs(yValue) < GamepadDevice.DEAD_ZONE) {
+        yValue = 0;
+      }
       if (
         xValue !== this._axisStates[i] ||
         yValue !== this._axisStates[i + 1]

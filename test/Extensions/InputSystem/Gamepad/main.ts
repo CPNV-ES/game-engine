@@ -43,7 +43,7 @@ function createCamera(): GameObject {
 
 function createGamepadVisualization(gamepad: GamepadDevice): GameObject {
   const container = new GameObject(`Gamepad ${gamepad.index}`);
-  const startY = 1.1 - gamepad.index; // Vertical spacing between gamepads
+  const startY = 1.15 - gamepad.index * 1.8; // Vertical spacing between gamepads
 
   gameEngineWindow.root.addChild(container);
   createGamepadLabel(container, gamepad, startY);
