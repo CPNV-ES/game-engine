@@ -1,6 +1,7 @@
 import { DeviceInputBehavior } from "@extensions/InputSystem/DeviceInputBehavior.ts";
 import { MovableLogicBehavior } from "@test/ExampleBehaviors/MovableLogicBehavior.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
 import { GamepadDevice } from "@extensions/InputSystem/GamepadDevice.ts";
 
@@ -8,7 +9,6 @@ export class GamepadMovableBehavior extends DeviceInputBehavior {
   private _movableLogicBehavior: MovableLogicBehavior;
   private readonly MOVEMENT_SPEED = 10;
   private _gamepad: GamepadDevice | null = null;
-  protected readonly inputEngineComponent: InputGameEngineComponent;
 
   constructor(
     inputComponent: InputGameEngineComponent,
@@ -16,7 +16,6 @@ export class GamepadMovableBehavior extends DeviceInputBehavior {
   ) {
     super(inputComponent);
     this._movableLogicBehavior = movableLogicBehavior;
-    this.inputEngineComponent = inputComponent;
     console.log(
       "GamepadMovableBehavior initialized with MovableLogicBehavior:",
       this._movableLogicBehavior,
@@ -81,18 +80,20 @@ export class GamepadMovableBehavior extends DeviceInputBehavior {
     if (data.axis === 0) {
       const xSpeed = data.value * this.MOVEMENT_SPEED;
       console.log("Setting X speed:", xSpeed);
-      this._movableLogicBehavior.translationSpeed = new Vector2(
+      this._movableLogicBehavior.translationSpeed = new Vector3(
         xSpeed,
         this._movableLogicBehavior.translationSpeed.y,
+        0,
       );
     }
     // Left stick Y-axis
     else if (data.axis === 1) {
       const ySpeed = data.value * this.MOVEMENT_SPEED;
       console.log("Setting Y speed:", ySpeed);
-      this._movableLogicBehavior.translationSpeed = new Vector2(
+      this._movableLogicBehavior.translationSpeed = new Vector3(
         this._movableLogicBehavior.translationSpeed.x,
         ySpeed,
+        0,
       );
     }
   }
@@ -101,7 +102,7 @@ export class GamepadMovableBehavior extends DeviceInputBehavior {
     console.log("Gamepad button down:", buttonIndex);
 
     const currentSpeed = this._movableLogicBehavior.translationSpeed;
-    let newSpeed = new Vector2(currentSpeed.x, currentSpeed.y);
+    let newSpeed = new Vector3(currentSpeed.x, currentSpeed.y, 0);
 
     switch (buttonIndex) {
       // A button - Move up
@@ -130,7 +131,7 @@ export class GamepadMovableBehavior extends DeviceInputBehavior {
     console.log("Gamepad button up:", buttonIndex);
 
     const currentSpeed = this._movableLogicBehavior.translationSpeed;
-    let newSpeed = new Vector2(currentSpeed.x, currentSpeed.y);
+    let newSpeed = new Vector3(currentSpeed.x, currentSpeed.y, 0);
 
     switch (buttonIndex) {
       // A button - Stop up movement
