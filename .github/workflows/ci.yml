@@ -93,10 +93,10 @@ jobs:
         run: npm install
 
       - name: Debug NPM Token
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run:
           echo "NPM Token Length: $(echo -n $NODE_AUTH_TOKEN | wc -c)"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # Ensure the NPM_TOKEN is stored in the GitHub secrets
       - name: Check npm whoami
