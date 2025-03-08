@@ -13,8 +13,6 @@ import { DraggableElement } from "@extensions/Debugger/DraggableElement.ts";
 import { ResizableElement } from "@extensions/Debugger/ResizableElement.ts";
 import { GameObject } from "@core/GameObject.ts";
 
-import "@extensions/Debugger/debugger.css";
-
 /**
  * All supported sprunk engine component names.
  */
