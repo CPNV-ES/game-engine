@@ -4,14 +4,11 @@ import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { TextRenderBehavior } from "@extensions/RenderEngine/Text/TextRenderBehavior.ts";
 import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior.ts";
-import { GamepadManager } from "@extensions/InputSystem/GamepadManager.ts";
 import { Color } from "@extensions/RenderEngine/Color.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
-
-/**
- * Warning: Edit the RenderBehavior.ts to add mat4.identity() instead of RenderEngineUtility.toModelMatrix(this.transform), on line 80
- */
+import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent";
+import { GamepadDevice } from "../../../../src/Extensions/InputSystem/GamepadDevice";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -19,19 +16,20 @@ const canvas: HTMLCanvasElement =
 // Initialize game engine with render component
 const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, true, [
   "RenderGameEngineComponent",
+  "InputGameEngineComponent",
 ]);
 const renderComponent: RenderGameEngineComponent =
   gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
-
-// Create GamepadManager instance
-const gamepadManager = new GamepadManager();
+const inputComponent: InputGameEngineComponent =
+  gameEngineWindow.getEngineComponent(InputGameEngineComponent)!;
 
 // Create camera
 const cameraGo = createCamera();
 gameEngineWindow.root.addChild(cameraGo);
+cameraGo.transform.position.set(0, 0, 10);
 
 // Container for gamepad visualization objects
-const gamepadObjects: GameObject[] = [];
+const gamepadObjects: (GameObject | null)[] = [];
 
 // Start updating gamepad state
 updateGamepads();
@@ -40,46 +38,44 @@ function createCamera(): GameObject {
   const cameraGo = new GameObject("Camera");
   const camera = new Camera(renderComponent, Math.PI / 8);
   cameraGo.addBehavior(camera);
-  cameraGo.transform.position = new Vector2(-2, 0);
   return cameraGo;
 }
 
-function createGamepadVisualization(gamepadIndex: number): GameObject {
-  const container = new GameObject(`Gamepad ${gamepadIndex}`);
-  const startY = -gamepadIndex * 2; // Vertical spacing between gamepads
+function createGamepadVisualization(gamepad: GamepadDevice): GameObject {
+  const container = new GameObject(`Gamepad ${gamepad.index}`);
+  const startY = 1.1 - gamepad.index; // Vertical spacing between gamepads
 
   gameEngineWindow.root.addChild(container);
-  createGamepadLabel(container, gamepadIndex, startY);
-  createButtonsVisualization(container, gamepadIndex, startY);
-  createAxesVisualization(container, gamepadIndex, startY);
+  createGamepadLabel(container, gamepad, startY);
+  createButtonsVisualization(container, startY);
+  createAxesVisualization(container, gamepad, startY);
 
-  subscribeToGamepadEvents(container, gamepadIndex);
+  subscribeToGamepadEvents(container, gamepad);
 
   return container;
 }
 
 function createGamepadLabel(
   container: GameObject,
-  gamepadIndex: number,
+  gamepad: GamepadDevice,
   startY: number,
 ): void {
-  const labelGo = new GameObject(`Label ${gamepadIndex}`);
+  const labelGo = new GameObject(`Label ${gamepad.index}`);
   container.addChild(labelGo);
-  labelGo.transform.position = new Vector2(-4, startY + 1.5);
+  labelGo.transform.position.set(-1, startY + 0.6, 0);
 
   const labelText = new TextRenderBehavior(
     renderComponent,
     "/test/Extensions/RenderEngine/SimpleText/Sprunthrax/Sprunthrax-SemiBold-msdf.json",
   );
-  labelText.text = `Gamepad ${gamepadIndex}`;
-  labelText.color = [0, 0, 0, 1];
-  labelText.pixelScale = 1 / 128;
+  labelText.text = `Gamepad ${gamepad.index}`;
+  labelText.color = [1, 1, 1, 1];
+  labelText.pixelScale = 1 / 256;
   labelGo.addBehavior(labelText);
 }
 
 function createButtonsVisualization(
   container: GameObject,
-  gamepadIndex: number,
   startY: number,
 ): void {
   for (let i = 0; i < 17; i++) {
@@ -89,25 +85,27 @@ function createButtonsVisualization(
     const buttonGo = new GameObject(`Button ${i}`);
     buttonContainer.addChild(buttonGo);
 
-    const buttonSize = 0.3;
-    const spacing = 0.4;
-    const x = -5 + (i % 8) * spacing;
-    const y = startY + Math.floor(i / 8) * -spacing;
+    const buttonSize = 0.2;
+    const spacing = 0.3;
+    const x = -1 + (i % 8) * spacing;
+    const y = startY - 0.3 + Math.floor(i / 8) * -spacing;
 
     const buttonLines = createButtonOutline(x, y, buttonSize);
-    buttonGo.addBehavior(
-      new LinesRenderBehavior(
-        renderComponent,
-        buttonLines,
-        new Color(0.5, 0.5, 0.5, 1),
-      ),
-    );
+    console.log("buttonLines", buttonLines),
+      buttonGo.addBehavior(
+        new LinesRenderBehavior(
+          renderComponent,
+          buttonLines,
+          new Color(0.5, 0.5, 0.5, 1),
+        ),
+      );
 
     const buttonLabelGo = new GameObject(`Label ${i}`);
     buttonContainer.addChild(buttonLabelGo);
-    buttonLabelGo.transform.position = new Vector2(
+    buttonLabelGo.transform.position.set(
       x + buttonSize / 2,
       y - buttonSize / 2,
+      0,
     );
 
     const buttonLabelText = new TextRenderBehavior(
@@ -134,10 +132,10 @@ function createButtonOutline(x: number, y: number, size: number): Vector2[] {
 
 function createAxesVisualization(
   container: GameObject,
-  gamepadIndex: number,
+  gamepad: GamepadDevice,
   startY: number,
 ): void {
-  const axesContainer = new GameObject(`AxesContainer ${gamepadIndex}`);
+  const axesContainer = new GameObject(`AxesContainer ${gamepad.index}`);
   container.addChild(axesContainer);
 
   const axesSpacing = 1.5;
@@ -149,9 +147,11 @@ function createAxesVisualization(
     axesContainer.addChild(axisGo);
 
     const x = axesOffsetX + i * axesSpacing;
-    const y = startY;
+    const y = startY + 0.1;
 
-    const axisLines = createAxisOutline(x, y, axesSize);
+    axisGo.transform.position.set(x, y, 0);
+
+    const axisLines = createAxisOutline(axesSize);
     axisGo.addBehavior(
       new LinesRenderBehavior(
         renderComponent,
@@ -160,31 +160,30 @@ function createAxesVisualization(
       ),
     );
 
-    const axisDotGo = createAxisDot(x, y, axesSize);
+    const axisDotGo = createAxisDot();
     axisGo.addChild(axisDotGo);
 
-    subscribeToAxisChanges(gamepadIndex, i * 2, axisDotGo, x, y, axesSize); // X axis
-    subscribeToAxisChanges(gamepadIndex, i * 2 + 1, axisDotGo, x, y, axesSize); // Y axis
+    subscribeToAxisChanges(gamepad, i * 2, axisDotGo, axesSize); // X axis
+    subscribeToAxisChanges(gamepad, i * 2 + 1, axisDotGo, axesSize); // Y axis
   }
 }
 
-function createAxisOutline(x: number, y: number, size: number): Vector2[] {
+function createAxisOutline(size: number): Vector2[] {
   const segments = 32;
   const radius = size / 2;
   const axisLines: Vector2[] = [];
   for (let j = 0; j < segments; j++) {
     const angle = (j / segments) * Math.PI * 2;
     axisLines.push(
-      new Vector2(x + radius * Math.cos(angle), y + radius * Math.sin(angle)),
+      new Vector2(radius * Math.cos(angle), radius * Math.sin(angle)),
     );
   }
   axisLines.push(axisLines[0]);
   return axisLines;
 }
 
-function createAxisDot(x: number, y: number, size: number): GameObject {
+function createAxisDot(dotSize: number = 0.02): GameObject {
   const axisDotGo = new GameObject(`AxisDot`);
-  const dotSize = 0.02;
   const dotLines = [
     new Vector2(-dotSize / 2, -dotSize / 2),
     new Vector2(dotSize / 2, -dotSize / 2),
@@ -199,34 +198,27 @@ function createAxisDot(x: number, y: number, size: number): GameObject {
 }
 
 function subscribeToAxisChanges(
-  gamepadIndex: number,
+  gamepad: GamepadDevice,
   axisIndex: number,
   axisDotGo: GameObject,
-  x: number,
-  y: number,
   size: number,
 ): void {
-  const gamepad = gamepadManager.getAllGamepads()[gamepadIndex];
   gamepad.onAxisChange.addObserver((axisChange) => {
     if (axisChange.index === axisIndex / 2) {
       const { xValue, yValue } = axisChange;
-      const radius = size / 2;
-      const distance = Math.sqrt(xValue * xValue + yValue * yValue);
-      const clampedDistance = Math.min(distance, radius);
-      const angle = Math.atan2(yValue, xValue);
-      const newX = x + clampedDistance * Math.cos(angle);
-      const newY = y - clampedDistance * Math.sin(angle);
-      axisDotGo.transform.position = new Vector2(newX, newY);
+      axisDotGo.transform.position.set(
+        (xValue * size) / 2,
+        (-yValue * size) / 2,
+        0,
+      );
     }
   });
 }
 
 function subscribeToGamepadEvents(
   container: GameObject,
-  gamepadIndex: number,
+  gamepad: GamepadDevice,
 ): void {
-  const gamepad = gamepadManager.getAllGamepads()[gamepadIndex];
-
   gamepad.onButtonDown.addObserver((buttonIndex: number) => {
     const buttonContainer = container.children[buttonIndex + 1];
     if (buttonContainer) {
@@ -257,30 +249,31 @@ function subscribeToGamepadEvents(
 }
 
 function updateGamepads(): void {
-  const gamepads = gamepadManager.getAllGamepads();
+  const gamepads = inputComponent.getDevices(GamepadDevice);
 
-  gamepads.forEach((gamepad, index) => {
+  gamepads.forEach((gamepad, _) => {
+    const index = gamepad.index!;
     if (!gamepadObjects[index]) {
-      gamepadObjects[index] = createGamepadVisualization(index);
+      gamepadObjects[index] = createGamepadVisualization(gamepad);
     }
   });
-
-  requestAnimationFrame(updateGamepads);
 }
 
 // Handle gamepad connection and disconnection
-gamepadManager.onGamepadConnected.addObserver((gamepad) => {
+inputComponent.onDeviceAdded.addObserver((gamepad) => {
+  if (!(gamepad instanceof GamepadDevice)) return;
   const index = gamepad.index!;
   if (!gamepadObjects[index]) {
-    gamepadObjects[index] = createGamepadVisualization(index);
+    gamepadObjects[index] = createGamepadVisualization(gamepad);
   }
 });
 
-gamepadManager.onGamepadDisconnected.addObserver((gamepad) => {
+inputComponent.onDeviceRemoved.addObserver((gamepad) => {
+  if (!(gamepad instanceof GamepadDevice)) return;
   const index = gamepad.index!;
   const gamepadObject = gamepadObjects[index];
   if (gamepadObject) {
     gameEngineWindow.root.removeChild(gamepadObject);
-    gamepadObjects[index] = undefined;
+    gamepadObjects[index] = null;
   }
 });
