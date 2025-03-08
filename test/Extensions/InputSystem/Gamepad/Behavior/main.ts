@@ -7,7 +7,7 @@ import { MovableLogicBehavior } from "@test/ExampleBehaviors/MovableLogicBehavio
 import { GamepadMovableBehavior } from "./GamepadMovableBehavior.ts";
 import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
-import { LinesRenderBehavior } from "../../../../../src/Extensions/RenderEngine/Wireframe/LinesRenderBehavior";
+import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior";
 
 // Initialize the game engine with render and input components
 const canvas = document.querySelector<HTMLCanvasElement>("#app")!;

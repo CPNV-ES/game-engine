@@ -8,7 +8,7 @@ import { Color } from "@extensions/RenderEngine/Color.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent";
-import { GamepadDevice } from "../../../../src/Extensions/InputSystem/GamepadDevice";
+import { GamepadDevice } from "@extensions/InputSystem/GamepadDevice";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
