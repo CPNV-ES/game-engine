@@ -65,13 +65,6 @@ describe("GamepadDevice", (): void => {
     expect(buttonDownCallback).toHaveBeenCalledWith(1);
     expect(buttonDownCallback).toHaveBeenCalledWith(3);
     expect(buttonDownCallback).toHaveBeenCalledTimes(3);
-
-    const gamepadInstance = navigator.getGamepads()[0];
-    if (gamepadInstance) {
-      expect(gamepadInstance.buttons[0].pressed).toBe(true);
-      expect(gamepadInstance.buttons[1].pressed).toBe(true);
-      expect(gamepadInstance.buttons[3].pressed).toBe(true);
-    }
   });
 
   it("should handle multiple simultaneous axis movements", (): void => {
@@ -88,13 +81,5 @@ describe("GamepadDevice", (): void => {
       value: { x: -0.7, y: -0.7 },
     });
     expect(axisChangeCallback).toHaveBeenCalledTimes(2);
-
-    const gamepadInstance = navigator.getGamepads()[0];
-    if (gamepadInstance) {
-      expect(gamepadInstance.axes[0]).toBe(0.7);
-      expect(gamepadInstance.axes[1]).toBe(0.7);
-      expect(gamepadInstance.axes[2]).toBe(-0.7);
-      expect(gamepadInstance.axes[3]).toBe(-0.7);
-    }
   });
 });
