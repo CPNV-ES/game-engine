@@ -10,13 +10,15 @@ describe("InputGameEngineComponent", (): void => {
   let inputGameEngineComponent: InputGameEngineComponent;
   let mockDevice: Device;
 
+  beforeAll((): void => {
+    InputUtility.mockDocumentEventListeners();
+    InputUtility.mockWindowEventListeners();
+    InputUtility.mockGamepadEventListeners();
+  });
+
   beforeEach(() => {
     inputGameEngineComponent = new InputGameEngineComponent();
     mockDevice = new MockDevice();
-  });
-
-  beforeAll((): void => {
-    InputUtility.mockDocumentEventListeners();
   });
 
   it("should add a device and get a device", (): void => {

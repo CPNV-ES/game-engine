@@ -17,6 +17,8 @@ describe("DeviceInputBehavior", (): void => {
 
   beforeAll((): void => {
     InputUtility.mockDocumentEventListeners();
+    InputUtility.mockWindowEventListeners();
+    InputUtility.mockGamepadEventListeners();
     keyboard = new Keyboard();
     mouse = new Mouse();
 
