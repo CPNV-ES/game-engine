@@ -54,21 +54,21 @@ export class XboxGamepad extends GamepadDevice {
   public readonly onXboxButtonUp: Event<void> = new Event<void>();
 
   // Xbox button mappings
-  private static readonly BUTTON_A = 0;
-  private static readonly BUTTON_B = 1;
-  private static readonly BUTTON_X = 2;
-  private static readonly BUTTON_Y = 3;
-  private static readonly BUTTON_LB = 4;
-  private static readonly BUTTON_RB = 5;
-  private static readonly BUTTON_BACK = 8;
-  private static readonly BUTTON_START = 9;
-  private static readonly BUTTON_LEFT_STICK = 10;
-  private static readonly BUTTON_RIGHT_STICK = 11;
-  private static readonly BUTTON_DPAD_UP = 12;
-  private static readonly BUTTON_DPAD_DOWN = 13;
-  private static readonly BUTTON_DPAD_LEFT = 14;
-  private static readonly BUTTON_DPAD_RIGHT = 15;
-  private static readonly BUTTON_XBOX = 16;
+  public static readonly BUTTON_A = 0;
+  public static readonly BUTTON_B = 1;
+  public static readonly BUTTON_X = 2;
+  public static readonly BUTTON_Y = 3;
+  public static readonly BUTTON_LB = 4;
+  public static readonly BUTTON_RB = 5;
+  public static readonly BUTTON_BACK = 8;
+  public static readonly BUTTON_START = 9;
+  public static readonly BUTTON_LEFT_STICK = 10;
+  public static readonly BUTTON_RIGHT_STICK = 11;
+  public static readonly BUTTON_DPAD_UP = 12;
+  public static readonly BUTTON_DPAD_DOWN = 13;
+  public static readonly BUTTON_DPAD_LEFT = 14;
+  public static readonly BUTTON_DPAD_RIGHT = 15;
+  public static readonly BUTTON_XBOX = 16;
 
   // Axis mappings
   private static readonly AXIS_LEFT_STICK_X = 0;
