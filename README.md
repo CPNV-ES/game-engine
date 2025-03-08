@@ -68,7 +68,7 @@ The classes are written in order to follow the [Google TypeScript style guidelin
 * Release on the main branch we use GitFlow and not with GitHub release.
 * When creating a new feature, the branch name must be `feature/SPR-XX-NameOfTheFeature`
 * Before merging a feature into develop, the code should be reviewed by one other person (by opening a pull request).
-* Issues are added to the [github issues page](https://github.com/JuilletMikael/RIA-EggFlix/issues)
+* Issues are added to the [github issues page](https://github.com/CPNV-ES/game-engine/issues)
 
 ## License
 Distributed under the MIT License. See LICENSE.txt for more information.
