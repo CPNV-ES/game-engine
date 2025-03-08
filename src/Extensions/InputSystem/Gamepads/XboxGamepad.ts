@@ -1,4 +1,4 @@
-import { GamepadDevice } from "@extensions/InputSystem/Gamepad.ts";
+import { GamepadDevice } from "@extensions/InputSystem/GamepadDevice.ts";
 import { Event } from "@core/EventSystem/Event.ts";
 
 /**

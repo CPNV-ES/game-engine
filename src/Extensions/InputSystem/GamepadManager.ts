@@ -1,5 +1,5 @@
 import { Event } from "@core/EventSystem/Event.ts";
-import { GamepadDevice } from "@extensions/InputSystem/Gamepad.ts";
+import { GamepadDevice } from "@extensions/InputSystem/GamepadDevice.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 import { AnimationFrameTimeTicker } from "@core/Tickers/AnimationFrameTimeTicker.ts";
 import { Ticker } from "@core/Tickers/Ticker.ts";
