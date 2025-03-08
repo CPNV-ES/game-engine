@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - develop
-      - master
+      - main
   pull_request:
     branches:
       - '*'
@@ -69,3 +69,31 @@ jobs:
       # Build the project
       - name: Build project
         run: npm run build
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'  # Only run this job on the 'main' branch
+
+    steps:
+      # Checkout the code with Git LFS support
+      - name: Check out code with Git LFS
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Publish as a beta release
+      - name: Publish to npm as beta
+        run: npm publish --tag beta
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
