@@ -205,11 +205,8 @@ function subscribeToAxisChanges(
 ): void {
   gamepad.onAxisChange.addObserver((axisChange) => {
     if (axisChange.index === axisIndex / 2) {
-      const { xValue, yValue } = axisChange;
-      axisDotGo.transform.position.set(
-        (xValue * size) / 2,
-        (-yValue * size) / 2,
-        0,
+      axisDotGo.transform.position.setFromVector2(
+        axisChange.value.scale(size / 2),
       );
     }
   });
