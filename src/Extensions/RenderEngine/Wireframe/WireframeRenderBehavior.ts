@@ -11,7 +11,6 @@ import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
 export class WireframeRenderBehavior extends RenderBehavior {
   protected _vertexBuffer: GPUBuffer | null = null;
   protected _indexBuffer: GPUBuffer | null = null;
-  protected _mvpUniformBuffer: GPUBuffer | null = null;
   protected _indexData: Uint16Array;
   private _vertexData: Float32Array;
   private _bindGroup: GPUBindGroup | null = null;

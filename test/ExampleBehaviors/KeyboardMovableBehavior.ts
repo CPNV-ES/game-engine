@@ -1,6 +1,6 @@
 import { MovableLogicBehavior } from "@test/ExampleBehaviors/MovableLogicBehavior.ts";
 import { DeviceInputBehavior } from "@extensions/InputSystem/DeviceInputBehavior.ts";
-import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 
 export class KeyboardMovableBehavior extends DeviceInputBehavior {
   private _movableLogicBehavior: MovableLogicBehavior | null = null;
@@ -15,16 +15,16 @@ export class KeyboardMovableBehavior extends DeviceInputBehavior {
     console.log("Key down: " + _key);
     switch (_key) {
       case "ArrowUp":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, -10));
+        this._movableLogicBehavior.translationSpeed.add(new Vector3(0, -10, 0));
         break;
       case "ArrowDown":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, 10));
+        this._movableLogicBehavior.translationSpeed.add(new Vector3(0, 10, 0));
         break;
       case "ArrowLeft":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(-10, 0));
+        this._movableLogicBehavior.translationSpeed.add(new Vector3(-10, 0, 0));
         break;
       case "ArrowRight":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(10, 0));
+        this._movableLogicBehavior.translationSpeed.add(new Vector3(10, 0, 0));
         break;
     }
   }
@@ -33,16 +33,16 @@ export class KeyboardMovableBehavior extends DeviceInputBehavior {
     if (!this._movableLogicBehavior) return;
     switch (_key) {
       case "ArrowUp":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, 10));
+        this._movableLogicBehavior.translationSpeed.add(new Vector3(0, 10, 0));
         break;
       case "ArrowDown":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(0, -10));
+        this._movableLogicBehavior.translationSpeed.add(new Vector3(0, -10, 0));
         break;
       case "ArrowLeft":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(10, 0));
+        this._movableLogicBehavior.translationSpeed.add(new Vector3(10, 0, 0));
         break;
       case "ArrowRight":
-        this._movableLogicBehavior.translationSpeed.add(new Vector2(-10, 0));
+        this._movableLogicBehavior.translationSpeed.add(new Vector3(-10, 0, 0));
         break;
     }
   }

@@ -32,6 +32,7 @@ const physicsComponent: PhysicsGameEngineComponent =
 const cameraGo = new GameObject("Camera");
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.addBehavior(new Camera(renderComponent, 17));
+cameraGo.transform.position.set(0, 0, 10);
 
 // First object with collider
 const object1: GameObject = new GameObject("Object1");
