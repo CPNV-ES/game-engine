@@ -14,6 +14,7 @@ describe("DeviceInputBehavior", (): void => {
   let inputGameEngineComponent: InputGameEngineComponent;
   let gameEngineWindow: GameEngineWindow;
   let keyboard: Keyboard;
+  const ticker = new ManualTicker();
 
   beforeAll((): void => {
     InputUtility.mockDocumentEventListeners();
@@ -22,8 +23,8 @@ describe("DeviceInputBehavior", (): void => {
     keyboard = new Keyboard();
     mouse = new Mouse();
 
-    inputGameEngineComponent = new InputGameEngineComponent();
-    gameEngineWindow = new GameEngineWindow(new ManualTicker());
+    inputGameEngineComponent = new InputGameEngineComponent(ticker);
+    gameEngineWindow = new GameEngineWindow(ticker);
 
     inputGameEngineComponent.addDevice(keyboard);
     inputGameEngineComponent.addDevice(mouse);

@@ -5,10 +5,12 @@ import { MockDevice } from "@test/Extensions/InputSystem/Mocks/MockDevice.ts";
 import { Mouse } from "@extensions/InputSystem/Mouse.ts";
 import { Keyboard } from "@extensions/InputSystem/Keyboard.ts";
 import { InputUtility } from "@test/Extensions/InputSystem/InputUtility.ts";
+import { ManualTicker } from "../../ExampleBehaviors/ManualTicker";
 
 describe("InputGameEngineComponent", (): void => {
   let inputGameEngineComponent: InputGameEngineComponent;
   let mockDevice: Device;
+  const ticker = new ManualTicker();
 
   beforeAll((): void => {
     InputUtility.mockDocumentEventListeners();
@@ -17,7 +19,7 @@ describe("InputGameEngineComponent", (): void => {
   });
 
   beforeEach(() => {
-    inputGameEngineComponent = new InputGameEngineComponent();
+    inputGameEngineComponent = new InputGameEngineComponent(ticker);
     mockDevice = new MockDevice();
   });
 

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, Mock, beforeAll, beforeEach } from "vitest";
 import { GamepadDevice } from "@extensions/InputSystem/Gamepad.ts";
 import { InputUtility } from "@test/Extensions/InputSystem/InputUtility.ts";
 import { GamepadManager } from "@extensions/InputSystem/GamepadManager.ts";
+import { ManualTicker } from "../../../ExampleBehaviors/ManualTicker";
 
 describe("GamepadDevice", (): void => {
   let gamepad: GamepadDevice;
@@ -9,11 +10,12 @@ describe("GamepadDevice", (): void => {
   let buttonDownCallback: Mock;
   let buttonUpCallback: Mock;
   let axisChangeCallback: Mock;
+  const ticker = new ManualTicker();
 
   beforeAll((): void => {
     InputUtility.mockWindowEventListeners();
     InputUtility.mockGamepadEventListeners();
-    gamepadManager = new GamepadManager();
+    gamepadManager = new GamepadManager(ticker);
     gamepad = gamepadManager.getAllGamepads()[0];
   });
 
@@ -31,18 +33,21 @@ describe("GamepadDevice", (): void => {
 
   it("should emit an event when a button is pressed", (): void => {
     InputUtility.triggerGamepadButtonDown(0);
+    ticker.tick(1);
 
     expect(buttonDownCallback).toHaveBeenCalledWith(0);
   });
 
   it("should emit an event when a button is released", (): void => {
     InputUtility.triggerGamepadButtonUp(0);
+    ticker.tick(1);
 
     expect(buttonUpCallback).toHaveBeenCalledWith(0);
   });
 
   it("should emit an event when an axis changes", (): void => {
     InputUtility.triggerGamepadAxisChange(0, 0.5, 0.3);
+    ticker.tick(1);
 
     expect(axisChangeCallback).toHaveBeenCalledWith({
       index: 0,
@@ -55,6 +60,7 @@ describe("GamepadDevice", (): void => {
     InputUtility.triggerGamepadButtonDown(0);
     InputUtility.triggerGamepadButtonDown(1);
     InputUtility.triggerGamepadButtonDown(3);
+    ticker.tick(1);
 
     expect(buttonDownCallback).toHaveBeenCalledWith(0);
     expect(buttonDownCallback).toHaveBeenCalledWith(1);
@@ -72,6 +78,7 @@ describe("GamepadDevice", (): void => {
   it("should handle multiple simultaneous axis movements", (): void => {
     InputUtility.triggerGamepadAxisChange(0, 0.7, 0.7);
     InputUtility.triggerGamepadAxisChange(1, -0.7, -0.7);
+    ticker.tick(1);
 
     expect(axisChangeCallback).toHaveBeenCalledWith({
       index: 0,
