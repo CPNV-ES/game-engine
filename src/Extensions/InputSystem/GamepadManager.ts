@@ -1,7 +1,6 @@
 import { Event } from "@core/EventSystem/Event.ts";
 import { GamepadDevice } from "@extensions/InputSystem/GamepadDevice.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
-import { AnimationFrameTimeTicker } from "@core/Tickers/AnimationFrameTimeTicker.ts";
 import { Ticker } from "@core/Tickers/Ticker.ts";
 
 /**
@@ -74,8 +73,10 @@ export class GamepadManager {
     this._ticker = ticker;
     this.initializeConnectedGamepads();
     this.startPolling();
+    console.log("GAMEPAD!");
 
     window.addEventListener("gamepadconnected", (event: GamepadEvent) => {
+      console.log("GAMEPAD!");
       const gamepad = this.createGamepadDevice(event.gamepad);
       this._gamepads.push(gamepad);
       this.onGamepadConnected.emit(gamepad);
@@ -125,7 +126,8 @@ export class GamepadManager {
     return (
       id.includes("xbox") ||
       id.includes("xinput") ||
-      (id.includes("vendor: 045e") && id.includes("product: 02"))
+      (id.includes("vendor: 045e") &&
+        (id.includes("product: 02") || id.includes("product: 0b")))
     ); // Microsoft vendor ID and Xbox product ID pattern
   }
 

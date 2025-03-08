@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, Mock, beforeAll, beforeEach } from "vitest";
-import { GamepadDevice } from "@extensions/InputSystem/Gamepad.ts";
+import { GamepadDevice } from "@extensions/InputSystem/GamepadDevice.ts";
 import { InputUtility } from "@test/Extensions/InputSystem/InputUtility.ts";
 import { GamepadManager } from "@extensions/InputSystem/GamepadManager.ts";
 import { ManualTicker } from "../../../ExampleBehaviors/ManualTicker";
