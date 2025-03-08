@@ -72,9 +72,6 @@ export class WireframeRenderBehavior extends RenderBehavior {
       this._vertexData,
     );
     this._indexBuffer = this._renderEngine.createIndexBuffer(this._indexData);
-    this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
-      RenderEngineUtility.toModelMatrix(this.transform),
-    );
 
     this._colorBuffer = this._renderEngine.createUniformBuffer(
       this._color.toFloat32Array(),
@@ -83,7 +80,7 @@ export class WireframeRenderBehavior extends RenderBehavior {
     this._bindGroup = this._renderEngine.createBindGroup(
       this._bindGroupLayouts![0],
       [
-        { binding: 0, resource: { buffer: this._mvpUniformBuffer } },
+        { binding: 0, resource: { buffer: this._mvpUniformBuffer! } },
         { binding: 1, resource: { buffer: this._colorBuffer } },
       ],
     );

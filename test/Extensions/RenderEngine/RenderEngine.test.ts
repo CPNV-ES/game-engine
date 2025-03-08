@@ -1,12 +1,14 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { ScreenshotTestUtility } from "@test/ScreenshotTestUtility.ts";
+import { describe, it, expect } from "vitest";
+import { NavigatorTestUtility } from "@test/NavigatorTestUtility";
 
 const testPath = "test/Extensions/RenderEngine/";
 const actualFileName = "actual";
 const expectedFileName = "expected";
 const differenceFileName = "difference";
 const pageName = "index.html";
-const screenshotUtil = new ScreenshotTestUtility();
+const screenshotUtil = new NavigatorTestUtility();
 
 const runScreenshotTestCase = async (
   testName: string,
@@ -88,5 +90,8 @@ describe("WebGPU Rendering Test", () => {
   });
   it("mesh should be drawn correctly, transformed, colored, centered, scaled", async () => {
     await runScreenshotTestCase("MeshDrawing");
+  });
+  it("should render a grid with gizmos in global and local space", async () => {
+    await runScreenshotTestCase("ComplexTransformations");
   });
 });

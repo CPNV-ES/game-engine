@@ -11,7 +11,11 @@
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
+
+    /* Output settings */
+    "declaration": true,
+    "declarationDir": "dist",
+    "outDir": "dist",
 
     /* Linting */
     "strict": true,
@@ -23,10 +27,11 @@
     "types": ["@webgpu/types"],
     "baseUrl": ".",
     "paths": {
-      "@core/*": ["./src/core/*"],
-      "@extensions/*": ["./src/extensions/*"],
+      "@core/*": ["./src/Core/*"],
+      "@extensions/*": ["./src/Extensions/*"],
       "@test/*": ["./test/*"]
     }
   },
   "include": ["src"],
+  "exclude": ["node_modules", "dist", "tests"]
 }

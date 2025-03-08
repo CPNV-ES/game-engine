@@ -1,25 +1,91 @@
 import { mat4, vec3, Vec3 } from "wgpu-matrix";
 import { Transform } from "@core/MathStructures/Transform.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Quaternion } from "@core/MathStructures/Quaternion.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 
 export class RenderEngineUtility {
   /**
    * Convert the Transform into a model matrix
    */
   public static toModelMatrix(transform: Transform): Float32Array {
+    // Start with an identity matrix
     let modelMatrix = mat4.identity();
+
+    const worldPosition = transform.worldPosition;
+    const worldRotation = transform.worldRotation;
+
+    // Apply translation (position)
     modelMatrix = mat4.translate(modelMatrix, [
-      transform.position.x,
-      transform.position.y,
-      0,
+      worldPosition.x,
+      worldPosition.y,
+      worldPosition.z,
     ]);
-    modelMatrix = mat4.rotateZ(modelMatrix, transform.rotation);
+
+    // Apply rotation (quaternion)
+    const rotationMatrix = this.quaternionToMatrix(worldRotation);
+    modelMatrix = mat4.multiply(modelMatrix, rotationMatrix);
+
+    // Apply scale
     modelMatrix = mat4.scale(modelMatrix, [
       transform.scale.x,
       transform.scale.y,
+      transform.scale.z,
+    ]);
+
+    return modelMatrix;
+  }
+
+  /**
+   * Convert a quaternion to a rotation matrix
+   */
+  private static quaternionToMatrix(quaternion: Quaternion): Float32Array {
+    const { w, x, y, z } = quaternion;
+
+    // Calculate the elements of the rotation matrix
+    const xx = x * x;
+    const xy = x * y;
+    const xz = x * z;
+    const xw = x * w;
+
+    const yy = y * y;
+    const yz = y * z;
+    const yw = y * w;
+
+    const zz = z * z;
+    const zw = z * w;
+
+    const m00 = 1 - 2 * (yy + zz);
+    const m01 = 2 * (xy - zw);
+    const m02 = 2 * (xz + yw);
+
+    const m10 = 2 * (xy + zw);
+    const m11 = 1 - 2 * (xx + zz);
+    const m12 = 2 * (yz - xw);
+
+    const m20 = 2 * (xz - yw);
+    const m21 = 2 * (yz + xw);
+    const m22 = 1 - 2 * (xx + yy);
+
+    // Construct the rotation matrix in column-major order! (OpenGL style)
+    return new Float32Array([
+      m00,
+      m10,
+      m20,
+      0,
+      m01,
+      m11,
+      m21,
+      0,
+      m02,
+      m12,
+      m22,
+      0,
+      0,
+      0,
+      0,
       1,
     ]);
-    return modelMatrix;
   }
 
   /**
@@ -93,5 +159,13 @@ export class RenderEngineUtility {
 
     // Compute intersection point
     return vec3.add(rayOrigin, vec3.scale(rayDir, t)) as Vec3;
+  }
+
+  /**
+   * Transform the core Vector3 into the web-gpu Vec3
+   * @param vector
+   */
+  public static toVec3(vector: Vector3): Vec3 {
+    return vec3.fromValues(vector.x, vector.y, vector.z);
   }
 }

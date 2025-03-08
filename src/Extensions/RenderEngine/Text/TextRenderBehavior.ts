@@ -1,5 +1,4 @@
 import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
 import MsdfTextVert from "@extensions/RenderEngine/BasicShaders/MsdfText.vert.wgsl?raw";
 import MsdfTextFrag from "@extensions/RenderEngine/BasicShaders/MsdfText.frag.wgsl?raw";
 import { MsdfFont } from "@extensions/RenderEngine/Text/MSDFFont/MsdfFont.ts";

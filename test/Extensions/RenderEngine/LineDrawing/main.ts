@@ -4,8 +4,10 @@ import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { Color } from "@extensions/RenderEngine/Color.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
+import { Quaternion } from "@core/MathStructures/Quaternion";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -58,9 +60,10 @@ const polygonRenderBehavior = new LinesRenderBehavior(
 );
 polygonGo.addBehavior(polygonRenderBehavior);
 polygonRenderBehavior.color = new Color(0, 1, 1, 1);
-polygonGo.transform.position = new Vector2(2, 1);
-polygonGo.transform.rotation = Math.PI / 4;
+polygonGo.transform.position.set(2, 1, 0);
+polygonGo.transform.rotation.setFromEulerAngles(0, 0, Math.PI / 4);
 
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
+cameraGo.transform.position.set(0, 0, 10);
 cameraGo.addBehavior(new Camera(renderComponent));

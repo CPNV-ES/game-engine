@@ -1,5 +1,5 @@
-import { createServer, ViteDevServer } from "vite";
-import puppeteer from "puppeteer";
+import { createServer } from "vite";
+import puppeteer, { Browser, Page } from "puppeteer";
 import fs from "fs";
 import { PNG } from "pngjs";
 import pixelmatch from "pixelmatch";
@@ -7,9 +7,9 @@ import pixelmatch from "pixelmatch";
 /**
  * Utility class to take screenshots of a page and compare them with expected images
  */
-export class ScreenshotTestUtility {
-  private _browser: puppeteer.Browser;
-  private _page: puppeteer.Page;
+export class NavigatorTestUtility {
+  private _browser: Browser | null = null;
+  private _page: Page | null = null;
 
   /**
    * Launch the browser instance (before all tests are done)
@@ -35,6 +35,12 @@ export class ScreenshotTestUtility {
     timeToWait: number = 100,
     devPort: number = 8081,
   ) {
+    if (this._browser === null || this._page === null) {
+      throw new Error(
+        "Browser or page is not initialized. You need to call openBrowser() first.",
+      );
+    }
+
     // Remove the existing file if it exists
     if (fs.existsSync(screenshotPath)) {
       fs.unlinkSync(screenshotPath);
@@ -93,6 +99,13 @@ export class ScreenshotTestUtility {
    * Destroy the browser instance (after all tests are done)
    */
   public async closeBrowser() {
+    if (this._browser === null) {
+      throw new Error(
+        "Browser is not initialized. You need to call openBrowser() first.",
+      );
+    }
     await this._browser.close();
+    this._browser = null;
+    this._page = null;
   }
 }

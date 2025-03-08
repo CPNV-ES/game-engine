@@ -13,8 +13,6 @@ import { DraggableElement } from "@extensions/Debugger/DraggableElement.ts";
 import { ResizableElement } from "@extensions/Debugger/ResizableElement.ts";
 import { GameObject } from "@core/GameObject.ts";
 
-import "@extensions/Debugger/debugger.css";
-
 /**
  * All supported sprunk engine component names.
  */
@@ -88,8 +86,7 @@ export class Sprunk {
         inputComponent.addDevice(new Mouse());
         return inputComponent;
       case "PhysicsGameEngineComponent":
-        //TODO : Add fixed time ticker when physics has been merged
-        return new PhysicsGameEngineComponent();
+        return new PhysicsGameEngineComponent(fixedTicker);
       default:
         throw new Error(`Component ${componentName} does not exist.`);
     }
