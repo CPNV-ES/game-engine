@@ -23,16 +23,10 @@ class GamepadDevice {
     + readonly onButtonUp: Event<number>
     + readonly onAxisChange: Event<{index: number, xValue: number, yValue: number}>
     + readonly index: number
-    - _buttonStates: boolean[]
-    - _axisStates: number[]
-    - _isPolling: boolean
-    - _isPollingInProgress: boolean
-    - _animationFrameId: number | null
     + constructor(index: number)
     + startPolling(): void
     + stopPolling(): void
     + pollGamepadOnce(): void
-    - pollGamepad(): void
     + destroy(): void
     + isButtonPressed(buttonIndex: number): boolean
 }
@@ -67,25 +61,6 @@ class XboxGamepad {
     + readonly onRightStickButtonUp: Event<void>
     + readonly onXboxButtonDown: Event<void>
     + readonly onXboxButtonUp: Event<void>
-    - {static} BUTTON_A: number
-    - {static} BUTTON_B: number
-    - {static} BUTTON_X: number
-    - {static} BUTTON_Y: number
-    - {static} BUTTON_LB: number
-    - {static} BUTTON_RB: number
-    - {static} BUTTON_BACK: number
-    - {static} BUTTON_START: number
-    - {static} BUTTON_LEFT_STICK: number
-    - {static} BUTTON_RIGHT_STICK: number
-    - {static} BUTTON_DPAD_UP: number
-    - {static} BUTTON_DPAD_DOWN: number
-    - {static} BUTTON_DPAD_LEFT: number
-    - {static} BUTTON_DPAD_RIGHT: number
-    - {static} BUTTON_XBOX: number
-    - {static} AXIS_LEFT_STICK_X: number
-    - {static} AXIS_LEFT_STICK_Y: number
-    - {static} AXIS_RIGHT_STICK_X: number
-    - {static} AXIS_RIGHT_STICK_Y: number
     + getLeftTriggerValue(): number
     + getRightTriggerValue(): number
     + getLeftStickPosition(): [number, number]
@@ -109,11 +84,7 @@ class XboxGamepad {
 class GamepadManager {
     + readonly onGamepadConnected: Event<GamepadDevice>
     + readonly onGamepadDisconnected: Event<GamepadDevice>
-    - _gamepads: GamepadDevice[]
     + constructor()
-    - initializeConnectedGamepads(): void
-    - createGamepadDevice(gamepad: Gamepad): GamepadDevice
-    - isXboxGamepad(gamepad: Gamepad): boolean
     + getAllGamepads(): GamepadDevice[]
     + getXboxGamepads(): XboxGamepad[]
 }
