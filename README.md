@@ -32,9 +32,15 @@ npm run test
 ```
 
 ## Deployment
-### Build the project
+### Build the project as a library
 ```shell
   npm run build
+```
+This will generate a `dist` folder containing the library files.
+
+### Build the project as a web application
+```shell
+  vite build
 ```
 This will generate static files in the `dist` folder. 
 You can then deploy these files to a any web server.
