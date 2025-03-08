@@ -1,4 +1,4 @@
-# Sprunk - A TypeScript 2D Web Game Engine
+# Sprunk - A TypeScript Web Game Engine
 
 ## Description
 This is a [Vite](https://vitejs.dev/) project that aims to create a 2D game engine in TypeScript. 
