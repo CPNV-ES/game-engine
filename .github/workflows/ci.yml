@@ -45,3 +45,27 @@ jobs:
         with:
           name: test-results
           path: ./test-results
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      # Checkout the code with Git LFS support
+      - name: Check out code with Git LFS
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Build the project
+      - name: Build project
+        run: npm run build
