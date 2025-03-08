@@ -14,10 +14,6 @@ export class GamepadMovableBehavior extends DeviceInputBehavior {
   ) {
     super(inputComponent);
     this._movableLogicBehavior = movableLogicBehavior;
-    console.log(
-      "GamepadMovableBehavior initialized with MovableLogicBehavior:",
-      this._movableLogicBehavior,
-    );
   }
 
   protected override onEnable(): void {
