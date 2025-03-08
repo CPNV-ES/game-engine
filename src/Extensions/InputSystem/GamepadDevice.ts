@@ -36,7 +36,6 @@ export class GamepadDevice extends Device {
 
   private _buttonStates: boolean[] = [];
   private _axisStates: number[] = [];
-  private _isPollingInProgress: boolean = false;
 
   constructor(gamepad: Gamepad) {
     super();
