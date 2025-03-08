@@ -2,6 +2,7 @@ import { GameEngineComponent } from "@core/GameEngineComponent.ts";
 import { Device } from "@extensions/InputSystem/Device.ts";
 import { GamepadManager } from "@extensions/InputSystem/GamepadManager.ts";
 import { GamepadDevice } from "@extensions/InputSystem/Gamepad.ts";
+import { Ticker } from "@core/Tickers/Ticker.ts";
 
 /**
  * A game engine component that manages input devices.
@@ -12,12 +13,22 @@ export class InputGameEngineComponent extends GameEngineComponent {
   private _devices: Device[] = [];
   private _gamepadManager: GamepadManager;
 
-  constructor() {
+  /**
+   * Creates a new InputGameEngineComponent instance.
+   * @param ticker - Use for polling gamepad state.
+   */
+  constructor(ticker: Ticker) {
     super();
-    this._gamepadManager = new GamepadManager();
+    this._gamepadManager = new GamepadManager(ticker);
     const gamepads: GamepadDevice[] = this._gamepadManager.getAllGamepads();
     gamepads.forEach((gamepad) => {
       this.addDevice(gamepad);
+    });
+    this._gamepadManager.onGamepadConnected.addObserver((gamepad) => {
+      this.addDevice(gamepad);
+    });
+    this._gamepadManager.onGamepadDisconnected.addObserver((gamepad) => {
+      this._devices = this._devices.filter((device) => device !== gamepad);
     });
   }
 

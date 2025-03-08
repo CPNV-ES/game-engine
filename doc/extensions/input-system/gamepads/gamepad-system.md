@@ -89,7 +89,7 @@ The system consists of three main components:
 
 ```typescript
 // Create GamepadManager instance
-const gamepadManager = new GamepadManager();
+const gamepadManager = new GamepadManager(new ManualTicker());
 
 // Listen for gamepad connections
 gamepadManager.onGamepadConnected.addObserver((gamepad) => {
@@ -149,7 +149,7 @@ const [rightX, rightY] = xbox.getRightStickPosition();
 Here's a complete example showing how to visualize gamepad input:
 
 ```typescript
-const gamepadManager = new GamepadManager();
+const gamepadManager = new GamepadManager(new ManualTicker());
 
 // Create visualization for each connected gamepad
 gamepadManager.onGamepadConnected.addObserver((gamepad) => {

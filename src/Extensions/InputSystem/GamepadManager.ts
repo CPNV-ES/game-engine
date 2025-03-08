@@ -2,6 +2,7 @@ import { Event } from "@core/EventSystem/Event.ts";
 import { GamepadDevice } from "@extensions/InputSystem/Gamepad.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
 import { AnimationFrameTimeTicker } from "@core/Tickers/AnimationFrameTimeTicker.ts";
+import { Ticker } from "@core/Tickers/Ticker.ts";
 
 /**
  * GamepadManager is the central manager for handling gamepad input in browser-based games.
@@ -11,7 +12,7 @@ import { AnimationFrameTimeTicker } from "@core/Tickers/AnimationFrameTimeTicker
  * @example
  * ```typescript
  * // Create GamepadManager instance
- * const gamepadManager = new GamepadManager();
+ * const gamepadManager = new GamepadManager(new ManualTicker());
  *
  * // Listen for gamepad connections
  * gamepadManager.onGamepadConnected.addObserver((gamepad) => {
@@ -58,7 +59,7 @@ export class GamepadManager {
   private _gamepads: GamepadDevice[] = [];
 
   private _isPolling: boolean = false;
-  private _ticker: AnimationFrameTimeTicker | null = null;
+  private _ticker: Ticker;
   private _tickerObserver: (() => void) | null = null;
 
   /**
@@ -67,8 +68,10 @@ export class GamepadManager {
    * - Checks for already connected gamepads
    * - Sets up event listeners for gamepad connections/disconnections
    * - Creates appropriate device instances for each connected gamepad
+   * @param ticker - The ticker to use for polling gamepad state
    */
-  constructor() {
+  constructor(ticker: Ticker) {
+    this._ticker = ticker;
     this.initializeConnectedGamepads();
     this.startPolling();
 
@@ -94,7 +97,6 @@ export class GamepadManager {
   private startPolling(): void {
     if (this._isPolling) return;
     this._isPolling = true;
-    this._ticker = new AnimationFrameTimeTicker();
     this._tickerObserver = () => this.updateGamepadStates();
     this._ticker.onTick.addObserver(this._tickerObserver);
   }

@@ -81,7 +81,7 @@ export class Sprunk {
           frameTicker,
         );
       case "InputGameEngineComponent":
-        const inputComponent = new InputGameEngineComponent();
+        const inputComponent = new InputGameEngineComponent(frameTicker);
         inputComponent.addDevice(new Keyboard());
         inputComponent.addDevice(new Mouse());
         return inputComponent;
