@@ -73,10 +73,8 @@ export class GamepadManager {
     this._ticker = ticker;
     this.initializeConnectedGamepads();
     this.startPolling();
-    console.log("GAMEPAD!");
 
     window.addEventListener("gamepadconnected", (event: GamepadEvent) => {
-      console.log("GAMEPAD!");
       const gamepad = this.createGamepadDevice(event.gamepad);
       this._gamepads.push(gamepad);
       this.onGamepadConnected.emit(gamepad);
