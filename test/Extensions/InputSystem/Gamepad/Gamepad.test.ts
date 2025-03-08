@@ -51,8 +51,7 @@ describe("GamepadDevice", (): void => {
 
     expect(axisChangeCallback).toHaveBeenCalledWith({
       index: 0,
-      xValue: 0.5,
-      yValue: 0.3,
+      value: { x: 0.5, y: 0.3 },
     });
   });
 
@@ -82,13 +81,11 @@ describe("GamepadDevice", (): void => {
 
     expect(axisChangeCallback).toHaveBeenCalledWith({
       index: 0,
-      xValue: 0.7,
-      yValue: 0.7,
+      value: { x: 0.7, y: 0.7 },
     });
     expect(axisChangeCallback).toHaveBeenCalledWith({
       index: 1,
-      xValue: -0.7,
-      yValue: -0.7,
+      value: { x: -0.7, y: -0.7 },
     });
     expect(axisChangeCallback).toHaveBeenCalledTimes(2);
 
