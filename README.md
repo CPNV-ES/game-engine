@@ -42,18 +42,28 @@ You can then deploy these files to a any web server.
 ## Collaborate
 ### Directory structure
 ```shell
-├───doc                     // Documentation
-├───src                     // Source code
-│   ├───Core                // Core components
-│   │   ├───EventSystem     // Event and callback helpers
-│   │   └───MathStructures  // Math structures (like Vector2)
-│   ├───Extensions          // Extensions and modules
-│   │   ├───RenderEngine    // WebGPU rendering engine
-│   │   ├───PhysicsEngine   // 2D Bounding Box physics engine
-│   │   └───InputSystem     // Web input systemeb
-├───test                    // Vitests Unit tests
-├   ├───...                 // Same structure as src
-├───public                  // Web files (not bundled, external resources)
+├───doc                     # Documentation
+├───src                     # Source code
+│   ├───Core                # Core components
+│   │   ├───EventSystem     # Event and callback helpers
+│   │   ├───Initialisation  # Engine initialization
+│   │   ├───MathStructures  # Math structures (Vector, Quaternion, Transform)
+│   │   ├───Tickers         # Time management and game loop control
+│   │   ├───Utilities       # Utility functions (Array, Math, etc.)
+│   ├───Extensions          # Extensions and modules
+│   │   ├───AudioEngine     # Audio behaviors
+│   │   ├───Debugger        # Debugging tools
+│   │   ├───InputSystem     # Web input system (Gamepads, Keyboard, Mouse)
+│   │   ├───PhysicsEngine   # 2D polygon physics engine using SAT
+│   │   │   ├───Colliders           # Collision shapes
+│   │   │   ├───CollisionHandlers   # Collision detection
+│   │   │   ├───Rigidbodies         # Rigidbody physics
+│   │   ├───RenderEngine    # WebGPU rendering engine
+│   │   │   ├───MeshBased   # Mesh rendering utilities
+│   │   │   ├───Text        # Text rendering system
+│   │   │   ├───Wireframe   # Wireframe rendering techniques
+├───test                    # Unit tests (Vitest)
+├───public                  # Web files (not bundled, external resources)
 ```
 ### Class syntax
 The classes are written in order to follow the [Google TypeScript style guidelines](https://google.github.io/styleguide/tsguide.html#classes)
