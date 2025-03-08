@@ -1,5 +1,7 @@
-import { GameEngineComponent } from "./GameEngineComponent.ts";
-import { GameObject } from "./GameObject.ts";
+import { GameEngineComponent } from "@core/GameEngineComponent.ts";
+import { GameObject } from "@core/GameObject.ts";
+import { Ticker } from "@core/Tickers/Ticker.ts";
+import { Behavior } from "@core/Behavior.ts";
 
 /**
  * @class GameEngineWindow
@@ -7,19 +9,19 @@ import { GameObject } from "./GameObject.ts";
  * @property {GameEngineComponent[]} _engineComponents - Array of GameEngineComponents that are attached to the game engine window.
  */
 export class GameEngineWindow {
-  private static _instance: GameEngineWindow | null = null;
   private _engineComponents: GameEngineComponent[] = [];
   private _root: GameObject = new GameObject();
+  private _logicTicker: Ticker;
 
   /**
-   * @description Singleton instance of the GameEngineWindow class.
-   * @returns {GameEngineWindow}
+   * Creates an instance of GameEngineWindow.
+   * @param logicTicker - The ticker that will be used to update the game logic.
    */
-  public static get instance(): GameEngineWindow {
-    if (this._instance === null) {
-      this._instance = new GameEngineWindow();
-    }
-    return this._instance;
+  constructor(logicTicker: Ticker) {
+    this._logicTicker = logicTicker;
+    this._logicTicker.onTick.addObserver((deltaTime: number) => {
+      this.tickBehaviors(deltaTime);
+    });
   }
 
   /**
@@ -46,12 +48,18 @@ export class GameEngineWindow {
    * @returns {GameEngineComponent | null}
    */
   public getEngineComponent<T extends GameEngineComponent>(
-    componentClass: new () => T,
-  ): GameEngineComponent | null {
-    return (
-      this._engineComponents.find(
-        (component) => component instanceof componentClass,
-      ) || null
-    );
+    componentClass: abstract new (...args: any[]) => T,
+  ): T | null {
+    return (this._engineComponents.find(
+      (component) => component instanceof componentClass,
+    ) || null) as T | null;
+  }
+
+  private tickBehaviors(deltaTime: number): void {
+    this._root.getAllChildren().forEach((go) => {
+      go.getBehaviors(Behavior).forEach((behavior) => {
+        behavior.tick(deltaTime);
+      });
+    });
   }
 }

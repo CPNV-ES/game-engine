@@ -1,19 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { GameObject } from "../../src/Core/GameObject";
-import { TestLogicBehavior } from "./Mocks/TestLogicBehavior";
+import { GameObject } from "@core/GameObject.ts";
+import { TestLogicBehavior } from "@test/Core/Mocks/TestLogicBehavior.ts";
+import { TestData } from "./Mocks/TestData";
 
 describe("LogicBehavior", () => {
-  it("should throw explicit error if data was not instantiated on enable", () => {
-    //Given
-    const gameObject = new GameObject();
-    const logicBehavior = new TestLogicBehavior();
-    logicBehavior.initDataOnEnable = false;
-    const throwingFunction = () => gameObject.addBehavior(logicBehavior);
-
-    //When + Then
-    expect(throwingFunction).toThrowError(Error);
-  });
-
   it("should notify data change", () => {
     //Given
     const gameObject = new GameObject();

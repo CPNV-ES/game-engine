@@ -1,0 +1,98 @@
+@startuml Gamepad System
+
+' Style configurations
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' Base Device class
+abstract class Device {
+}
+
+' Event class
+class Event<T> {
+    + addObserver(observer: (data: T) => void): void
+    + emit(data: T): void
+}
+
+' GamepadDevice class
+class GamepadDevice {
+    + readonly onButtonDown: Event<number>
+    + readonly onButtonUp: Event<number>
+    + readonly onAxisChange: Event<{index: number, xValue: number, yValue: number}>
+    + readonly index: number
+    + constructor(index: number)
+    + startPolling(): void
+    + stopPolling(): void
+    + pollGamepadOnce(): void
+    + destroy(): void
+    + isButtonPressed(buttonIndex: number): boolean
+}
+
+' XboxGamepad class
+class XboxGamepad {
+    + readonly onAButtonDown: Event<void>
+    + readonly onAButtonUp: Event<void>
+    + readonly onBButtonDown: Event<void>
+    + readonly onBButtonUp: Event<void>
+    + readonly onXButtonDown: Event<void>
+    + readonly onXButtonUp: Event<void>
+    + readonly onYButtonDown: Event<void>
+    + readonly onYButtonUp: Event<void>
+    + readonly onLeftBumperDown: Event<void>
+    + readonly onLeftBumperUp: Event<void>
+    + readonly onRightBumperDown: Event<void>
+    + readonly onRightBumperUp: Event<void>
+    + readonly onLeftTriggerChange: Event<number>
+    + readonly onRightTriggerChange: Event<number>
+    + readonly onDPadUpDown: Event<void>
+    + readonly onDPadUpUp: Event<void>
+    + readonly onDPadDownDown: Event<void>
+    + readonly onDPadDownUp: Event<void>
+    + readonly onDPadLeftDown: Event<void>
+    + readonly onDPadLeftUp: Event<void>
+    + readonly onDPadRightDown: Event<void>
+    + readonly onDPadRightUp: Event<void>
+    + readonly onLeftStickButtonDown: Event<void>
+    + readonly onLeftStickButtonUp: Event<void>
+    + readonly onRightStickButtonDown: Event<void>
+    + readonly onRightStickButtonUp: Event<void>
+    + readonly onXboxButtonDown: Event<void>
+    + readonly onXboxButtonUp: Event<void>
+    + getLeftTriggerValue(): number
+    + getRightTriggerValue(): number
+    + getLeftStickPosition(): [number, number]
+    + getRightStickPosition(): [number, number]
+    + isAButtonPressed(): boolean
+    + isBButtonPressed(): boolean
+    + isXButtonPressed(): boolean
+    + isYButtonPressed(): boolean
+    + isLeftBumperPressed(): boolean
+    + isRightBumperPressed(): boolean
+    + isDPadUpPressed(): boolean
+    + isDPadDownPressed(): boolean
+    + isDPadLeftPressed(): boolean
+    + isDPadRightPressed(): boolean
+    + isXboxButtonPressed(): boolean
+    + isStartButtonPressed(): boolean
+    + isBackButtonPressed(): boolean
+}
+
+' GamepadManager class
+class GamepadManager {
+    + readonly onGamepadConnected: Event<GamepadDevice>
+    + readonly onGamepadDisconnected: Event<GamepadDevice>
+    + constructor()
+    + getAllGamepads(): GamepadDevice[]
+    + getXboxGamepads(): XboxGamepad[]
+}
+
+' Relationships
+Device <|-- GamepadDevice
+GamepadDevice <|-- XboxGamepad
+GamepadManager o-- GamepadDevice
+GamepadDevice *-- Event
+
+@enduml

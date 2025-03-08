@@ -57,3 +57,11 @@ You generally want to use these behaviors instead of parent Behavior class.
 - Can observe `LogicBehavior` using `observe`, with callbacks to handle data changes.
 - The transform of the associated `GameObject` is exposed for manipulation.
 ---
+
+## Lifecycle of behaviors
+![behaviors-lifecycle.png](img/behaviors-lifecycle.png)
+The “setup” and “detach” behaviors **should not** be called directly (nor should OnAttachedTo(gameEngine) for the main game engine components).
+
+This mechanism is automatic when an object is attached to its parent (a game engine window for components or a game object for behaviors).
+
+In most cases, the only useful methods for overriding children are onEnable and onDisable. This ensures the isolation of different types of behaviors.

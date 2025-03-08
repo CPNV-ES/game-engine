@@ -1,0 +1,22 @@
+@startuml Debugger
+
+class GameObjectDebugger {
+    - _debugContainer: HTMLElement
+    - _debugGUI: GUI
+    + GameObjectDebugger(HtmlElement: HTMLElement)
+    + title(title: string): void
+    + render(): void
+    - renderGameObject(gameObject: GameObject, gui: GUI): GUI
+    - renderBehaviors(gameObjectFolder: GUI, gameObject: GameObject): GUI
+    - renderChildren(gameObjectFolder: GUI, gameObject: GameObject): GUI
+    - renderGameObjectProperties(gameObjectFolder: GUI, gameObject: GameObject): void
+    - renderProperties<T extends object>(folder: GUI, pbj: T): void
+    - formatValueForDisplay(value: any): string
+}
+
+class GUI {
+}
+
+GameObjectDebugger *-- GUI
+
+@enduml
