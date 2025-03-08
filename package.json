@@ -1,6 +1,6 @@
 {
-  "name": "sprunk",
-  "version": "0.2.0",
+  "name": "sprunk-engine",
+  "version": "0.2.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -70,5 +70,20 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CPNV-ES/game-engine.git"
-  }
+  },
+  "main": "dist/lib.cjs",
+  "module": "dist/lib.js",
+  "types": "dist/lib.d.ts",
+  "exports": {
+    "import": "./dist/lib.js",
+    "require": "./dist/lib.cjs"
+  },
+  "files": [
+    "dist/lib.js",
+    "dist/lib.cjs",
+    "dist/lib.d.ts",
+    "LICENSE",
+    "package.json",
+    "README.md"
+  ]
 }
