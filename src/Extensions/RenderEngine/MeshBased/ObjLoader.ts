@@ -4,14 +4,21 @@ import { MeshData, Face } from "./MeshData.ts";
  * Loads an OBJ file and returns the mesh data.
  */
 export class ObjLoader {
+  private static readonly _cache = new Map<string, MeshData>();
+
   /**
    * Loads an OBJ file and returns the mesh data.
    * @param url
    */
   public static async load(url: string): Promise<MeshData> {
+    if (this._cache.has(url)) {
+      return this._cache.get(url)!;
+    }
     const response = await fetch(url);
     const text = await response.text();
-    return this.parse(text);
+    const meshData = this.parse(text);
+    this._cache.set(url, meshData);
+    return meshData;
   }
 
   /**
