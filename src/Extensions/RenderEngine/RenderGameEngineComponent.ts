@@ -152,7 +152,7 @@ export class RenderGameEngineComponent
   }
 
   public async createTexture(url: RequestInfo | URL): Promise<GPUTexture> {
-    if (!this.IsRenderingReady) {
+    if (!this.IsRenderingReady || !this._device) {
       throw new Error("Rendering is not ready yet! (Device not available)");
     }
     if (this._cachedTextures.has(url)) {
