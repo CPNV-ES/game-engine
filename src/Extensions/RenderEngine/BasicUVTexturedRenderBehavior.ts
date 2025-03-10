@@ -14,6 +14,7 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
 
   private _spriteImageUrl: RequestInfo | URL;
   private _vertexData: Float32Array;
+  private _sampler: GPUSamplerDescriptor;
 
   /**
    * Create a new BasicUVTexturedRenderBehavior with a predetermined descriptor and buffer layout.
@@ -23,6 +24,7 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
    * @param indexData The index data (to form triangles)
    * @param vertexWGSLShader The vertex shader in WGSL (source code in string). Ensure that the shader has a uniform mat4 mvpMatrix and is compatible with the layout.
    * @param fragmentWGSLShader The fragment shader in WGSL (source code in string). Ensure that the shader has a texture and sampler and is compatible with the layout.
+   * @param sampler The sampler configuration
    */
   constructor(
     renderEngine: Renderer,
@@ -31,6 +33,7 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
     indexData: Uint16Array,
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
+    sampler: GPUSamplerDescriptor,
   ) {
     const descriptor: GPUBindGroupLayoutDescriptor = {
       entries: [
@@ -64,6 +67,7 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
     this._spriteImageUrl = spriteImageUrl;
     this._vertexData = vertexData;
     this._indexData = indexData;
+    this._sampler = sampler;
   }
 
   protected async asyncInit(): Promise<void> {
@@ -93,10 +97,7 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
         { binding: 1, resource: this._spriteTexture.createView() },
         {
           binding: 2,
-          resource: this._renderEngine.createSampler({
-            magFilter: "linear",
-            minFilter: "linear",
-          }),
+          resource: this._renderEngine.createSampler(this._sampler),
         },
       ],
     );
