@@ -1,5 +1,5 @@
 import { RenderGameEngineComponent } from "../RenderGameEngineComponent.ts";
-import { MeshData, triangulate } from "./MeshData.ts";
+import { MeshData } from "./MeshData.ts";
 import { BasicUVTexturedRenderBehavior } from "../BasicUVTexturedRenderBehavior.ts";
 
 /**
