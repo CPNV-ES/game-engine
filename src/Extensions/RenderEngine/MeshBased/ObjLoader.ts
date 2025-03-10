@@ -19,32 +19,32 @@ export class ObjLoader {
     const meshData = this.parse(text);
 
     // Process faces and indices
-    const triangulatedIndices: number[] = [];
+    let finalIndices: number[] = [];
+
+    // If we have faces, triangulate them
     if (meshData.faces && meshData.faces.length > 0) {
       for (const face of meshData.faces) {
         const triangulatedIndices = triangulate(meshData.vertices, face);
-        triangulatedIndices.push(...triangulatedIndices);
+        finalIndices.push(...triangulatedIndices);
       }
     }
     // If we have direct indices, use them
-    if (meshData.indices) {
-      triangulatedIndices.push(...Array.from(meshData.indices));
+    else if (meshData.indices) {
+      finalIndices = Array.from(meshData.indices);
     }
 
     // Ensure we have valid indices
-    if (triangulatedIndices.length === 0) {
+    if (finalIndices.length === 0) {
       console.warn("No faces or indices found in mesh data");
-      triangulatedIndices.push(0, 0, 0); // Default triangle to prevent crashes
+      finalIndices = [0, 0, 0]; // Default triangle to prevent crashes
     }
 
     // Ensure we have an even number of indices
-    if (triangulatedIndices.length % 2 !== 0) {
-      triangulatedIndices.push(
-        triangulatedIndices[triangulatedIndices.length - 1],
-      );
+    if (finalIndices.length % 2 !== 0) {
+      finalIndices.push(finalIndices[finalIndices.length - 1]);
     }
 
-    meshData.indices = new Uint16Array(triangulatedIndices);
+    meshData.indices = new Uint16Array(finalIndices);
 
     this._cache.set(url, meshData);
     return meshData;
