@@ -45,7 +45,7 @@ export class NavigatorTestUtility {
     screenshotPath: string,
     width: number = 800,
     height: number = 600,
-    timeToWait: number = 100,
+    timeToWait: number = 500,
     devPort: number = 8081,
   ) {
     if (this._browser === null || this._page === null) {

@@ -376,7 +376,7 @@ export class RenderGameEngineComponent
   }
 
   private frame(_deltaTime: number) {
-    if (!this.IsRenderingReady) return;
+    if (!this.IsRenderingReady || !this.attachedEngine) return;
     if (!this._device || !this._context || !this._presentationTextureFormat)
       throw new Error(
         "Device, context, or presentation texture format not available",
