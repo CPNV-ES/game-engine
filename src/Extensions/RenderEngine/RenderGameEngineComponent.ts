@@ -67,6 +67,10 @@ export class RenderGameEngineComponent
   private _isRenderingReady: boolean = false;
   private readonly _cachedTextures: Map<RequestInfo | URL, GPUTexture> =
     new Map<RequestInfo | URL, GPUTexture>();
+  private readonly _resolvingTextures: Map<
+    RequestInfo | URL,
+    Promise<GPUTexture>
+  > = new Map<RequestInfo | URL, Promise<GPUTexture>>();
 
   constructor(
     canvasToDrawOn: HTMLCanvasElement | null = null,
@@ -158,24 +162,36 @@ export class RenderGameEngineComponent
     if (this._cachedTextures.has(url)) {
       return this._cachedTextures.get(url)!;
     }
-    const response = await fetch(url);
-    const imageBitmap = await createImageBitmap(await response.blob());
+    if (this._resolvingTextures.has(url)) {
+      return await this._resolvingTextures.get(url)!;
+    }
 
-    const [srcWidth, srcHeight] = [imageBitmap.width, imageBitmap.height];
-    const imageTexture = this._device!.createTexture({
-      size: [srcWidth, srcHeight, 1],
-      format: "rgba8unorm",
-      usage:
-        GPUTextureUsage.TEXTURE_BINDING |
-        GPUTextureUsage.COPY_DST |
-        GPUTextureUsage.RENDER_ATTACHMENT,
-    });
-    this._device!.queue.copyExternalImageToTexture(
-      { source: imageBitmap },
-      { texture: imageTexture },
-      [imageBitmap.width, imageBitmap.height],
-    );
+    const asyncLoadPromise = (async () => {
+      const response = await fetch(url);
+      const imageBitmap = await createImageBitmap(await response.blob());
+
+      const [srcWidth, srcHeight] = [imageBitmap.width, imageBitmap.height];
+      const imageTexture = this._device!.createTexture({
+        size: [srcWidth, srcHeight, 1],
+        format: "rgba8unorm",
+        usage:
+          GPUTextureUsage.TEXTURE_BINDING |
+          GPUTextureUsage.COPY_DST |
+          GPUTextureUsage.RENDER_ATTACHMENT,
+      });
+      this._device!.queue.copyExternalImageToTexture(
+        { source: imageBitmap },
+        { texture: imageTexture },
+        [imageBitmap.width, imageBitmap.height],
+      );
+      return imageTexture;
+    })();
+
+    this._resolvingTextures.set(url, asyncLoadPromise);
+
+    const imageTexture = await asyncLoadPromise;
     this._cachedTextures.set(url, imageTexture);
+
     return imageTexture;
   }
 
