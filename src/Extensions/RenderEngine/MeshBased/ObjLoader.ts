@@ -1,4 +1,4 @@
-import { MeshData, Face } from "./MeshData.ts";
+import { MeshData, Face, triangulate } from "./MeshData.ts";
 
 /**
  * Loads an OBJ file and returns the mesh data.
@@ -17,6 +17,35 @@ export class ObjLoader {
     const response = await fetch(url);
     const text = await response.text();
     const meshData = this.parse(text);
+
+    // Process faces and indices
+    const triangulatedIndices: number[] = [];
+    if (meshData.faces && meshData.faces.length > 0) {
+      for (const face of meshData.faces) {
+        const triangulatedIndices = triangulate(meshData.vertices, face);
+        triangulatedIndices.push(...triangulatedIndices);
+      }
+    }
+    // If we have direct indices, use them
+    if (meshData.indices) {
+      triangulatedIndices.push(...Array.from(meshData.indices));
+    }
+
+    // Ensure we have valid indices
+    if (triangulatedIndices.length === 0) {
+      console.warn("No faces or indices found in mesh data");
+      triangulatedIndices.push(0, 0, 0); // Default triangle to prevent crashes
+    }
+
+    // Ensure we have an even number of indices
+    if (triangulatedIndices.length % 2 !== 0) {
+      triangulatedIndices.push(
+        triangulatedIndices[triangulatedIndices.length - 1],
+      );
+    }
+
+    meshData.indices = new Uint16Array(triangulatedIndices);
+
     this._cache.set(url, meshData);
     return meshData;
   }
