@@ -12,8 +12,16 @@ export class SpriteRenderBehavior extends BasicUVTexturedRenderBehavior {
    * Construct a new Quad with the texture of the image at the given URL.
    * @param renderEngine
    * @param spriteImageUrl
+   * @param sampler - Sampler configuration, by default : Not repeat with linear filter
    */
-  constructor(renderEngine: Renderer, spriteImageUrl: RequestInfo | URL) {
+  constructor(
+    renderEngine: Renderer,
+    spriteImageUrl: RequestInfo | URL,
+    sampler: GPUSamplerDescriptor = {
+      magFilter: "linear",
+      minFilter: "linear",
+    },
+  ) {
     // Vertex data for a quad (sprite) with UV coordinates and z = 0
     const vertexData = new Float32Array([
       // Position        // Normal          // UV
@@ -68,6 +76,7 @@ export class SpriteRenderBehavior extends BasicUVTexturedRenderBehavior {
       indexData,
       BasicVertexMVPWithUV,
       BasicTextureSample,
+      sampler,
     );
   }
 }
