@@ -248,8 +248,11 @@ export class RenderGameEngineComponent
   public onDetached() {
     super.onDetached();
 
+    // Reset rendering state
+    this.IsRenderingReady = false;
+
     // Stop the rendering loop
-    this._ticker.onTick.removeObserver(this.frame.bind(this));
+    this._ticker.onTick.removeObservers();
 
     // Remove the resize event listener
     window.removeEventListener("resize", this.resizeCanvasToMatchDisplaySize);
@@ -273,9 +276,6 @@ export class RenderGameEngineComponent
       this._context.unconfigure();
       this._context = undefined;
     }
-
-    // Reset rendering state
-    this.IsRenderingReady = false;
   }
 
   public get presentationTextureFormat(): GPUTextureFormat {
@@ -333,6 +333,7 @@ export class RenderGameEngineComponent
 
   private subscribeToDeviceEvents(device: GPUDevice) {
     device.lost.then((reason: GPUDeviceLostInfo): void => {
+      if (!this.IsRenderingReady) return;
       this.onError.emit(
         new Error(`Device lost ("${reason.reason}"):\n${reason.message}`),
       );
@@ -346,6 +347,7 @@ export class RenderGameEngineComponent
   }
 
   private createDepthTexture() {
+    if (!this._device || !this._context || !this._depthTextureFormat) return;
     const [width, height] = [
       this._canvasToDrawOn.width,
       this._canvasToDrawOn.height,
@@ -374,6 +376,7 @@ export class RenderGameEngineComponent
   }
 
   private frame(_deltaTime: number) {
+    if (!this.IsRenderingReady) return;
     if (!this._device || !this._context || !this._presentationTextureFormat)
       throw new Error(
         "Device, context, or presentation texture format not available",
