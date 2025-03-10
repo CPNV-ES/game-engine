@@ -245,6 +245,39 @@ export class RenderGameEngineComponent
     this.requestResources();
   }
 
+  public onDetached() {
+    super.onDetached();
+
+    // Stop the rendering loop
+    this._ticker.onTick.removeObserver(this.frame.bind(this));
+
+    // Remove the resize event listener
+    window.removeEventListener("resize", this.resizeCanvasToMatchDisplaySize);
+
+    // Destroy all GPU resources
+    if (this._device) {
+      // Destroy the depth texture
+      if (this._depthTexture) {
+        this._depthTexture.destroy();
+        this._depthTexture = null;
+        this._depthTextureView = null;
+      }
+
+      // Destroy the device
+      this._device.destroy();
+      this._device = undefined;
+    }
+
+    // Clear the WebGPU context
+    if (this._context) {
+      this._context.unconfigure();
+      this._context = undefined;
+    }
+
+    // Reset rendering state
+    this.IsRenderingReady = false;
+  }
+
   public get presentationTextureFormat(): GPUTextureFormat {
     if (!this._presentationTextureFormat)
       throw new Error("Presentation texture format not available");
