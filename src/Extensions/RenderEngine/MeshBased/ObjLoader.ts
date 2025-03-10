@@ -1,17 +1,53 @@
-import { MeshData, Face } from "./MeshData.ts";
+import { MeshData, Face, triangulate } from "./MeshData.ts";
 
 /**
  * Loads an OBJ file and returns the mesh data.
  */
 export class ObjLoader {
+  private static readonly _cache = new Map<string, MeshData>();
+
   /**
    * Loads an OBJ file and returns the mesh data.
    * @param url
    */
   public static async load(url: string): Promise<MeshData> {
+    if (this._cache.has(url)) {
+      return this._cache.get(url)!;
+    }
     const response = await fetch(url);
     const text = await response.text();
-    return this.parse(text);
+    const meshData = this.parse(text);
+
+    // Process faces and indices
+    let finalIndices: number[] = [];
+
+    // If we have faces, triangulate them
+    if (meshData.faces && meshData.faces.length > 0) {
+      for (const face of meshData.faces) {
+        const triangulatedIndices = triangulate(meshData.vertices, face);
+        finalIndices.push(...triangulatedIndices);
+      }
+    }
+    // If we have direct indices, use them
+    else if (meshData.indices) {
+      finalIndices = Array.from(meshData.indices);
+    }
+
+    // Ensure we have valid indices
+    if (finalIndices.length === 0) {
+      console.warn("No faces or indices found in mesh data");
+      finalIndices = [0, 0, 0]; // Default triangle to prevent crashes
+    }
+
+    // Ensure we have an even number of indices
+    if (finalIndices.length % 2 !== 0) {
+      finalIndices.push(finalIndices[finalIndices.length - 1]);
+    }
+
+    meshData.indices = new Uint16Array(finalIndices);
+
+    this._cache.set(url, meshData);
+    return meshData;
   }
 
   /**

@@ -65,6 +65,8 @@ export class RenderGameEngineComponent
   private _depthTextureView: GPUTextureView | null = null;
   private _device: GPUDevice | undefined;
   private _isRenderingReady: boolean = false;
+  private readonly _cachedTextures: Map<RequestInfo | URL, GPUTexture> =
+    new Map<RequestInfo | URL, GPUTexture>();
 
   constructor(
     canvasToDrawOn: HTMLCanvasElement | null = null,
@@ -150,8 +152,11 @@ export class RenderGameEngineComponent
   }
 
   public async createTexture(url: RequestInfo | URL): Promise<GPUTexture> {
-    if (!this.IsRenderingReady) {
+    if (!this.IsRenderingReady || !this._device) {
       throw new Error("Rendering is not ready yet! (Device not available)");
+    }
+    if (this._cachedTextures.has(url)) {
+      return this._cachedTextures.get(url)!;
     }
     const response = await fetch(url);
     const imageBitmap = await createImageBitmap(await response.blob());
@@ -170,6 +175,7 @@ export class RenderGameEngineComponent
       { texture: imageTexture },
       [imageBitmap.width, imageBitmap.height],
     );
+    this._cachedTextures.set(url, imageTexture);
     return imageTexture;
   }
 
