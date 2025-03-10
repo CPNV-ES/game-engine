@@ -14,6 +14,7 @@ export class MeshRenderBehavior extends BasicUVTexturedRenderBehavior {
    * @param meshData The mesh data (vertices and indices/faces generated for example, by the ObjLoader)
    * @param vertexWGSLShader The vertex shader in WGSL (source code in string). Ensure that the shader has a uniform mat4 mvpMatrix and is compatible with the layout.
    * @param fragmentWGSLShader The fragment shader in WGSL (source code in string). Ensure that the shader has a texture and sampler and is compatible with the layout.
+   * @param sampler - Sampler configuration, by default : Not repeat with linear filter
    */
   constructor(
     renderEngine: RenderGameEngineComponent,
@@ -21,6 +22,10 @@ export class MeshRenderBehavior extends BasicUVTexturedRenderBehavior {
     textureImageUrl: RequestInfo | URL,
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
+    sampler: GPUSamplerDescriptor = {
+      magFilter: "linear",
+      minFilter: "linear",
+    },
   ) {
     super(
       renderEngine,
@@ -29,6 +34,7 @@ export class MeshRenderBehavior extends BasicUVTexturedRenderBehavior {
       meshData.indices!,
       vertexWGSLShader,
       fragmentWGSLShader,
+      sampler,
     );
   }
 }
