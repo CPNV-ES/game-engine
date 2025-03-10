@@ -32,5 +32,8 @@ for (let i = 0; i < 3; i++) {
   cameraGo.addBehavior(new Camera(renderComponent));
   cameraGo.transform.position.set(0, 0, 10);
 
-  await new Promise((resolve) => setTimeout(resolve, 1));
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  if (i < 2) {
+    gameEngineWindow.dispose();
+  }
 }
