@@ -16,4 +16,12 @@ export abstract class GameEngineComponent {
   public onAttachedTo(gameEngine: GameEngineWindow): void {
     this.attachedEngine = gameEngine;
   }
+
+  /**
+   * When the component is detached from the game engine. Need to dispose of any resources.
+   * @method onDetached
+   */
+  public onDetached(): void {
+    this.attachedEngine = null;
+  }
 }

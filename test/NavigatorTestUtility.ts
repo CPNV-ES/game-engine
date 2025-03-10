@@ -4,12 +4,10 @@ import fs from "fs";
 import { PNG } from "pngjs";
 import pixelmatch from "pixelmatch";
 
-/**
- * Utility class to take screenshots of a page and compare them with expected images
- */
 export class NavigatorTestUtility {
   private _browser: Browser | null = null;
   private _page: Page | null = null;
+  private _errors: Error[] = []; // Array to store errors
 
   /**
    * Launch the browser instance (before all tests are done)
@@ -18,6 +16,21 @@ export class NavigatorTestUtility {
     // Launch the browser
     this._browser = await puppeteer.launch();
     this._page = await this._browser.newPage();
+
+    // Listen for page errors
+    this._page.on("pageerror", (error) => {
+      this.addError(error);
+      console.error("Page error:", error);
+    });
+
+    // Listen for console errors
+    this._page.on("console", (message) => {
+      if (message.type() === "error") {
+        const error = new Error(message.text());
+        this.addError(error);
+        console.error("Console error:", message.text());
+      }
+    });
   }
 
   /**
@@ -32,7 +45,7 @@ export class NavigatorTestUtility {
     screenshotPath: string,
     width: number = 800,
     height: number = 600,
-    timeToWait: number = 100,
+    timeToWait: number = 500,
     devPort: number = 8081,
   ) {
     if (this._browser === null || this._page === null) {
@@ -96,6 +109,21 @@ export class NavigatorTestUtility {
   }
 
   /**
+   * Get all errors captured during the test
+   * @returns An array of errors
+   */
+  public getErrors(): Error[] {
+    return this._errors;
+  }
+
+  /**
+   * Clean all errors captured during the test
+   */
+  public cleanErrors() {
+    this._errors = [];
+  }
+
+  /**
    * Destroy the browser instance (after all tests are done)
    */
   public async closeBrowser() {
@@ -107,5 +135,11 @@ export class NavigatorTestUtility {
     await this._browser.close();
     this._browser = null;
     this._page = null;
+    this._errors = [];
+  }
+
+  private addError(error: Error): void {
+    if (error.message.indexOf("Failed to load resource:") !== -1) return;
+    this._errors.push(error);
   }
 }
