@@ -1,15 +1,17 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite'
-import path from "path";
+import { defineConfig } from 'vite';
+import path from 'path';
 
 // Determine if we're in a CI environment
-const isCI = process.env.CI === 'true'
+const isCI = process.env.CI === 'true';
 
 export default defineConfig({
     test: {
-        // Conditionally exclude the directory for CI environments
-        exclude: isCI ? ['**/RenderEngine/**'] : [],
-        // Other Vitest options can be configured here
+        // Exclude node_modules and conditionally exclude specific directories
+        exclude: [
+            '**/node_modules/**', // Exclude all files in node_modules
+            ...(isCI ? ['**/RenderEngine/**'] : []), // Conditionally exclude RenderEngine in CI
+        ],
     },
     resolve: {
         alias: {
@@ -18,4 +20,4 @@ export default defineConfig({
             '@test': path.resolve(__dirname, './test'),
         },
     },
-})
+});

@@ -55,6 +55,15 @@ export class GameEngineWindow {
     ) || null) as T | null;
   }
 
+  /**
+   * @description Disposes of the GameEngineWindow and all of its components.
+   */
+  public dispose(): void {
+    this._logicTicker.onTick.removeObservers();
+    this._engineComponents.forEach((component) => component.onDetached());
+    this._engineComponents = [];
+  }
+
   private tickBehaviors(deltaTime: number): void {
     this._root.getAllChildren().forEach((go) => {
       go.getBehaviors(Behavior).forEach((behavior) => {

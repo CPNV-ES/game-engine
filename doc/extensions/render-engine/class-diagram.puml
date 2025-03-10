@@ -1,5 +1,26 @@
 @startuml
 
+package webgpu {
+    class GPU
+    class GPUDevice
+    class GPUBuffer
+    class GPUTexture
+    class GPURenderPipeline
+    class GPUBindGroup
+    class GPUBindGroupLayout
+    class GPUBindGroupEntry
+    class GPUSampler
+    class GPURenderPassEncoder
+    class GPURenderBundleEncoder
+    class GPURenderBundle
+    class GPUPrimitiveState
+    class GPUBlendState
+    class GPUVertexBufferLayout
+    class GPUSamplerDescriptor
+    class GPUBindGroupLayoutDescriptor
+    class GPUTextureFormat
+}
+
 package sprunk.core {
     class OutputBehavior
     class GameEngineComponent
@@ -15,7 +36,7 @@ package sprunk.extensions.renderengine {
         +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
         +createBindGroup(bindGroupLayout: GPUBindGroupLayout, entries: GPUBindGroupEntry[]): GPUBindGroup
         +createSampler(descriptor: GPUSamplerDescriptor): GPUSampler
-        +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayouts: Iterable<GPUBindGroupLayout | null>, buffers?: Iterable<GPUVertexBufferLayout | null>, targetBlend?: GPUBlendState): GPURenderPipeline
+        +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayouts: GPUBindGroupLayout[], buffers: GPUVertexBufferLayout, targetBlend?: GPUBlendState): GPURenderPipeline
         +createTexture(url: RequestInfo | URL): GPUTexture
         +createUniformBuffer(data: Float32Array): GPUBuffer
         +fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void
@@ -183,7 +204,9 @@ package sprunk.extensions.renderengine {
         +color?: [number, number, number, number]
     }
 
+
     RenderGameEngineComponent -up-|> GameEngineComponent
+    RenderGameEngineComponent .up.|> Renderer
     RenderBehavior -up-|> OutputBehavior
     SpriteRenderBehavior -up-|> BasicUVTexturedRenderBehavior
     BasicUVTexturedRenderBehavior -up-|> RenderBehavior
@@ -208,5 +231,5 @@ package sprunk.extensions.renderengine {
     MsdfText ..> MsdfTextMeasurements : "uses"
     TextRenderBehavior ..> MsdfTextFormattingOptions : "uses"
 }
-
+ Renderer ..> webgpu
 @enduml

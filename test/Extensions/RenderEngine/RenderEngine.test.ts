@@ -16,6 +16,7 @@ const runScreenshotTestCase = async (
   height: number = 600,
 ) => {
   await screenshotUtil.openBrowser();
+  screenshotUtil.cleanErrors();
   await screenshotUtil.takeScreenshot(
     testPath + testName + "/" + pageName,
     testPath +
@@ -60,6 +61,7 @@ const runScreenshotTestCase = async (
       ".png",
   );
   expect(mismatchedPixels).toBe(0);
+  expect(screenshotUtil.getErrors().length).toBe(0);
   await screenshotUtil.closeBrowser();
 };
 
@@ -93,5 +95,8 @@ describe("WebGPU Rendering Test", () => {
   });
   it("should render a grid with gizmos in global and local space", async () => {
     await runScreenshotTestCase("ComplexTransformations");
+  });
+  it("should contain multiple init without any error", async () => {
+    await runScreenshotTestCase("MultipleInit");
   });
 });
