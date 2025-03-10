@@ -94,4 +94,7 @@ describe("WebGPU Rendering Test", () => {
   it("should render a grid with gizmos in global and local space", async () => {
     await runScreenshotTestCase("ComplexTransformations");
   });
+  it("should contain multiple init without any error", async () => {
+    await runScreenshotTestCase("MultipleInit");
+  });
 });
