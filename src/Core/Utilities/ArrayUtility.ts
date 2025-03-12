@@ -39,7 +39,7 @@ export class ArrayUtility {
    * Returns the index of the closest (lower) element in an array sorted in ascending order
    * @param array
    * @param target
-   * @param compare
+   * @param compare - A function that compares two elements (it should return a negative number if a < b, 0 if a = b, and a positive number if a > b)
    */
   static binarySearch<T>(
     array: T[],
