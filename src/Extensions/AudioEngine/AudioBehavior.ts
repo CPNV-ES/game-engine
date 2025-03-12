@@ -114,6 +114,10 @@ export class AudioBehavior extends OutputBehavior {
   private async start(): Promise<void> {
     if (this.startFlag) return;
     this.source!.start();
+    //Test if the audio context is suspended (can happen on some browsers that require user interaction to start audio)
+    if (this.audioContext.state === "suspended") {
+      await this.audioContext.resume();
+    }
     this.isPlaying = true;
     this.startFlag = true;
     this.storePlaybackHistory(this.source!.playbackRate.value);
