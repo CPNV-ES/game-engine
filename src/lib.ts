@@ -6,6 +6,7 @@ export * from "@core/InputBehavior";
 export * from "@core/LogicBehavior";
 export * from "@core/OutputBehavior";
 export * from "@core/Initialisation/Sprunk";
+export * from "@core/EventSystem/Event";
 export * from "@core/MathStructures/MathUtility";
 export * from "@core/MathStructures/Quaternion";
 export * from "@core/MathStructures/Transform";
