@@ -1,7 +1,7 @@
 import { GameEngineWindow } from "@core/GameEngineWindow.ts";
 import { GameEngineComponent } from "@core/GameEngineComponent.ts";
 import { AnimationFrameTimeTicker } from "@core/Tickers/AnimationFrameTimeTicker.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
 import { FixedTimeTicker } from "@core/Tickers/FixedTimeTicker.ts";
 import { Ticker } from "@core/Tickers/Ticker.ts";

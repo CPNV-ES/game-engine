@@ -1,5 +1,5 @@
 import { GameEngineWindow } from "@core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { MeshRenderBehavior } from "@extensions/RenderEngine/MeshBased/MeshRenderBehavior.ts";
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
@@ -11,7 +11,6 @@ import BasicTextureSample from "@extensions/RenderEngine/BasicShaders/BasicTextu
 import { FreeLookCameraController } from "../../../ExampleBehaviors/FreeLookCameraController";
 import { FreeLookCameraKeyboardMouseInput } from "../../../ExampleBehaviors/FreeLookCameraKeyboardMouseInput";
 import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent";
-import { Vector3 } from "@core/MathStructures/Vector3";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
