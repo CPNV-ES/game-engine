@@ -1,7 +1,7 @@
 import { OutputBehavior } from "@core/OutputBehavior.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
-import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 import { mat4 } from "wgpu-matrix";
 
 /**

@@ -3,7 +3,7 @@ import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
 import { Event } from "@core/EventSystem/Event.ts";
 import { Color } from "@extensions/RenderEngine/Color.ts";
-import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 
 /**
  * A RenderBehavior that renders a wireframe using line primitives.

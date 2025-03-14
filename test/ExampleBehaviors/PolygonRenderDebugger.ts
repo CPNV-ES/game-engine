@@ -1,6 +1,6 @@
 import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior";
 import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider";
-import { Renderer } from "@extensions/RenderEngine/Renderer";
+import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer";
 import { Color } from "@extensions/RenderEngine/Color";
 
 /**

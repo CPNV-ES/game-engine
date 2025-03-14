@@ -1,7 +1,7 @@
 import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Color } from "@extensions/RenderEngine/Color.ts";
-import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 
 /**
  * A behavior to render a grid with a dynamic color.

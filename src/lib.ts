@@ -39,7 +39,7 @@ export * from "@extensions/RenderEngine/Camera";
 export * from "@extensions/RenderEngine/Color";
 export * from "@extensions/RenderEngine/RenderBehavior";
 export * from "@extensions/RenderEngine/RenderEngineUtility";
-export * from "@extensions/RenderEngine/Renderer";
+export * from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 export * from "@extensions/RenderEngine/RenderGameEngineComponent";
 export * from "@extensions/RenderEngine/SpriteRenderBehavior";
 export * from "@extensions/RenderEngine/MeshBased/MeshData";

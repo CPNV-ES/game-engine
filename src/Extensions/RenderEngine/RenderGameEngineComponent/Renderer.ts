@@ -1,6 +1,6 @@
-import { Event } from "@core/EventSystem/Event";
-import { Camera } from "./Camera";
-import { Vector2 } from "@core/MathStructures/Vector2";
+import { Event } from "@core/EventSystem/Event.ts";
+import { Camera } from "@extensions/RenderEngine/Camera.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * Interface for a Renderer component responsible for rendering the game using WebGPU.

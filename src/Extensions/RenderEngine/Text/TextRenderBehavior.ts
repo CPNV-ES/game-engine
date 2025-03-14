@@ -8,7 +8,7 @@ import {
   MsdfTextMeasurements,
 } from "@extensions/RenderEngine/Text/MSDFFont/MsdfChar.ts";
 import { MsdfText } from "@extensions/RenderEngine/Text/MSDFFont/MsdfText.ts";
-import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 
 export class TextRenderBehavior extends RenderBehavior {
   private readonly _fontJsonUrl: string;

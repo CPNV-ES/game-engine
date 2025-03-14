@@ -4,7 +4,7 @@ import { Event } from "@core/EventSystem/Event.ts";
 import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { Ticker } from "@core/Tickers/Ticker.ts";
-import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
