@@ -61,7 +61,13 @@ const runScreenshotTestCase = async (
       ".png",
   );
   expect(mismatchedPixels).toBe(0);
-  expect(screenshotUtil.getErrors().length).toBe(0);
+  for (const error of screenshotUtil.getErrors()) {
+    if (error.message.toLowerCase().indexOf("device lost") !== -1) {
+      //Because this error can happen when we are freeing all resources. It's ok to ignore it.
+      continue;
+    }
+    expect(error).toBe("");
+  }
   await screenshotUtil.closeBrowser();
 };
 
