@@ -14,6 +14,7 @@ const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, false, [
 const renderComponent: RenderGameEngineComponent =
   gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
 
+//Text 1
 const go = new GameObject();
 gameEngineWindow.root.addChild(go);
 
@@ -29,6 +30,23 @@ textRenderBehavior.pixelScale = 1 / 64;
 textRenderBehavior.centered = true;
 go.transform.rotation.setFromEulerAngles(0, 0, 0.25 * Math.PI);
 go.transform.position.x = 1;
+
+//Text 2
+const go2 = new GameObject();
+gameEngineWindow.root.addChild(go2);
+
+const textRenderBehavior2 = new TextRenderBehavior(
+  renderComponent,
+  "/test/Extensions/RenderEngine/SimpleText/Sprunthrax/Sprunthrax-SemiBold-msdf.json",
+);
+
+go2.addBehavior(textRenderBehavior2);
+textRenderBehavior2.text = "Indeed!";
+textRenderBehavior2.color = [1, 1, 1, 0.2];
+textRenderBehavior2.pixelScale = 1 / 64;
+textRenderBehavior2.centered = true;
+go2.transform.rotation.setFromEulerAngles(0, 0, -0.25 * Math.PI);
+go2.transform.position.set(-1, 2, 0);
 
 const cameraGo = new GameObject();
 cameraGo.transform.position.set(0, 0, 10);
