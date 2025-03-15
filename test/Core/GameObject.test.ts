@@ -152,5 +152,112 @@ describe("GameObject", () => {
         behavior2,
       ]);
     });
+
+    it("should call onDisabled in behavior if detached", () => {
+      const gameObject = new GameObject();
+      const behavior1 = new TestBehavior();
+
+      gameObject.addBehavior(behavior1);
+      gameObject.removeBehavior(behavior1);
+
+      expect(behavior1.enableCount).toBe(1);
+      expect(behavior1.disableCount).toBe(1);
+    });
+  });
+
+  describe("Destroy", () => {
+    it("should detach all behaviors, remove all children, and remove itself from its parent", () => {
+      const parent = new GameObject();
+      const child = new GameObject();
+      const subChild = new GameObject();
+      const behavior1 = new TestBehavior();
+      const behavior2 = new TestBehaviorOtherType();
+
+      // Setup hierarchy and behaviors
+      parent.addChild(child);
+      child.addChild(subChild);
+      child.addBehavior(behavior1);
+      child.addBehavior(behavior2);
+
+      // Destroy the child
+      child.destroy();
+
+      // Verify behaviors are detached
+      expect(child.getAllBehaviors()).toEqual([]);
+      expect(behavior1.disableCount).toBe(1);
+      expect(behavior2.disableCount).toBe(1);
+
+      // Verify children are removed
+      expect(child.children).toEqual([]);
+      expect(subChild.parent).toBe(null);
+
+      // Verify child is removed from parent
+      expect(parent.children).toEqual([]);
+    });
+
+    it("should not call onDisabled on behaviors that were already detached", () => {
+      const gameObject = new GameObject();
+      const behavior1 = new TestBehavior();
+      const behavior2 = new TestBehaviorOtherType();
+
+      // Add behaviors, detach one, and destroy
+      gameObject.addBehavior(behavior1);
+      gameObject.addBehavior(behavior2);
+      gameObject.removeBehavior(behavior1);
+      expect(behavior1.disableCount).toBe(1);
+      expect(behavior2.disableCount).toBe(0);
+      gameObject.destroy();
+
+      // Verify onDisabled was called only on the remaining behavior
+      expect(behavior1.disableCount).toBe(1);
+      expect(behavior2.disableCount).toBe(1);
+    });
+
+    describe("Edge Cases", () => {
+      it("should handle destroying a GameObject with no behaviors or children", () => {
+        const gameObject = new GameObject();
+
+        // Destroy the GameObject
+        gameObject.destroy();
+
+        // Verify no errors occur and state is clean
+        expect(gameObject.getAllBehaviors()).toEqual([]);
+        expect(gameObject.children).toEqual([]);
+      });
+
+      it("should handle destroying a GameObject that is already destroyed", () => {
+        const gameObject = new GameObject();
+        const behavior = new TestBehavior();
+
+        // Add behavior and destroy
+        gameObject.addBehavior(behavior);
+        gameObject.destroy();
+
+        // Destroy again
+        gameObject.destroy();
+
+        // Verify state remains clean
+        expect(gameObject.getAllBehaviors()).toEqual([]);
+        expect(behavior.disableCount).toBe(1);
+      });
+
+      it("should handle destroying a GameObject with nested children", () => {
+        const parent = new GameObject();
+        const child = new GameObject();
+        const subChild = new GameObject();
+
+        // Setup hierarchy
+        parent.addChild(child);
+        child.addChild(subChild);
+
+        // Destroy the parent
+        parent.destroy();
+
+        // Verify all children are removed
+        expect(parent.children).toEqual([]);
+        expect(child.parent).toBe(null);
+        expect(subChild.parent).toBe(null);
+      });
+    });
   });
 });
