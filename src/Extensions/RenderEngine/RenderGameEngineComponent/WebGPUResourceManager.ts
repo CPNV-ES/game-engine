@@ -128,6 +128,12 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
       const imageBitmap = await createImageBitmap(await response.blob());
 
       const [srcWidth, srcHeight] = [imageBitmap.width, imageBitmap.height];
+      if (srcWidth === 0 || srcHeight === 0) {
+        throw new Error("Invalid image size");
+      }
+      if (!this._device) {
+        throw new Error("Device lost");
+      }
       const imageTexture = this._device!.createTexture({
         size: [srcWidth, srcHeight, 1],
         format: "rgba8unorm",
