@@ -82,10 +82,8 @@ export class Camera extends OutputBehavior {
     const farPoint = vec3.fromValues(ndcX, ndcY, 1.0);
 
     // Compute inverse matrices
-    const invProj = mat4.inverse(this._projectionMatrix); // Inverse projection matrix
-    const invView = mat4.inverse(
-      RenderEngineUtility.toModelMatrix(this.transform),
-    ); // Inverse view matrix (camera's transform)
+    const invProj = mat4.invert(this._projectionMatrix); // Inverse projection matrix
+    const invView = RenderEngineUtility.toModelMatrix(this.transform); // Inverse view matrix (camera's transform)
 
     // Transform NDC points to world space
     const nearPos = this.ndcToWorld(nearPoint, invProj, invView);
