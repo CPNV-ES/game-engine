@@ -40,29 +40,21 @@ topLevelFolders.forEach(folder => {
                             if (line.trim().startsWith('}')) {
                                 currentClass = null; // Reset the current class when closing brace is encountered
                             }
-                            console.log(classFilePath)
                             if (!fs.existsSync(classFilePath)) {
-                                console.log("DON'T EXIST");
                                 return false; // Skip if the corresponding file doesn't exist
-                            }else {
-                                console.log("EXIST");
                             }
                         }
 
                         // Detect and handle class definitions to avoid duplicates
-                        if (line.trim().startsWith('class ')) {
+                        if (line.trim().startsWith('class ') || line.trim().startsWith('abstract class ') || line.trim().startsWith('interface ')) {
                             const classNameMatch = line.match(/class\s+(?:class\s+)?([^\s{]+)/);
                             if (classNameMatch) {
                                 const className = classNameMatch[1];
                                 currentClass = className.replace(/<.*>/, ''); // Remove generics
                                 // Check if the file corresponding to the class exists in the expected subfolder
                                 const classFilePath = path.join(srcFolderPath, subfolderName, `${currentClass}.ts`);
-                                console.log(classFilePath)
                                 if (!fs.existsSync(classFilePath)) {
-                                    console.log("DON'T EXIST");
                                     return false; // Skip if the corresponding file doesn't exist
-                                }else {
-                                    console.log("EXIST");
                                 }
                             }
                         }
@@ -94,6 +86,11 @@ topLevelFolders.forEach(folder => {
                 .filter(line => {
                     // Extract association lines (e.g., "ClassA --> ClassB")
                     if (line.includes('-->')) {
+                        /*if(line.includes("--> \"1\" Event")) return false;
+                        if(line.includes("--> \"1\" GameObject")) return false;
+                        if(line.includes("--> \"1\" Vector2")) return false;
+                        if(line.includes("--> \"1\" Vector3")) return false;*/
+
                         externalAssociations.add(line.trim()); // Add to external associations
                         return false;
                     }
