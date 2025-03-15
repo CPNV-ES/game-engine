@@ -24,6 +24,10 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
+    /* Meta decorators */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
     "types": ["@webgpu/types"],
     "baseUrl": ".",
     "paths": {
