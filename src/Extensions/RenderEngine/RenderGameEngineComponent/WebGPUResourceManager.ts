@@ -1,5 +1,6 @@
 import { Event } from "@core/EventSystem/Event.ts";
 import { WebGPUResourceDelegate } from "@extensions/RenderEngine/RenderGameEngineComponent/WebGPUResourceDelegate.ts";
+import { AsyncCache } from "@core/Caching/AsyncCache.ts";
 
 /**
  * A class that manages the resources for the WebGPU rendering engine.
@@ -42,12 +43,8 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   private _depthTexture: GPUTexture | null = null;
   private _depthTextureView: GPUTextureView | null = null;
   private _device: GPUDevice | undefined;
-  private readonly _cachedTextures: Map<RequestInfo | URL, GPUTexture> =
-    new Map<RequestInfo | URL, GPUTexture>();
-  private readonly _resolvingTextures: Map<
-    RequestInfo | URL,
-    Promise<GPUTexture>
-  > = new Map<RequestInfo | URL, Promise<GPUTexture>>();
+  private static readonly _textureCache =
+    AsyncCache.getInstance<GPUTexture>("textures");
 
   /**
    * Create a new WebGPUResourceManager.
@@ -119,14 +116,8 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     if (!this._device) {
       throw new Error("Rendering is not ready yet! (Device not available)");
     }
-    if (this._cachedTextures.has(url)) {
-      return this._cachedTextures.get(url)!;
-    }
-    if (this._resolvingTextures.has(url)) {
-      return await this._resolvingTextures.get(url)!;
-    }
 
-    const asyncLoadPromise = (async () => {
+    return WebGPUResourceManager._textureCache.get(url, async () => {
       const response = await fetch(url);
       const imageBitmap = await createImageBitmap(await response.blob());
 
@@ -145,14 +136,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
         [imageBitmap.width, imageBitmap.height],
       );
       return imageTexture;
-    })();
-
-    this._resolvingTextures.set(url, asyncLoadPromise);
-
-    const imageTexture = await asyncLoadPromise;
-    this._cachedTextures.set(url, imageTexture);
-
-    return imageTexture;
+    });
   }
 
   public createUniformBuffer(data: Float32Array): GPUBuffer {
