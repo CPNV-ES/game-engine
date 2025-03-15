@@ -3,6 +3,8 @@ import { OutputBehavior } from "@core/OutputBehavior.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
 import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
+import { Quaternion } from "@core/MathStructures/Quaternion.ts";
 
 /**
  * A 3D camera class that manages projection, view transformations, and screen-to-world raycasting for a rendering engine.
@@ -182,5 +184,19 @@ export class Camera extends OutputBehavior {
 
     // Compute final MVP matrix: VP * Model
     return mat4.multiply(vpMatrix, modelMatrix);
+  }
+
+  /**
+   * Returns the world position of the camera.
+   */
+  public get worldPosition(): Vector3 {
+    return this.transform.worldPosition;
+  }
+
+  /**
+   * Returns the world rotation of the camera.
+   */
+  public get worldRotation(): Quaternion {
+    return this.transform.worldRotation;
   }
 }
