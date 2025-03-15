@@ -57,12 +57,23 @@ export class WebGPUResourceManager {
     this._gpu = gpu;
   }
 
+  /**
+   * Creates a bind group layout.
+   * @param descriptor - The descriptor for the bind group layout.
+   * @returns The created bind group layout.
+   */
   public createBindGroupLayout(
     descriptor: GPUBindGroupLayoutDescriptor,
   ): GPUBindGroupLayout {
     return this._device!.createBindGroupLayout(descriptor);
   }
 
+  /**
+   * Creates a bind group.
+   * @param bindGroupLayout - The bind group layout to use.
+   * @param entries - The entries for the bind group.
+   * @returns The created bind group.
+   */
   public createBindGroup(
     bindGroupLayout: GPUBindGroupLayout,
     entries: GPUBindGroupEntry[],
@@ -70,10 +81,25 @@ export class WebGPUResourceManager {
     return this._device!.createBindGroup({ layout: bindGroupLayout, entries });
   }
 
+  /**
+   * Creates a sampler.
+   * @param descriptor - The descriptor for the sampler.
+   * @returns The created sampler.
+   */
   public createSampler(descriptor: GPUSamplerDescriptor): GPUSampler {
     return this._device!.createSampler(descriptor);
   }
 
+  /**
+   * Creates a render pipeline.
+   * @param vertexWGSLShader - The vertex shader code in WGSL.
+   * @param fragmentWGSLShader - The fragment shader code in WGSL.
+   * @param primitiveState - The primitive state configuration.
+   * @param bindGroupLayouts - The bind group layouts for the pipeline.
+   * @param buffers - The vertex buffer layouts (optional).
+   * @param targetBlend - The blend state for the pipeline (optional).
+   * @returns The created render pipeline.
+   */
   public createPipeline(
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
@@ -114,6 +140,11 @@ export class WebGPUResourceManager {
     });
   }
 
+  /**
+   * Creates a texture from an image URL.
+   * @param url - The URL of the image to load.
+   * @returns A promise that resolves to the created texture.
+   */
   public async createTexture(url: RequestInfo | URL): Promise<GPUTexture> {
     if (!this._device) {
       throw new Error("Rendering is not ready yet! (Device not available)");
@@ -154,6 +185,11 @@ export class WebGPUResourceManager {
     return imageTexture;
   }
 
+  /**
+   * Creates a uniform buffer.
+   * @param data - The data to initialize the buffer with.
+   * @returns The created uniform buffer.
+   */
   public createUniformBuffer(data: Float32Array): GPUBuffer {
     const buffer: GPUBuffer = this._device!.createBuffer({
       size: data.byteLength,
@@ -163,10 +199,20 @@ export class WebGPUResourceManager {
     return buffer;
   }
 
+  /**
+   * Fills a uniform buffer with data.
+   * @param buffer - The buffer to fill.
+   * @param data - The data to write to the buffer.
+   */
   public fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void {
     this._device!.queue.writeBuffer(buffer, 0, data, 0, data.length);
   }
 
+  /**
+   * Creates a vertex buffer.
+   * @param data - The data to initialize the buffer with.
+   * @returns The created vertex buffer.
+   */
   public createVertexBuffer(data: Float32Array): GPUBuffer {
     const buffer: GPUBuffer = this._device!.createBuffer({
       size: data.byteLength,
@@ -176,6 +222,11 @@ export class WebGPUResourceManager {
     return buffer;
   }
 
+  /**
+   * Creates an index buffer.
+   * @param data - The data to initialize the buffer with.
+   * @returns The created index buffer.
+   */
   public createIndexBuffer(data: Uint16Array): GPUBuffer {
     const buffer: GPUBuffer = this._device!.createBuffer({
       size: data.byteLength,
@@ -185,6 +236,12 @@ export class WebGPUResourceManager {
     return buffer;
   }
 
+  /**
+   * Creates a storage buffer.
+   * @param size - The size of the buffer in bytes.
+   * @param label - The label for the buffer (optional).
+   * @returns The created storage buffer.
+   */
   public createStorageBuffer(
     size: number,
     label: string = "Storage buffer",
@@ -197,12 +254,22 @@ export class WebGPUResourceManager {
     });
   }
 
+  /**
+   * Creates a render bundle encoder.
+   * @param descriptor - The descriptor for the render bundle encoder.
+   * @returns The created render bundle encoder.
+   */
   public createRenderBundleEncoder(
     descriptor: GPURenderBundleEncoderDescriptor,
   ): GPURenderBundleEncoder {
     return this._device!.createRenderBundleEncoder(descriptor);
   }
 
+  /**
+   * Create a preconfigured depth texture.
+   * @param width - The width of the texture.
+   * @param height - The height of the texture.
+   */
   public createDepthTexture(width: number, height: number): void {
     if (!this._device || !this._depthTextureFormat) return;
     this._depthTexture = this._device!.createTexture({
@@ -213,6 +280,11 @@ export class WebGPUResourceManager {
     this._depthTextureView = this._depthTexture.createView();
   }
 
+  /**
+   * Request and initialize GPU resources.
+   * After this, if any error occurs, it will be emitted through the onError event.
+   * @returns A promise that resolves when the GPU resources are ready.
+   */
   public async requestGpuResources() {
     const adapter: GPUAdapter | null = await this._gpu.requestAdapter();
     const device: GPUDevice | null = (await adapter?.requestDevice()) ?? null;
@@ -242,6 +314,9 @@ export class WebGPUResourceManager {
     this._depthTextureFormat = "depth24plus";
   }
 
+  /**
+   * Release the GPU resources.
+   */
   public destroyGpuResources() {
     if (!this._device) return;
     // Destroy the depth texture
@@ -256,12 +331,54 @@ export class WebGPUResourceManager {
     this._device = undefined;
   }
 
-  public createCommandEncoder(): GPUCommandEncoder {
-    return this._device!.createCommandEncoder();
+  /**
+   * Starts a render pass with a command encoder and render pass encoder.
+   *
+   * @param textureView - The GPU texture view for rendering.
+   * @returns An object with the command encoder and render pass encoder.
+   *
+   * Sets up the render pass descriptor with color and depth-stencil attachments,
+   * clearing the color to transparent black and depth to the farthest value.
+   */
+  public startRenderPass(textureView: GPUTextureView): {
+    commandEncoder: GPUCommandEncoder;
+    renderPassEncoder: GPURenderPassEncoder;
+  } {
+    const renderPassDescriptor: GPURenderPassDescriptor = {
+      colorAttachments: [
+        {
+          view: textureView,
+          clearValue: [0, 0, 0, 0],
+          loadOp: "clear",
+          storeOp: "store",
+        },
+      ],
+      depthStencilAttachment: {
+        view: this.depthTextureView!,
+        depthClearValue: 1.0, // Clear depth to the farthest value
+        depthLoadOp: "clear",
+        depthStoreOp: "store",
+      },
+    };
+
+    const commandEncoder: GPUCommandEncoder =
+      this._device!.createCommandEncoder();
+    const renderPassEncoder: GPURenderPassEncoder =
+      commandEncoder.beginRenderPass(renderPassDescriptor);
+
+    return { commandEncoder, renderPassEncoder };
   }
 
-  public submitCommandEncoder(commandEncoder: GPUCommandEncoder): void {
-    this._device!.queue.submit([commandEncoder.finish()]);
+  /**
+   * Completes the rendering process by ending the render pass and submitting the command buffer to the GPU queue.
+   * @param passEncoder - An object containing the command encoder and render pass encoder.
+   */
+  public finishRenderPass(passEncoder: {
+    commandEncoder: GPUCommandEncoder;
+    renderPassEncoder: GPURenderPassEncoder;
+  }) {
+    passEncoder.renderPassEncoder.end();
+    this._device!.queue.submit([passEncoder.commandEncoder.finish()]);
   }
 
   private subscribeToDeviceEvents(device: GPUDevice) {

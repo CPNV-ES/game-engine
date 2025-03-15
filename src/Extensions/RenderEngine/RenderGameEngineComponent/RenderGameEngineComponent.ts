@@ -264,39 +264,22 @@ export class RenderGameEngineComponent
       throw new Error(
         "Device, context, or presentation texture format not available",
       );
-    const commandEncoder: GPUCommandEncoder =
-      this._webGpuResourcesManager.createCommandEncoder();
+
     const textureView: GPUTextureView = this._context
       .getCurrentTexture()
       .createView(); // Get the current texture from the context (changed each frames because of the swap chain)
-    const renderPassDescriptor: GPURenderPassDescriptor = {
-      colorAttachments: [
-        {
-          view: textureView,
-          clearValue: [0, 0, 0, 0],
-          loadOp: "clear",
-          storeOp: "store",
-        },
-      ],
-      depthStencilAttachment: {
-        view: this._webGpuResourcesManager.depthTextureView!,
-        depthClearValue: 1.0, // Clear depth to the farthest value
-        depthLoadOp: "clear",
-        depthStoreOp: "store",
-      },
-    };
 
-    const renderPassEncoder: GPURenderPassEncoder =
-      commandEncoder.beginRenderPass(renderPassDescriptor);
+    const passEncoder: {
+      commandEncoder: GPUCommandEncoder;
+      renderPassEncoder: GPURenderPassEncoder;
+    } = this._webGpuResourcesManager.startRenderPass(textureView);
 
     this.attachedEngine!.root.getAllChildren().forEach((gameObject) => {
       gameObject.getBehaviors(RenderBehavior).forEach((behavior) => {
-        behavior.render(renderPassEncoder);
+        behavior.render(passEncoder.renderPassEncoder);
       });
     });
 
-    renderPassEncoder.end();
-
-    this._webGpuResourcesManager.submitCommandEncoder(commandEncoder);
+    this._webGpuResourcesManager.finishRenderPass(passEncoder);
   }
 }
