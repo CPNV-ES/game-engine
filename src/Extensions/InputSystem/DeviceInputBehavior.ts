@@ -76,6 +76,12 @@ export class DeviceInputBehavior extends InputBehavior {
     gamepads.forEach((gamepad: GamepadDevice) => {
       this.setupGamepadObservers(gamepad);
     });
+    // Listen for new gamepads
+    this.inputEngineComponent.onDeviceAdded.addObserver((gamepad) => {
+      if (gamepad instanceof GamepadDevice) {
+        this.setupGamepadObservers(gamepad);
+      }
+    });
   }
 
   /**

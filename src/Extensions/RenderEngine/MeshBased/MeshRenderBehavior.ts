@@ -1,6 +1,6 @@
-import { RenderGameEngineComponent } from "../RenderGameEngineComponent.ts";
-import { MeshData } from "./MeshData.ts";
-import { BasicUVTexturedRenderBehavior } from "../BasicUVTexturedRenderBehavior.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
+import { MeshData } from "@extensions/RenderEngine/MeshBased/MeshData.ts";
+import { BasicUVTexturedRenderBehavior } from "@extensions/RenderEngine/BasicUVTexturedRenderBehavior.ts";
 
 /**
  * A RenderBehavior that renders a mesh with a texture.

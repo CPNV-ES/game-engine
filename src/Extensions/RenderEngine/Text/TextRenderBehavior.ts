@@ -8,9 +8,13 @@ import {
   MsdfTextMeasurements,
 } from "@extensions/RenderEngine/Text/MSDFFont/MsdfChar.ts";
 import { MsdfText } from "@extensions/RenderEngine/Text/MSDFFont/MsdfText.ts";
-import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
+import { AsyncCache } from "@core/Caching/AsyncCache.ts";
 
 export class TextRenderBehavior extends RenderBehavior {
+  private static readonly _fontCache =
+    AsyncCache.getInstance<MsdfFont>("fonts");
+
   private readonly _fontJsonUrl: string;
   private _font: MsdfFont | null = null;
   private _text: MsdfText | null = null;
@@ -176,96 +180,98 @@ export class TextRenderBehavior extends RenderBehavior {
   }
 
   private async createFont(): Promise<MsdfFont> {
-    const response = await fetch(this._fontJsonUrl);
-    const json = await response.json();
+    return TextRenderBehavior._fontCache.get(this._fontJsonUrl, async () => {
+      const response = await fetch(this._fontJsonUrl);
+      const json = await response.json();
 
-    const i = this._fontJsonUrl.lastIndexOf("/");
-    const baseUrl =
-      i !== -1 ? this._fontJsonUrl.substring(0, i + 1) : undefined;
+      const i = this._fontJsonUrl.lastIndexOf("/");
+      const baseUrl =
+        i !== -1 ? this._fontJsonUrl.substring(0, i + 1) : undefined;
 
-    const pagePromises = [];
-    for (const pageUrl of json.pages) {
-      pagePromises.push(this._renderEngine.createTexture(baseUrl + pageUrl));
-    }
-
-    const charCount = json.chars.length;
-    const charsBuffer = this._renderEngine.createStorageBuffer(
-      charCount * Float32Array.BYTES_PER_ELEMENT * 8,
-      "MSDF character layout buffer",
-    );
-    const charsArray = new Float32Array(charsBuffer.getMappedRange());
-
-    const u = 1 / json.common.scaleW;
-    const v = 1 / json.common.scaleH;
-
-    const chars: { [x: number]: MsdfChar } = {};
-
-    let offset = 0;
-    for (const [i, char] of json.chars.entries()) {
-      chars[char.id] = char;
-      chars[char.id].charIndex = i;
-      charsArray[offset] = char.x * u; // texOffset.x
-      charsArray[offset + 1] = char.y * v; // texOffset.y
-      charsArray[offset + 2] = char.width * u; // texExtent.x
-      charsArray[offset + 3] = char.height * v; // texExtent.y
-      charsArray[offset + 4] = char.width; // size.x
-      charsArray[offset + 5] = char.height; // size.y
-      charsArray[offset + 6] = char.xoffset; // offset.x
-      charsArray[offset + 7] = -char.yoffset; // offset.y
-      offset += 8;
-    }
-
-    charsBuffer.unmap();
-
-    const pageTextures = await Promise.all(pagePromises);
-
-    const sampler = this._renderEngine.createSampler({
-      label: "MSDF text sampler",
-      minFilter: "linear",
-      magFilter: "linear",
-      mipmapFilter: "linear",
-      maxAnisotropy: 16,
-    });
-
-    const fontBindGroup = this._renderEngine.createBindGroup(
-      this._bindGroupLayouts![0],
-      [
-        {
-          binding: 0,
-          // TODO: Allow multi-page fonts
-          resource: pageTextures[0].createView(),
-        },
-        {
-          binding: 1,
-          resource: sampler,
-        },
-        {
-          binding: 2,
-          resource: { buffer: charsBuffer },
-        },
-      ],
-    );
-
-    const kernings = new Map();
-
-    if (json.kernings) {
-      for (const kearning of json.kernings) {
-        let charKerning = kernings.get(kearning.first);
-        if (!charKerning) {
-          charKerning = new Map<number, number>();
-          kernings.set(kearning.first, charKerning);
-        }
-        charKerning.set(kearning.second, kearning.amount);
+      const pagePromises = [];
+      for (const pageUrl of json.pages) {
+        pagePromises.push(this._renderEngine.createTexture(baseUrl + pageUrl));
       }
-    }
 
-    return new MsdfFont(
-      this._pipeline!,
-      fontBindGroup,
-      json.common.lineHeight,
-      chars,
-      kernings,
-    );
+      const charCount = json.chars.length;
+      const charsBuffer = this._renderEngine.createStorageBuffer(
+        charCount * Float32Array.BYTES_PER_ELEMENT * 8,
+        "MSDF character layout buffer",
+      );
+      const charsArray = new Float32Array(charsBuffer.getMappedRange());
+
+      const u = 1 / json.common.scaleW;
+      const v = 1 / json.common.scaleH;
+
+      const chars: { [x: number]: MsdfChar } = {};
+
+      let offset = 0;
+      for (const [i, char] of json.chars.entries()) {
+        chars[char.id] = char;
+        chars[char.id].charIndex = i;
+        charsArray[offset] = char.x * u; // texOffset.x
+        charsArray[offset + 1] = char.y * v; // texOffset.y
+        charsArray[offset + 2] = char.width * u; // texExtent.x
+        charsArray[offset + 3] = char.height * v; // texExtent.y
+        charsArray[offset + 4] = char.width; // size.x
+        charsArray[offset + 5] = char.height; // size.y
+        charsArray[offset + 6] = char.xoffset; // offset.x
+        charsArray[offset + 7] = -char.yoffset; // offset.y
+        offset += 8;
+      }
+
+      charsBuffer.unmap();
+
+      const pageTextures = await Promise.all(pagePromises);
+
+      const sampler = this._renderEngine.createSampler({
+        label: "MSDF text sampler",
+        minFilter: "linear",
+        magFilter: "linear",
+        mipmapFilter: "linear",
+        maxAnisotropy: 16,
+      });
+
+      const fontBindGroup = this._renderEngine.createBindGroup(
+        this._bindGroupLayouts![0],
+        [
+          {
+            binding: 0,
+            // TODO: Allow multi-page fonts
+            resource: pageTextures[0].createView(),
+          },
+          {
+            binding: 1,
+            resource: sampler,
+          },
+          {
+            binding: 2,
+            resource: { buffer: charsBuffer },
+          },
+        ],
+      );
+
+      const kernings = new Map();
+
+      if (json.kernings) {
+        for (const kearning of json.kernings) {
+          let charKerning = kernings.get(kearning.first);
+          if (!charKerning) {
+            charKerning = new Map<number, number>();
+            kernings.set(kearning.first, charKerning);
+          }
+          charKerning.set(kearning.second, kearning.amount);
+        }
+      }
+
+      return new MsdfFont(
+        this._pipeline!,
+        fontBindGroup,
+        json.common.lineHeight,
+        chars,
+        kernings,
+      );
+    });
   }
 
   private formatText(

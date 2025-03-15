@@ -1,7 +1,7 @@
 import { OutputBehavior } from "@core/OutputBehavior.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
-import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 import { mat4 } from "wgpu-matrix";
 
 /**
@@ -18,7 +18,7 @@ export abstract class RenderBehavior extends OutputBehavior {
   private _fragmentWGSLShader: string;
   private _primitiveState: GPUPrimitiveState;
   private _bindGroupLayoutDescriptors: GPUBindGroupLayoutDescriptor[];
-  private _buffers: Iterable<GPUVertexBufferLayout | null> | undefined;
+  private _bufferLayouts: Iterable<GPUVertexBufferLayout | null> | undefined;
   private _targetBlend: GPUBlendState | undefined;
 
   /**
@@ -49,7 +49,7 @@ export abstract class RenderBehavior extends OutputBehavior {
     this._fragmentWGSLShader = fragmentWGSLShader;
     this._primitiveState = primitiveState;
     this._bindGroupLayoutDescriptors = bindGroupLayoutDescriptors;
-    this._buffers = buffers;
+    this._bufferLayouts = buffers;
     this._targetBlend = targetBlend;
 
     if (renderEngine.IsRenderingReady) {
@@ -69,12 +69,12 @@ export abstract class RenderBehavior extends OutputBehavior {
     this._bindGroupLayouts = this._bindGroupLayoutDescriptors.map(
       (descriptor) => this._renderEngine.createBindGroupLayout(descriptor),
     );
-    this._pipeline = this._renderEngine.createPipeline(
+    this._pipeline = await this._renderEngine.createPipeline(
       this._vertexWGSLShader,
       this._fragmentWGSLShader,
       this._primitiveState,
       this._bindGroupLayouts,
-      this._buffers,
+      this._bufferLayouts,
       this._targetBlend,
     );
     this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(

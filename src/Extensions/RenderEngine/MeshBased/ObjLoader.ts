@@ -1,28 +1,19 @@
 import { MeshData, Face, triangulate } from "./MeshData.ts";
+import { AsyncCache } from "@core/Caching/AsyncCache.ts";
 
 /**
  * Loads an OBJ file and returns the mesh data.
  */
 export class ObjLoader {
-  private static readonly _cache = new Map<string, MeshData>();
-  private static readonly _objectLoadingPromises = new Map<
-    string,
-    Promise<MeshData>
-  >();
+  private static readonly _meshesCache =
+    AsyncCache.getInstance<MeshData>("meshes");
 
   /**
    * Loads an OBJ file and returns the mesh data.
    * @param url
    */
   public static async load(url: string): Promise<MeshData> {
-    if (this._cache.has(url)) {
-      return this._cache.get(url)!;
-    }
-    if (this._objectLoadingPromises.has(url)) {
-      return await this._objectLoadingPromises.get(url)!;
-    }
-
-    const asyncLoadPromise = (async () => {
+    return ObjLoader._meshesCache.get(url, async () => {
       const response = await fetch(url);
       const text = await response.text();
       const meshData = this.parse(text);
@@ -55,13 +46,7 @@ export class ObjLoader {
 
       meshData.indices = new Uint16Array(finalIndices);
       return meshData;
-    })();
-
-    this._objectLoadingPromises.set(url, asyncLoadPromise);
-    const meshData = await asyncLoadPromise;
-
-    this._cache.set(url, meshData);
-    return meshData;
+    });
   }
 
   /**

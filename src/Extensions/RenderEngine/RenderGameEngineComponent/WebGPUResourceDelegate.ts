@@ -1,35 +1,13 @@
-import { Event } from "@core/EventSystem/Event";
-import { Camera } from "./Camera";
-import { Vector2 } from "@core/MathStructures/Vector2";
+import { Event } from "@core/EventSystem/Event.ts";
 
 /**
- * Interface for a Renderer component responsible for rendering the game using WebGPU.
+ * Interface for a Renderer component responsible for managing WebGPU resources.
  */
-export interface Renderer {
+export interface WebGPUResourceDelegate {
   /**
    * Event that is triggered when an asynchronous error occurs.
    */
   readonly onError: Event<Error>;
-
-  /**
-   * Event that is triggered when rendering becomes ready (context and device are available).
-   */
-  readonly onRenderingReady: Event<void>;
-
-  /**
-   * The camera to use for rendering.
-   */
-  camera: Camera | null;
-
-  /**
-   * Returns whether the rendering is currently ready.
-   */
-  readonly IsRenderingReady: boolean;
-
-  /**
-   * The current screen size.
-   */
-  readonly screenSize: Vector2;
 
   /**
    * Creates a bind group layout.
@@ -59,7 +37,7 @@ export interface Renderer {
   createSampler(descriptor: GPUSamplerDescriptor): GPUSampler;
 
   /**
-   * Creates a render pipeline.
+   * Creates a render pipeline asynchronously.
    * @param vertexWGSLShader - The vertex shader code in WGSL.
    * @param fragmentWGSLShader - The fragment shader code in WGSL.
    * @param primitiveState - The primitive state configuration.
@@ -75,7 +53,7 @@ export interface Renderer {
     bindGroupLayouts: Iterable<GPUBindGroupLayout | null>,
     buffers?: Iterable<GPUVertexBufferLayout | null>,
     targetBlend?: GPUBlendState,
-  ): GPURenderPipeline;
+  ): Promise<GPURenderPipeline>;
 
   /**
    * Creates a texture from an image URL.
@@ -85,7 +63,7 @@ export interface Renderer {
   createTexture(url: RequestInfo | URL): Promise<GPUTexture>;
 
   /**
-   * Creates a uniform buffer.
+   * Creates a uniform buffer and fills it with data.
    * @param data - The data to initialize the buffer with.
    * @returns The created uniform buffer.
    */

@@ -34,4 +34,34 @@ export class ArrayUtility {
       array.splice(index, 1);
     }
   }
+
+  /**
+   * Returns the index of the closest (lower) element in an array sorted in ascending order
+   * @param array
+   * @param target
+   * @param compare - A function that compares two elements (it should return a negative number if a < b, 0 if a = b, and a positive number if a > b)
+   */
+  static binarySearch<T>(
+    array: T[],
+    target: T,
+    compare: (a: T, b: T) => number,
+  ): number {
+    let left = 0;
+    let right = array.length - 1;
+
+    while (left <= right) {
+      const mid = Math.floor((left + right) / 2);
+      const comparison = compare(array[mid], target);
+
+      if (comparison < 0) {
+        left = mid + 1;
+      } else if (comparison > 0) {
+        right = mid - 1;
+      } else {
+        return mid;
+      }
+    }
+
+    return left;
+  }
 }

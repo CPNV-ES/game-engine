@@ -33,7 +33,23 @@ export class GameObject {
   /**
    * Optional parent of this GameObject. If set, the transform should follow the parent's transform.
    */
-  protected _parent: GameObject | null = null;
+  private _parent: GameObject | null = null;
+
+  /**
+   * Get the parent of this GameObject or null if it's root or not already attached to a tree.
+   */
+  public get parent(): GameObject | null {
+    return this._parent;
+  }
+
+  /**
+   * Set the parent of this GameObject. This should only be used internally by the engine.
+   * @param value
+   * @protected
+   */
+  private set parent(value: GameObject | null) {
+    this._parent = value;
+  }
 
   /**
    * The name of this GameObject
@@ -77,7 +93,7 @@ export class GameObject {
   public addChild(gameObject: GameObject): void {
     if (this.children.includes(gameObject)) return;
     this.children.push(gameObject);
-    gameObject._parent = this;
+    gameObject.parent = this;
     this.onChildAdded.emit(gameObject);
   }
 
@@ -89,7 +105,7 @@ export class GameObject {
     const index = this.children.indexOf(gameObject);
     if (index === -1) return;
     this.children.splice(index, 1);
-    gameObject._parent = null;
+    gameObject.parent = null;
     this.onChildRemoved.emit(gameObject);
   }
 
@@ -146,10 +162,17 @@ export class GameObject {
   }
 
   /**
-   * Update all behaviors attached to this GameObject.
-   * @param deltaTime
+   * Detach all behaviors and children from this GameObject.
+   * Remove this GameObject from its parent.
    */
-  public get parent(): GameObject | null {
-    return this._parent;
+  public destroy() {
+    this._behaviors.forEach((b) => b.detach(this));
+    this._behaviors = [];
+    this._children.forEach((c) => c.destroy());
+    this._children = [];
+    if (this._parent) {
+      this._parent.removeChild(this);
+    }
+    //We don't want to spam notifications when destroying the object
   }
 }

@@ -14,7 +14,7 @@ import {
   GPURenderBundleEncoderDescriptor,
   GPUTextureFormat,
 } from "webgpu";
-import { Renderer } from "@extensions/RenderEngine/Renderer";
+import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer";
 import { Camera } from "@extensions/RenderEngine/Camera";
 import { Event } from "@core/EventSystem/Event";
 import { Vector2 } from "@core/MathStructures/Vector2";
