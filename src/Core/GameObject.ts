@@ -49,6 +49,7 @@ export class GameObject {
    */
   private set parent(value: GameObject | null) {
     this._parent = value;
+    this.onParentChange();
   }
 
   /**
@@ -175,4 +176,10 @@ export class GameObject {
     }
     //We don't want to spam notifications when destroying the object
   }
+
+  /**
+   * Called when parent changed
+   * @protected
+   */
+  protected onParentChange() {}
 }
