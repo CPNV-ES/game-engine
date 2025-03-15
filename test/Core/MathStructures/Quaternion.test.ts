@@ -232,4 +232,55 @@ describe("Quaternion", (): void => {
       expect(quaternionFromAxis.z).toBeCloseTo(quaternionFromEuler.z, 4);
     });
   });
+  describe("Quaternion inverse", (): void => {
+    it("should compute the inverse of a unit quaternion", (): void => {
+      const quaternion = new Quaternion(1, 0, 0, 0); // Identity quaternion
+      quaternion.inverse();
+
+      // The inverse of the identity quaternion is itself
+      expect(quaternion.w).toBeCloseTo(1);
+      expect(quaternion.x).toBeCloseTo(0);
+      expect(quaternion.y).toBeCloseTo(0);
+      expect(quaternion.z).toBeCloseTo(0);
+    });
+
+    it("should compute the inverse of a non-unit quaternion", (): void => {
+      const quaternion = new Quaternion(1, 2, 3, 4);
+      const inverse = quaternion.clone().inverse();
+
+      // Expected inverse: conjugate divided by magnitude squared
+      const magnitudeSquared = quaternion.magnitudeSquared();
+      const expectedW = 1 / magnitudeSquared;
+      const expectedX = -2 / magnitudeSquared;
+      const expectedY = -3 / magnitudeSquared;
+      const expectedZ = -4 / magnitudeSquared;
+
+      expect(inverse.w).toBeCloseTo(expectedW, 4);
+      expect(inverse.x).toBeCloseTo(expectedX, 4);
+      expect(inverse.y).toBeCloseTo(expectedY, 4);
+      expect(inverse.z).toBeCloseTo(expectedZ, 4);
+    });
+
+    it("should return the identity quaternion if the magnitude is zero", (): void => {
+      const quaternion = new Quaternion(0, 0, 0, 0); // Zero quaternion
+      quaternion.inverse();
+
+      // The inverse of a zero quaternion is the identity quaternion
+      expect(quaternion.w).toBeCloseTo(1);
+      expect(quaternion.x).toBeCloseTo(0);
+      expect(quaternion.y).toBeCloseTo(0);
+      expect(quaternion.z).toBeCloseTo(0);
+    });
+
+    it("should satisfy q * q^-1 = identity", (): void => {
+      const quaternion = new Quaternion(1, 2, 3, 4).normalize(); // Normalized quaternion
+      const inverse = quaternion.clone().inverse();
+      const result = quaternion.multiply(inverse); // Should be the identity quaternion
+
+      expect(result.w).toBeCloseTo(1, 4);
+      expect(result.x).toBeCloseTo(0, 4);
+      expect(result.y).toBeCloseTo(0, 4);
+      expect(result.z).toBeCloseTo(0, 4);
+    });
+  });
 });
