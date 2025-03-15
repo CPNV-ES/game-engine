@@ -14,5 +14,6 @@ export class RootGameObject extends GameObject {
   constructor(gameEngineWindow: GameEngineWindow) {
     super("Root");
     this.gameWindowInstance = gameEngineWindow;
+    this._root = this;
   }
 }
