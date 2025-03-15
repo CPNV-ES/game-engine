@@ -258,6 +258,9 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     // Destroy the device
     this._device.destroy();
     this._device = undefined;
+
+    WebGPUResourceManager._textureCache.clear();
+    WebGPUResourceManager._renderPipelinesCache.clear();
   }
 
   /**
