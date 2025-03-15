@@ -30,4 +30,29 @@ describe("DependencyContainer", () => {
       `No instance registered for TestDependency`,
     );
   });
+
+  it("should unregister a dependency using the class name", () => {
+    const container = new DependencyContainer();
+    const dependency = new TestDependency();
+
+    // Register the dependency using the class name
+    container.registerWithClassName("TestDependency", dependency);
+
+    // Unregister the dependency using the class name
+    container.unregisterWithClassName("TestDependency");
+
+    // Attempt to resolve the unregistered dependency
+    expect(() => container.resolve(TestDependency)).toThrowError(
+      `No instance registered for TestDependency`,
+    );
+  });
+
+  it("should throw an error when resolving an unregistered dependency", () => {
+    const container = new DependencyContainer();
+
+    // Attempt to resolve an unregistered dependency
+    expect(() => container.resolve(TestDependency)).toThrowError(
+      `No instance registered for TestDependency`,
+    );
+  });
 });
