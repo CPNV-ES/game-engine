@@ -12,12 +12,13 @@ const externalAssociations = new Set(); // Track associations to externalize
 
 // Function to sanitize folder names for consistent output
 const sanitizeFolderName = (folderPath, baseFolder) => {
-    return path.relative(path.join('src', baseFolder), folderPath).replace(/[\\/]/g, '_');
+    const relativePath = path.relative(path.join('src', baseFolder), folderPath);
+    return relativePath ? `${baseFolder}_${relativePath.replace(/[\/\\]/g, '_')}` : baseFolder;
 };
 
 // Function to process a directory only once per folder
 const processDirectory = (dirPath, folderName, subfolderName) => {
-    const outputFile = path.join(outputDir, `${folderName}_${subfolderName}.puml`);
+    const outputFile = path.join(outputDir, `${subfolderName}.puml`);
 
     // Ensure the directory contains TypeScript files before running `tplant`
     const tsFiles = fs.readdirSync(dirPath).filter(file => file.endsWith('.ts'));
@@ -75,25 +76,18 @@ topLevelFolders.forEach(folder => {
     fs.readdirSync(outputDir)
         .filter(file => file.startsWith(`${folder}_`) && file.endsWith('.puml'))
         .forEach(file => {
-            const subfolderName = file.replace(`${folder}_`, '').replace('.puml', '');
-            finalContent.push(`    package ${subfolderName} {`);
+            const subfolderName = file.replace('.puml', '');
+            finalContent.push(`    package ${subfolderName.replace(`${folder}_`, '')} {`);
 
             const filteredContent = fs.readFileSync(path.join(outputDir, file), 'utf8')
                 .replace(/@startuml|@enduml/g, '')
                 .split('\n')
                 .filter(line => {
-                    // Extract association lines (e.g., "ClassA --> ClassB")
                     if (line.includes('-->')) {
-                        /*if(line.includes("--> \"1\" Event")) return false;
-                        if(line.includes("--> \"1\" GameObject")) return false;
-                        if(line.includes("--> \"1\" Vector2")) return false;
-                        if(line.includes("--> \"1\" Vector3")) return false;*/
-
-                        externalAssociations.add(line.trim()); // Add to external associations
+                        externalAssociations.add(line.trim());
                         return false;
                     }
-
-                    return true; // Keep method lines ("+") and other valid content
+                    return true;
                 });
 
             finalContent.push(...filteredContent, '    }');
