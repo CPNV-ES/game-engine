@@ -267,6 +267,143 @@ describe("Transform", (): void => {
     });
   });
 
+  describe("worldToLocalPosition", (): void => {
+    it("should return the same position when no parent is set", (): void => {
+      const gameObject = new GameObject();
+      const transform = new Transform(gameObject);
+
+      const worldPosition = new Vector3(10, 20, 30);
+      const localPosition = transform.worldToLocalPosition(worldPosition);
+
+      // When there's no parent, world and local positions are the same
+      expect(localPosition).toEqual(worldPosition);
+    });
+
+    it("should subtract parent's world position when no rotation or scale is applied", (): void => {
+      const parentGameObject = new GameObject();
+      const childGameObject = new GameObject();
+
+      parentGameObject.addChild(childGameObject);
+
+      // Set parent's position
+      parentGameObject.transform.position.set(10, 20, 30);
+
+      // World position to convert
+      const worldPosition = new Vector3(15, 25, 35);
+
+      // Expected local position: worldPosition - parent's position
+      const expectedLocalPosition = new Vector3(5, 5, 5);
+
+      const localPosition =
+        childGameObject.transform.worldToLocalPosition(worldPosition);
+
+      expect(localPosition).toEqual(expectedLocalPosition);
+    });
+
+    it("should apply inverse parent rotation when no scaling is applied", (): void => {
+      const parentGameObject = new GameObject();
+      const childGameObject = new GameObject();
+
+      parentGameObject.addChild(childGameObject);
+
+      // Set parent's rotation (90° around Y-axis)
+      parentGameObject.transform.rotation.setFromEulerAngles(0, Math.PI / 2, 0);
+
+      // World position to convert
+      const worldPosition = new Vector3(1, 2, 3);
+
+      // Expected local position: worldPosition rotated by inverse parent rotation
+      const expectedLocalPosition = new Vector3(-3, 2, 1);
+
+      const localPosition =
+        childGameObject.transform.worldToLocalPosition(worldPosition);
+
+      expect(localPosition.x).toBeCloseTo(expectedLocalPosition.x);
+      expect(localPosition.y).toBeCloseTo(expectedLocalPosition.y);
+      expect(localPosition.z).toBeCloseTo(expectedLocalPosition.z);
+    });
+
+    it("should apply inverse parent scaling when no rotation is applied", (): void => {
+      const parentGameObject = new GameObject();
+      const childGameObject = new GameObject();
+
+      parentGameObject.addChild(childGameObject);
+
+      // Set parent's scale
+      parentGameObject.transform.scale.set(2, 3, 4);
+
+      // World position to convert
+      const worldPosition = new Vector3(4, 9, 16);
+
+      // Expected local position: worldPosition divided by parent's scale
+      const expectedLocalPosition = new Vector3(2, 3, 4);
+
+      const localPosition =
+        childGameObject.transform.worldToLocalPosition(worldPosition);
+
+      expect(localPosition).toEqual(expectedLocalPosition);
+    });
+
+    it("should apply inverse parent rotation and scaling", (): void => {
+      const parentGameObject = new GameObject();
+      const childGameObject = new GameObject();
+
+      parentGameObject.addChild(childGameObject);
+
+      // Set parent's rotation (90° around Y-axis) and scale
+      parentGameObject.transform.rotation.setFromEulerAngles(0, Math.PI / 2, 0);
+      parentGameObject.transform.scale.set(2, 1, 1);
+
+      // World position to convert
+      const worldPosition = new Vector3(2, 3, 4);
+
+      // Expected local position:
+      // 1. Subtract parent's position (0, 0, 0 in this case)
+      // 2. Rotate by inverse parent rotation
+      // 3. Scale by inverse parent scale
+      const expectedLocalPosition = new Vector3(-4, 3, 1);
+
+      const localPosition =
+        childGameObject.transform.worldToLocalPosition(worldPosition);
+
+      expect(localPosition.x).toBeCloseTo(expectedLocalPosition.x);
+      expect(localPosition.y).toBeCloseTo(expectedLocalPosition.y);
+      expect(localPosition.z).toBeCloseTo(expectedLocalPosition.z);
+    });
+
+    it("should handle nested hierarchy with rotation and scaling", (): void => {
+      const grandparent = new GameObject();
+      const parent = new GameObject();
+      const object = new GameObject();
+      const validationChild = new GameObject();
+
+      grandparent.addChild(parent);
+      parent.addChild(object);
+      object.addChild(validationChild);
+
+      // Set grandparent's transformation
+      grandparent.transform.rotation.setFromEulerAngles(0, Math.PI / 2, 0);
+      grandparent.transform.position.set(10, 0, 0);
+      grandparent.transform.scale.set(1, 1, 1);
+
+      // Set parent's transformation
+      parent.transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0);
+      parent.transform.scale.set(1, 1, 1);
+
+      // World position to convert
+      const expectedLocalPosition = new Vector3(0.5, 1, 1);
+      validationChild.transform.position.setFromVector3(expectedLocalPosition);
+      const worldPosition = validationChild.transform.worldPosition;
+
+      const localPosition =
+        object.transform.worldToLocalPosition(worldPosition);
+
+      expect(localPosition.x).toBeCloseTo(expectedLocalPosition.x);
+      expect(localPosition.y).toBeCloseTo(expectedLocalPosition.y);
+      expect(localPosition.z).toBeCloseTo(expectedLocalPosition.z);
+    });
+  });
+
   it("should compute world position correctly in a nested hierarchy", () => {
     const grandparent = new GameObject();
     const parent = new GameObject();
