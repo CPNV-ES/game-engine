@@ -49,4 +49,20 @@ export class DependencyContainer {
     }
     return instance;
   }
+
+  /**
+   * Does a class exist in the container.
+   * @param token
+   */
+  exists<T>(token: new (...args: any[]) => T): boolean {
+    return this.dependencies.has(token.name);
+  }
+
+  /**
+   * Does a class exist in the container.
+   * @param className
+   */
+  existsWithClassName(className: string): boolean {
+    return this.dependencies.has(className);
+  }
 }
