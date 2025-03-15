@@ -19,7 +19,7 @@ topLevelFolders.forEach(folder => {
                 const subfolderName = dirent.name;
                 const outputFile = path.join(outputDir, `${folder}_${subfolderName}.puml`);
 
-                execSync(`npx tplant --input "${path.join(srcFolderPath, subfolderName)}/**/*.ts" --output "${outputFile}" --associations`, { stdio: 'inherit' });
+                execSync(`npx tplant --input "${path.join(srcFolderPath, subfolderName)}/*.ts" --output "${outputFile}" --associations`, { stdio: 'inherit' });
 
                 let content = fs.readFileSync(outputFile, 'utf8');
 
