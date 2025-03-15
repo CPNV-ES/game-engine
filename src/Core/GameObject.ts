@@ -1,6 +1,7 @@
 import { Behavior } from "@core/Behavior.ts";
 import { Event } from "@core/EventSystem/Event.ts";
 import { Transform } from "@core/MathStructures/Transform.ts";
+import { RootGameObject } from "@core/RootGameObject.ts";
 
 /**
  * A GameObject is the base class for all entities objects in the game. It is a container for behaviors and other GameObjects.
@@ -30,10 +31,6 @@ export class GameObject {
    * Event that is triggered when a child is removed from this GameObject. The child is passed as an argument.
    */
   public readonly onChildRemoved: Event<GameObject> = new Event<GameObject>();
-  /**
-   * Optional parent of this GameObject. If set, the transform should follow the parent's transform.
-   */
-  private _parent: GameObject | null = null;
 
   /**
    * Get the parent of this GameObject or null if it's root or not already attached to a tree.
@@ -49,7 +46,26 @@ export class GameObject {
    */
   private set parent(value: GameObject | null) {
     this._parent = value;
+    if (value) {
+      this._root = value.root;
+    } else {
+      this._root = null;
+    }
     this.onParentChange();
+  }
+
+  /**
+   * Get only first-level children of this GameObject.
+   */
+  get children(): GameObject[] {
+    return this._children;
+  }
+
+  /**
+   * Get the root of the tree this GameObject is attached to.
+   */
+  get root(): RootGameObject | null {
+    return this._root;
   }
 
   /**
@@ -61,18 +77,20 @@ export class GameObject {
   private _children: GameObject[] = [];
 
   /**
+   * Optional parent of this GameObject. If set, the transform should follow the parent's transform.
+   */
+  private _parent: GameObject | null = null;
+  /**
+   * The root of the tree this GameObject is attached to.
+   * @private
+   */
+  private _root: RootGameObject | null = null;
+  /**
    * Create a new GameObject.
    * @param name The name of the GameObject.
    */
   constructor(name: string = "GameObject") {
     this.name = name;
-  }
-
-  /**
-   * Get only first-level children of this GameObject.
-   */
-  get children(): GameObject[] {
-    return this._children;
   }
 
   /**

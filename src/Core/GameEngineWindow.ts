@@ -1,7 +1,7 @@
 import { GameEngineComponent } from "@core/GameEngineComponent.ts";
-import { GameObject } from "@core/GameObject.ts";
 import { Ticker } from "@core/Tickers/Ticker.ts";
 import { Behavior } from "@core/Behavior.ts";
+import { RootGameObject } from "@core/RootGameObject.ts";
 
 /**
  * @class GameEngineWindow
@@ -10,7 +10,7 @@ import { Behavior } from "@core/Behavior.ts";
  */
 export class GameEngineWindow {
   private _engineComponents: GameEngineComponent[] = [];
-  private _root: GameObject = new GameObject();
+  private _root: RootGameObject = new RootGameObject(this);
   private _logicTicker: Ticker;
 
   /**
@@ -28,7 +28,7 @@ export class GameEngineWindow {
    * @description Root GameObject of the game engine window, it will serve to be like a singleton that will contain all the other GameObjects.
    * @returns {GameObject}
    */
-  public get root(): GameObject {
+  public get root(): RootGameObject {
     return this._root;
   }
 
