@@ -18,7 +18,7 @@ export abstract class RenderBehavior extends OutputBehavior {
   private _fragmentWGSLShader: string;
   private _primitiveState: GPUPrimitiveState;
   private _bindGroupLayoutDescriptors: GPUBindGroupLayoutDescriptor[];
-  private _buffers: Iterable<GPUVertexBufferLayout | null> | undefined;
+  private _bufferLayouts: Iterable<GPUVertexBufferLayout | null> | undefined;
   private _targetBlend: GPUBlendState | undefined;
 
   /**
@@ -49,7 +49,7 @@ export abstract class RenderBehavior extends OutputBehavior {
     this._fragmentWGSLShader = fragmentWGSLShader;
     this._primitiveState = primitiveState;
     this._bindGroupLayoutDescriptors = bindGroupLayoutDescriptors;
-    this._buffers = buffers;
+    this._bufferLayouts = buffers;
     this._targetBlend = targetBlend;
 
     if (renderEngine.IsRenderingReady) {
@@ -74,7 +74,7 @@ export abstract class RenderBehavior extends OutputBehavior {
       this._fragmentWGSLShader,
       this._primitiveState,
       this._bindGroupLayouts,
-      this._buffers,
+      this._bufferLayouts,
       this._targetBlend,
     );
     this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
