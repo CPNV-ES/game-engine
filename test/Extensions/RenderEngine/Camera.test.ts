@@ -60,4 +60,16 @@ describe("Camera", () => {
       new Vector3(-0.5624943971633911, 0.3164030611515045, -0.7638646364212036),
     );
   });
+
+  it("should handle camera rotation", () => {
+    // Sample screen coordinates (center of the screen)
+    const screenPosition = new Vector2(960, 540);
+    gameObject.transform.rotation.rotateAroundAxis(Vector3.up(), Math.PI / 2);
+
+    // Expected behavior: ray direction should point along the negative Z-axis
+    const worldDirection = camera.screenPointToWorldDirection(screenPosition);
+
+    // Check that the returned direction is normalized and is the expected direction
+    expect(worldDirection).toBeCloseToVector3(new Vector3(-1, 0, 0));
+  });
 });
