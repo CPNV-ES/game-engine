@@ -55,4 +55,48 @@ describe("DependencyContainer", () => {
       `No instance registered for TestDependency`,
     );
   });
+
+  it("should check if a dependency exists using the class token", () => {
+    const container = new DependencyContainer();
+    const dependency = new TestDependency();
+
+    // Register the dependency
+    container.register(TestDependency, dependency);
+
+    // Check if the dependency exists using the class token
+    expect(container.exists(TestDependency)).toBe(true);
+
+    // Unregister the dependency
+    container.unregister(TestDependency);
+
+    // Check if the dependency exists after unregistering
+    expect(container.exists(TestDependency)).toBe(false);
+  });
+
+  it("should check if a dependency exists using the class name", () => {
+    const container = new DependencyContainer();
+    const dependency = new TestDependency();
+
+    // Register the dependency using the class name
+    container.registerWithClassName("TestDependency", dependency);
+
+    // Check if the dependency exists using the class name
+    expect(container.existsWithClassName("TestDependency")).toBe(true);
+
+    // Unregister the dependency using the class name
+    container.unregisterWithClassName("TestDependency");
+
+    // Check if the dependency exists after unregistering
+    expect(container.existsWithClassName("TestDependency")).toBe(false);
+  });
+
+  it("should return false for unregistered dependencies", () => {
+    const container = new DependencyContainer();
+
+    // Check if an unregistered dependency exists using the class token
+    expect(container.exists(TestDependency)).toBe(false);
+
+    // Check if an unregistered dependency exists using the class name
+    expect(container.existsWithClassName("TestDependency")).toBe(false);
+  });
 });
