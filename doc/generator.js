@@ -10,50 +10,27 @@ if (!fs.existsSync(outputDir)) {
 const topLevelFolders = ['Core', 'Extensions'];
 const externalAssociations = new Set(); // Track associations to externalize
 
+// Function to sanitize folder names for consistent output
+const sanitizeFolderName = (folderPath, baseFolder) => {
+    return path.relative(path.join('src', baseFolder), folderPath).replace(/[\\/]/g, '_');
+};
+
 // Recursive function to traverse directories
 const processDirectory = (dirPath, folderName, subfolderName) => {
     const outputFile = path.join(outputDir, `${folderName}_${subfolderName}.puml`);
     execSync(`npx tplant --input "${dirPath}/*.ts" --output "${outputFile}" --associations`, { stdio: 'inherit' });
 
     let content = fs.readFileSync(outputFile, 'utf8');
-    let currentClass = null; // Variable to store the current class name
-
     content = content
         .split('\n')
         .filter(line => {
-            // Skip association lines (starting with "-")
-            if (/^\s*-/.test(line)) return false;
-            // Skip method lines only (not in class) (starting with "+")
-            if (line.startsWith('+')) return false;
-
-            if (currentClass !== null) {
-                const classFilePath = path.join(dirPath, `${currentClass}.ts`);
-                // If we're inside a class, skip lines until the closing brace "}"
-                if (line.trim().startsWith('}')) {
-                    currentClass = null; // Reset the current class when closing brace is encountered
-                }
-                if (!fs.existsSync(classFilePath)) {
-                    return false; // Skip if the corresponding file doesn't exist
-                }
-            }
-
-            // Detect and handle class definitions to avoid duplicates
-            if (line.trim().startsWith('class ') || line.trim().startsWith('abstract class ') || line.trim().startsWith('interface ')) {
-                const classNameMatch = line.match(/class\s+(?:class\s+)?([^\s{]+)/);
-                if (classNameMatch) {
-                    const className = classNameMatch[1];
-                    currentClass = className.replace(/<.*>/, ''); // Remove generics
-                    // Check if the file corresponding to the class exists in the expected subfolder
-                    const classFilePath = path.join(dirPath, `${currentClass}.ts`);
-                    if (!fs.existsSync(classFilePath)) {
-                        return false; // Skip if the corresponding file doesn't exist
-                    }
-                }
-            }
+            if (/^\s*-/.test(line)) return false; // Skip association lines
+            if (line.startsWith('+')) return false; // Skip method lines not in class
             return true;
-        }).join('\n');
-    fs.writeFileSync(outputFile, content);
+        })
+        .join('\n');
 
+    fs.writeFileSync(outputFile, content);
     console.log(`Generated PlantUML file for ${folderName}/${subfolderName}: ${outputFile}`);
 };
 
@@ -61,15 +38,12 @@ const processDirectory = (dirPath, folderName, subfolderName) => {
 const recursiveProcess = (srcFolderPath, folderName) => {
     fs.readdirSync(srcFolderPath, { withFileTypes: true })
         .forEach(dirent => {
-            const subfolderName = dirent.name;
-            const fullPath = path.join(srcFolderPath, subfolderName);
-
+            const fullPath = path.join(srcFolderPath, dirent.name);
             if (dirent.isDirectory()) {
-                // Process directory recursively
                 recursiveProcess(fullPath, folderName);
-            } else if (subfolderName.endsWith('.ts')) {
-                const subfolder = path.dirname(fullPath);
-                processDirectory(subfolder, folderName, path.basename(subfolder));
+            } else if (dirent.name.endsWith('.ts')) {
+                const subfolder = sanitizeFolderName(path.dirname(fullPath), folderName);
+                processDirectory(path.dirname(fullPath), folderName, subfolder);
             }
         });
 };
@@ -85,7 +59,6 @@ const combinedFile = path.join(outputDir, 'combined.puml');
 let finalContent = ['@startuml'];
 
 topLevelFolders.forEach(folder => {
-    const srcFolderPath = path.join('src', folder);
     finalContent.push(`package ${folder} {`);
 
     fs.readdirSync(outputDir)
