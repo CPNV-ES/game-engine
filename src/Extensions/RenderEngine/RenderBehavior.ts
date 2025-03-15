@@ -69,7 +69,7 @@ export abstract class RenderBehavior extends OutputBehavior {
     this._bindGroupLayouts = this._bindGroupLayoutDescriptors.map(
       (descriptor) => this._renderEngine.createBindGroupLayout(descriptor),
     );
-    this._pipeline = this._renderEngine.createPipeline(
+    this._pipeline = await this._renderEngine.createPipeline(
       this._vertexWGSLShader,
       this._fragmentWGSLShader,
       this._primitiveState,

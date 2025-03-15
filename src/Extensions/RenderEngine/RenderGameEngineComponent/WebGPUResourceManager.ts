@@ -75,15 +75,15 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     return this._device!.createSampler(descriptor);
   }
 
-  public createPipeline(
+  public async createPipeline(
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
     primitiveState: GPUPrimitiveState,
     bindGroupLayouts: Iterable<GPUBindGroupLayout | null>,
     buffers?: Iterable<GPUVertexBufferLayout | null> | undefined,
     targetBlend?: GPUBlendState | undefined,
-  ): GPURenderPipeline {
-    return this._device!.createRenderPipeline({
+  ): Promise<GPURenderPipeline> {
+    return await this._device!.createRenderPipelineAsync({
       layout: this._device!.createPipelineLayout({
         bindGroupLayouts: bindGroupLayouts,
       }),

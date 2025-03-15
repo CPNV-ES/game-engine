@@ -103,16 +103,16 @@ export class RenderGameEngineComponent
     return this._webGpuResourcesManager.createSampler(descriptor);
   }
 
-  public createPipeline(
+  public async createPipeline(
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
     primitiveState: GPUPrimitiveState,
     bindGroupLayouts: Iterable<GPUBindGroupLayout | null>,
     buffers?: Iterable<GPUVertexBufferLayout | null> | undefined,
     targetBlend?: GPUBlendState | undefined,
-  ): GPURenderPipeline {
+  ): Promise<GPURenderPipeline> {
     this.ensureRenderingReady();
-    return this._webGpuResourcesManager.createPipeline(
+    return await this._webGpuResourcesManager.createPipeline(
       vertexWGSLShader,
       fragmentWGSLShader,
       primitiveState,
