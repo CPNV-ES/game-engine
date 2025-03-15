@@ -1,11 +1,9 @@
 import { GameEngineWindow } from "@core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { SpriteRenderBehavior } from "@extensions/RenderEngine/SpriteRenderBehavior.ts";
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
-import { Vector3 } from "@core/MathStructures/Vector3";
-import { Quaternion } from "@core/MathStructures/Quaternion";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;

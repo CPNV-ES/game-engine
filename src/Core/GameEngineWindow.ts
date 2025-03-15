@@ -62,6 +62,7 @@ export class GameEngineWindow {
     this._logicTicker.onTick.removeObservers();
     this._engineComponents.forEach((component) => component.onDetached());
     this._engineComponents = [];
+    this._root.destroy();
   }
 
   private tickBehaviors(deltaTime: number): void {

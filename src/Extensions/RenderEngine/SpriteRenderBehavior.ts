@@ -1,7 +1,7 @@
 import BasicVertexMVPWithUV from "@extensions/RenderEngine/BasicShaders/BasicVertexMVPWithUVAndNormals.vert.wgsl?raw";
 import BasicTextureSample from "@extensions/RenderEngine/BasicShaders/BasicTextureSample.frag.wgsl?raw";
 import { BasicUVTexturedRenderBehavior } from "@extensions/RenderEngine/BasicUVTexturedRenderBehavior.ts";
-import { Renderer } from "@extensions/RenderEngine/Renderer.ts";
+import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 
 /**
  * A UVTextured object, designed to be rendered with a sprite texture (no repeat, transparency, etc).

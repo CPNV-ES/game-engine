@@ -1,7 +1,7 @@
 import { GameObject } from "@core/GameObject.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { Color } from "@extensions/RenderEngine/Color.ts";
 import { MovableLogicBehavior } from "@test/ExampleBehaviors/MovableLogicBehavior.ts";
 import { GamepadMovableBehavior } from "./GamepadMovableBehavior.ts";
