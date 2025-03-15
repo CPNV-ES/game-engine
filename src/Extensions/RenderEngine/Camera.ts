@@ -66,7 +66,7 @@ export class Camera extends OutputBehavior {
    * @param screenSpacePosition - The 2D screen position of the mouse.
    * @returns The normalized direction vector of the ray in world space.
    */
-  public screenPointToWorldDirection(screenSpacePosition: Vector2): Vec3 {
+  public screenPointToWorldDirection(screenSpacePosition: Vector2): Vector3 {
     const pointX = screenSpacePosition.x;
     const pointY = screenSpacePosition.y;
     const screenSize = this._renderEngine.screenSize;
@@ -94,7 +94,7 @@ export class Camera extends OutputBehavior {
     // Compute direction vector (ray from near to far)
     const worldDirection = vec3.normalize(vec3.sub(farPos, nearPos));
 
-    return worldDirection;
+    return RenderEngineUtility.fromVec3(worldDirection);
   }
 
   /**
