@@ -37,12 +37,12 @@ describe("GameObject", () => {
       const parent = new GameObject();
       const child = new GameObject();
 
-      expect(child._parent).toBe(null);
+      expect(child.parent).toBe(null);
 
       parent.addChild(child);
 
       expect(parent.children).toEqual([child]);
-      expect(child._parent).toBe(parent);
+      expect(child.parent).toBe(parent);
     });
 
     it("should not duplicate a child when added twice", () => {
@@ -53,7 +53,7 @@ describe("GameObject", () => {
       parent.addChild(child);
 
       expect(parent.children).toEqual([child]);
-      expect(child._parent).toBe(parent);
+      expect(child.parent).toBe(parent);
     });
 
     it("should unset the parent when removing a child", () => {
@@ -63,12 +63,12 @@ describe("GameObject", () => {
       parent.addChild(child);
 
       expect(parent.children).toEqual([child]);
-      expect(child._parent).toBe(parent);
+      expect(child.parent).toBe(parent);
 
       parent.removeChild(child);
 
       expect(parent.children).toEqual([]);
-      expect(child._parent).toBe(null);
+      expect(child.parent).toBe(null);
     });
 
     it("should not throw when removing a child that was already removed", () => {
@@ -80,7 +80,7 @@ describe("GameObject", () => {
       parent.removeChild(child);
 
       expect(parent.children).toEqual([]);
-      expect(child._parent).toBe(null);
+      expect(child.parent).toBe(null);
     });
   });
 
