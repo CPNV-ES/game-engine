@@ -6,6 +6,7 @@ import { GameObject } from "@core/GameObject";
 import "../../TestUtils";
 import { MockRenderer } from "@test/Extensions/RenderEngine/MockRenderer";
 import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer";
+import { Vector3 } from "@core/MathStructures/Vector3";
 
 describe("Camera", () => {
   let mockRenderEngine: Renderer;
@@ -44,7 +45,7 @@ describe("Camera", () => {
     const worldDirection = camera.screenPointToWorldDirection(screenPosition);
 
     // Check that the returned direction is normalized and is the expected direction
-    expect(worldDirection).toBeCloseToVec3(vec3.fromValues(0, 0, -1));
+    expect(worldDirection).toBeCloseToVector3(new Vector3(0, 0, -1));
   });
 
   it("should handle edge cases like top-left corner of the screen", () => {
@@ -55,12 +56,8 @@ describe("Camera", () => {
     const worldDirection = camera.screenPointToWorldDirection(screenPosition);
 
     // Check that the returned direction is normalized and matches the expected direction
-    expect(worldDirection).toBeCloseToVec3(
-      vec3.fromValues(
-        -0.5624943971633911,
-        0.3164030611515045,
-        -0.7638646364212036,
-      ),
+    expect(worldDirection).toBeCloseToVector3(
+      new Vector3(-0.5624943971633911, 0.3164030611515045, -0.7638646364212036),
     );
   });
 });
