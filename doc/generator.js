@@ -15,9 +15,14 @@ const sanitizeFolderName = (folderPath, baseFolder) => {
     return path.relative(path.join('src', baseFolder), folderPath).replace(/[\\/]/g, '_');
 };
 
-// Recursive function to traverse directories
+// Function to process a directory only once per folder
 const processDirectory = (dirPath, folderName, subfolderName) => {
     const outputFile = path.join(outputDir, `${folderName}_${subfolderName}.puml`);
+
+    // Ensure the directory contains TypeScript files before running `tplant`
+    const tsFiles = fs.readdirSync(dirPath).filter(file => file.endsWith('.ts'));
+    if (tsFiles.length === 0) return; // Skip empty folders
+
     execSync(`npx tplant --input "${dirPath}/*.ts" --output "${outputFile}" --associations`, { stdio: 'inherit' });
 
     let content = fs.readFileSync(outputFile, 'utf8');
@@ -36,16 +41,21 @@ const processDirectory = (dirPath, folderName, subfolderName) => {
 
 // Recursive function to process all `.ts` files in directories
 const recursiveProcess = (srcFolderPath, folderName) => {
-    fs.readdirSync(srcFolderPath, { withFileTypes: true })
-        .forEach(dirent => {
-            const fullPath = path.join(srcFolderPath, dirent.name);
-            if (dirent.isDirectory()) {
-                recursiveProcess(fullPath, folderName);
-            } else if (dirent.name.endsWith('.ts')) {
-                const subfolder = sanitizeFolderName(path.dirname(fullPath), folderName);
-                processDirectory(path.dirname(fullPath), folderName, subfolder);
-            }
-        });
+    let hasTsFiles = false;
+
+    fs.readdirSync(srcFolderPath, { withFileTypes: true }).forEach(dirent => {
+        const fullPath = path.join(srcFolderPath, dirent.name);
+        if (dirent.isDirectory()) {
+            recursiveProcess(fullPath, folderName);
+        } else if (dirent.name.endsWith('.ts')) {
+            hasTsFiles = true;
+        }
+    });
+
+    if (hasTsFiles) {
+        const subfolder = sanitizeFolderName(srcFolderPath, folderName);
+        processDirectory(srcFolderPath, folderName, subfolder);
+    }
 };
 
 topLevelFolders.forEach(folder => {
@@ -55,6 +65,7 @@ topLevelFolders.forEach(folder => {
     }
 });
 
+// Combine UML files
 const combinedFile = path.join(outputDir, 'combined.puml');
 let finalContent = ['@startuml'];
 
