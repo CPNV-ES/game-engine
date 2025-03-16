@@ -3,7 +3,6 @@ import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
 import { Event } from "@core/EventSystem/Event.ts";
 import { Color } from "@extensions/RenderEngine/Color.ts";
-import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 
 /**
  * A RenderBehavior that renders a wireframe using line primitives.
@@ -20,7 +19,6 @@ export class WireframeRenderBehavior extends RenderBehavior {
 
   /**
    * Create a new WireframeRenderBehavior that renders lines.
-   * @param renderEngine The render engine to use.
    * @param vertexData The vertex data (3 floats for position).
    * @param indexData The index data (line indices).
    * @param color The RGBA color (4 floats: r, g, b, a).
@@ -28,7 +26,6 @@ export class WireframeRenderBehavior extends RenderBehavior {
    * @param fragmentWGSLShader The fragment shader in WGSL (source code in string).
    */
   constructor(
-    renderEngine: Renderer,
     vertexData: Float32Array,
     indexData: Uint16Array,
     color: Color,
@@ -48,7 +45,6 @@ export class WireframeRenderBehavior extends RenderBehavior {
     };
 
     super(
-      renderEngine,
       vertexWGSLShader,
       fragmentWGSLShader,
       {

@@ -8,7 +8,6 @@ import {
   MsdfTextMeasurements,
 } from "@extensions/RenderEngine/Text/MSDFFont/MsdfChar.ts";
 import { MsdfText } from "@extensions/RenderEngine/Text/MSDFFont/MsdfText.ts";
-import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 import { AsyncCache } from "@core/Caching/AsyncCache.ts";
 
 export class TextRenderBehavior extends RenderBehavior {
@@ -23,15 +22,10 @@ export class TextRenderBehavior extends RenderBehavior {
 
   /**
    * Construct a new Quad with the texture of the image at the given URL.
-   * @param renderEngine
    * @param fontJsonUrl - The URL of the MSDF JSON font file
    * @param options - Optional options for the text formatting (like color, pixel scale, etc.)
    */
-  constructor(
-    renderEngine: Renderer,
-    fontJsonUrl: string,
-    options?: MsdfTextFormattingOptions,
-  ) {
+  constructor(fontJsonUrl: string, options?: MsdfTextFormattingOptions) {
     const primitiveState: GPUPrimitiveState = {
       topology: "triangle-strip",
       stripIndexFormat: "uint32",
@@ -86,7 +80,6 @@ export class TextRenderBehavior extends RenderBehavior {
     };
 
     super(
-      renderEngine,
       MsdfTextVert,
       MsdfTextFrag,
       primitiveState,

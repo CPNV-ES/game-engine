@@ -1,7 +1,6 @@
 import BasicVertexMVPWithUV from "@extensions/RenderEngine/BasicShaders/BasicVertexMVPWithUVAndNormals.vert.wgsl?raw";
 import BasicTextureSample from "@extensions/RenderEngine/BasicShaders/BasicTextureSample.frag.wgsl?raw";
 import { BasicUVTexturedRenderBehavior } from "@extensions/RenderEngine/BasicUVTexturedRenderBehavior.ts";
-import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 
 /**
  * A UVTextured object, designed to be rendered with a sprite texture (no repeat, transparency, etc).
@@ -10,12 +9,10 @@ import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Ren
 export class SpriteRenderBehavior extends BasicUVTexturedRenderBehavior {
   /**
    * Construct a new Quad with the texture of the image at the given URL.
-   * @param renderEngine
    * @param spriteImageUrl
    * @param sampler - Sampler configuration, by default : Not repeat with linear filter
    */
   constructor(
-    renderEngine: Renderer,
     spriteImageUrl: RequestInfo | URL,
     sampler: GPUSamplerDescriptor = {
       magFilter: "linear",
@@ -70,7 +67,6 @@ export class SpriteRenderBehavior extends BasicUVTexturedRenderBehavior {
     ]);
 
     super(
-      renderEngine,
       spriteImageUrl,
       vertexData,
       indexData,

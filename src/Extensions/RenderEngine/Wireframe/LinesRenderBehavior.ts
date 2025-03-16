@@ -12,14 +12,12 @@ import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Ren
 export class LinesRenderBehavior extends WireframeRenderBehavior {
   /**
    * Create a new LinesRenderBehavior with the given line data and color.
-   * @param renderEngine The render engine to use.
    * @param lineData A Vector2[] containing the line vertex positions (each point is 3 floats: x, y, z).
    * @param color A color containing the RGBA color (4 floats: r, g, b, a).
    */
-  constructor(renderEngine: Renderer, lineData: Vector2[], color: Color) {
+  constructor(lineData: Vector2[], color: Color) {
     const lineDataFloat32 = RenderEngineUtility.toFloat32Attay(lineData);
     super(
-      renderEngine,
       lineDataFloat32,
       RenderEngineUtility.createLineIndicesForPoints(lineDataFloat32),
       color,

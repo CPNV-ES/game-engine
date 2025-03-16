@@ -1,5 +1,4 @@
 import { RenderBehavior } from "@extensions/RenderEngine/RenderBehavior.ts";
-import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 
 /**
  * A RenderBehavior already set up to render a textured object with UV coordinates (GPUBindGroupLayoutDescriptor and GPUVertexBufferLayout are already set up).
@@ -18,7 +17,6 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
 
   /**
    * Create a new BasicUVTexturedRenderBehavior with a predetermined descriptor and buffer layout.
-   * @param renderEngine The render engine to use
    * @param spriteImageUrl The URL of the sprite image (will automatically load the texture in the GPU)
    * @param vertexData The vertex data (3 floats for position and 2 float for UV coordinates)
    * @param indexData The index data (to form triangles)
@@ -27,7 +25,6 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
    * @param sampler The sampler configuration
    */
   constructor(
-    renderEngine: Renderer,
     spriteImageUrl: RequestInfo | URL,
     vertexData: Float32Array,
     indexData: Uint16Array,
@@ -53,7 +50,6 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
     };
 
     super(
-      renderEngine,
       vertexWGSLShader,
       fragmentWGSLShader,
       {
