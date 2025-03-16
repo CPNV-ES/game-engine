@@ -146,6 +146,7 @@ export class GameObject {
   public addBehavior(behavior: Behavior): void {
     if (this._behaviors.includes(behavior)) return;
     this._behaviors.push(behavior);
+    this.fillDependencies(behavior);
     behavior.setup(this);
     this.onBehaviorListChanged.emit();
     this.onBehaviorAdded.emit(behavior);
@@ -153,7 +154,6 @@ export class GameObject {
       behavior.constructor.name,
       behavior,
     );
-    this.fillDependencies(behavior);
   }
 
   /**
