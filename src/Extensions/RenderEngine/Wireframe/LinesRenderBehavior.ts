@@ -4,7 +4,6 @@ import BasicVertexMVP from "@extensions/RenderEngine/BasicShaders/BasicVertexMVP
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
 import { Color } from "@extensions/RenderEngine/Color.ts";
-import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 
 /**
  * A behavior to render lines with a dynamic color.
