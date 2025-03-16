@@ -1,0 +1,22 @@
+@startuml
+class TextRenderBehavior extends RenderBehavior {
+    +text: string
+    +text: string
+    +color: [number, number, number, number]
+    +color: [number, number, number, number]
+    +pixelScale: number
+    +pixelScale: number
+    +centered: boolean
+    +centered: boolean
+    #asyncInit(): Promise<void>
+    +render(renderPass: GPURenderPassEncoder): void
+}
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+TextRenderBehavior --> "1" MsdfFont
+TextRenderBehavior --> "1" MsdfText
+TextRenderBehavior --> "1" MsdfTextFormattingOptions
+TextRenderBehavior --> "1" MsdfChar
+TextRenderBehavior --> "1" MsdfTextMeasurements
+TextRenderBehavior --> "1" AsyncCache
+@enduml

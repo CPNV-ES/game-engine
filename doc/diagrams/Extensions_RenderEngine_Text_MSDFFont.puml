@@ -1,0 +1,44 @@
+@startuml
+interface MsdfChar {
+    +id: number
+    +index: number
+    +char: string
+    +width: number
+    +height: number
+    +xoffset: number
+    +yofsset: number
+    +xadvance: number
+    +chnl: number
+    +x: number
+    +y: number
+    +page: number
+    +charIndex: number
+}
+class MsdfFont {
+    +charCount: number
+    +defaultChar: MsdfChar
+    +pipeline: GPURenderPipeline
+    +bindGroup: GPUBindGroup
+    +lineHeight: number
+    +chars: { [x: number]: MsdfChar; }
+    +kernings: KerningMap
+    +getChar(charCode: number): MsdfChar
+    +getXAdvance(charCode: number, nextCharCode?: number): number
+}
+class MsdfText {
+    +engine: Renderer
+    +measurements: MsdfTextMeasurements
+    +font: MsdfFont
+    +textBuffer: GPUBuffer
+    +getRenderBundle(): GPURenderBundle
+    +setTransform(matrix: Float32Array): void
+    +setColor(r: number, g: number, b: number, a?: number): void
+    +setPixelScale(pixelScale: number): void
+}
+MsdfFont --> "1" MsdfChar
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+MsdfText --> "1" Renderer
+MsdfText --> "1" MsdfTextMeasurements
+MsdfText --> "1" MsdfFont
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+class AsyncCache<T> {
+    +get(key: RequestInfo | URL, factory: () => Promise<T>): Promise<T>
+    +clear(): void
+    +remove(key: RequestInfo | URL): void
+}
+@enduml

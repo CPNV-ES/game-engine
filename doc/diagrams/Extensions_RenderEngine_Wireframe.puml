@@ -1,0 +1,16 @@
+@startuml
+class WireframeRenderBehavior extends RenderBehavior {
+    #_vertexBuffer: GPUBuffer | null
+    #_indexBuffer: GPUBuffer | null
+    #_indexData: Uint16Array
+    #asyncInit(): Promise<void>
+    +color: Color
+    +color: Color
+    +render(renderpass: GPURenderPassEncoder): void
+}
+class LinesRenderBehavior extends WireframeRenderBehavior
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+WireframeRenderBehavior --> "1" Color
+WireframeRenderBehavior --> "1" Event
+@enduml

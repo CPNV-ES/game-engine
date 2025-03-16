@@ -1,0 +1,8 @@
+@startuml
+class Event<T> {
+    +addObserver(observer: (data: T) => void): void
+    +removeObserver(observer: (data: T) => void): void
+    +removeObservers(): void
+    +emit(data: T): void
+}
+@enduml

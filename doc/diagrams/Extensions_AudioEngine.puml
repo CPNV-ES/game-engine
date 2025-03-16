@@ -1,0 +1,18 @@
+@startuml
+class AudioBehavior extends OutputBehavior {
+    +isPlaying: boolean
+    +playbackHistory: { timestamp: number; playbackRate: number; }[]
+    +reinitialize(): void
+    +setAudio(audio: string): Promise<void>
+    +getTimestamp(): number
+    +play(audio?: string | null): Promise<void>
+    +stop(): Promise<void>
+    +pause(): Promise<void>
+    +setVolume(volume: number): void
+    +setPitch(pitch: number): void
+    +setLoop(loop: boolean): void
+    +getLoop(): boolean
+}
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+interface CollisionHandler {
+    +areColliding(a: Collider, b: Collider): Collision | null
+}
+class SatCollisionHandler implements CollisionHandler {
+    +areColliding(a: Collider, b: Collider): Collision | null
+    +areCollidingPolygonToPolygon(a: PolygonCollider, b: PolygonCollider): Collision | null
+}
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+CollisionHandler --> "1" Collider
+CollisionHandler --> "1" Collision
+PolygonCollider --> "*" Vector2
+SatCollisionHandler --> "1" Vector2
+SatCollisionHandler --> "*" Vector2
+SatCollisionHandler --> "1" Collider
+SatCollisionHandler --> "1" Collision
+SatCollisionHandler --> "1" PolygonCollider
+@enduml
