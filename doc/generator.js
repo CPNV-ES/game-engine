@@ -67,6 +67,8 @@ const processDirectory = (dirPath, folderName, subfolderName) => {
                     const classFilePath = path.join(dirPath, `${currentClass}.ts`);
                     if (!fs.existsSync(classFilePath)) {
                         return false; // Skip if the corresponding file doesn't exist
+                    }else{
+                        validClassesSet.add(classNameMatch[1]);
                     }
                 }
             }
