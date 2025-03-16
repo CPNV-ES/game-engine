@@ -1,7 +1,6 @@
 import { vec3, mat4, Mat4, Vec3, vec4 } from "wgpu-matrix";
 import { OutputBehavior } from "@core/OutputBehavior.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
-import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { Quaternion } from "@core/MathStructures/Quaternion.ts";

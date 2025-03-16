@@ -1,5 +1,4 @@
 import {
-  GPU,
   GPUBindGroup,
   GPUBindGroupLayout,
   GPUBuffer,
