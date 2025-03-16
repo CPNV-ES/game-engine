@@ -1,6 +1,6 @@
 {
   "name": "sprunk-engine",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
