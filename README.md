@@ -32,6 +32,7 @@ The documentation is available in the [doc](doc) folder.
 Here are some useful links:
 * [Game Window Components](doc/game-window-components.md)
 * [Events and Callbacks](doc/events.md)
+* [Dependency Injection](doc/dependency-injection.md)
 * [Rendering Engine](doc/extensions/render-engine/render-engine.md)
   * [Transform, parenting and 3d transformations](doc/extensions/render-engine/3d-transformations-usage.md)
   * [Text Rendering](doc/extensions/render-engine/text-render-behavior.md)
