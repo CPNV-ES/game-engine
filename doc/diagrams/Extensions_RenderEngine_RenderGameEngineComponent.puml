@@ -1,0 +1,84 @@
+@startuml
+interface WebGPUResourceDelegate {
+    +onError: Event<Error>
+    +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
+    +createBindGroup(bindGroupLayout: GPUBindGroupLayout, entries: GPUBindGroupEntry[]): GPUBindGroup
+    +createSampler(descriptor: GPUSamplerDescriptor): GPUSampler
+    +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayouts: Iterable<GPUBindGroupLayout | null>, buffers?: Iterable<GPUVertexBufferLayout | null> | undefined, targetBlend?: GPUBlendState | undefined): Promise<GPURenderPipeline>
+    +createTexture(url: RequestInfo | URL): Promise<GPUTexture>
+    +createUniformBuffer(data: Float32Array): GPUBuffer
+    +fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void
+    +createVertexBuffer(data: Float32Array): GPUBuffer
+    +createIndexBuffer(data: Uint16Array): GPUBuffer
+    +createStorageBuffer(size: number, label?: string | undefined): GPUBuffer
+    +createRenderBundleEncoder(descriptor: GPURenderBundleEncoderDescriptor): GPURenderBundleEncoder
+    +presentationTextureFormat: GPUTextureFormat
+}
+interface Renderer extends WebGPUResourceDelegate {
+    +onError: Event<Error>
+    +onRenderingReady: Event<void>
+    +camera: Camera | null
+    +IsRenderingReady: boolean
+    +screenSize: Vector2
+}
+class WebGPUResourceManager implements WebGPUResourceDelegate {
+    +onError: Event<Error>
+    +device: GPUDevice | undefined
+    +depthTextureView: GPUTextureView | null
+    +presentationTextureFormat: GPUTextureFormat
+    +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
+    +createBindGroup(bindGroupLayout: GPUBindGroupLayout, entries: GPUBindGroupEntry[]): GPUBindGroup
+    +createSampler(descriptor: GPUSamplerDescriptor): GPUSampler
+    +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayouts: Iterable<GPUBindGroupLayout | null>, buffersLayouts?: Iterable<GPUVertexBufferLayout | null> | undefined, targetBlend?: GPUBlendState | undefined): Promise<GPURenderPipeline>
+    +createTexture(url: RequestInfo | URL): Promise<GPUTexture>
+    +createUniformBuffer(data: Float32Array): GPUBuffer
+    +fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void
+    +createVertexBuffer(data: Float32Array): GPUBuffer
+    +createIndexBuffer(data: Uint16Array): GPUBuffer
+    +createStorageBuffer(size: number, label?: string): GPUBuffer
+    +createRenderBundleEncoder(descriptor: GPURenderBundleEncoderDescriptor): GPURenderBundleEncoder
+    +createDepthTexture(width: number, height: number): void
+    +requestGpuResources(): Promise<void>
+    +destroyGpuResources(): void
+    +startRenderPass(textureView: GPUTextureView): { commandEncoder: GPUCommandEncoder; renderPassEncoder: GPURenderPassEncoder; }
+    +finishRenderPass(passEncoder: { commandEncoder: GPUCommandEncoder; renderPassEncoder: GPURenderPassEncoder; }): void
+}
+class RenderGameEngineComponent extends GameEngineComponent implements Renderer {
+    +onError: Event<Error>
+    +onRenderingReady: Event<void>
+    +camera: Camera | null
+    +IsRenderingReady: boolean
+    #IsRenderingReady: boolean
+    +screenSize: Vector2
+    +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
+    +createBindGroup(bindGroupLayout: GPUBindGroupLayout, entries: GPUBindGroupEntry[]): GPUBindGroup
+    +createSampler(descriptor: GPUSamplerDescriptor): GPUSampler
+    +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayouts: Iterable<GPUBindGroupLayout | null>, buffers?: Iterable<GPUVertexBufferLayout | null> | undefined, targetBlend?: GPUBlendState | undefined): Promise<GPURenderPipeline>
+    +createTexture(url: RequestInfo | URL): Promise<GPUTexture>
+    +createUniformBuffer(data: Float32Array): GPUBuffer
+    +fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void
+    +createVertexBuffer(data: Float32Array): GPUBuffer
+    +createIndexBuffer(data: Uint16Array): GPUBuffer
+    +createStorageBuffer(size: number, label?: string): GPUBuffer
+    +createRenderBundleEncoder(descriptor: GPURenderBundleEncoderDescriptor): GPURenderBundleEncoder
+    +presentationTextureFormat: GPUTextureFormat
+    +onAttachedTo(_gameEngine: GameEngineWindow): void
+    +onDetached(): void
+}
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+Camera --> "1" Renderer
+WebGPUResourceDelegate --> "1" Event
+Renderer --> "1" Event
+Renderer --> "1" Camera
+Renderer --> "1" Vector2
+RenderBehavior --> "1" Renderer
+WebGPUResourceManager --> "1" Event
+WebGPUResourceManager --> "1" AsyncCache
+RenderGameEngineComponent --> "1" Event
+RenderGameEngineComponent --> "1" Camera
+RenderGameEngineComponent --> "1" Vector2
+RenderGameEngineComponent --> "1" Ticker
+RenderGameEngineComponent --> "1" WebGPUResourceManager
+RenderGameEngineComponent --> "1" GameEngineWindow
+@enduml

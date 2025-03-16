@@ -1,0 +1,17 @@
+@startuml
+interface MeshData {
+    +vertices: Float32Array
+    +indices?: Uint16Array | undefined
+    +faces?: Face[] | undefined
+    +normals?: Float32Array | undefined
+    +uvs?: Float32Array | undefined
+}
+class MeshRenderBehavior extends BasicUVTexturedRenderBehavior
+class ObjLoader {
+}
+MeshData --> "*" Face
+GameObject --> "*" Behavior
+GameEngineWindow --> "*" GameEngineComponent
+ObjLoader --> "1" AsyncCache
+ObjLoader --> "1" MeshData
+@enduml

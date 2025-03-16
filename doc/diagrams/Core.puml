@@ -1,0 +1,84 @@
+@startuml
+abstract class GameEngineComponent {
+    #attachedEngine: GameEngineWindow | null
+    +onAttachedTo(gameEngine: GameEngineWindow): void
+    +onDetached(): void
+}
+class GameEngineWindow {
+    +root: RootGameObject
+    +injectionContainer: DependencyContainer
+    +addGameComponent(component: GameEngineComponent): void
+    +getEngineComponent(componentClass: abstract new (...args: any[]) => T): T | null
+    +dispose(): void
+}
+class RootGameObject extends GameObject {
+    +gameWindowInstance: GameEngineWindow
+}
+class GameObject {
+    +transform: Transform
+    +onBehaviorListChanged: Event<void>
+    +onBehaviorAdded: Event<Behavior>
+    +onBehaviorRemoved: Event<Behavior>
+    +onChildAdded: Event<GameObject>
+    +onChildRemoved: Event<GameObject>
+    +parent: GameObject | null
+    +children: GameObject[]
+    +root: RootGameObject | null
+    +name: string
+    #_root: RootGameObject | null
+    +getAllChildren(): GameObject[]
+    +addChild(gameObject: GameObject): void
+    +removeChild(gameObject: GameObject): void
+    +addBehavior(behavior: Behavior): void
+    +removeBehavior(behavior: Behavior): void
+    +getFirstBehavior(BehaviorClass: abstract new (...args: any[]) => T): T | null
+    +getBehaviors(BehaviorClass: abstract new (...args: any[]) => T): T[]
+    +getAllBehaviors(): Behavior[]
+    +destroy(): void
+    +fillDependencies(target: any): void
+    #onParentChange(): void
+}
+abstract class Behavior {
+    +setup(attachedOn: GameObject): void
+    +detach(from: GameObject): void
+    #onEnable(): void
+    #onDisable(): void
+    +tick(_deltaTime: number): void
+}
+class LogicBehavior<T> extends Behavior {
+    +onDataChanged: Event<T>
+    #gameObject: GameObject
+    #data: T
+    +setup(attachedOn: GameObject): void
+    #notifyDataChanged(): void
+}
+abstract class InputBehavior extends Behavior {
+    +setup(attachedOn: GameObject): void
+    #getLogicBehavior(BehaviorClass: abstract new (...args: any[]) => T): T | null
+}
+abstract class OutputBehavior extends Behavior {
+    +setup(attachedOn: GameObject): void
+    #observe(BehaviorClass: abstract new (...args: any[]) => T, observer: (data: U) => void): void
+    #transform: Transform
+}
+Transform --> "1" GameObject
+GameEngineComponent --> "1" GameEngineWindow
+GameEngineWindow --> "*" GameEngineComponent
+GameEngineWindow --> "1" RootGameObject
+GameEngineWindow --> "1" Ticker
+GameEngineWindow --> "1" DependencyContainer
+GameEngineWindow --> "1" GameEngineComponent
+RootGameObject --> "1" GameEngineWindow
+GameObject --> "1" Transform
+GameObject --> "1" Event
+GameObject --> "1" Behavior
+GameObject --> "1" RootGameObject
+GameObject --> "*" Behavior
+GameObject --> "1" DependencyContainer
+Behavior --> "1" GameObject
+LogicBehavior --> "1" Event
+LogicBehavior --> "1" GameObject
+InputBehavior --> "1" GameObject
+OutputBehavior --> "1" GameObject
+OutputBehavior --> "1" Transform
+@enduml
