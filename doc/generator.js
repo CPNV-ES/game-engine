@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 
-const outputDir = 'doc';
+const outputDir = 'doc/generated';
 if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir);
 }
@@ -48,10 +48,11 @@ const processDirectory = (dirPath, folderName, subfolderName) => {
 
             // Detect and handle class definitions to avoid duplicates
             if (line.trim().startsWith('class ') || line.trim().startsWith('abstract class ') || line.trim().startsWith('interface ')) {
-                const classNameMatch = line.match(/class\s+(?:class\s+)?([^\s{]+)/);
+                const classNameMatch = line.match(/(?:class|interface)\s+(?:class|interface\s+)?([^\s{]+)/);
                 if (classNameMatch) {
                     const className = classNameMatch[1];
                     currentClass = className.replace(/<.*>/, ''); // Remove generics
+                    console.log(currentClass)
                     // Check if the file corresponding to the class exists in the expected subfolder
                     const classFilePath = path.join(dirPath, `${currentClass}.ts`);
                     if (!fs.existsSync(classFilePath)) {
@@ -132,3 +133,10 @@ finalContent.push(...Array.from(externalAssociations));
 finalContent.push('@enduml');
 fs.writeFileSync(combinedFile, finalContent.join('\n'));
 console.log(`Combined PlantUML file saved to ${combinedFile}`);
+
+// Generate a condensed version of the combined file
+const condensedFile = path.join(outputDir, 'condensed.puml');
+const condensedContent = finalContent
+    .filter(line => !line.trim().startsWith('+') && !line.trim().startsWith('#') && !line.includes('--> "1"'))
+    .join('\n');
+fs.writeFileSync(condensedFile, condensedContent);
