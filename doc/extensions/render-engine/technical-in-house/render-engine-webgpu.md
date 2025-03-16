@@ -1,5 +1,5 @@
 # Internal view of the WebGPU-Based Rendering System
-![webgpu-draw-diagram.png](webgpu-draw-diagram.png)
+![webgpu-draw-diagram.png](img/webgpu-draw-diagram.png)
 *From https://webgpufundamentals.org/*
 
 - **Vertex Shader** : Computes vertices. The shader returns vertex positions. For every group of 3 vertices the vertex shader function returns, a triangle is drawn between those 3 positions.

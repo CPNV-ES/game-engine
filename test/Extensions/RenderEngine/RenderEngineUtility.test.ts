@@ -7,6 +7,7 @@ import { MockRenderer } from "@test/Extensions/RenderEngine/MockRenderer";
 import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility";
 import "../../TestUtils";
+import { Vector3 } from "../../../src/Core/MathStructures/Vector3";
 
 describe("RenderEngineUtility", () => {
   let mockRenderEngine: Renderer;
@@ -43,11 +44,11 @@ describe("RenderEngineUtility", () => {
 
     // Get the ray direction from the camera
     const rayDir = camera.screenPointToWorldDirection(screenPosition);
-    const rayOrigin = vec3.fromValues(5, 0, 0); // Camera position
+    const rayOrigin = new Vector3(5, 0, 0); // Camera position
 
     // Define a plane (e.g., the quad plane in front of the camera)
-    const planeNormal = vec3.fromValues(0, 0, 1); // Plane normal (upwards)
-    const planePoint = vec3.fromValues(0, 0, -1); // A point on the plane
+    const planeNormal = new Vector3(0, 0, 1); // Plane normal (upwards)
+    const planePoint = new Vector3(0, 0, -1); // A point on the plane
 
     // Compute the intersection
     const intersection = RenderEngineUtility.rayPlaneIntersection(
@@ -58,7 +59,7 @@ describe("RenderEngineUtility", () => {
     );
 
     // Expected intersection point (ray should hit the plane at (5 - camera offset, 0, -1 center ray intersecting with ))
-    expect(intersection).toBeCloseToVec3(vec3.fromValues(5, 0, -1));
+    expect(intersection).toBeCloseToVector3(new Vector3(5, 0, -1));
   });
 
   it("rayPlaneIntersection should return null if the ray is parallel to the plane", () => {
@@ -67,11 +68,11 @@ describe("RenderEngineUtility", () => {
 
     // Get the ray direction from the camera
     const rayDir = camera.screenPointToWorldDirection(screenPosition);
-    const rayOrigin = vec3.fromValues(0, 0, 5); // Camera position
+    const rayOrigin = new Vector3(0, 0, 5); // Camera position
 
     // Define a plane parallel to the ray (e.g., a vertical plane)
-    const planeNormal = vec3.fromValues(1, 0, 0); // Plane normal (facing along Z-axis)
-    const planePoint = vec3.fromValues(1, 1, 1); // A point on the plane
+    const planeNormal = new Vector3(1, 0, 0); // Plane normal (facing along Z-axis)
+    const planePoint = new Vector3(1, 1, 1); // A point on the plane
 
     // Compute the intersection (should be null)
     const intersection = RenderEngineUtility.rayPlaneIntersection(
@@ -90,11 +91,11 @@ describe("RenderEngineUtility", () => {
 
     // Get the ray direction from the camera
     const rayDir = camera.screenPointToWorldDirection(screenPosition);
-    const rayOrigin = vec3.fromValues(0, 0, 5); // Camera position
+    const rayOrigin = new Vector3(0, 0, 5); // Camera position
 
     // Define a plane behind the camera (e.g., at z = 10)
-    const planeNormal = vec3.fromValues(0, 0, 1); // Plane normal (facing along Z-axis)
-    const planePoint = vec3.fromValues(0, 0, 10); // A point on the plane
+    const planeNormal = new Vector3(0, 0, 1); // Plane normal (facing along Z-axis)
+    const planePoint = new Vector3(0, 0, 10); // A point on the plane
 
     // Compute the intersection (should be null)
     const intersection = RenderEngineUtility.rayPlaneIntersection(

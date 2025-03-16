@@ -16,11 +16,7 @@ npm run dev
 3. Go to the gamepad page:
 
 ```text
-For Generic Gamepad:
 http://localhost:5173/test/Extensions/InputSystem/Gamepad/index.html
-
-For Xbox Gamepad:
-http://localhost:5173/test/Extensions/InputSystem/Gamepad/XboxGamepad/index.html
 ```
 
 ## System Components

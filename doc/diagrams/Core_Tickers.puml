@@ -1,0 +1,14 @@
+@startuml
+interface Ticker {
+    +onTick: Event<number>
+}
+class AnimationFrameTimeTicker implements Ticker {
+    +onTick: Event<number>
+}
+class FixedTimeTicker implements Ticker {
+    +onTick: Event<number>
+}
+Ticker --> "1" Event
+AnimationFrameTimeTicker --> "1" Event
+FixedTimeTicker --> "1" Event
+@enduml

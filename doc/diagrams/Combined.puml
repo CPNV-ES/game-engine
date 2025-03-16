@@ -1,0 +1,692 @@
+@startuml
+package Core {
+
+abstract class GameEngineComponent {
+    #attachedEngine: GameEngineWindow | null
+    +onAttachedTo(gameEngine: GameEngineWindow): void
+    +onDetached(): void
+}
+class GameEngineWindow {
+    +root: RootGameObject
+    +injectionContainer: DependencyContainer
+    +addGameComponent(component: GameEngineComponent): void
+    +getEngineComponent(componentClass: abstract new (...args: any[]) => T): T | null
+    +dispose(): void
+}
+class RootGameObject extends GameObject {
+    +gameWindowInstance: GameEngineWindow
+}
+class GameObject {
+    +transform: Transform
+    +onBehaviorListChanged: Event<void>
+    +onBehaviorAdded: Event<Behavior>
+    +onBehaviorRemoved: Event<Behavior>
+    +onChildAdded: Event<GameObject>
+    +onChildRemoved: Event<GameObject>
+    +parent: GameObject | null
+    +children: GameObject[]
+    +root: RootGameObject | null
+    +name: string
+    #_root: RootGameObject | null
+    +getAllChildren(): GameObject[]
+    +addChild(gameObject: GameObject): void
+    +removeChild(gameObject: GameObject): void
+    +addBehavior(behavior: Behavior): void
+    +removeBehavior(behavior: Behavior): void
+    +getFirstBehavior(BehaviorClass: abstract new (...args: any[]) => T): T | null
+    +getBehaviors(BehaviorClass: abstract new (...args: any[]) => T): T[]
+    +getAllBehaviors(): Behavior[]
+    +destroy(): void
+    +fillDependencies(target: any): void
+    #onParentChange(): void
+}
+abstract class Behavior {
+    +setup(attachedOn: GameObject): void
+    +detach(from: GameObject): void
+    #onEnable(): void
+    #onDisable(): void
+    +tick(_deltaTime: number): void
+}
+class LogicBehavior<T> extends Behavior {
+    +onDataChanged: Event<T>
+    #gameObject: GameObject
+    #data: T
+    +setup(attachedOn: GameObject): void
+    #notifyDataChanged(): void
+}
+abstract class InputBehavior extends Behavior {
+    +setup(attachedOn: GameObject): void
+    #getLogicBehavior(BehaviorClass: abstract new (...args: any[]) => T): T | null
+}
+abstract class OutputBehavior extends Behavior {
+    +setup(attachedOn: GameObject): void
+    #observe(BehaviorClass: abstract new (...args: any[]) => T, observer: (data: U) => void): void
+    #transform: Transform
+}
+
+    package Caching {
+
+class AsyncCache<T> {
+    +get(key: RequestInfo | URL, factory: () => Promise<T>): Promise<T>
+    +clear(): void
+    +remove(key: RequestInfo | URL): void
+}
+
+    }
+    package DependencyInjection {
+
+class DependencyContainer {
+    +register(token: new (...args: any[]) => T, instance: T): void
+    +registerWithClassName(className: string, instance: T): void
+    +unregister(token: new (...args: any[]) => T): void
+    +unregisterWithClassName(className: string): void
+    +resolve(token: new (...args: any[]) => T): T
+    +exists(token: new (...args: any[]) => T): boolean
+    +existsWithClassName(className: string): boolean
+}
+
+    }
+    package EventSystem {
+
+class Event<T> {
+    +addObserver(observer: (data: T) => void): void
+    +removeObserver(observer: (data: T) => void): void
+    +removeObservers(): void
+    +emit(data: T): void
+}
+
+    }
+    package Initialisation {
+
+class Sprunk {
+}
+
+    }
+    package MathStructures {
+
+class MathUtility {
+}
+class Vector2 {
+    +x: number
+    +y: number
+    +length: number
+    +dotProduct(vector: Vector2): number
+    +angleBetween(vector: Vector2): number
+    +add(vector: Vector2): Vector2
+    +sub(vector: Vector2): Vector2
+    +rotate(angle: number): Vector2
+    +scale(scalar: number): Vector2
+    +scaleAxis(vector: Vector2): Vector2
+    +normalize(): Vector2
+    +clone(): Vector2
+    +toVector3(z?: number): Vector3
+}
+class Vector3 {
+    +x: number
+    +y: number
+    +z: number
+    +length: number
+    +dotProduct(vector: Vector3): number
+    +crossProduct(vector: Vector3): Vector3
+    +angleBetween(vector: Vector3): number
+    +add(vector: Vector3): Vector3
+    +sub(vector: Vector3): Vector3
+    +scale(scalar: number): Vector3
+    +scaleAxis(vector: Vector3): Vector3
+    +normalize(): Vector3
+    +clone(): Vector3
+    +rotate(quaternion: Quaternion): Vector3
+    +toVector2(): Vector2
+    +setFromVector2(vector: Vector2): this
+    +setFromVector3(vector: Vector3): void
+    +set(x: number, y: number, z: number): Vector3
+}
+class Quaternion {
+    +w: number
+    +x: number
+    +y: number
+    +z: number
+    +normalize(): Quaternion
+    +toEulerAngles(order?: EulerOrder): Vector3
+    +setFromVectorEulerAngles(vector3: Vector3, order?: EulerOrder): Quaternion
+    +setFromEulerAngles(pitch: number, yaw: number, roll: number, order?: EulerOrder): Quaternion
+    +rotate(q: Quaternion): Quaternion
+    +multiply(q: Quaternion): Quaternion
+    +lerp(q1: Quaternion, q2: Quaternion, t: number): Quaternion
+    +conjugate(): Quaternion
+    +magnitudeSquared(): number
+    +inverse(): Quaternion
+    +clone(): Quaternion
+    +setFromQuaternion(q: Quaternion): Quaternion
+    +set(w: number, x: number, y: number, z: number): Quaternion
+    +rotateAroundAxis(axis: Vector3, angle: number): Quaternion
+}
+class Transform {
+    +position: Vector3
+    +rotation: Quaternion
+    +scale: Vector3
+    +worldPosition: Vector3
+    +worldRotation: Quaternion
+    +worldScale: Vector3
+    +worldToLocalPosition(worldPosition: Vector3): Vector3
+    +forward: Vector3
+    +right: Vector3
+    +top: Vector3
+}
+
+    }
+    package Tickers {
+
+interface Ticker {
+    +onTick: Event<number>
+}
+class AnimationFrameTimeTicker implements Ticker {
+    +onTick: Event<number>
+}
+class FixedTimeTicker implements Ticker {
+    +onTick: Event<number>
+}
+
+    }
+    package Utilities {
+
+class ArrayUtility {
+}
+
+    }
+}
+package Extensions {
+    package AudioEngine {
+
+class AudioBehavior extends OutputBehavior {
+    +isPlaying: boolean
+    +playbackHistory: { timestamp: number; playbackRate: number; }[]
+    +reinitialize(): void
+    +setAudio(audio: string): Promise<void>
+    +getTimestamp(): number
+    +play(audio?: string | null): Promise<void>
+    +stop(): Promise<void>
+    +pause(): Promise<void>
+    +setVolume(volume: number): void
+    +setPitch(pitch: number): void
+    +setLoop(loop: boolean): void
+    +getLoop(): boolean
+}
+
+    }
+    package Debugger {
+
+class DraggableElement {
+}
+class GameObjectDebugger {
+    +title(title: string): void
+    +render(rootObject: GameObject): void
+}
+class ResizableElement {
+}
+
+    }
+    package InputSystem {
+
+abstract class Device {
+    +onAnyChange: Event<void>
+}
+class GamepadDevice extends Device {
+    +onButtonDown: Event<number>
+    +onButtonUp: Event<number>
+    +onAxisChange: Event<{ index: number; value: Vector2; }>
+    #gamepad: Gamepad
+    +index: number
+    +pollGamepadOnce(freshGamepad: Gamepad): void
+}
+class GamepadManager {
+    +onGamepadConnected: Event<GamepadDevice>
+    +onGamepadDisconnected: Event<GamepadDevice>
+    +getAllGamepads(): GamepadDevice[]
+}
+class InputGameEngineComponent extends GameEngineComponent {
+    +onDeviceAdded: Event<Device>
+    +onDeviceRemoved: Event<Device>
+    +getDevice(deviceClass: abstract new (...args: any[]) => T): T | null
+    +getDevices(deviceClass: abstract new (...args: any[]) => T): T[]
+    +addDevice(device: Device): void
+    +removeDevice(device: Device): void
+}
+class Mouse extends Device {
+    +onLeftClickUp: Event<void>
+    +onLeftClickDown: Event<void>
+    +onRightClickUp: Event<void>
+    +onRightClickDown: Event<void>
+    +onMove: Event<{ position: Vector2; delta: Vector2; }>
+    +onScroll: Event<number>
+}
+class Keyboard extends Device {
+    +onKeyDown: Event<string>
+    +onKeyUp: Event<string>
+}
+class DeviceInputBehavior extends InputBehavior {
+    #inputEngineComponent: InputGameEngineComponent
+    #onEnable(): void
+    #onDisable(): void
+    +onAnyChange(): void
+    +onMouseLeftClickUp(): void
+    +onMouseLeftClickDown(): void
+    +onMouseRightClickUp(): void
+    +onMouseRightClickDown(): void
+    +onMouseMove(_data: { position: Vector2; delta: Vector2; }): void
+    +onMouseScroll(_data: number): void
+    +onKeyboardKeyDown(_key: string): void
+    +onKeyboardKeyUp(_key: string): void
+    +onGamepadButtonDown(_buttonIndex: number): void
+    +onGamepadButtonUp(_buttonIndex: number): void
+    +onGamepadAxisChange(_data: { index: number; value: Vector2; }): void
+    +onGamepadConnected(_gamepad: GamepadDevice | XboxGamepad): void
+    +onGamepadDisconnected(_gamepad: GamepadDevice | XboxGamepad): void
+}
+
+    }
+    package InputSystem.Gamepads {
+
+class XboxGamepad extends GamepadDevice {
+    +onAButtonDown: Event<void>
+    +onAButtonUp: Event<void>
+    +onBButtonDown: Event<void>
+    +onBButtonUp: Event<void>
+    +onXButtonDown: Event<void>
+    +onXButtonUp: Event<void>
+    +onYButtonDown: Event<void>
+    +onYButtonUp: Event<void>
+    +onStartButtonDown: Event<void>
+    +onStartButtonUp: Event<void>
+    +onBackButtonDown: Event<void>
+    +onBackButtonUp: Event<void>
+    +onLeftBumperDown: Event<void>
+    +onLeftBumperUp: Event<void>
+    +onRightBumperDown: Event<void>
+    +onRightBumperUp: Event<void>
+    +onLeftTriggerChange: Event<number>
+    +onRightTriggerChange: Event<number>
+    +onDPadUpDown: Event<void>
+    +onDPadUpUp: Event<void>
+    +onDPadDownDown: Event<void>
+    +onDPadDownUp: Event<void>
+    +onDPadLeftDown: Event<void>
+    +onDPadLeftUp: Event<void>
+    +onDPadRightDown: Event<void>
+    +onDPadRightUp: Event<void>
+    +onLeftStickChange: Event<Vector2>
+    +onRightStickChange: Event<Vector2>
+    +onLeftStickButtonDown: Event<void>
+    +onLeftStickButtonUp: Event<void>
+    +onRightStickButtonDown: Event<void>
+    +onRightStickButtonUp: Event<void>
+    +onXboxButtonDown: Event<void>
+    +onXboxButtonUp: Event<void>
+    +pollGamepadOnce(freshGamepad: Gamepad): void
+}
+
+    }
+    package PhysicsEngine {
+
+class PhysicsBehavior<T> extends LogicBehavior
+class PhysicsGameEngineComponent extends GameEngineComponent {
+    +rootObject?: GameObject | undefined
+    +satCollisionHandler: SatCollisionHandler
+    +onAttachedTo(_gameEngine: GameEngineWindow): void
+}
+
+    }
+    package PhysicsEngine.Colliders {
+
+class Collider extends PhysicsBehavior {
+    +rigidbody?: Rigidbody | undefined
+    +collide(collisions: Collision[]): void
+}
+class PolygonCollider extends Collider {
+    +vertices: Vector2[]
+    +getGravitationCenter(): Vector3
+    +getVerticesWithTransform(): Vector2[]
+}
+
+    }
+    package PhysicsEngine.CollisionHandlers {
+
+interface CollisionHandler {
+    +areColliding(a: Collider, b: Collider): Collision | null
+}
+class SatCollisionHandler implements CollisionHandler {
+    +areColliding(a: Collider, b: Collider): Collision | null
+    +areCollidingPolygonToPolygon(a: PolygonCollider, b: PolygonCollider): Collision | null
+}
+
+    }
+    package PhysicsEngine.Rigidbodies {
+
+class Rigidbody extends LogicBehavior {
+    +mass: number
+    +velocity: Vector2
+    +restitution: number
+    +collider: Collider
+    +resolveCollisions(collisions: Collision[]): void
+    +resolveCollision(collision: Collision): void
+}
+
+    }
+    package RenderEngine {
+
+class RenderEngineUtility {
+}
+class Camera extends OutputBehavior {
+    #_projectionMatrix: Float32Array
+    #_renderEngine: Renderer
+    #onEnable(): void
+    #onDisable(): void
+    +screenPointToWorldDirection(screenSpacePosition: Vector2): Vector3
+    +fov: number
+    +fov: number
+    +aspect: number
+    +aspect: number
+    +near: number
+    +near: number
+    +far: number
+    +far: number
+    +getMVPMatrix(modelMatrix: Float32Array): Float32Array
+    +worldPosition: Vector3
+    +worldRotation: Quaternion
+}
+abstract class RenderBehavior extends OutputBehavior {
+    #_renderEngine: Renderer
+    #_pipeline: GPURenderPipeline | null
+    #_bindGroupLayouts: GPUBindGroupLayout[] | null
+    #_mvpUniformBuffer: GPUBuffer | null
+    #asyncInit(): Promise<void>
+    +render(renderpass: GPURenderPassEncoder): void
+}
+class BasicUVTexturedRenderBehavior extends RenderBehavior {
+    #_vertexBuffer: GPUBuffer | null
+    #_indexBuffer: GPUBuffer | null
+    #_indexData: Uint16Array
+    #_spriteTexture: GPUTexture | null
+    #_bindGroup: GPUBindGroup | null
+    #asyncInit(): Promise<void>
+    +render(renderpass: GPURenderPassEncoder): void
+}
+class Color {
+    +r: number
+    +g: number
+    +b: number
+    +a: number
+    +toFloat32Array(): Float32Array
+}
+class SpriteRenderBehavior extends BasicUVTexturedRenderBehavior
+
+    }
+    package RenderEngine.MeshBased {
+
+interface MeshData {
+    +vertices: Float32Array
+    +indices?: Uint16Array | undefined
+    +faces?: Face[] | undefined
+    +normals?: Float32Array | undefined
+    +uvs?: Float32Array | undefined
+}
+class MeshRenderBehavior extends BasicUVTexturedRenderBehavior
+class ObjLoader {
+}
+
+    }
+    package RenderEngine.RenderGameEngineComponent {
+
+interface WebGPUResourceDelegate {
+    +onError: Event<Error>
+    +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
+    +createBindGroup(bindGroupLayout: GPUBindGroupLayout, entries: GPUBindGroupEntry[]): GPUBindGroup
+    +createSampler(descriptor: GPUSamplerDescriptor): GPUSampler
+    +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayouts: Iterable<GPUBindGroupLayout | null>, buffers?: Iterable<GPUVertexBufferLayout | null> | undefined, targetBlend?: GPUBlendState | undefined): Promise<GPURenderPipeline>
+    +createTexture(url: RequestInfo | URL): Promise<GPUTexture>
+    +createUniformBuffer(data: Float32Array): GPUBuffer
+    +fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void
+    +createVertexBuffer(data: Float32Array): GPUBuffer
+    +createIndexBuffer(data: Uint16Array): GPUBuffer
+    +createStorageBuffer(size: number, label?: string | undefined): GPUBuffer
+    +createRenderBundleEncoder(descriptor: GPURenderBundleEncoderDescriptor): GPURenderBundleEncoder
+    +presentationTextureFormat: GPUTextureFormat
+}
+interface Renderer extends WebGPUResourceDelegate {
+    +onError: Event<Error>
+    +onRenderingReady: Event<void>
+    +camera: Camera | null
+    +IsRenderingReady: boolean
+    +screenSize: Vector2
+}
+class WebGPUResourceManager implements WebGPUResourceDelegate {
+    +onError: Event<Error>
+    +device: GPUDevice | undefined
+    +depthTextureView: GPUTextureView | null
+    +presentationTextureFormat: GPUTextureFormat
+    +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
+    +createBindGroup(bindGroupLayout: GPUBindGroupLayout, entries: GPUBindGroupEntry[]): GPUBindGroup
+    +createSampler(descriptor: GPUSamplerDescriptor): GPUSampler
+    +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayouts: Iterable<GPUBindGroupLayout | null>, buffersLayouts?: Iterable<GPUVertexBufferLayout | null> | undefined, targetBlend?: GPUBlendState | undefined): Promise<GPURenderPipeline>
+    +createTexture(url: RequestInfo | URL): Promise<GPUTexture>
+    +createUniformBuffer(data: Float32Array): GPUBuffer
+    +fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void
+    +createVertexBuffer(data: Float32Array): GPUBuffer
+    +createIndexBuffer(data: Uint16Array): GPUBuffer
+    +createStorageBuffer(size: number, label?: string): GPUBuffer
+    +createRenderBundleEncoder(descriptor: GPURenderBundleEncoderDescriptor): GPURenderBundleEncoder
+    +createDepthTexture(width: number, height: number): void
+    +requestGpuResources(): Promise<void>
+    +destroyGpuResources(): void
+    +startRenderPass(textureView: GPUTextureView): { commandEncoder: GPUCommandEncoder; renderPassEncoder: GPURenderPassEncoder; }
+    +finishRenderPass(passEncoder: { commandEncoder: GPUCommandEncoder; renderPassEncoder: GPURenderPassEncoder; }): void
+}
+class RenderGameEngineComponent extends GameEngineComponent implements Renderer {
+    +onError: Event<Error>
+    +onRenderingReady: Event<void>
+    +camera: Camera | null
+    +IsRenderingReady: boolean
+    #IsRenderingReady: boolean
+    +screenSize: Vector2
+    +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
+    +createBindGroup(bindGroupLayout: GPUBindGroupLayout, entries: GPUBindGroupEntry[]): GPUBindGroup
+    +createSampler(descriptor: GPUSamplerDescriptor): GPUSampler
+    +createPipeline(vertexWGSLShader: string, fragmentWGSLShader: string, primitiveState: GPUPrimitiveState, bindGroupLayouts: Iterable<GPUBindGroupLayout | null>, buffers?: Iterable<GPUVertexBufferLayout | null> | undefined, targetBlend?: GPUBlendState | undefined): Promise<GPURenderPipeline>
+    +createTexture(url: RequestInfo | URL): Promise<GPUTexture>
+    +createUniformBuffer(data: Float32Array): GPUBuffer
+    +fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void
+    +createVertexBuffer(data: Float32Array): GPUBuffer
+    +createIndexBuffer(data: Uint16Array): GPUBuffer
+    +createStorageBuffer(size: number, label?: string): GPUBuffer
+    +createRenderBundleEncoder(descriptor: GPURenderBundleEncoderDescriptor): GPURenderBundleEncoder
+    +presentationTextureFormat: GPUTextureFormat
+    +onAttachedTo(_gameEngine: GameEngineWindow): void
+    +onDetached(): void
+}
+
+    }
+    package RenderEngine.Text {
+
+class TextRenderBehavior extends RenderBehavior {
+    +text: string
+    +text: string
+    +color: [number, number, number, number]
+    +color: [number, number, number, number]
+    +pixelScale: number
+    +pixelScale: number
+    +centered: boolean
+    +centered: boolean
+    #asyncInit(): Promise<void>
+    +render(renderPass: GPURenderPassEncoder): void
+}
+
+    }
+    package RenderEngine.Text_MSDFFont {
+
+interface MsdfChar {
+    +id: number
+    +index: number
+    +char: string
+    +width: number
+    +height: number
+    +xoffset: number
+    +yofsset: number
+    +xadvance: number
+    +chnl: number
+    +x: number
+    +y: number
+    +page: number
+    +charIndex: number
+}
+class MsdfFont {
+    +charCount: number
+    +defaultChar: MsdfChar
+    +pipeline: GPURenderPipeline
+    +bindGroup: GPUBindGroup
+    +lineHeight: number
+    +chars: { [x: number]: MsdfChar; }
+    +kernings: KerningMap
+    +getChar(charCode: number): MsdfChar
+    +getXAdvance(charCode: number, nextCharCode?: number): number
+}
+class MsdfText {
+    +engine: Renderer
+    +measurements: MsdfTextMeasurements
+    +font: MsdfFont
+    +textBuffer: GPUBuffer
+    +getRenderBundle(): GPURenderBundle
+    +setTransform(matrix: Float32Array): void
+    +setColor(r: number, g: number, b: number, a?: number): void
+    +setPixelScale(pixelScale: number): void
+}
+
+    }
+    package RenderEngine.Wireframe {
+
+class WireframeRenderBehavior extends RenderBehavior {
+    #_vertexBuffer: GPUBuffer | null
+    #_indexBuffer: GPUBuffer | null
+    #_indexData: Uint16Array
+    #asyncInit(): Promise<void>
+    +color: Color
+    +color: Color
+    +render(renderpass: GPURenderPassEncoder): void
+}
+class LinesRenderBehavior extends WireframeRenderBehavior
+
+    }
+}
+Transform --> "1" GameObject
+GameEngineComponent --> "1" GameEngineWindow
+GameEngineWindow --> "*" GameEngineComponent
+GameEngineWindow --> "1" RootGameObject
+GameEngineWindow --> "1" Ticker
+GameEngineWindow --> "1" DependencyContainer
+GameEngineWindow --> "1" GameEngineComponent
+RootGameObject --> "1" GameEngineWindow
+GameObject --> "1" Transform
+GameObject --> "1" Event
+GameObject --> "1" Behavior
+GameObject --> "1" RootGameObject
+GameObject --> "*" Behavior
+GameObject --> "1" DependencyContainer
+Behavior --> "1" GameObject
+LogicBehavior --> "1" Event
+LogicBehavior --> "1" GameObject
+InputBehavior --> "1" GameObject
+OutputBehavior --> "1" GameObject
+OutputBehavior --> "1" Transform
+GamepadManager --> "*" GamepadDevice
+InputGameEngineComponent --> "*" Device
+PolygonCollider --> "*" Vector2
+SatCollisionHandler --> "*" Vector2
+PhysicsGameEngineComponent --> "*" Collision
+PhysicsGameEngineComponent --> "*" Collider
+Sprunk --> "1" GameEngineWindow
+Sprunk --> "1" Ticker
+Sprunk --> "1" GameEngineComponent
+Sprunk --> "1" GameObject
+Vector2 --> "1" Vector3
+Vector3 --> "1" Quaternion
+Vector3 --> "1" Vector2
+Quaternion --> "1" Vector3
+Transform --> "1" Vector3
+Transform --> "1" Quaternion
+Ticker --> "1" Event
+AnimationFrameTimeTicker --> "1" Event
+FixedTimeTicker --> "1" Event
+GameObjectDebugger --> "1" GameObject
+Device --> "1" Event
+GamepadDevice --> "1" Event
+GamepadDevice --> "1" Vector2
+GamepadManager --> "1" Event
+GamepadManager --> "1" GamepadDevice
+GamepadManager --> "1" Ticker
+InputGameEngineComponent --> "1" Event
+InputGameEngineComponent --> "1" Device
+InputGameEngineComponent --> "1" GamepadManager
+Mouse --> "1" Event
+Mouse --> "1" Vector2
+Keyboard --> "1" Event
+DeviceInputBehavior --> "1" InputGameEngineComponent
+DeviceInputBehavior --> "1" Vector2
+DeviceInputBehavior --> "1" GamepadDevice
+DeviceInputBehavior --> "1" XboxGamepad
+XboxGamepad --> "1" Event
+XboxGamepad --> "1" Vector2
+PhysicsGameEngineComponent --> "1" GameObject
+PhysicsGameEngineComponent --> "1" SatCollisionHandler
+PhysicsGameEngineComponent --> "1" Ticker
+PhysicsGameEngineComponent --> "1" Collider
+PhysicsGameEngineComponent --> "1" GameEngineWindow
+PhysicsGameEngineComponent --> "1" PolygonCollider
+Collision --> "1" Collider
+Rigidbody --> "1" Collider
+Collider --> "1" Rigidbody
+Collider --> "1" Collision
+PolygonCollider --> "1" Vector3
+CollisionHandler --> "1" Collider
+CollisionHandler --> "1" Collision
+SatCollisionHandler --> "1" Vector2
+SatCollisionHandler --> "1" Collider
+SatCollisionHandler --> "1" Collision
+SatCollisionHandler --> "1" PolygonCollider
+Rigidbody --> "1" Vector2
+Rigidbody --> "1" Collision
+RenderEngineUtility --> "1" Transform
+RenderEngineUtility --> "1" Quaternion
+RenderEngineUtility --> "1" Vector2
+RenderEngineUtility --> "1" Vector3
+Renderer --> "1" Camera
+Camera --> "1" Renderer
+Camera --> "1" Vector2
+Camera --> "1" Vector3
+Camera --> "1" Quaternion
+RenderBehavior --> "1" Renderer
+MeshData --> "*" Face
+ObjLoader --> "1" AsyncCache
+ObjLoader --> "1" MeshData
+WebGPUResourceDelegate --> "1" Event
+Renderer --> "1" Event
+Renderer --> "1" Vector2
+WebGPUResourceManager --> "1" Event
+WebGPUResourceManager --> "1" AsyncCache
+RenderGameEngineComponent --> "1" Event
+RenderGameEngineComponent --> "1" Camera
+RenderGameEngineComponent --> "1" Vector2
+RenderGameEngineComponent --> "1" Ticker
+RenderGameEngineComponent --> "1" WebGPUResourceManager
+RenderGameEngineComponent --> "1" GameEngineWindow
+TextRenderBehavior --> "1" MsdfFont
+TextRenderBehavior --> "1" MsdfText
+TextRenderBehavior --> "1" MsdfTextFormattingOptions
+TextRenderBehavior --> "1" MsdfChar
+TextRenderBehavior --> "1" MsdfTextMeasurements
+TextRenderBehavior --> "1" AsyncCache
+MsdfFont --> "1" MsdfChar
+MsdfText --> "1" Renderer
+MsdfText --> "1" MsdfTextMeasurements
+MsdfText --> "1" MsdfFont
+WireframeRenderBehavior --> "1" Color
+WireframeRenderBehavior --> "1" Event
+@enduml

@@ -1,7 +1,17 @@
 import { describe, it, expect } from "vitest";
 import { GameObject } from "@core/GameObject.ts";
-import { TestBehavior } from "@test/Core/Mocks/TestBehavior.ts";
-import { TestBehaviorOtherType } from "@test/Core/Mocks/TestBehaviorOtherType.ts";
+import {
+  GlobalDependency,
+  LocalDependency,
+  RecursiveDependency,
+  TestBehavior,
+  TestBehaviorOtherType,
+  TestBehaviorWithGlobalDependencies,
+  TestBehaviorWithLocalDependencies,
+  TestBehaviorWithRecursiveDependencies,
+} from "@test/Core/Mocks/TestBehavior.ts";
+import { GameEngineWindow } from "../../src/Core/GameEngineWindow";
+import { ManualTicker } from "../ExampleBehaviors/ManualTicker";
 
 describe("GameObject", () => {
   describe("Child Management", () => {
@@ -258,6 +268,118 @@ describe("GameObject", () => {
         expect(child.parent).toBe(null);
         expect(subChild.parent).toBe(null);
       });
+    });
+  });
+  describe("GameObject Dependency Injection", () => {
+    it("should inject local dependencies into a target object", () => {
+      const window = new GameEngineWindow(new ManualTicker());
+      const gameObject = new GameObject();
+      window.root.addChild(gameObject);
+
+      const localDependency = new LocalDependency();
+      // Register the dependency
+      gameObject.addBehavior(localDependency);
+
+      const behavior = new TestBehaviorWithLocalDependencies();
+      // Register the behavior AND resolve the dependency
+      gameObject.addBehavior(behavior);
+
+      // Verify local dependency is injected
+      expect(behavior.localDependency).toBe(localDependency);
+      expect(behavior.localDependency.value).toBe("Local Dependency");
+    });
+
+    it("should inject recursive dependencies into a target object", () => {
+      const window = new GameEngineWindow(new ManualTicker());
+      const parent = new GameObject();
+      const child = new GameObject();
+      window.root.addChild(parent);
+      parent.addChild(child);
+
+      const recursiveDependency = new RecursiveDependency();
+      // Register the dependency
+      parent.addBehavior(recursiveDependency);
+
+      const behavior = new TestBehaviorWithRecursiveDependencies();
+      // Resolve the dependency
+      child.addBehavior(behavior);
+
+      // Verify recursive dependency is injected
+      expect(behavior.recursiveDependency).toBe(recursiveDependency);
+      expect(behavior.recursiveDependency.value).toBe("Recursive Dependency");
+    });
+
+    it("should inject global dependencies into a target object", () => {
+      const window = new GameEngineWindow(new ManualTicker());
+      const gameObject = new GameObject();
+      window.root.addChild(gameObject);
+
+      const globalDependency = new GlobalDependency();
+      window.injectionContainer.register(GlobalDependency, globalDependency);
+
+      const behavior = new TestBehaviorWithGlobalDependencies();
+      gameObject.addBehavior(behavior);
+
+      // Verify global dependency is injected
+      expect(behavior.globalDependency).toBe(globalDependency);
+      expect(behavior.globalDependency.value).toBe("Global Dependency");
+    });
+
+    it("should throw an error when resolving an unregistered local dependency", () => {
+      const window = new GameEngineWindow(new ManualTicker());
+      const gameObject = new GameObject();
+      window.root.addChild(gameObject);
+
+      const behavior = new TestBehaviorWithLocalDependencies();
+
+      // Attempt to add behavior with unregistered local dependency
+      expect(() => gameObject.addBehavior(behavior)).toThrowError(
+        `No instance registered for LocalDependency`,
+      );
+    });
+
+    it("should throw an error when resolving an unregistered recursive dependency", () => {
+      const window = new GameEngineWindow(new ManualTicker());
+      const parent = new GameObject();
+      const child = new GameObject();
+      window.root.addChild(parent);
+      parent.addChild(child);
+
+      const behavior = new TestBehaviorWithRecursiveDependencies();
+
+      // Attempt to add behavior with unregistered recursive dependency
+      expect(() => child.addBehavior(behavior)).toThrowError(
+        `No instance registered for RecursiveDependency`,
+      );
+    });
+
+    it("should throw an error when resolving an unregistered global dependency", () => {
+      const window = new GameEngineWindow(new ManualTicker());
+      const gameObject = new GameObject();
+      window.root.addChild(gameObject);
+
+      const behavior = new TestBehaviorWithGlobalDependencies();
+
+      // Attempt to add behavior with unregistered global dependency
+      expect(() => gameObject.addBehavior(behavior)).toThrowError(
+        `No instance registered for GlobalDependency`,
+      );
+    });
+
+    it("should not inject dependencies for properties without decorators", () => {
+      const window = new GameEngineWindow(new ManualTicker());
+      const gameObject = new GameObject();
+      window.root.addChild(gameObject);
+
+      const behavior = new TestBehavior();
+
+      // Add a property without a decorator
+      behavior.plainProperty = "No dependency here!";
+
+      gameObject.addBehavior(behavior);
+
+      // Verify the plain property remains unchanged
+      expect(behavior.plainProperty).toBe("No dependency here!");
     });
   });
 });

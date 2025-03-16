@@ -1,0 +1,11 @@
+@startuml
+class DependencyContainer {
+    +register(token: new (...args: any[]) => T, instance: T): void
+    +registerWithClassName(className: string, instance: T): void
+    +unregister(token: new (...args: any[]) => T): void
+    +unregisterWithClassName(className: string): void
+    +resolve(token: new (...args: any[]) => T): T
+    +exists(token: new (...args: any[]) => T): boolean
+    +existsWithClassName(className: string): boolean
+}
+@enduml

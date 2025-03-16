@@ -1,0 +1,215 @@
+@startuml
+package Core {
+
+abstract class GameEngineComponent {
+}
+class GameEngineWindow {
+}
+class RootGameObject extends GameObject {
+}
+class GameObject {
+}
+abstract class Behavior {
+}
+class LogicBehavior<T> extends Behavior {
+}
+abstract class InputBehavior extends Behavior {
+}
+abstract class OutputBehavior extends Behavior {
+}
+
+    package Caching {
+
+class AsyncCache<T> {
+}
+
+    }
+    package DependencyInjection {
+
+class DependencyContainer {
+}
+
+    }
+    package EventSystem {
+
+class Event<T> {
+}
+
+    }
+    package Initialisation {
+
+class Sprunk {
+}
+
+    }
+    package MathStructures {
+
+class MathUtility {
+}
+class Vector2 {
+}
+class Vector3 {
+}
+class Quaternion {
+}
+class Transform {
+}
+
+    }
+    package Tickers {
+
+interface Ticker {
+}
+class AnimationFrameTimeTicker implements Ticker {
+}
+class FixedTimeTicker implements Ticker {
+}
+
+    }
+    package Utilities {
+
+class ArrayUtility {
+}
+
+    }
+}
+package Extensions {
+    package AudioEngine {
+
+class AudioBehavior extends OutputBehavior {
+}
+
+    }
+    package Debugger {
+
+class DraggableElement {
+}
+class GameObjectDebugger {
+}
+class ResizableElement {
+}
+
+    }
+    package InputSystem {
+
+abstract class Device {
+}
+class GamepadDevice extends Device {
+}
+class GamepadManager {
+}
+class InputGameEngineComponent extends GameEngineComponent {
+}
+class Mouse extends Device {
+}
+class Keyboard extends Device {
+}
+class DeviceInputBehavior extends InputBehavior {
+}
+
+    }
+    package InputSystem.Gamepads {
+
+class XboxGamepad extends GamepadDevice {
+}
+
+    }
+    package PhysicsEngine {
+
+class PhysicsBehavior<T> extends LogicBehavior
+class PhysicsGameEngineComponent extends GameEngineComponent {
+}
+
+    }
+    package PhysicsEngine.Colliders {
+
+class Collider extends PhysicsBehavior {
+}
+class PolygonCollider extends Collider {
+}
+
+    }
+    package PhysicsEngine.CollisionHandlers {
+
+interface CollisionHandler {
+}
+class SatCollisionHandler implements CollisionHandler {
+}
+
+    }
+    package PhysicsEngine.Rigidbodies {
+
+class Rigidbody extends LogicBehavior {
+}
+
+    }
+    package RenderEngine {
+
+class RenderEngineUtility {
+}
+class Camera extends OutputBehavior {
+}
+abstract class RenderBehavior extends OutputBehavior {
+}
+class BasicUVTexturedRenderBehavior extends RenderBehavior {
+}
+class Color {
+}
+class SpriteRenderBehavior extends BasicUVTexturedRenderBehavior
+
+    }
+    package RenderEngine.MeshBased {
+
+interface MeshData {
+}
+class MeshRenderBehavior extends BasicUVTexturedRenderBehavior
+class ObjLoader {
+}
+
+    }
+    package RenderEngine.RenderGameEngineComponent {
+
+interface WebGPUResourceDelegate {
+}
+interface Renderer extends WebGPUResourceDelegate {
+}
+class WebGPUResourceManager implements WebGPUResourceDelegate {
+}
+class RenderGameEngineComponent extends GameEngineComponent implements Renderer {
+}
+
+    }
+    package RenderEngine.Text {
+
+class TextRenderBehavior extends RenderBehavior {
+}
+
+    }
+    package RenderEngine.Text_MSDFFont {
+
+interface MsdfChar {
+}
+class MsdfFont {
+}
+class MsdfText {
+}
+
+    }
+    package RenderEngine.Wireframe {
+
+class WireframeRenderBehavior extends RenderBehavior {
+}
+class LinesRenderBehavior extends WireframeRenderBehavior
+
+    }
+}
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+GamepadManager --> "*" GamepadDevice
+InputGameEngineComponent --> "*" Device
+PolygonCollider --> "*" Vector2
+SatCollisionHandler --> "*" Vector2
+PhysicsGameEngineComponent --> "*" Collision
+PhysicsGameEngineComponent --> "*" Collider
+MeshData --> "*" Face
+@enduml

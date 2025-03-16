@@ -170,6 +170,55 @@ export class Quaternion {
   }
 
   /**
+   * Opposite the unreal part of the quaternion
+   */
+  public conjugate(): Quaternion {
+    this.x = -this.x;
+    this.y = -this.y;
+    this.z = -this.z;
+    return this;
+  }
+
+  /**
+   * Compute the magnitude of the quaternion (squared length)
+   */
+  public magnitudeSquared(): number {
+    return (
+      this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z
+    );
+  }
+
+  /**
+   * Computes the inverse of this quaternion.
+   * The inverse is defined as the conjugate divided by the squared magnitude.
+   * @returns A new quaternion representing the inverse.
+   */
+  public inverse(): Quaternion {
+    // Conjugate
+    this.conjugate();
+
+    // Compute the squared magnitude
+    const magnitudeSquared = this.magnitudeSquared();
+
+    // If the magnitude is zero, return the identity quaternion (to avoid division by zero)
+    if (magnitudeSquared === 0) {
+      this.w = 1;
+      this.x = 0;
+      this.y = 0;
+      this.z = 0;
+      return this;
+    }
+
+    // Divide the conjugate (the new this) by the squared magnitude
+    this.w = this.w / magnitudeSquared;
+    this.x = this.x / magnitudeSquared;
+    this.y = this.y / magnitudeSquared;
+    this.z = this.z / magnitudeSquared;
+
+    return this;
+  }
+
+  /**
    * Get a cloned/duplicated instance of this quaternion
    */
   public clone(): Quaternion {

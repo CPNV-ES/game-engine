@@ -1,0 +1,16 @@
+@startuml
+class Sprunk {
+}
+GameObject --> "*" Behavior
+GameEngineWindow --> "*" GameEngineComponent
+GamepadManager --> "*" GamepadDevice
+InputGameEngineComponent --> "*" Device
+PolygonCollider --> "*" Vector2
+SatCollisionHandler --> "*" Vector2
+PhysicsGameEngineComponent --> "*" Collision
+PhysicsGameEngineComponent --> "*" Collider
+Sprunk --> "1" GameEngineWindow
+Sprunk --> "1" Ticker
+Sprunk --> "1" GameEngineComponent
+Sprunk --> "1" GameObject
+@enduml

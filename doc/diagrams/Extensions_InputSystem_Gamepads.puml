@@ -1,0 +1,41 @@
+@startuml
+class XboxGamepad extends GamepadDevice {
+    +onAButtonDown: Event<void>
+    +onAButtonUp: Event<void>
+    +onBButtonDown: Event<void>
+    +onBButtonUp: Event<void>
+    +onXButtonDown: Event<void>
+    +onXButtonUp: Event<void>
+    +onYButtonDown: Event<void>
+    +onYButtonUp: Event<void>
+    +onStartButtonDown: Event<void>
+    +onStartButtonUp: Event<void>
+    +onBackButtonDown: Event<void>
+    +onBackButtonUp: Event<void>
+    +onLeftBumperDown: Event<void>
+    +onLeftBumperUp: Event<void>
+    +onRightBumperDown: Event<void>
+    +onRightBumperUp: Event<void>
+    +onLeftTriggerChange: Event<number>
+    +onRightTriggerChange: Event<number>
+    +onDPadUpDown: Event<void>
+    +onDPadUpUp: Event<void>
+    +onDPadDownDown: Event<void>
+    +onDPadDownUp: Event<void>
+    +onDPadLeftDown: Event<void>
+    +onDPadLeftUp: Event<void>
+    +onDPadRightDown: Event<void>
+    +onDPadRightUp: Event<void>
+    +onLeftStickChange: Event<Vector2>
+    +onRightStickChange: Event<Vector2>
+    +onLeftStickButtonDown: Event<void>
+    +onLeftStickButtonUp: Event<void>
+    +onRightStickButtonDown: Event<void>
+    +onRightStickButtonUp: Event<void>
+    +onXboxButtonDown: Event<void>
+    +onXboxButtonUp: Event<void>
+    +pollGamepadOnce(freshGamepad: Gamepad): void
+}
+XboxGamepad --> "1" Event
+XboxGamepad --> "1" Vector2
+@enduml

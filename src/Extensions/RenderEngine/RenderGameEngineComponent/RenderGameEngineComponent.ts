@@ -225,6 +225,7 @@ export class RenderGameEngineComponent
     this._context.configure({
       device: this._webGpuResourcesManager.device!,
       format: this._webGpuResourcesManager.presentationTextureFormat,
+      alphaMode: "premultiplied",
     });
     this.createDepthTexture();
     this.startRendering();

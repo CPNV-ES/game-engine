@@ -1,0 +1,59 @@
+@startuml
+class RenderEngineUtility {
+}
+class Camera extends OutputBehavior {
+    #_projectionMatrix: Float32Array
+    #_renderEngine: Renderer
+    #onEnable(): void
+    #onDisable(): void
+    +screenPointToWorldDirection(screenSpacePosition: Vector2): Vector3
+    +fov: number
+    +fov: number
+    +aspect: number
+    +aspect: number
+    +near: number
+    +near: number
+    +far: number
+    +far: number
+    +getMVPMatrix(modelMatrix: Float32Array): Float32Array
+    +worldPosition: Vector3
+    +worldRotation: Quaternion
+}
+abstract class RenderBehavior extends OutputBehavior {
+    #_renderEngine: Renderer
+    #_pipeline: GPURenderPipeline | null
+    #_bindGroupLayouts: GPUBindGroupLayout[] | null
+    #_mvpUniformBuffer: GPUBuffer | null
+    #asyncInit(): Promise<void>
+    +render(renderpass: GPURenderPassEncoder): void
+}
+class BasicUVTexturedRenderBehavior extends RenderBehavior {
+    #_vertexBuffer: GPUBuffer | null
+    #_indexBuffer: GPUBuffer | null
+    #_indexData: Uint16Array
+    #_spriteTexture: GPUTexture | null
+    #_bindGroup: GPUBindGroup | null
+    #asyncInit(): Promise<void>
+    +render(renderpass: GPURenderPassEncoder): void
+}
+class Color {
+    +r: number
+    +g: number
+    +b: number
+    +a: number
+    +toFloat32Array(): Float32Array
+}
+class SpriteRenderBehavior extends BasicUVTexturedRenderBehavior
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+RenderEngineUtility --> "1" Transform
+RenderEngineUtility --> "1" Quaternion
+RenderEngineUtility --> "1" Vector2
+RenderEngineUtility --> "1" Vector3
+Renderer --> "1" Camera
+Camera --> "1" Renderer
+Camera --> "1" Vector2
+Camera --> "1" Vector3
+Camera --> "1" Quaternion
+RenderBehavior --> "1" Renderer
+@enduml

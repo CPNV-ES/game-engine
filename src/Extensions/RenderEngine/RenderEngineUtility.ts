@@ -127,7 +127,7 @@ export class RenderEngineUtility {
   }
 
   /**
-   * Finds intersection of a ray with a plane.
+   * Finds intersection of a ray with a plane. Parameters are expected to be in the same coordinate space.
    * @param rayOrigin - The origin of the ray.
    * @param rayDir - The direction of the ray.
    * @param planeNormal - The normal of the plane.
@@ -135,13 +135,13 @@ export class RenderEngineUtility {
    * @returns The intersection point or null if no intersection.
    */
   public static rayPlaneIntersection(
-    rayOrigin: Vec3,
-    rayDir: Vec3,
-    planeNormal: Vec3,
-    planePoint: Vec3,
-  ): Vec3 | null {
+    rayOrigin: Vector3,
+    rayDir: Vector3,
+    planeNormal: Vector3,
+    planePoint: Vector3,
+  ): Vector3 | null {
     // Compute the denominator (dot product)
-    const denom = vec3.dot(planeNormal, rayDir);
+    const denom = planeNormal.dotProduct(rayDir);
 
     // If denom is very small, the ray is parallel to the plane (no intersection)
     if (Math.abs(denom) < 1e-6) {
@@ -149,8 +149,8 @@ export class RenderEngineUtility {
     }
 
     // Compute intersection distance t
-    const diff = vec3.sub(planePoint, rayOrigin);
-    const t = vec3.dot(diff, planeNormal) / denom;
+    const diff = planePoint.clone().sub(rayOrigin);
+    const t = diff.dotProduct(planeNormal) / denom;
 
     // If t is negative, intersection is behind the camera
     if (t < 0) {
@@ -158,7 +158,7 @@ export class RenderEngineUtility {
     }
 
     // Compute intersection point
-    return vec3.add(rayOrigin, vec3.scale(rayDir, t)) as Vec3;
+    return rayOrigin.clone().add(rayDir.clone().scale(t));
   }
 
   /**
@@ -167,5 +167,13 @@ export class RenderEngineUtility {
    */
   public static toVec3(vector: Vector3): Vec3 {
     return vec3.fromValues(vector.x, vector.y, vector.z);
+  }
+
+  /**
+   * Transform the vec3 to a core Vector3 type
+   * @param vec3
+   */
+  public static fromVec3(vec3: Vec3): Vector3 {
+    return new Vector3(vec3[0], vec3[1], vec3[2]);
   }
 }

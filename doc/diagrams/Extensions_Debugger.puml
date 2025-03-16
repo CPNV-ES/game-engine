@@ -1,0 +1,13 @@
+@startuml
+class DraggableElement {
+}
+class GameObjectDebugger {
+    +title(title: string): void
+    +render(rootObject: GameObject): void
+}
+class ResizableElement {
+}
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+GameObjectDebugger --> "1" GameObject
+@enduml

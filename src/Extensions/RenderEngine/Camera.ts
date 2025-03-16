@@ -3,6 +3,8 @@ import { OutputBehavior } from "@core/OutputBehavior.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
 import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
+import { Quaternion } from "@core/MathStructures/Quaternion.ts";
 
 /**
  * A 3D camera class that manages projection, view transformations, and screen-to-world raycasting for a rendering engine.
@@ -64,7 +66,7 @@ export class Camera extends OutputBehavior {
    * @param screenSpacePosition - The 2D screen position of the mouse.
    * @returns The normalized direction vector of the ray in world space.
    */
-  public screenPointToWorldDirection(screenSpacePosition: Vector2): Vec3 {
+  public screenPointToWorldDirection(screenSpacePosition: Vector2): Vector3 {
     const pointX = screenSpacePosition.x;
     const pointY = screenSpacePosition.y;
     const screenSize = this._renderEngine.screenSize;
@@ -80,10 +82,8 @@ export class Camera extends OutputBehavior {
     const farPoint = vec3.fromValues(ndcX, ndcY, 1.0);
 
     // Compute inverse matrices
-    const invProj = mat4.inverse(this._projectionMatrix); // Inverse projection matrix
-    const invView = mat4.inverse(
-      RenderEngineUtility.toModelMatrix(this.transform),
-    ); // Inverse view matrix (camera's transform)
+    const invProj = mat4.invert(this._projectionMatrix); // Inverse projection matrix
+    const invView = RenderEngineUtility.toModelMatrix(this.transform); // Inverse view matrix (camera's transform)
 
     // Transform NDC points to world space
     const nearPos = this.ndcToWorld(nearPoint, invProj, invView);
@@ -92,7 +92,7 @@ export class Camera extends OutputBehavior {
     // Compute direction vector (ray from near to far)
     const worldDirection = vec3.normalize(vec3.sub(farPos, nearPos));
 
-    return worldDirection;
+    return RenderEngineUtility.fromVec3(worldDirection);
   }
 
   /**
@@ -182,5 +182,19 @@ export class Camera extends OutputBehavior {
 
     // Compute final MVP matrix: VP * Model
     return mat4.multiply(vpMatrix, modelMatrix);
+  }
+
+  /**
+   * Returns the world position of the camera.
+   */
+  public get worldPosition(): Vector3 {
+    return this.transform.worldPosition;
+  }
+
+  /**
+   * Returns the world rotation of the camera.
+   */
+  public get worldRotation(): Quaternion {
+    return this.transform.worldRotation;
   }
 }

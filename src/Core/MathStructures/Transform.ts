@@ -77,6 +77,39 @@ export class Transform {
   }
 
   /**
+   * Converts a world-space position to local-space relative to this transform.
+   * @param worldPosition - The world-space position to convert.
+   * @returns The local-space position.
+   */
+  public worldToLocalPosition(worldPosition: Vector3): Vector3 {
+    // Start with the world position
+    let localPosition = worldPosition.clone();
+
+    // If there is a parent, apply the inverse of its transformations
+    if (this.gameObject.parent != null) {
+      const parentTransform = this.gameObject.parent.transform;
+
+      // Subtract the parent's world position
+      localPosition = localPosition.sub(parentTransform.worldPosition);
+
+      // Apply the inverse of the parent's world scale
+      const inverseParentScale = new Vector3(
+        1 / parentTransform.worldScale.x,
+        1 / parentTransform.worldScale.y,
+        1 / parentTransform.worldScale.z,
+      );
+      localPosition = localPosition.scaleAxis(inverseParentScale);
+
+      // Apply the inverse of the parent's world rotation
+      localPosition = localPosition.rotate(
+        parentTransform.worldRotation.inverse(),
+      );
+    }
+
+    return localPosition;
+  }
+
+  /**
    * Returns the forward vector of the object in world space.
    */
   get forward(): Vector3 {
