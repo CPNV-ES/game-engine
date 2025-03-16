@@ -52,7 +52,6 @@ const processDirectory = (dirPath, folderName, subfolderName) => {
                 if (classNameMatch) {
                     const className = classNameMatch[1];
                     currentClass = className.replace(/<.*>/, ''); // Remove generics
-                    console.log(currentClass)
                     // Check if the file corresponding to the class exists in the expected subfolder
                     const classFilePath = path.join(dirPath, `${currentClass}.ts`);
                     if (!fs.existsSync(classFilePath)) {
@@ -86,16 +85,15 @@ const recursiveProcess = (srcFolderPath, folderName) => {
         processDirectory(srcFolderPath, folderName, subfolder);
     }
 };
-/*
+
 topLevelFolders.forEach(folder => {
     const srcFolderPath = path.join('src', folder);
     if (fs.existsSync(srcFolderPath)) {
         recursiveProcess(srcFolderPath, folder);
     }
-});*/
+});
 
 // Combine UML files
-const combinedFile = path.join(outputDir, 'combined.puml');
 let finalContent = ['@startuml'];
 
 topLevelFolders.forEach(folder => {
@@ -105,7 +103,7 @@ topLevelFolders.forEach(folder => {
         .filter(file => file.startsWith(`${folder}`) && file.endsWith('.puml'))
         .forEach(file => {
             const subfolderName = file.replace('.puml', '');
-            const packageName = subfolderName.replace(`${folder}_`, '').replace(/_/g, '.');
+            const packageName = subfolderName.replace(`${folder}_`, '').replace(`_`, '.');
 
             if(packageName !== "" && packageName !== folder){
                 finalContent.push(`    package ${packageName} {`);
@@ -133,12 +131,15 @@ topLevelFolders.forEach(folder => {
 
 finalContent.push(...Array.from(externalAssociations));
 finalContent.push('@enduml');
+
+const combinedFile = path.join(outputDir, 'Combined.puml');
 fs.writeFileSync(combinedFile, finalContent.join('\n'));
 console.log(`Combined PlantUML file saved to ${combinedFile}`);
 
 // Generate a condensed version of the combined file
-const condensedFile = path.join(outputDir, 'condensed.puml');
+const condensedFile = path.join(outputDir, 'Condensed.puml');
 const condensedContent = finalContent
     .filter(line => !line.trim().startsWith('+') && !line.trim().startsWith('#') && !line.includes('--> "1"'))
     .join('\n');
 fs.writeFileSync(condensedFile, condensedContent);
+console.log(`Condensed PlantUML file saved to ${condensedFile}`);
