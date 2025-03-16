@@ -28,12 +28,23 @@ const processDirectory = (dirPath, folderName, subfolderName) => {
 
     let content = fs.readFileSync(outputFile, 'utf8');
     let currentClass = null; // Variable to store the current class name
+    let validClassesSet = new Set(); // Set to store valid classes
 
     content = content
         .split('\n')
         .filter(line => {
             if (/^\s*-/.test(line)) return false; // Skip association lines
             if (line.startsWith('+')) return false; // Skip method lines not in class
+            if(line.includes('+{static}')) return false; // Skip static methods
+            if(line.includes('--> "1"')){
+                // We can keep the association only if it's related to a valid class
+                for(let className of validClassesSet){
+                    if(line.includes(className)){
+                        return true;
+                    }
+                }
+                return false;
+            }
 
             if(currentClass !== null) {
                 const classFilePath = path.join(dirPath, `${currentClass}.ts`);
