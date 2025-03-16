@@ -5,18 +5,22 @@ import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Ren
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { Quaternion } from "@core/MathStructures/Quaternion.ts";
+import { InjectGlobal } from "@core/DependencyInjection/Inject.ts";
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 
 /**
  * A 3D camera class that manages projection, view transformations, and screen-to-world raycasting for a rendering engine.
  */
 export class Camera extends OutputBehavior {
+  @InjectGlobal(RenderGameEngineComponent)
+  protected _renderEngine!: RenderGameEngineComponent;
+
   private _fov: number; // Field of view in radians
   private _aspect: number; // Aspect ratio (width / height)
   private _near: number; // Near clipping plane
   private _far: number; // Far clipping plane
 
   protected _projectionMatrix!: Mat4;
-  protected _renderEngine: Renderer;
 
   /**
    * Creates a new Camera behavior.
@@ -24,10 +28,8 @@ export class Camera extends OutputBehavior {
    * @param aspect - Aspect ratio (width / height).
    * @param near - Near clipping plane.
    * @param far - Far clipping plane.
-   * @param renderGameEngineComponent - The RenderGameEngineComponent that will render the scene.
    */
   constructor(
-    renderGameEngineComponent: Renderer,
     fov: number = Math.PI / 4,
     aspect: number = 1,
     near: number = 0.1,
@@ -38,11 +40,6 @@ export class Camera extends OutputBehavior {
     this._aspect = aspect;
     this._near = near;
     this._far = far;
-    if (renderGameEngineComponent == null) {
-      throw new Error("Render engine component is not set!");
-    }
-    this._renderEngine = renderGameEngineComponent;
-
     this._recomputeProjectionMatrix();
   }
 
