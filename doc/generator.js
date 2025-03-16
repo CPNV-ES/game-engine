@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 
-const outputDir = 'doc/generated';
+const outputDir = 'doc/diagrams';
 if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir);
 }
@@ -86,13 +86,13 @@ const recursiveProcess = (srcFolderPath, folderName) => {
         processDirectory(srcFolderPath, folderName, subfolder);
     }
 };
-
+/*
 topLevelFolders.forEach(folder => {
     const srcFolderPath = path.join('src', folder);
     if (fs.existsSync(srcFolderPath)) {
         recursiveProcess(srcFolderPath, folder);
     }
-});
+});*/
 
 // Combine UML files
 const combinedFile = path.join(outputDir, 'combined.puml');
@@ -102,11 +102,12 @@ topLevelFolders.forEach(folder => {
     finalContent.push(`package ${folder} {`);
 
     fs.readdirSync(outputDir)
-        .filter(file => file.startsWith(`${folder}_`) && file.endsWith('.puml'))
+        .filter(file => file.startsWith(`${folder}`) && file.endsWith('.puml'))
         .forEach(file => {
             const subfolderName = file.replace('.puml', '');
-            const packageName = subfolderName.replace(`${folder}_`, '').replace("_", ".");
-            if(packageName !== ""){
+            const packageName = subfolderName.replace(`${folder}_`, '').replace(/_/g, '.');
+
+            if(packageName !== "" && packageName !== folder){
                 finalContent.push(`    package ${packageName} {`);
             }
 
@@ -121,8 +122,9 @@ topLevelFolders.forEach(folder => {
                     return true;
                 });
 
-            if(packageName !== "") {
-                finalContent.push(...filteredContent, '    }');
+            finalContent.push(...filteredContent);
+            if(packageName !== "" && packageName !== folder) {
+                finalContent.push('    }');
             }
         });
 
