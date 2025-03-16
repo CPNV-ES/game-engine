@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "prepare": "husky install",
     "format": "prettier --write \"{src,test}/**/*.ts\"",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "generate-uml": "node ./doc/generator.js"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
