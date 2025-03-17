@@ -1,5 +1,4 @@
 import { GameEngineWindow } from "@core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { TextRenderBehavior } from "@extensions/RenderEngine/Text/TextRenderBehavior.ts";
@@ -11,15 +10,12 @@ const canvas: HTMLCanvasElement =
 const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, false, [
   "RenderGameEngineComponent",
 ]);
-const renderComponent: RenderGameEngineComponent =
-  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
 
 //Text 1
 const go = new GameObject();
 gameEngineWindow.root.addChild(go);
 
 const textRenderBehavior = new TextRenderBehavior(
-  renderComponent,
   "/test/Extensions/RenderEngine/SimpleText/Sprunthrax/Sprunthrax-SemiBold-msdf.json",
 );
 
@@ -36,7 +32,6 @@ const go2 = new GameObject();
 gameEngineWindow.root.addChild(go2);
 
 const textRenderBehavior2 = new TextRenderBehavior(
-  renderComponent,
   "/test/Extensions/RenderEngine/SimpleText/Sprunthrax/Sprunthrax-SemiBold-msdf.json",
 );
 
@@ -51,4 +46,4 @@ go2.transform.position.set(-1, 2, 0);
 const cameraGo = new GameObject();
 cameraGo.transform.position.set(0, 0, 10);
 gameEngineWindow.root.addChild(cameraGo);
-cameraGo.addBehavior(new Camera(renderComponent));
+cameraGo.addBehavior(new Camera());

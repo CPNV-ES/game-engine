@@ -5,13 +5,15 @@ import { Keyboard } from "@extensions/InputSystem/Keyboard.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { GamepadDevice } from "@extensions/InputSystem/GamepadDevice.ts";
 import { XboxGamepad } from "@extensions/InputSystem/Gamepads/XboxGamepad.ts";
+import { InjectGlobal } from "@core/DependencyInjection/Inject.ts";
 
 /**
  * @class DeviceInputBehavior
  * @classdesc DeviceInputBehavior is a behavior that listens to input events from devices, it is a helper like an accessor to the devices contained in the InputGameEngineComponent for easier access to the input events.
  */
 export class DeviceInputBehavior extends InputBehavior {
-  protected readonly inputEngineComponent: InputGameEngineComponent;
+  @InjectGlobal(InputGameEngineComponent)
+  protected readonly inputEngineComponent!: InputGameEngineComponent;
   // Class-level properties to store observer references
   private onAnyChangeObserver = () => this.onAnyChange();
   private onMouseLeftClickUpObserver = () => this.onMouseLeftClickUp();
@@ -35,15 +37,6 @@ export class DeviceInputBehavior extends InputBehavior {
     index: number;
     value: Vector2;
   }) => this.onGamepadAxisChange(data);
-
-  /**
-   * Creates an instance of DeviceInputBehavior.
-   * @param inputEngineComponent
-   */
-  constructor(inputEngineComponent: InputGameEngineComponent) {
-    super();
-    this.inputEngineComponent = inputEngineComponent;
-  }
 
   /**
    * @description Enables the input events.

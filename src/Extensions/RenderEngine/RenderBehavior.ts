@@ -1,15 +1,16 @@
 import { OutputBehavior } from "@core/OutputBehavior.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
-import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
 import { mat4 } from "wgpu-matrix";
-
+import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
+import { InjectGlobal } from "@core/DependencyInjection/Inject.ts";
 /**
  * An object that can be rendered to the WebGPU screen.
  * Create the pipeline for rendering and set up the bind group layout.
  */
 export abstract class RenderBehavior extends OutputBehavior {
-  protected _renderEngine: Renderer;
+  @InjectGlobal(RenderGameEngineComponent)
+  protected _renderEngine!: RenderGameEngineComponent;
   protected _pipeline: GPURenderPipeline | null = null;
   protected _bindGroupLayouts: GPUBindGroupLayout[] | null = null;
   protected _mvpUniformBuffer: GPUBuffer | null = null;
@@ -23,7 +24,6 @@ export abstract class RenderBehavior extends OutputBehavior {
 
   /**
    * Create a new RenderBehavior (auto init, create pipeline and render).
-   * @param renderEngine The render engine to use
    * @param vertexWGSLShader The vertex shader in WGSL (source code in string)
    * @param fragmentWGSLShader The fragment shader in WGSL (source code in string)
    * @param primitiveState The type of primitive to be constructed from the vertex inputs (topology, strip index, cull mode).
@@ -32,7 +32,6 @@ export abstract class RenderBehavior extends OutputBehavior {
    * @param targetBlend The blend state to use for the pipeline
    */
   public constructor(
-    renderEngine: Renderer,
     vertexWGSLShader: string,
     fragmentWGSLShader: string,
     primitiveState: GPUPrimitiveState,
@@ -41,24 +40,29 @@ export abstract class RenderBehavior extends OutputBehavior {
     targetBlend?: GPUBlendState | undefined,
   ) {
     super();
-    if (!renderEngine) {
-      throw new Error("Render engine is required");
-    }
-    this._renderEngine = renderEngine;
     this._vertexWGSLShader = vertexWGSLShader;
     this._fragmentWGSLShader = fragmentWGSLShader;
     this._primitiveState = primitiveState;
     this._bindGroupLayoutDescriptors = bindGroupLayoutDescriptors;
     this._bufferLayouts = buffers;
     this._targetBlend = targetBlend;
+  }
 
-    if (renderEngine.IsRenderingReady) {
+  protected onEnable() {
+    super.onEnable();
+
+    if (this._renderEngine.IsRenderingReady) {
       this.asyncInit();
     } else {
-      renderEngine.onRenderingReady.addObserver(() => {
+      this._renderEngine.onRenderingReady.addObserver(() => {
         this.asyncInit();
       });
     }
+  }
+
+  protected onDisable() {
+    super.onDisable();
+    this._pipeline = null;
   }
 
   /**
@@ -87,6 +91,7 @@ export abstract class RenderBehavior extends OutputBehavior {
    * @param renderpass The render pass to render to
    */
   public render(renderpass: GPURenderPassEncoder) {
+    if (!this._renderEngine) return;
     const camera: Camera | null = this._renderEngine.camera;
     if (!camera || !this._pipeline || !this._mvpUniformBuffer) return;
     this._renderEngine.fillUniformBuffer(

@@ -1,5 +1,4 @@
 import { GameEngineWindow } from "@core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
@@ -17,8 +16,6 @@ const canvas: HTMLCanvasElement =
 const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, false, [
   "RenderGameEngineComponent",
 ]);
-const renderComponent: RenderGameEngineComponent =
-  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
 
 //Camera
 const cameraGo = new GameObject("Camera");
@@ -28,14 +25,12 @@ cameraGo.transform.rotation.rotateAroundAxis(
   new Vector3(1, 0, 0),
   -Math.PI / 8,
 );
-cameraGo.addBehavior(new Camera(renderComponent));
+cameraGo.addBehavior(new Camera());
 gameEngineWindow.root.addChild(cameraGo);
 
 //Grid
 const grid = new GameObject("Grid");
-grid.addBehavior(
-  new GridRenderBehavior(renderComponent, 200, 1, new Color(0.3, 0.3, 0.3)),
-);
+grid.addBehavior(new GridRenderBehavior(200, 1, new Color(0.3, 0.3, 0.3)));
 grid.transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0);
 gameEngineWindow.root.addChild(grid);
 
@@ -72,7 +67,6 @@ ObjLoader.load("/test/CommonResources/gizmo.obj").then((obj) => {
   gizmos.forEach((gizmo) =>
     gizmo.addBehavior(
       new MeshRenderBehavior(
-        renderComponent,
         obj,
         "/test/CommonResources/gizmo.png",
         BasicVertexMVPWithUV,

@@ -1,4 +1,3 @@
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { MeshData } from "@extensions/RenderEngine/MeshBased/MeshData.ts";
 import { BasicUVTexturedRenderBehavior } from "@extensions/RenderEngine/BasicUVTexturedRenderBehavior.ts";
 
@@ -9,7 +8,6 @@ import { BasicUVTexturedRenderBehavior } from "@extensions/RenderEngine/BasicUVT
 export class MeshRenderBehavior extends BasicUVTexturedRenderBehavior {
   /**
    * Create a new MeshRenderBehavior.
-   * @param renderEngine The render engine to use
    * @param textureImageUrl The URL of the texture image (will automatically load the texture in the GPU)
    * @param meshData The mesh data (vertices and indices/faces generated for example, by the ObjLoader)
    * @param vertexWGSLShader The vertex shader in WGSL (source code in string). Ensure that the shader has a uniform mat4 mvpMatrix and is compatible with the layout.
@@ -17,7 +15,6 @@ export class MeshRenderBehavior extends BasicUVTexturedRenderBehavior {
    * @param sampler - Sampler configuration, by default : Not repeat with linear filter
    */
   constructor(
-    renderEngine: RenderGameEngineComponent,
     meshData: MeshData,
     textureImageUrl: RequestInfo | URL,
     vertexWGSLShader: string,
@@ -28,7 +25,6 @@ export class MeshRenderBehavior extends BasicUVTexturedRenderBehavior {
     },
   ) {
     super(
-      renderEngine,
       textureImageUrl,
       meshData.vertices,
       meshData.indices!,

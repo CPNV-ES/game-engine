@@ -21,32 +21,23 @@ const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, true, [
   "InputGameEngineComponent",
   "RenderGameEngineComponent",
 ]);
-const renderComponent: RenderGameEngineComponent =
-  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
-const inputComponent: InputGameEngineComponent =
-  gameEngineWindow.getEngineComponent(InputGameEngineComponent)!;
 
 const go = new GameObject("Sprite");
 gameEngineWindow.root.addChild(go);
 
-go.addBehavior(
-  new SpriteRenderBehavior(renderComponent, "/test/CommonResources/sprunk.png"),
-);
+go.addBehavior(new SpriteRenderBehavior("/test/CommonResources/sprunk.png"));
 
 const cameraGo = new GameObject("Camera");
-cameraGo.addBehavior(new FreeLookCameraController());
-cameraGo.addBehavior(new FreeLookCameraKeyboardMouseInput(inputComponent));
-cameraGo.addBehavior(new Camera(renderComponent, Math.PI / 2));
-cameraGo.transform.position.z = 10;
 gameEngineWindow.root.addChild(cameraGo);
+cameraGo.addBehavior(new FreeLookCameraController());
+cameraGo.addBehavior(new FreeLookCameraKeyboardMouseInput());
+cameraGo.addBehavior(new Camera(Math.PI / 2));
+cameraGo.transform.position.z = 10;
 
 const grid = new GameObject("Grid");
-grid.addBehavior(
-  new GridRenderBehavior(renderComponent, 200, 1, new Color(0.3, 0.3, 0.6)),
-);
-grid.transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0);
-
 gameEngineWindow.root.addChild(grid);
+grid.addBehavior(new GridRenderBehavior(200, 1, new Color(0.3, 0.3, 0.6)));
+grid.transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0);
 
 const gizmo = new GameObject("Gizmo");
 const gizmo2 = new GameObject("Gizmo2");
@@ -56,7 +47,6 @@ gizmo2.transform.position.set(0, 0, -1);
 ObjLoader.load("/test/CommonResources/gizmo.obj").then((obj) => {
   gizmo.addBehavior(
     new MeshRenderBehavior(
-      renderComponent,
       obj,
       "/test/CommonResources/gizmo.png",
       BasicVertexMVPWithUV,
@@ -65,7 +55,6 @@ ObjLoader.load("/test/CommonResources/gizmo.obj").then((obj) => {
   );
   gizmo2.addBehavior(
     new MeshRenderBehavior(
-      renderComponent,
       obj,
       "/test/CommonResources/gizmo.png",
       BasicVertexMVPWithUV,
