@@ -45,6 +45,7 @@ jobs:
         with:
           name: test-results
           path: ./test-results
+
   build:
     runs-on: ubuntu-latest
     needs: test
@@ -93,7 +94,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-
       # Ensure the NPM_TOKEN is stored in the GitHub secrets
       - name: Check npm whoami
         run: npm whoami
@@ -105,3 +105,54 @@ jobs:
         run: npm publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  generate-docs:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'  # Only run this job on the 'main' branch
+
+    steps:
+      # Checkout the code with Git LFS support
+      - name: Check out code with Git LFS
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Generate documentation
+      - name: Generate documentation
+        run: npm run generate-doc
+
+      # Upload the generated documentation as an artifact
+      - name: Upload documentation artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './doc/site/build'
+
+  deploy-docs:
+    runs-on: ubuntu-latest
+    needs: generate-docs
+    if: github.ref == 'refs/heads/main'  # Only run this job on the 'main' branch
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # Deploy the documentation to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
