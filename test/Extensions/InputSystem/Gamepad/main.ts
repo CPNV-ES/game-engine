@@ -1,5 +1,4 @@
 import { GameEngineWindow } from "@core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { TextRenderBehavior } from "@extensions/RenderEngine/Text/TextRenderBehavior.ts";
@@ -18,8 +17,6 @@ const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, true, [
   "RenderGameEngineComponent",
   "InputGameEngineComponent",
 ]);
-const renderComponent: RenderGameEngineComponent =
-  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
 const inputComponent: InputGameEngineComponent =
   gameEngineWindow.getEngineComponent(InputGameEngineComponent)!;
 
@@ -36,7 +33,7 @@ updateGamepads();
 
 function createCamera(): GameObject {
   const cameraGo = new GameObject("Camera");
-  const camera = new Camera(renderComponent, Math.PI / 8);
+  const camera = new Camera(Math.PI / 8);
   cameraGo.addBehavior(camera);
   return cameraGo;
 }
@@ -65,7 +62,6 @@ function createGamepadLabel(
   labelGo.transform.position.set(-1, startY + 0.6, 0);
 
   const labelText = new TextRenderBehavior(
-    renderComponent,
     "/test/Extensions/RenderEngine/SimpleText/Sprunthrax/Sprunthrax-SemiBold-msdf.json",
   );
   labelText.text = `Gamepad ${gamepad.index}`;
@@ -93,11 +89,7 @@ function createButtonsVisualization(
     const buttonLines = createButtonOutline(x, y, buttonSize);
     console.log("buttonLines", buttonLines),
       buttonGo.addBehavior(
-        new LinesRenderBehavior(
-          renderComponent,
-          buttonLines,
-          new Color(0.5, 0.5, 0.5, 1),
-        ),
+        new LinesRenderBehavior(buttonLines, new Color(0.5, 0.5, 0.5, 1)),
       );
 
     const buttonLabelGo = new GameObject(`Label ${i}`);
@@ -109,7 +101,6 @@ function createButtonsVisualization(
     );
 
     const buttonLabelText = new TextRenderBehavior(
-      renderComponent,
       "/test/Extensions/RenderEngine/SimpleText/Sprunthrax/Sprunthrax-SemiBold-msdf.json",
     );
     buttonLabelText.text = i.toString();
@@ -153,11 +144,7 @@ function createAxesVisualization(
 
     const axisLines = createAxisOutline(axesSize);
     axisGo.addBehavior(
-      new LinesRenderBehavior(
-        renderComponent,
-        axisLines,
-        new Color(0.5, 0.5, 0.5, 1),
-      ),
+      new LinesRenderBehavior(axisLines, new Color(0.5, 0.5, 0.5, 1)),
     );
 
     const axisDotGo = createAxisDot();
@@ -192,7 +179,7 @@ function createAxisDot(dotSize: number = 0.02): GameObject {
     new Vector2(-dotSize / 2, -dotSize / 2),
   ];
   axisDotGo.addBehavior(
-    new LinesRenderBehavior(renderComponent, dotLines, new Color(1, 0, 0, 1)),
+    new LinesRenderBehavior(dotLines, new Color(1, 0, 0, 1)),
   );
   return axisDotGo;
 }
