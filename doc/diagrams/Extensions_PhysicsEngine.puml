@@ -1,0 +1,20 @@
+@startuml
+class PhysicsBehavior<T> extends LogicBehavior
+class PhysicsGameEngineComponent extends GameEngineComponent {
+    +rootObject?: GameObject | undefined
+    +satCollisionHandler: SatCollisionHandler
+    +onAttachedTo(_gameEngine: GameEngineWindow): void
+}
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+PolygonCollider --> "*" Vector2
+SatCollisionHandler --> "*" Vector2
+PhysicsGameEngineComponent --> "1" GameObject
+PhysicsGameEngineComponent --> "1" SatCollisionHandler
+PhysicsGameEngineComponent --> "1" Ticker
+PhysicsGameEngineComponent --> "1" Collider
+PhysicsGameEngineComponent --> "*" Collision
+PhysicsGameEngineComponent --> "1" GameEngineWindow
+PhysicsGameEngineComponent --> "*" Collider
+PhysicsGameEngineComponent --> "1" PolygonCollider
+@enduml

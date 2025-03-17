@@ -1,0 +1,22 @@
+#container {
+    padding: 10px;
+    background-color: #424242;
+    border-radius: 5px;
+    min-width: 100px;
+    min-height: 30px;
+    max-width: 99vw;
+    max-height: 99vh;
+}
+
+#debug {
+    width: calc(100% - 0px);
+    height: 100%;
+    max-height: calc(100vh - 20px);
+}
+
+#debug > div{
+    width: 100%;
+    height: 100%;
+    max-height: calc(100vh - 20px);
+
+}

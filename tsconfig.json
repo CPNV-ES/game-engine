@@ -11,16 +11,30 @@
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
+
+    /* Output settings */
+    "declaration": true,
+    "declarationDir": "dist",
+    "outDir": "dist",
 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
 
-    "types": ["@webgpu/types"]
+    /* Meta decorators */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    "types": ["@webgpu/types"],
+    "baseUrl": ".",
+    "paths": {
+      "@core/*": ["./src/Core/*"],
+      "@extensions/*": ["./src/Extensions/*"],
+      "@test/*": ["./test/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "tests"]
 }

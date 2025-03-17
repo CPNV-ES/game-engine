@@ -1,0 +1,19 @@
+@startuml
+class Collider extends PhysicsBehavior {
+    +rigidbody?: Rigidbody | undefined
+    +collide(collisions: Collision[]): void
+}
+class PolygonCollider extends Collider {
+    +vertices: Vector2[]
+    +getGravitationCenter(): Vector3
+    +getVerticesWithTransform(): Vector2[]
+}
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+Collision --> "1" Collider
+Rigidbody --> "1" Collider
+Collider --> "1" Rigidbody
+Collider --> "1" Collision
+PolygonCollider --> "*" Vector2
+PolygonCollider --> "1" Vector3
+@enduml

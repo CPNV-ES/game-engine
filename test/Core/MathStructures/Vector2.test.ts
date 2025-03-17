@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, Mock } from "vitest";
-import { Vector2 } from "../../../src/Core/MathStructures/Vector2";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 describe("Vector2", (): void => {
   /**
@@ -85,6 +85,19 @@ describe("Vector2", (): void => {
 
     expect(vector.x).toBe(2);
     expect(vector.y).toBe(4);
+  });
+
+  /**
+   * Tests if a vector can be scaled by a vector.
+   */
+  it("should scale a vector by a vector", (): void => {
+    const vector: Vector2 = new Vector2(1, 2);
+    const scaleVector: Vector2 = new Vector2(2, 3);
+
+    vector.scaleAxis(scaleVector);
+
+    expect(vector.x).toBe(2);
+    expect(vector.y).toBe(6);
   });
 
   /**

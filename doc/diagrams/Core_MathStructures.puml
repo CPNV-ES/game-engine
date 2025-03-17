@@ -1,0 +1,81 @@
+@startuml
+class MathUtility {
+}
+class Vector2 {
+    +x: number
+    +y: number
+    +length: number
+    +dotProduct(vector: Vector2): number
+    +angleBetween(vector: Vector2): number
+    +add(vector: Vector2): Vector2
+    +sub(vector: Vector2): Vector2
+    +rotate(angle: number): Vector2
+    +scale(scalar: number): Vector2
+    +scaleAxis(vector: Vector2): Vector2
+    +normalize(): Vector2
+    +clone(): Vector2
+    +toVector3(z?: number): Vector3
+}
+class Vector3 {
+    +x: number
+    +y: number
+    +z: number
+    +length: number
+    +dotProduct(vector: Vector3): number
+    +crossProduct(vector: Vector3): Vector3
+    +angleBetween(vector: Vector3): number
+    +add(vector: Vector3): Vector3
+    +sub(vector: Vector3): Vector3
+    +scale(scalar: number): Vector3
+    +scaleAxis(vector: Vector3): Vector3
+    +normalize(): Vector3
+    +clone(): Vector3
+    +rotate(quaternion: Quaternion): Vector3
+    +toVector2(): Vector2
+    +setFromVector2(vector: Vector2): this
+    +setFromVector3(vector: Vector3): void
+    +set(x: number, y: number, z: number): Vector3
+}
+class Quaternion {
+    +w: number
+    +x: number
+    +y: number
+    +z: number
+    +normalize(): Quaternion
+    +toEulerAngles(order?: EulerOrder): Vector3
+    +setFromVectorEulerAngles(vector3: Vector3, order?: EulerOrder): Quaternion
+    +setFromEulerAngles(pitch: number, yaw: number, roll: number, order?: EulerOrder): Quaternion
+    +rotate(q: Quaternion): Quaternion
+    +multiply(q: Quaternion): Quaternion
+    +lerp(q1: Quaternion, q2: Quaternion, t: number): Quaternion
+    +conjugate(): Quaternion
+    +magnitudeSquared(): number
+    +inverse(): Quaternion
+    +clone(): Quaternion
+    +setFromQuaternion(q: Quaternion): Quaternion
+    +set(w: number, x: number, y: number, z: number): Quaternion
+    +rotateAroundAxis(axis: Vector3, angle: number): Quaternion
+}
+class Transform {
+    +position: Vector3
+    +rotation: Quaternion
+    +scale: Vector3
+    +worldPosition: Vector3
+    +worldRotation: Quaternion
+    +worldScale: Vector3
+    +worldToLocalPosition(worldPosition: Vector3): Vector3
+    +forward: Vector3
+    +right: Vector3
+    +top: Vector3
+}
+Vector2 --> "1" Vector3
+Vector3 --> "1" Quaternion
+Vector3 --> "1" Vector2
+Quaternion --> "1" Vector3
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "1" Transform
+GameObject --> "*" Behavior
+Transform --> "1" Vector3
+Transform --> "1" Quaternion
+Transform --> "1" GameObject
+@enduml

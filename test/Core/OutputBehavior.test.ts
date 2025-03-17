@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { GameObject } from "../../src/Core/GameObject";
-import { TestLogicBehavior } from "./Mocks/TestLogicBehavior";
-import { TestOutputBehavior } from "./Mocks/TestOutputBehavior";
-import { TestData } from "./Mocks/TestData";
+import { GameObject } from "@core/GameObject.ts";
+import { TestLogicBehavior } from "@test/Core/Mocks/TestLogicBehavior.ts";
+import { TestOutputBehavior } from "@test/Core/Mocks/TestOutputBehavior.ts";
+import { TestData } from "@test/Core/Mocks/TestData.ts";
 
 describe("OutputBehavior", () => {
   it("should expose transform", () => {

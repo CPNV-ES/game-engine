@@ -23,6 +23,13 @@ export class Event<T> {
   }
 
   /**
+   * Removes all observers from the Event instance.
+   */
+  public removeObservers(): void {
+    this._observers = [];
+  }
+
+  /**
    * Emits the event with the given data.
    * All observers will be called with the data.
    * @param data

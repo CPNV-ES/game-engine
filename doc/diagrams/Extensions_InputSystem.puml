@@ -1,0 +1,77 @@
+@startuml
+abstract class Device {
+    +onAnyChange: Event<void>
+}
+class GamepadDevice extends Device {
+    +onButtonDown: Event<number>
+    +onButtonUp: Event<number>
+    +onAxisChange: Event<{ index: number; value: Vector2; }>
+    #gamepad: Gamepad
+    +index: number
+    +pollGamepadOnce(freshGamepad: Gamepad): void
+}
+class GamepadManager {
+    +onGamepadConnected: Event<GamepadDevice>
+    +onGamepadDisconnected: Event<GamepadDevice>
+    +getAllGamepads(): GamepadDevice[]
+}
+class InputGameEngineComponent extends GameEngineComponent {
+    +onDeviceAdded: Event<Device>
+    +onDeviceRemoved: Event<Device>
+    +getDevice(deviceClass: abstract new (...args: any[]) => T): T | null
+    +getDevices(deviceClass: abstract new (...args: any[]) => T): T[]
+    +addDevice(device: Device): void
+    +removeDevice(device: Device): void
+}
+class Mouse extends Device {
+    +onLeftClickUp: Event<void>
+    +onLeftClickDown: Event<void>
+    +onRightClickUp: Event<void>
+    +onRightClickDown: Event<void>
+    +onMove: Event<{ position: Vector2; delta: Vector2; }>
+    +onScroll: Event<number>
+}
+class Keyboard extends Device {
+    +onKeyDown: Event<string>
+    +onKeyUp: Event<string>
+}
+class DeviceInputBehavior extends InputBehavior {
+    #inputEngineComponent: InputGameEngineComponent
+    #onEnable(): void
+    #onDisable(): void
+    +onAnyChange(): void
+    +onMouseLeftClickUp(): void
+    +onMouseLeftClickDown(): void
+    +onMouseRightClickUp(): void
+    +onMouseRightClickDown(): void
+    +onMouseMove(_data: { position: Vector2; delta: Vector2; }): void
+    +onMouseScroll(_data: number): void
+    +onKeyboardKeyDown(_key: string): void
+    +onKeyboardKeyUp(_key: string): void
+    +onGamepadButtonDown(_buttonIndex: number): void
+    +onGamepadButtonUp(_buttonIndex: number): void
+    +onGamepadAxisChange(_data: { index: number; value: Vector2; }): void
+    +onGamepadConnected(_gamepad: GamepadDevice | XboxGamepad): void
+    +onGamepadDisconnected(_gamepad: GamepadDevice | XboxGamepad): void
+}
+Device --> "1" Event
+GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
+GamepadDevice --> "1" Event
+GamepadDevice --> "1" Vector2
+GamepadManager --> "1" Event
+GamepadManager --> "1" GamepadDevice
+GamepadManager --> "*" GamepadDevice
+GamepadManager --> "1" Ticker
+InputGameEngineComponent --> "1" Event
+InputGameEngineComponent --> "1" Device
+InputGameEngineComponent --> "*" Device
+InputGameEngineComponent --> "1" GamepadManager
+Mouse --> "1" Event
+Mouse --> "1" Vector2
+Keyboard --> "1" Event
+DeviceInputBehavior --> "1" InputGameEngineComponent
+DeviceInputBehavior --> "1" Vector2
+DeviceInputBehavior --> "1" GamepadDevice
+DeviceInputBehavior --> "1" XboxGamepad
+@enduml

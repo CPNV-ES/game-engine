@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, Mock } from "vitest";
-import { Event } from "../../../src/Core/EventSystem/Event";
+import { Event } from "@core/EventSystem/Event.ts";
 
 describe("Event", (): void => {
   /**
