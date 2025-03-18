@@ -56,7 +56,9 @@ export class GameObject {
     this._parent = value;
     if (value) {
       this._root = value.root;
+      this.onEnable();
     } else {
+      this.destroy();
       this._root = null;
     }
     this.onParentChange();
@@ -202,14 +204,19 @@ export class GameObject {
    * Remove this GameObject from its parent.
    */
   public destroy() {
-    this._behaviors.forEach((b) => b.detach(this));
+    for (let i = this._behaviors.length - 1; i >= 0; i--) {
+      // Index 0 because the last element is removed in each iteration
+      this.removeBehavior(this._behaviors[0]);
+    }
     this._behaviors = [];
-    this._children.forEach((c) => c.destroy());
+    for (let i = this._children.length - 1; i >= 0; i--) {
+      this.removeChild(this._children[0]);
+    }
     this._children = [];
     if (this._parent) {
       this._parent.removeChild(this);
     }
-    //We don't want to spam notifications when destroying the object
+    this.onDisable();
   }
 
   //#region Dependency Injection
@@ -271,4 +278,16 @@ export class GameObject {
    * @protected
    */
   protected onParentChange() {}
+
+  /**
+   * When the GameObject is attached to the tree.
+   * @protected
+   */
+  protected onEnable() {}
+
+  /**
+   * When the GameObject is detached from the tree. (After destroy / cleanup)
+   * @protected
+   */
+  protected onDisable() {}
 }

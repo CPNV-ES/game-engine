@@ -39,6 +39,8 @@ class GameObject {
     +destroy(): void
     +fillDependencies(target: any): void
     #onParentChange(): void
+    #onEnable(): void
+    #onDisable(): void
 }
 abstract class Behavior {
     +setup(attachedOn: GameObject): void
