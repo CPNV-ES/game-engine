@@ -14,10 +14,21 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
 
   /**
    * Gets the webgpu device.
+   * The device used is common for all instances of this render delegate class.
+   * It is set when the first instance is created.
+   * Really useful for sharing resources / pipeline caching between instances (or multiple canvas in the same page).
    * @constructor
    */
   public get device(): GPUDevice | undefined {
-    return this._device;
+    return WebGPUResourceManager._device;
+  }
+
+  protected set device(value: GPUDevice | undefined) {
+    WebGPUResourceManager._device = value;
+  }
+
+  protected get gpu(): GPU {
+    return WebGPUResourceManager._gpu;
   }
 
   /**
@@ -37,12 +48,12 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     return this._presentationTextureFormat;
   }
 
-  private _gpu: GPU;
+  private static _gpu: GPU;
   private _presentationTextureFormat: GPUTextureFormat | undefined;
   private _depthTextureFormat: GPUTextureFormat | undefined;
   private _depthTexture: GPUTexture | null = null;
   private _depthTextureView: GPUTextureView | null = null;
-  private _device: GPUDevice | undefined;
+  private static _device: GPUDevice | undefined;
   private static readonly _textureCache =
     AsyncCache.getInstance<GPUTexture>("textures");
   private static readonly _renderPipelinesCache =
@@ -53,25 +64,28 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
    * @param gpu - A GPU object to use for creating the device.
    */
   constructor(gpu: GPU | null = null) {
-    if (!gpu) throw new Error("GPU is required");
-    this._gpu = gpu;
+    if (!gpu && !this.gpu)
+      throw new Error("GPU is required for the first initialization");
+    if (!this.gpu) {
+      WebGPUResourceManager._gpu = gpu!;
+    }
   }
 
   public createBindGroupLayout(
     descriptor: GPUBindGroupLayoutDescriptor,
   ): GPUBindGroupLayout {
-    return this._device!.createBindGroupLayout(descriptor);
+    return this.device!.createBindGroupLayout(descriptor);
   }
 
   public createBindGroup(
     bindGroupLayout: GPUBindGroupLayout,
     entries: GPUBindGroupEntry[],
   ): GPUBindGroup {
-    return this._device!.createBindGroup({ layout: bindGroupLayout, entries });
+    return this.device!.createBindGroup({ layout: bindGroupLayout, entries });
   }
 
   public createSampler(descriptor: GPUSamplerDescriptor): GPUSampler {
-    return this._device!.createSampler(descriptor);
+    return this.device!.createSampler(descriptor);
   }
 
   public async createPipeline(
@@ -85,18 +99,18 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     const hash = `${vertexWGSLShader}${fragmentWGSLShader}${primitiveState}${bindGroupLayouts}${buffersLayouts}${targetBlend}`;
     return WebGPUResourceManager._renderPipelinesCache.get(hash, async () => {
       const descriptor: GPURenderPipelineDescriptor = {
-        layout: this._device!.createPipelineLayout({
+        layout: this.device!.createPipelineLayout({
           bindGroupLayouts: bindGroupLayouts,
         }),
         vertex: {
-          module: this._device!.createShaderModule({
+          module: this.device!.createShaderModule({
             code: vertexWGSLShader,
           }),
           entryPoint: "main",
           buffers: buffersLayouts,
         },
         fragment: {
-          module: this._device!.createShaderModule({
+          module: this.device!.createShaderModule({
             code: fragmentWGSLShader,
           }),
           entryPoint: "main",
@@ -114,12 +128,12 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
           format: this._depthTextureFormat!,
         },
       };
-      return this._device!.createRenderPipeline(descriptor);
+      return this.device!.createRenderPipeline(descriptor);
     });
   }
 
   public async createTexture(url: RequestInfo | URL): Promise<GPUTexture> {
-    if (!this._device) {
+    if (!this.device!) {
       throw new Error("Rendering is not ready yet! (Device not available)");
     }
 
@@ -131,10 +145,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
       if (srcWidth === 0 || srcHeight === 0) {
         throw new Error("Invalid image size");
       }
-      if (!this._device) {
-        throw new Error("Device lost");
-      }
-      const imageTexture = this._device!.createTexture({
+      const imageTexture = this.device!.createTexture({
         size: [srcWidth, srcHeight, 1],
         format: "rgba8unorm",
         usage:
@@ -142,7 +153,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
           GPUTextureUsage.COPY_DST |
           GPUTextureUsage.RENDER_ATTACHMENT,
       });
-      this._device!.queue.copyExternalImageToTexture(
+      this.device!.queue.copyExternalImageToTexture(
         { source: imageBitmap },
         { texture: imageTexture },
         [imageBitmap.width, imageBitmap.height],
@@ -152,33 +163,33 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   }
 
   public createUniformBuffer(data: Float32Array): GPUBuffer {
-    const buffer: GPUBuffer = this._device!.createBuffer({
+    const buffer: GPUBuffer = this.device!.createBuffer({
       size: data.byteLength,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
-    this._device!.queue.writeBuffer(buffer, 0, data);
+    this.device!.queue.writeBuffer(buffer, 0, data);
     return buffer;
   }
 
   public fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void {
-    this._device!.queue.writeBuffer(buffer, 0, data, 0, data.length);
+    this.device!.queue.writeBuffer(buffer, 0, data, 0, data.length);
   }
 
   public createVertexBuffer(data: Float32Array): GPUBuffer {
-    const buffer: GPUBuffer = this._device!.createBuffer({
+    const buffer: GPUBuffer = this.device!.createBuffer({
       size: data.byteLength,
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
     });
-    this._device!.queue.writeBuffer(buffer, 0, data);
+    this.device!.queue.writeBuffer(buffer, 0, data);
     return buffer;
   }
 
   public createIndexBuffer(data: Uint16Array): GPUBuffer {
-    const buffer: GPUBuffer = this._device!.createBuffer({
+    const buffer: GPUBuffer = this.device!.createBuffer({
       size: data.byteLength,
       usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST,
     });
-    this._device!.queue.writeBuffer(buffer, 0, data);
+    this.device!.queue.writeBuffer(buffer, 0, data);
     return buffer;
   }
 
@@ -186,7 +197,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     size: number,
     label: string = "Storage buffer",
   ): GPUBuffer {
-    return this._device!.createBuffer({
+    return this.device!.createBuffer({
       label: label,
       size: size,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
@@ -197,7 +208,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   public createRenderBundleEncoder(
     descriptor: GPURenderBundleEncoderDescriptor,
   ): GPURenderBundleEncoder {
-    return this._device!.createRenderBundleEncoder(descriptor);
+    return this.device!.createRenderBundleEncoder(descriptor);
   }
 
   /**
@@ -206,8 +217,8 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
    * @param height - The height of the texture.
    */
   public createDepthTexture(width: number, height: number): void {
-    if (!this._device || !this._depthTextureFormat) return;
-    this._depthTexture = this._device!.createTexture({
+    if (!this.device || !this._depthTextureFormat) return;
+    this._depthTexture = this.device!.createTexture({
       size: [width, height, 1],
       format: this._depthTextureFormat!,
       usage: GPUTextureUsage.RENDER_ATTACHMENT,
@@ -221,31 +232,35 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
    * @returns A promise that resolves when the GPU resources are ready.
    */
   public async requestGpuResources() {
-    const adapter: GPUAdapter | null = await this._gpu.requestAdapter();
-    const device: GPUDevice | null = (await adapter?.requestDevice()) ?? null;
-    if (!device) {
-      if (!("gpu" in navigator)) {
-        this.onError.emit(
-          new Error(
-            "WebGPU not available in this browser - navigator.gpu is not defined",
-          ),
-        );
-      } else if (!adapter) {
-        this.onError.emit(
-          new Error(
-            "RequestAdapter returned null - this sample can't run on this system",
-          ),
-        );
-      } else {
-        this.onError.emit(
-          new Error("Unable to get a device for an unknown reason"),
-        );
+    if (!this.device) {
+      const adapter: GPUAdapter | null = await this.gpu.requestAdapter();
+      const device: GPUDevice | null = (await adapter?.requestDevice()) ?? null;
+      if (!device) {
+        if (!("gpu" in navigator)) {
+          this.onError.emit(
+            new Error(
+              "WebGPU not available in this browser - navigator.gpu is not defined",
+            ),
+          );
+        } else if (!adapter) {
+          this.onError.emit(
+            new Error(
+              "RequestAdapter returned null - this sample can't run on this system",
+            ),
+          );
+        } else {
+          this.onError.emit(
+            new Error("Unable to get a device for an unknown reason"),
+          );
+        }
+        return;
       }
-      return;
+      this.device = device;
+      //If we have multiple instance of this manager, we should only subscribe once
+      this.subscribeToDeviceEvents(this.device!);
     }
-    this._device = device;
-    this.subscribeToDeviceEvents(device!);
-    this._presentationTextureFormat = this._gpu.getPreferredCanvasFormat();
+    //This is not dependent on the device, so we can call it here every time (per instance)
+    this._presentationTextureFormat = this.gpu.getPreferredCanvasFormat();
     this._depthTextureFormat = "depth24plus";
   }
 
@@ -253,7 +268,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
    * Release the GPU resources.
    */
   public destroyGpuResources() {
-    if (!this._device) return;
+    if (!this.device) return;
     // Destroy the depth texture
     if (this._depthTexture) {
       this._depthTexture.destroy();
@@ -261,12 +276,10 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
       this._depthTextureView = null;
     }
 
-    // Destroy the device
-    this._device.destroy();
-    this._device = undefined;
-
-    WebGPUResourceManager._textureCache.clear();
+    /*WebGPUResourceManager._textureCache.clear();
     WebGPUResourceManager._renderPipelinesCache.clear();
+    TODO: SHOULD WE CLEAR THE CACHE? Will a new instance be created or is it definitive?
+     */
   }
 
   /**
@@ -300,7 +313,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     };
 
     const commandEncoder: GPUCommandEncoder =
-      this._device!.createCommandEncoder();
+      this.device!.createCommandEncoder();
     const renderPassEncoder: GPURenderPassEncoder =
       commandEncoder.beginRenderPass(renderPassDescriptor);
 
@@ -316,7 +329,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     renderPassEncoder: GPURenderPassEncoder;
   }) {
     passEncoder.renderPassEncoder.end();
-    this._device!.queue.submit([passEncoder.commandEncoder.finish()]);
+    this.device!.queue.submit([passEncoder.commandEncoder.finish()]);
   }
 
   private subscribeToDeviceEvents(device: GPUDevice) {

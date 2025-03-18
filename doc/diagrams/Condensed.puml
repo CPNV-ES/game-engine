@@ -171,11 +171,11 @@ class ObjLoader {
 
 interface WebGPUResourceDelegate {
 }
-interface Renderer extends WebGPUResourceDelegate {
-}
 class WebGPUResourceManager implements WebGPUResourceDelegate {
 }
 class RenderGameEngineComponent extends GameEngineComponent implements Renderer {
+}
+interface Renderer extends WebGPUResourceDelegate {
 }
 
     }

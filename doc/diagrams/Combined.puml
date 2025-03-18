@@ -76,13 +76,10 @@ class AsyncCache<T> {
     package DependencyInjection {
 
 class DependencyContainer {
-    +register(token: new (...args: any[]) => T, instance: T): void
-    +registerWithClassName(className: string, instance: T): void
-    +unregister(token: new (...args: any[]) => T): void
-    +unregisterWithClassName(className: string): void
-    +resolve(token: new (...args: any[]) => T): T
-    +exists(token: new (...args: any[]) => T): boolean
-    +existsWithClassName(className: string): boolean
+    +register(token: Token<T>, instance: T): void
+    +unregister(token: Token<T>): void
+    +resolve(token: Token<T>): T
+    +exists(token: Token<T>): boolean
 }
 
     }
@@ -377,8 +374,8 @@ class Rigidbody extends LogicBehavior {
 class RenderEngineUtility {
 }
 class Camera extends OutputBehavior {
+    #_renderEngine: RenderGameEngineComponent
     #_projectionMatrix: Float32Array
-    #_renderEngine: Renderer
     #onEnable(): void
     #onDisable(): void
     +screenPointToWorldDirection(screenSpacePosition: Vector2): Vector3
@@ -399,6 +396,8 @@ abstract class RenderBehavior extends OutputBehavior {
     #_pipeline: GPURenderPipeline | null
     #_bindGroupLayouts: GPUBindGroupLayout[] | null
     #_mvpUniformBuffer: GPUBuffer | null
+    #onEnable(): void
+    #onDisable(): void
     #asyncInit(): Promise<void>
     +render(renderpass: GPURenderPassEncoder): void
 }
@@ -452,16 +451,11 @@ interface WebGPUResourceDelegate {
     +createRenderBundleEncoder(descriptor: GPURenderBundleEncoderDescriptor): GPURenderBundleEncoder
     +presentationTextureFormat: GPUTextureFormat
 }
-interface Renderer extends WebGPUResourceDelegate {
-    +onError: Event<Error>
-    +onRenderingReady: Event<void>
-    +camera: Camera | null
-    +IsRenderingReady: boolean
-    +screenSize: Vector2
-}
 class WebGPUResourceManager implements WebGPUResourceDelegate {
     +onError: Event<Error>
     +device: GPUDevice | undefined
+    #device: GPUDevice | undefined
+    #gpu: GPU
     +depthTextureView: GPUTextureView | null
     +presentationTextureFormat: GPUTextureFormat
     +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
@@ -502,6 +496,13 @@ class RenderGameEngineComponent extends GameEngineComponent implements Renderer 
     +presentationTextureFormat: GPUTextureFormat
     +onAttachedTo(_gameEngine: GameEngineWindow): void
     +onDetached(): void
+}
+interface Renderer extends WebGPUResourceDelegate {
+    +onError: Event<Error>
+    +onRenderingReady: Event<void>
+    +camera: Camera | null
+    +IsRenderingReady: boolean
+    +screenSize: Vector2
 }
 
     }
@@ -658,7 +659,8 @@ RenderEngineUtility --> "1" Quaternion
 RenderEngineUtility --> "1" Vector2
 RenderEngineUtility --> "1" Vector3
 Renderer --> "1" Camera
-Camera --> "1" Renderer
+RenderGameEngineComponent --> "1" Camera
+Camera --> "1" RenderGameEngineComponent
 Camera --> "1" Vector2
 Camera --> "1" Vector3
 Camera --> "1" Quaternion
@@ -667,16 +669,15 @@ MeshData --> "*" Face
 ObjLoader --> "1" AsyncCache
 ObjLoader --> "1" MeshData
 WebGPUResourceDelegate --> "1" Event
-Renderer --> "1" Event
-Renderer --> "1" Vector2
 WebGPUResourceManager --> "1" Event
 WebGPUResourceManager --> "1" AsyncCache
 RenderGameEngineComponent --> "1" Event
-RenderGameEngineComponent --> "1" Camera
 RenderGameEngineComponent --> "1" Vector2
 RenderGameEngineComponent --> "1" Ticker
 RenderGameEngineComponent --> "1" WebGPUResourceManager
 RenderGameEngineComponent --> "1" GameEngineWindow
+Renderer --> "1" Event
+Renderer --> "1" Vector2
 TextRenderBehavior --> "1" MsdfFont
 TextRenderBehavior --> "1" MsdfText
 TextRenderBehavior --> "1" MsdfTextFormattingOptions

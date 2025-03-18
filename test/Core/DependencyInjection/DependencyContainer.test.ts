@@ -36,10 +36,10 @@ describe("DependencyContainer", () => {
     const dependency = new TestDependency();
 
     // Register the dependency using the class name
-    container.registerWithClassName("TestDependency", dependency);
+    container.register("TestDependency", dependency);
 
     // Unregister the dependency using the class name
-    container.unregisterWithClassName("TestDependency");
+    container.unregister("TestDependency");
 
     // Attempt to resolve the unregistered dependency
     expect(() => container.resolve(TestDependency)).toThrowError(
@@ -78,16 +78,16 @@ describe("DependencyContainer", () => {
     const dependency = new TestDependency();
 
     // Register the dependency using the class name
-    container.registerWithClassName("TestDependency", dependency);
+    container.register("TestDependency", dependency);
 
     // Check if the dependency exists using the class name
-    expect(container.existsWithClassName("TestDependency")).toBe(true);
+    expect(container.exists("TestDependency")).toBe(true);
 
     // Unregister the dependency using the class name
-    container.unregisterWithClassName("TestDependency");
+    container.unregister("TestDependency");
 
     // Check if the dependency exists after unregistering
-    expect(container.existsWithClassName("TestDependency")).toBe(false);
+    expect(container.exists("TestDependency")).toBe(false);
   });
 
   it("should return false for unregistered dependencies", () => {
@@ -97,6 +97,6 @@ describe("DependencyContainer", () => {
     expect(container.exists(TestDependency)).toBe(false);
 
     // Check if an unregistered dependency exists using the class name
-    expect(container.existsWithClassName("TestDependency")).toBe(false);
+    expect(container.exists("TestDependency")).toBe(false);
   });
 });

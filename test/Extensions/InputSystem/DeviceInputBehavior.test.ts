@@ -32,12 +32,13 @@ describe("DeviceInputBehavior", (): void => {
   });
 
   beforeEach((): void => {
-    deviceInputBehavior = new MockDeviceInputBehavior(inputGameEngineComponent);
+    deviceInputBehavior = new MockDeviceInputBehavior();
   });
 
   it("should change the value of last function called to onMouseLeftClickUp", (): void => {
     // Given
     const gameObject = new GameObject();
+    gameEngineWindow.root.addChild(gameObject);
     gameObject.addBehavior(deviceInputBehavior);
 
     // When
@@ -51,6 +52,7 @@ describe("DeviceInputBehavior", (): void => {
   it("should change the value of last function called to onMouseLeftClickDown", (): void => {
     // Given
     const gameObject = new GameObject();
+    gameEngineWindow.root.addChild(gameObject);
     gameObject.addBehavior(deviceInputBehavior);
 
     // When
@@ -64,6 +66,7 @@ describe("DeviceInputBehavior", (): void => {
   it("should change the value of last function called to onMouseRightClickUp", (): void => {
     // Given
     const gameObject = new GameObject();
+    gameEngineWindow.root.addChild(gameObject);
     gameObject.addBehavior(deviceInputBehavior);
 
     // When
@@ -77,6 +80,7 @@ describe("DeviceInputBehavior", (): void => {
   it("should change the value of last function called to onMouseRightClickDown", (): void => {
     // Given
     const gameObject = new GameObject();
+    gameEngineWindow.root.addChild(gameObject);
     gameObject.addBehavior(deviceInputBehavior);
 
     // When
@@ -92,6 +96,7 @@ describe("DeviceInputBehavior", (): void => {
   it("should change the value of last function called to onMouseMove", (): void => {
     // Given
     const gameObject = new GameObject();
+    gameEngineWindow.root.addChild(gameObject);
     gameObject.addBehavior(deviceInputBehavior);
 
     // When
@@ -105,6 +110,7 @@ describe("DeviceInputBehavior", (): void => {
   it("should change the value of last function called to onMouseScroll", (): void => {
     // Given
     const gameObject = new GameObject();
+    gameEngineWindow.root.addChild(gameObject);
     gameObject.addBehavior(deviceInputBehavior);
 
     // When
@@ -118,6 +124,7 @@ describe("DeviceInputBehavior", (): void => {
   it("should change the value of last function called to onKeyboardKeyDown", (): void => {
     // Given
     const gameObject = new GameObject();
+    gameEngineWindow.root.addChild(gameObject);
     gameObject.addBehavior(deviceInputBehavior);
 
     // When
@@ -131,6 +138,7 @@ describe("DeviceInputBehavior", (): void => {
   it("should add value to countAnyChangeCalls", (): void => {
     // Given
     const gameObject = new GameObject();
+    gameEngineWindow.root.addChild(gameObject);
     gameObject.addBehavior(deviceInputBehavior);
 
     // When
@@ -144,6 +152,7 @@ describe("DeviceInputBehavior", (): void => {
   it("should not add value to countAnyChangeCalls when it's disabled", (): void => {
     // Given
     const gameObject = new GameObject();
+    gameEngineWindow.root.addChild(gameObject);
     gameObject.addBehavior(deviceInputBehavior);
 
     // When

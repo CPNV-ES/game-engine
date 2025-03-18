@@ -1,5 +1,4 @@
 import { GameEngineWindow } from "@core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { Vector2 } from "@core/MathStructures/Vector2";
@@ -8,8 +7,6 @@ import { PolygonRenderDebugger } from "@test/ExampleBehaviors/PolygonRenderDebug
 import { Color } from "@extensions/RenderEngine/Color";
 import { KeyboardMovableBehavior } from "@test/ExampleBehaviors/KeyboardMovableBehavior";
 import { MovableLogicBehavior } from "@test/ExampleBehaviors/MovableLogicBehavior";
-import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent";
-import { PhysicsGameEngineComponent } from "@extensions/PhysicsEngine/PhysicsGameEngineComponent";
 import { Behavior } from "@core/Behavior";
 import { Sprunk } from "@core/Initialisation/Sprunk";
 import { Rigidbody } from "@extensions/PhysicsEngine/Rigidbodies/Rigidbody";
@@ -22,16 +19,10 @@ const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, true, [
   "RenderGameEngineComponent",
   "PhysicsGameEngineComponent",
 ]);
-const renderComponent: RenderGameEngineComponent =
-  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
-const inputComponent: InputGameEngineComponent =
-  gameEngineWindow.getEngineComponent(InputGameEngineComponent)!;
-const physicsComponent: PhysicsGameEngineComponent =
-  gameEngineWindow.getEngineComponent(PhysicsGameEngineComponent)!;
 
 const cameraGo = new GameObject("Camera");
 gameEngineWindow.root.addChild(cameraGo);
-cameraGo.addBehavior(new Camera(renderComponent, 17));
+cameraGo.addBehavior(new Camera(17));
 cameraGo.transform.position.set(0, 0, 10);
 
 // First object with collider
@@ -44,7 +35,6 @@ const vertices1: Vector2[] = [
 ];
 const polygonCollider1: PolygonCollider = new PolygonCollider(vertices1);
 const debuggedPolygon1 = new PolygonRenderDebugger(
-  renderComponent,
   polygonCollider1,
   Color.random(0.2),
 );
@@ -55,7 +45,7 @@ object1.addBehavior(polygonCollider1);
 object1.addBehavior(rigidBody1);
 object1.addBehavior(debuggedPolygon1);
 object1.addBehavior(new MovableLogicBehavior());
-object1.addBehavior(new KeyboardMovableBehavior(inputComponent));
+object1.addBehavior(new KeyboardMovableBehavior());
 gameEngineWindow.root.addChild(object1);
 
 // Second object with collider
@@ -68,7 +58,6 @@ const vertices2: Vector2[] = [
 ];
 const polygonCollider2: PolygonCollider = new PolygonCollider(vertices2);
 const debuggedPolygon2 = new PolygonRenderDebugger(
-  renderComponent,
   polygonCollider2,
   Color.random(0.2),
 );

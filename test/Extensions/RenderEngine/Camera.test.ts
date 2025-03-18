@@ -5,21 +5,27 @@ import { vec3, mat4 } from "wgpu-matrix";
 import { GameObject } from "@core/GameObject";
 import "../../TestUtils";
 import { MockRenderer } from "@test/Extensions/RenderEngine/MockRenderer";
-import { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer";
 import { Vector3 } from "@core/MathStructures/Vector3";
+import { GameEngineWindow } from "../../../src/Core/GameEngineWindow";
+import { ManualTicker } from "../../ExampleBehaviors/ManualTicker";
 
 describe("Camera", () => {
-  let mockRenderEngine: Renderer;
   let camera: Camera;
   let gameObject: GameObject;
 
   beforeEach(() => {
-    mockRenderEngine = new MockRenderer();
+    const mockRenderEngine = new MockRenderer();
+    const gameEngine = new GameEngineWindow(new ManualTicker());
+    gameEngine.injectionContainer.register(
+      "RenderGameEngineComponent",
+      mockRenderEngine,
+    );
 
     gameObject = new GameObject();
+    gameEngine.root.addChild(gameObject);
 
     // Create a camera instance with realistic projection and view matrices
-    camera = new Camera(mockRenderEngine, Math.PI / 4, 16 / 9, 0.1, 100);
+    camera = new Camera(Math.PI / 4, 16 / 9, 0.1, 100);
 
     // Set up a realistic projection matrix (perspective projection)
     const fov = Math.PI / 4; // Field of view

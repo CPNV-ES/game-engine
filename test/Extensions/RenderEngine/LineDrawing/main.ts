@@ -1,5 +1,4 @@
 import { GameEngineWindow } from "@core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { LinesRenderBehavior } from "@extensions/RenderEngine/Wireframe/LinesRenderBehavior.ts";
@@ -13,15 +12,12 @@ const canvas: HTMLCanvasElement =
 const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, false, [
   "RenderGameEngineComponent",
 ]);
-const renderComponent: RenderGameEngineComponent =
-  gameEngineWindow.getEngineComponent(RenderGameEngineComponent)!;
 
 const go = new GameObject();
 gameEngineWindow.root.addChild(go);
 
 go.addBehavior(
   new LinesRenderBehavior(
-    renderComponent,
     [
       new Vector2(0, 0),
       new Vector2(1, 0),
@@ -52,7 +48,6 @@ const polygonGo = new GameObject();
 gameEngineWindow.root.addChild(polygonGo);
 const polygonLines = getPolygon(12, 2);
 const polygonRenderBehavior = new LinesRenderBehavior(
-  renderComponent,
   polygonLines,
   new Color(1, 0, 1, 1),
 );
@@ -64,4 +59,4 @@ polygonGo.transform.rotation.setFromEulerAngles(0, 0, Math.PI / 4);
 const cameraGo = new GameObject();
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.transform.position.set(0, 0, 10);
-cameraGo.addBehavior(new Camera(renderComponent));
+cameraGo.addBehavior(new Camera());
