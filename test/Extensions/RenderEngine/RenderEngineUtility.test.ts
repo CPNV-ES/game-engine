@@ -17,7 +17,7 @@ describe("RenderEngineUtility", () => {
   beforeEach(() => {
     const mockRenderEngine = new MockRenderer();
     const gameEngine = new GameEngineWindow(new ManualTicker());
-    gameEngine.injectionContainer.registerWithClassName(
+    gameEngine.injectionContainer.register(
       "RenderGameEngineComponent",
       mockRenderEngine,
     );

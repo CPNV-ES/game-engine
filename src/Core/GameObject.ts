@@ -2,7 +2,10 @@ import { Behavior } from "@core/Behavior.ts";
 import { Event } from "@core/EventSystem/Event.ts";
 import { Transform } from "@core/MathStructures/Transform.ts";
 import { RootGameObject } from "@core/RootGameObject.ts";
-import { DependencyContainer } from "@core/DependencyInjection/DependencyContainer.ts";
+import {
+  DependencyContainer,
+  Token,
+} from "@core/DependencyInjection/DependencyContainer.ts";
 import {
   INJECT_GLOBAL_METADATA_KEY,
   INJECT_METADATA_KEY,
@@ -150,10 +153,7 @@ export class GameObject {
     behavior.setup(this);
     this.onBehaviorListChanged.emit();
     this.onBehaviorAdded.emit(behavior);
-    this._dependencyContainer.registerWithClassName(
-      behavior.constructor.name,
-      behavior,
-    );
+    this._dependencyContainer.register(behavior.constructor.name, behavior);
   }
 
   /**
@@ -167,9 +167,7 @@ export class GameObject {
     behavior.detach(this);
     this.onBehaviorListChanged.emit();
     this.onBehaviorRemoved.emit(behavior);
-    this._dependencyContainer.unregisterWithClassName(
-      behavior.constructor.name,
-    );
+    this._dependencyContainer.unregister(behavior.constructor.name);
   }
 
   /**
@@ -244,11 +242,11 @@ export class GameObject {
     }
   }
 
-  private resolve<T>(token: new (...args: any[]) => T): T {
+  private resolve<T>(token: Token<T>): T {
     return this._dependencyContainer.resolve(token);
   }
 
-  private resolveRecursive<T>(token: new (...args: any[]) => T): T {
+  private resolveRecursive<T>(token: Token<T>): T {
     let current: GameObject | null = this;
     while (current) {
       try {
@@ -260,7 +258,7 @@ export class GameObject {
     return this.resolveFromEngine(token);
   }
 
-  private resolveFromEngine<T>(token: new (...args: any[]) => T): T {
+  private resolveFromEngine<T>(token: Token<T>): T {
     if (!this._root) {
       throw new Error("GameObject is not attached to a tree.");
     }

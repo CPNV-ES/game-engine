@@ -49,10 +49,7 @@ export class GameEngineWindow {
     if (this._engineComponents.includes(component)) return;
     this._engineComponents.push(component);
     component.onAttachedTo(this);
-    this._injectionContainer.registerWithClassName(
-      component.constructor.name,
-      component,
-    );
+    this._injectionContainer.register(component.constructor.name, component);
   }
 
   /**
@@ -75,9 +72,7 @@ export class GameEngineWindow {
     this._logicTicker.onTick.removeObservers();
     this._engineComponents.forEach((component) => {
       component.onDetached();
-      this._injectionContainer.unregisterWithClassName(
-        component.constructor.name,
-      );
+      this._injectionContainer.unregister(component.constructor.name);
     });
     this._engineComponents = [];
     this._root.destroy();

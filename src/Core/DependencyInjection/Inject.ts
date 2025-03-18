@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { Token } from "@core/DependencyInjection/DependencyContainer.ts";
 
 /**
  * The metadata key used to store the token to inject.
@@ -16,7 +17,10 @@ export const INJECT_GLOBAL_METADATA_KEY = Symbol("inject_global");
  * @param recursive - Whether to recursively search for the dependency up the hierarchy. (Will also try to resolve from the GameEngineWindow's container)
  * @constructor
  */
-export function Inject(token: any, recursive = false): PropertyDecorator {
+export function Inject(
+  token: Token<any>,
+  recursive = false,
+): PropertyDecorator {
   return (target: any, propertyKey: string | symbol) => {
     Reflect.defineMetadata(
       INJECT_METADATA_KEY,

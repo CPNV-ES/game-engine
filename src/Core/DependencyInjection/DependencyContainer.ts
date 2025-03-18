@@ -1,4 +1,9 @@
 /**
+ * A type that can be used as a token for resolving dependencies.
+ */
+export type Token<T> = string | (new (...args: any[]) => T);
+
+/**
  * A simple dependency container that allows for registering and resolving dependencies.
  */
 export class DependencyContainer {
@@ -9,60 +14,38 @@ export class DependencyContainer {
    * @param token - The token of the class to register (in form of a constructor).
    * @param instance - The instance to register.
    */
-  register<T>(token: new (...args: any[]) => T, instance: T): void {
-    this.dependencies.set(token.name, instance);
-  }
-
-  /**
-   * Register an instance of a class to be resolved when requested.
-   * @param className - The constructor name of the class to register.
-   * @param instance - The instance to register.
-   */
-  registerWithClassName<T>(className: string, instance: T): void {
-    this.dependencies.set(className, instance);
+  register<T>(token: Token<T>, instance: T): void {
+    this.dependencies.set(this.getTokenString(token), instance);
   }
 
   /**
    * Unregister a class.
    * @param token
    */
-  unregister<T>(token: new (...args: any[]) => T): void {
-    this.dependencies.delete(token.name);
+  unregister<T>(token: Token<T>): void {
+    this.dependencies.delete(this.getTokenString(token));
   }
-
-  /**
-   * Unregister an instance of a class.
-   * @param className - The constructor name of the class to unregister.
-   */
-  unregisterWithClassName(className: string): void {
-    this.dependencies.delete(className);
-  }
-
   /**
    * Resolve an instance of a class.
    * @param token - The token of the class to resolve (in form of a constructor).
    */
-  resolve<T>(token: new (...args: any[]) => T): T {
-    const instance = this.dependencies.get(token.name);
+  resolve<T>(token: Token<T>): T {
+    const tokenString = this.getTokenString(token);
+    const instance = this.dependencies.get(tokenString);
     if (!instance) {
-      throw new Error(`No instance registered for ${token.name}`);
+      throw new Error(`No instance registered for ${tokenString}`);
     }
     return instance;
   }
-
   /**
    * Does a class exist in the container.
    * @param token
    */
-  exists<T>(token: new (...args: any[]) => T): boolean {
-    return this.dependencies.has(token.name);
+  exists<T>(token: Token<T>): boolean {
+    return this.dependencies.has(this.getTokenString(token));
   }
 
-  /**
-   * Does a class exist in the container.
-   * @param className
-   */
-  existsWithClassName(className: string): boolean {
-    return this.dependencies.has(className);
+  private getTokenString(token: Token<any>): string {
+    return typeof token === "string" ? token : token.name;
   }
 }
