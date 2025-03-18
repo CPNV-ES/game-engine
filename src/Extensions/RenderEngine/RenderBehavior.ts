@@ -2,15 +2,16 @@ import { OutputBehavior } from "@core/OutputBehavior.ts";
 import { RenderEngineUtility } from "@extensions/RenderEngine/RenderEngineUtility.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { mat4 } from "wgpu-matrix";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { InjectGlobal } from "@core/DependencyInjection/Inject.ts";
+import type { Renderer } from "@extensions/RenderEngine/RenderGameEngineComponent/Renderer.ts";
+
 /**
  * An object that can be rendered to the WebGPU screen.
  * Create the pipeline for rendering and set up the bind group layout.
  */
 export abstract class RenderBehavior extends OutputBehavior {
-  @InjectGlobal(RenderGameEngineComponent)
-  protected _renderEngine!: RenderGameEngineComponent;
+  @InjectGlobal("RenderGameEngineComponent")
+  protected _renderEngine!: Renderer;
   protected _pipeline: GPURenderPipeline | null = null;
   protected _bindGroupLayouts: GPUBindGroupLayout[] | null = null;
   protected _mvpUniformBuffer: GPUBuffer | null = null;
