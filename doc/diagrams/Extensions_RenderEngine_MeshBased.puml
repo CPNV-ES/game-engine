@@ -10,8 +10,8 @@ class MeshRenderBehavior extends BasicUVTexturedRenderBehavior
 class ObjLoader {
 }
 MeshData --> "*" Face
-GameObject --> "*" Behavior
 GameEngineWindow --> "*" GameEngineComponent
+GameObject --> "*" Behavior
 ObjLoader --> "1" AsyncCache
 ObjLoader --> "1" MeshData
 @enduml

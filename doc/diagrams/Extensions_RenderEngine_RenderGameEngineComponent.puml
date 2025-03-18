@@ -14,16 +14,11 @@ interface WebGPUResourceDelegate {
     +createRenderBundleEncoder(descriptor: GPURenderBundleEncoderDescriptor): GPURenderBundleEncoder
     +presentationTextureFormat: GPUTextureFormat
 }
-interface Renderer extends WebGPUResourceDelegate {
-    +onError: Event<Error>
-    +onRenderingReady: Event<void>
-    +camera: Camera | null
-    +IsRenderingReady: boolean
-    +screenSize: Vector2
-}
 class WebGPUResourceManager implements WebGPUResourceDelegate {
     +onError: Event<Error>
     +device: GPUDevice | undefined
+    #device: GPUDevice | undefined
+    #gpu: GPU
     +depthTextureView: GPUTextureView | null
     +presentationTextureFormat: GPUTextureFormat
     +createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout
@@ -65,14 +60,17 @@ class RenderGameEngineComponent extends GameEngineComponent implements Renderer 
     +onAttachedTo(_gameEngine: GameEngineWindow): void
     +onDetached(): void
 }
+interface Renderer extends WebGPUResourceDelegate {
+    +onError: Event<Error>
+    +onRenderingReady: Event<void>
+    +camera: Camera | null
+    +IsRenderingReady: boolean
+    +screenSize: Vector2
+}
 GameEngineWindow --> "*" GameEngineComponent
 GameObject --> "*" Behavior
-Camera --> "1" Renderer
-WebGPUResourceDelegate --> "1" Event
-Renderer --> "1" Event
-Renderer --> "1" Camera
-Renderer --> "1" Vector2
 RenderBehavior --> "1" Renderer
+WebGPUResourceDelegate --> "1" Event
 WebGPUResourceManager --> "1" Event
 WebGPUResourceManager --> "1" AsyncCache
 RenderGameEngineComponent --> "1" Event
@@ -81,4 +79,8 @@ RenderGameEngineComponent --> "1" Vector2
 RenderGameEngineComponent --> "1" Ticker
 RenderGameEngineComponent --> "1" WebGPUResourceManager
 RenderGameEngineComponent --> "1" GameEngineWindow
+Camera --> "1" RenderGameEngineComponent
+Renderer --> "1" Event
+Renderer --> "1" Camera
+Renderer --> "1" Vector2
 @enduml
