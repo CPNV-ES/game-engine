@@ -1,11 +1,9 @@
 import { GameEngineWindow } from "@core/GameEngineWindow.ts";
-import { RenderGameEngineComponent } from "@extensions/RenderEngine/RenderGameEngineComponent/RenderGameEngineComponent.ts";
 import { SpriteRenderBehavior } from "@extensions/RenderEngine/SpriteRenderBehavior.ts";
 import { GameObject } from "@core/GameObject.ts";
 import { Camera } from "@extensions/RenderEngine/Camera.ts";
 import { FreeLookCameraController } from "@test/ExampleBehaviors/FreeLookCameraController.ts";
 import { FreeLookCameraKeyboardMouseInput } from "@test/ExampleBehaviors/FreeLookCameraKeyboardMouseInput.ts";
-import { InputGameEngineComponent } from "@extensions/InputSystem/InputGameEngineComponent.ts";
 import { Sprunk } from "@core/Initialisation/Sprunk.ts";
 import { Color } from "@extensions/RenderEngine/Color.ts";
 import { ObjLoader } from "@extensions/RenderEngine/MeshBased/ObjLoader.ts";
