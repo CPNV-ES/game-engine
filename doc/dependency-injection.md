@@ -19,6 +19,17 @@ It be used independently of gameobject structure. Key methods:
 ### Automatic Dependency Injection with GameObjects
 Every gameobject has a container that is used to resolve dependencies for its behaviors. When a behavior is added to a gameobject, the container will automatically resolve and inject any dependencies into the behavior. The system leverages the `GameObject` hierarchy, allowing dependencies to be shared across parent and child objects.
 
+**IMPORTANT :** If you want to inject a dependency into a behavior with the `@Inject` or the `@InjectGlobal` decorator, you will need to enable experimentalDecorators in your tsconfig.json file.
+```json
+{
+  "compilerOptions": {
+     /* Meta decorators */
+     "experimentalDecorators": true,
+     "emitDecoratorMetadata": true
+  }
+}
+```
+
 1. **Registration**:
     - Dependencies (e.g., behaviors or engine components) are registered in a `DependencyContainer` associated with a `GameObject` or the global container (`GameEngineWindow`).
 
