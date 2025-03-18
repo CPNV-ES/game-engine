@@ -66,10 +66,17 @@ export class Mouse extends Device {
     });
 
     document.addEventListener("mousemove", (event: MouseEvent) => {
+      const devicePixelRatio = window.devicePixelRatio || 1;
       this.onAnyChange.emit();
       this.onMove.emit({
-        position: new Vector2(event.clientX, event.clientY),
-        delta: new Vector2(event.movementX, event.movementY),
+        position: new Vector2(
+          event.clientX * devicePixelRatio,
+          event.clientY * devicePixelRatio,
+        ),
+        delta: new Vector2(
+          event.movementX * devicePixelRatio,
+          event.movementY * devicePixelRatio,
+        ),
       });
     });
     document.addEventListener("scroll", () => {
