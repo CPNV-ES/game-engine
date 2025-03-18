@@ -2,14 +2,16 @@ import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
 import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
 import { LogicBehavior } from "@core/LogicBehavior.ts";
+import { Quaternion } from "@core/MathStructures/Quaternion.ts";
+import { Vector3 } from "@core/MathStructures/Vector3.ts";
 
 /**
  * Rigibodies are physics handlers for game objects that have colliders
  */
 export class Rigidbody extends LogicBehavior<void> {
   public mass: number;
-  public velocity: Vector2 = new Vector2(0, 0); // not implemented
-  public restitution: number = 1; // not implemented
+  private linearVelocity: Vector2 = new Vector2(0, 0);
+  private angularVelocity: number = 0;
   private _collider: Collider;
 
   public get collider(): Collider {
@@ -47,5 +49,19 @@ export class Rigidbody extends LogicBehavior<void> {
     this.gameObject.transform.position.sub(
       collision.normal.clone().scale(collision.getMassByDepthRatio()),
     );
+  }
+
+  /**
+   * Update the rigidbody for one tick
+   */
+  public step(): void {
+    this.gameObject.transform.position.add(this.linearVelocity.toVector3());
+
+    // translate the angular velocity (rad/tick) to a quaternion
+    const rotationQuaternion = Quaternion.fromAxisAngle(
+      new Vector3(0, 0, 1),
+      this.angularVelocity,
+    );
+    this.gameObject.transform.rotation.multiply(rotationQuaternion);
   }
 }
