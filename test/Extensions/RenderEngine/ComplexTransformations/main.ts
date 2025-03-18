@@ -19,6 +19,7 @@ const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, false, [
 
 //Camera
 const cameraGo = new GameObject("Camera");
+gameEngineWindow.root.addChild(cameraGo);
 cameraGo.transform.position.set(2, 2, 3);
 cameraGo.transform.rotation.rotateAroundAxis(new Vector3(0, 1, 0), Math.PI / 4);
 cameraGo.transform.rotation.rotateAroundAxis(
@@ -26,13 +27,12 @@ cameraGo.transform.rotation.rotateAroundAxis(
   -Math.PI / 8,
 );
 cameraGo.addBehavior(new Camera());
-gameEngineWindow.root.addChild(cameraGo);
 
 //Grid
 const grid = new GameObject("Grid");
+gameEngineWindow.root.addChild(grid);
 grid.addBehavior(new GridRenderBehavior(200, 1, new Color(0.3, 0.3, 0.3)));
 grid.transform.rotation.setFromEulerAngles(Math.PI / 2, 0, 0);
-gameEngineWindow.root.addChild(grid);
 
 //Gizmos
 const gizmos: GameObject[] = [];
