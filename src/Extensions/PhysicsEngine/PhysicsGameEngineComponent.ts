@@ -78,14 +78,19 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   }
 
   private tick(): void {
+    const colliders = this.getAllPolygonCollider();
+
+    // Update the rigidbodies
+    colliders.forEach((collider) => {
+      collider.rigidbody?.step();
+    });
+
     // Check for collisions
-    ArrayUtility.combinations(this.getAllPolygonCollider(), 2).forEach(
-      (polygonsPair) => {
-        this.getPolygonColliderCollisions(
-          ...(polygonsPair as [PolygonCollider, PolygonCollider]),
-        );
-      },
-    );
+    ArrayUtility.combinations(colliders, 2).forEach((polygonsPair) => {
+      this.getPolygonColliderCollisions(
+        ...(polygonsPair as [PolygonCollider, PolygonCollider]),
+      );
+    });
 
     // Resolve collisions
     this._collidersCollisions.forEach(
