@@ -2,8 +2,8 @@
 class RenderEngineUtility {
 }
 class Camera extends OutputBehavior {
+    #_renderEngine: RenderGameEngineComponent
     #_projectionMatrix: Float32Array
-    #_renderEngine: Renderer
     #onEnable(): void
     #onDisable(): void
     +screenPointToWorldDirection(screenSpacePosition: Vector2): Vector3
@@ -24,6 +24,8 @@ abstract class RenderBehavior extends OutputBehavior {
     #_pipeline: GPURenderPipeline | null
     #_bindGroupLayouts: GPUBindGroupLayout[] | null
     #_mvpUniformBuffer: GPUBuffer | null
+    #onEnable(): void
+    #onDisable(): void
     #asyncInit(): Promise<void>
     +render(renderpass: GPURenderPassEncoder): void
 }
@@ -51,7 +53,8 @@ RenderEngineUtility --> "1" Quaternion
 RenderEngineUtility --> "1" Vector2
 RenderEngineUtility --> "1" Vector3
 Renderer --> "1" Camera
-Camera --> "1" Renderer
+RenderGameEngineComponent --> "1" Camera
+Camera --> "1" RenderGameEngineComponent
 Camera --> "1" Vector2
 Camera --> "1" Vector3
 Camera --> "1" Quaternion
