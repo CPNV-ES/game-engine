@@ -24,5 +24,6 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   minify: true,
+  keepNames: true,
   esbuildPlugins: [wgslLoaderPlugin],
 });
