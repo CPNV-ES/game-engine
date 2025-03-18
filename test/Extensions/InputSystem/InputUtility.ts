@@ -11,6 +11,10 @@ export class InputUtility {
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
     } as unknown as Document;
+
+    global.window = {
+      devicePixelRatio: 1,
+    };
   }
 
   private static animationFrameCallbacks: ((timestamp: number) => void)[] = [];
