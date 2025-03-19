@@ -71,6 +71,27 @@ object2.addBehavior(polygonCollider2);
 object2.addBehavior(rigidBody2);
 object2.addBehavior(debuggedPolygon2);
 
+// floor
+const floor: GameObject = new GameObject("floor");
+gameEngineWindow.root.addChild(floor);
+
+const floorVertices: Vector2[] = [
+  new Vector2(20, 1),
+  new Vector2(-20, 1),
+  new Vector2(-20, -1),
+  new Vector2(20, -1),
+];
+const polygonCollider3: PolygonCollider = new PolygonCollider(floorVertices);
+const debuggedFloor = new PolygonRenderDebugger(
+  polygonCollider3,
+  Color.random(0.2),
+);
+
+floor.transform.position.set(0, 13, 0);
+
+floor.addBehavior(polygonCollider3);
+floor.addBehavior(debuggedFloor);
+
 setInterval(() => {
   gameEngineWindow.root.getAllChildren().forEach((go) => {
     go.getBehaviors(Behavior).forEach((behavior) => {
