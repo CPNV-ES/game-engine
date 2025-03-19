@@ -3,6 +3,7 @@ import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
 import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
 import { LogicBehavior } from "@core/LogicBehavior.ts";
 import { MathUtility } from "@core/MathStructures/MathUtility.ts";
+import { Quaternion } from "@core/MathStructures/Quaternion.ts";
 
 /**
  * Rigibodies are physics handlers for game objects that have colliders
@@ -10,7 +11,7 @@ import { MathUtility } from "@core/MathStructures/MathUtility.ts";
 export class Rigidbody extends LogicBehavior<void> {
   public mass: number;
   private linearVelocity: Vector2 = new Vector2(0, 0);
-  private angularVelocity: number = 0;
+  private angularVelocity: number; // rad/s
   private _collider: Collider;
 
   public get collider(): Collider {
@@ -51,13 +52,15 @@ export class Rigidbody extends LogicBehavior<void> {
   }
 
   /**
-   * Update the rigidbody for one tick
+   * Update the rigidbody for one tick (time based)
    */
-  public step(): void {
-    this.gameObject.transform.position.add(this.linearVelocity.toVector3());
+  public step(deltaTime: number): void {
+    this.gameObject.transform.position.add(
+      this.linearVelocity.clone().scale(deltaTime).toVector3(),
+    );
 
-    const rotationQuaternion = MathUtility.radToQuaternion(
-      this.angularVelocity,
+    const rotationQuaternion: Quaternion = MathUtility.radToQuaternion(
+      this.angularVelocity * deltaTime,
     );
     this.gameObject.transform.rotation.multiply(rotationQuaternion);
   }
