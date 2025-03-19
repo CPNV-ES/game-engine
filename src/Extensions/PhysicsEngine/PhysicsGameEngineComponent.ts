@@ -77,12 +77,12 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     this._collidersCollisions.get(colliderB)?.push(collision.getOpposite());
   }
 
-  private tick(): void {
-    const colliders = this.getAllPolygonCollider();
+  private tick(deltaTime: number): void {
+    const colliders: Collider[] = this.getAllPolygonCollider();
 
     // Update the rigidbodies
     colliders.forEach((collider) => {
-      collider.rigidbody?.step();
+      collider.rigidbody?.step(deltaTime);
     });
 
     // Check for collisions
