@@ -11,7 +11,7 @@ import { Quaternion } from "@core/MathStructures/Quaternion.ts";
 export class Rigidbody extends LogicBehavior<void> {
   public mass: number;
   private linearVelocity: Vector2 = new Vector2(0, 0);
-  private angularVelocity: number; // rad/s
+  private angularVelocity: number = 0; // rad/s
   private _collider: Collider;
 
   public get collider(): Collider {
