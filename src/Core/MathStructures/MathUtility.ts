@@ -26,6 +26,6 @@ export class MathUtility {
    * @param rad
    */
   public static radToQuaternion(rad: number): Quaternion {
-    return new Quaternion.fromAxisAngle(new Vector3(0, 0, 1), rad);
+    return Quaternion.fromAxisAngle(new Vector3(0, 0, 1), rad);
   }
 }
