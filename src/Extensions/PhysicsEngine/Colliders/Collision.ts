@@ -39,6 +39,13 @@ export class Collision {
    * TODO: should remove the collider.rigidbody because it's a hack
    */
   public getMassByDepthRatio(): number {
+    if (
+      this._currentCollider.rigidbody === undefined ||
+      this._otherCollider.rigidbody === undefined
+    ) {
+      return this._depth;
+    }
+
     return (
       // @ts-ignore (rigidbody is possibly 'undefined'.)
       (this._depth * this._currentCollider.rigidbody.mass) /
