@@ -27,11 +27,13 @@ cameraGo.transform.position.set(0, 0, 10);
 
 // First object with collider
 const object1: GameObject = new GameObject("Object1");
+gameEngineWindow.root.addChild(object1);
+
 const vertices1: Vector2[] = [
-  new Vector2(-6, 2),
-  new Vector2(-6, 6),
-  new Vector2(-11, 5),
-  new Vector2(-10, 2),
+  new Vector2(2, 2),
+  new Vector2(2, -2),
+  new Vector2(-2, -4),
+  new Vector2(-2, 2),
 ];
 const polygonCollider1: PolygonCollider = new PolygonCollider(vertices1);
 const debuggedPolygon1 = new PolygonRenderDebugger(
@@ -46,15 +48,16 @@ object1.addBehavior(rigidBody1);
 object1.addBehavior(debuggedPolygon1);
 object1.addBehavior(new MovableLogicBehavior());
 object1.addBehavior(new KeyboardMovableBehavior());
-gameEngineWindow.root.addChild(object1);
 
 // Second object with collider
 const object2: GameObject = new GameObject("Object2");
+gameEngineWindow.root.addChild(object2);
+
 const vertices2: Vector2[] = [
-  new Vector2(1, 2),
-  new Vector2(3, 4),
-  new Vector2(2, 6),
-  new Vector2(-2, 4),
+  new Vector2(2, 2),
+  new Vector2(2, -2),
+  new Vector2(-2, -2),
+  new Vector2(-2, 2),
 ];
 const polygonCollider2: PolygonCollider = new PolygonCollider(vertices2);
 const debuggedPolygon2 = new PolygonRenderDebugger(
@@ -67,7 +70,6 @@ const rigidBody2 = new Rigidbody(polygonCollider2);
 object2.addBehavior(polygonCollider2);
 object2.addBehavior(rigidBody2);
 object2.addBehavior(debuggedPolygon2);
-gameEngineWindow.root.addChild(object2);
 
 setInterval(() => {
   gameEngineWindow.root.getAllChildren().forEach((go) => {
