@@ -10,6 +10,7 @@ import { Quaternion } from "@core/MathStructures/Quaternion.ts";
  */
 export class Rigidbody extends LogicBehavior<void> {
   public mass: number;
+  private force: Vector2 = new Vector2(0, 0);
   private linearVelocity: Vector2 = new Vector2(0, 0);
   private angularVelocity: number = 0; // rad/s
   private _collider: Collider;
@@ -51,10 +52,16 @@ export class Rigidbody extends LogicBehavior<void> {
     );
   }
 
+  public addForce(force: Vector2): void {
+    this.force.add(force);
+  }
+
   /**
    * Update the rigidbody for one tick (time based)
    */
   public step(deltaTime: number): void {
+    this.linearVelocity.add(this.force.clone().scale(deltaTime));
+
     this.gameObject.transform.position.add(
       this.linearVelocity.clone().scale(deltaTime).toVector3(),
     );
@@ -63,5 +70,7 @@ export class Rigidbody extends LogicBehavior<void> {
       this.angularVelocity * deltaTime,
     );
     this.gameObject.transform.rotation.multiply(rotationQuaternion);
+
+    this.force = new Vector2(0, 0);
   }
 }
