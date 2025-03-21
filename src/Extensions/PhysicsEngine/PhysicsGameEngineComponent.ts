@@ -80,11 +80,6 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   private tick(deltaTime: number): void {
     const colliders: Collider[] = this.getAllPolygonCollider();
 
-    // Update the rigidbodies
-    colliders.forEach((collider) => {
-      collider.rigidbody?.step(deltaTime);
-    });
-
     // Check for collisions
     ArrayUtility.combinations(colliders, 2).forEach((polygonsPair) => {
       this.getPolygonColliderCollisions(
@@ -98,6 +93,11 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
         collider.collide(collisions);
       },
     );
+
+    // Update the rigidbodies
+    colliders.forEach((collider) => {
+      collider.rigidbody?.step(deltaTime);
+    });
 
     //Clear tick's data
     this._collidersCollisions.clear();

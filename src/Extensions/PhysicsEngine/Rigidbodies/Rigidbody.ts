@@ -13,11 +13,20 @@ export class Rigidbody extends LogicBehavior<void> {
   private force: Vector2 = new Vector2(0, 0);
   private linearVelocity: Vector2 = new Vector2(0, 0);
   private angularVelocity: number = 0; // rad/s
+  private _restitution: number = 0.6;
   private _collider: Collider;
 
   public get collider(): Collider {
     return this._collider;
   }
+
+  public get restitution(): number {
+    return this._restitution;
+  }
+
+  // public get linearVelocity(): Vector2 {
+  //     return this._linearVelocity;
+  // }
 
   constructor(collider: Collider, mass: number = 1) {
     super();
@@ -38,17 +47,72 @@ export class Rigidbody extends LogicBehavior<void> {
     if (this.gameObject === undefined) return;
 
     collisions.forEach((collision: Collision) => {
-      this.resolveCollision(collision);
+      if (collision.otherCollider.rigidbody) {
+        this.resolveCollisionRigidRigid(collision);
+      } else {
+        this.resolveCollisionRigidCollider(collision);
+      }
     });
+  }
+
+  public resolveCollisionRigidCollider(collision: Collision) {
+    this.gameObject.transform.position.sub(
+      collision.normal.clone().scale(collision.getMassByDepthRatio()),
+    );
+    this.linearVelocity = new Vector2(
+      this.linearVelocity.x,
+      this.linearVelocity.y * -1,
+    ).scale(this._restitution);
   }
 
   /**
    * Resolve the collision by moving the game object (depending on the mass)
    * @param collision
    */
-  public resolveCollision(collision: Collision) {
+  public resolveCollisionRigidRigid(collision: Collision) {
     this.gameObject.transform.position.sub(
       collision.normal.clone().scale(collision.getMassByDepthRatio()),
+    );
+
+    let rigidA: Rigidbody;
+    let rigidB: Rigidbody;
+
+    const otherRigidbody = collision.otherCollider.rigidbody;
+    if (!otherRigidbody) return;
+
+    if (collision.otherCollider.rigidbody == this) {
+      // Asserting that two rigidbodies involved have opposite response
+      rigidA = otherRigidbody;
+      rigidB = this;
+    } else {
+      rigidA = this;
+      rigidB = otherRigidbody;
+    }
+
+    const relativeVelocity = rigidB.linearVelocity
+      .clone()
+      .sub(rigidA.linearVelocity);
+
+    // let restitution = this._restitution
+    let restitution = 0;
+
+    let magnitude =
+      -(1 - restitution) *
+      relativeVelocity.dotProduct(collision.normal.toVector2());
+
+    magnitude /= 1 / rigidA.mass + 1 / rigidB.mass;
+
+    rigidA.linearVelocity.sub(
+      collision.normal
+        .clone()
+        .scale(magnitude / rigidA.mass)
+        .toVector2(),
+    );
+    rigidB.linearVelocity.add(
+      collision.normal
+        .clone()
+        .scale(magnitude / rigidA.mass)
+        .toVector2(),
     );
   }
 
