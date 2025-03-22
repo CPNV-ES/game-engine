@@ -204,7 +204,7 @@ export class RenderGameEngineComponent
     this._ticker.onTick.removeObservers();
 
     // Remove the resize event listener
-    window.removeEventListener("resize", this.resizeCanvasToMatchDisplaySize);
+    window.removeEventListener("resize", this.onCanvasResized.bind(this));
 
     // Destroy all GPU resources
     this._webGpuResourcesManager.destroyGpuResources();
@@ -232,12 +232,14 @@ export class RenderGameEngineComponent
   }
 
   private startRendering(): void {
-    window.addEventListener("resize", () => {
-      this.resizeCanvasToMatchDisplaySize(false);
-    });
+    window.addEventListener("resize", this.onCanvasResized.bind(this));
     this._ticker.onTick.addObserver(this.frame.bind(this));
     this.resizeCanvasToMatchDisplaySize(true);
     this.IsRenderingReady = true;
+  }
+
+  private onCanvasResized(): void {
+    this.resizeCanvasToMatchDisplaySize(false);
   }
 
   private resizeCanvasToMatchDisplaySize(forceRefresh: boolean): void {
