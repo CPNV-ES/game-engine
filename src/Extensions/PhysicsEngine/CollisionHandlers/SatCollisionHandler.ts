@@ -4,6 +4,7 @@ import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { CollisionHandler } from "@extensions/PhysicsEngine/CollisionHandlers/CollisionHandler.ts";
 import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
+import { CollisionFactory } from "@extensions/PhysicsEngine/Colliders/CollisionFactory.ts";
 
 /**
  * SatCollisionHandler class is a collision handler that uses the Separating Axis Theorem (SAT) to check for collisions
@@ -120,6 +121,6 @@ export class SatCollisionHandler implements CollisionHandler {
       normal = normal.scale(-1);
     }
 
-    return new Collision(depth!, normal, a, b); // No separating axis found, polygons are colliding
+    return CollisionFactory.create(depth!, normal, a, b); // No separating axis found, polygons are colliding
   }
 }
