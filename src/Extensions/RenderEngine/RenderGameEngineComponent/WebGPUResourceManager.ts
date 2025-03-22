@@ -133,33 +133,34 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   }
 
   public async createTexture(url: RequestInfo | URL): Promise<GPUTexture> {
-    if (!this.device!) {
-      throw new Error("Rendering is not ready yet! (Device not available)");
-    }
+    try {
+      return await WebGPUResourceManager._textureCache.get(url, async () => {
+        const response = await fetch(url);
+        const imageBitmap = await createImageBitmap(await response.blob());
 
-    return WebGPUResourceManager._textureCache.get(url, async () => {
-      const response = await fetch(url);
-      const imageBitmap = await createImageBitmap(await response.blob());
-
-      const [srcWidth, srcHeight] = [imageBitmap.width, imageBitmap.height];
-      if (srcWidth === 0 || srcHeight === 0) {
-        throw new Error("Invalid image size");
-      }
-      const imageTexture = this.device!.createTexture({
-        size: [srcWidth, srcHeight, 1],
-        format: "rgba8unorm",
-        usage:
-          GPUTextureUsage.TEXTURE_BINDING |
-          GPUTextureUsage.COPY_DST |
-          GPUTextureUsage.RENDER_ATTACHMENT,
+        const [srcWidth, srcHeight] = [imageBitmap.width, imageBitmap.height];
+        if (srcWidth === 0 || srcHeight === 0) {
+          throw new Error("Invalid image size");
+        }
+        const imageTexture = this.device!.createTexture({
+          size: [srcWidth, srcHeight, 1],
+          format: "rgba8unorm",
+          usage:
+            GPUTextureUsage.TEXTURE_BINDING |
+            GPUTextureUsage.COPY_DST |
+            GPUTextureUsage.RENDER_ATTACHMENT,
+        });
+        this.device!.queue.copyExternalImageToTexture(
+          { source: imageBitmap },
+          { texture: imageTexture },
+          [imageBitmap.width, imageBitmap.height],
+        );
+        return imageTexture;
       });
-      this.device!.queue.copyExternalImageToTexture(
-        { source: imageBitmap },
-        { texture: imageTexture },
-        [imageBitmap.width, imageBitmap.height],
-      );
-      return imageTexture;
-    });
+    } catch (error) {
+      this.onError.emit(error as Error);
+      throw error;
+    }
   }
 
   public createUniformBuffer(data: Float32Array): GPUBuffer {
