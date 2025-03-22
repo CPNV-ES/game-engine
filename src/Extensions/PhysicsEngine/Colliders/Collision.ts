@@ -5,10 +5,10 @@ import { Collider } from "@extensions/PhysicsEngine/Colliders/Collider.ts";
  * Represents a collision between two colliders from the POV of a collider.
  */
 export class Collision {
-  private _depth: number; // penetration depth between the colliders
-  private _normal: Vector3; // axis that represents the direction of the collision (always from otherCollider to currentCollider)
-  private _currentCollider: Collider;
-  private _otherCollider: Collider;
+  protected _depth: number; // penetration depth between the colliders
+  protected _normal: Vector3; // axis that represents the direction of the collision (always from otherCollider to currentCollider)
+  protected _currentCollider: Collider;
+  protected _otherCollider: Collider;
 
   public get depth(): number {
     return this._depth;
@@ -32,28 +32,6 @@ export class Collision {
     this._normal = normal;
     this._currentCollider = currentCollider;
     this._otherCollider = otherCollider;
-  }
-
-  /**
-   * Get the mass ratio of the current collider in the collision
-   * TODO: should remove the collider.rigidbody because it's a hack
-   */
-  public getMassByDepthRatio(): number {
-    if (
-      this._currentCollider.rigidbody === undefined ||
-      this._otherCollider.rigidbody === undefined
-    ) {
-      return this._depth;
-    }
-
-    return (
-      // @ts-ignore (rigidbody is possibly 'undefined'.)
-      (this._depth * this._currentCollider.rigidbody.mass) /
-      // @ts-ignore
-      (this._currentCollider.rigidbody.mass +
-        // @ts-ignore
-        this._otherCollider.rigidbody.mass)
-    );
   }
 
   /**
