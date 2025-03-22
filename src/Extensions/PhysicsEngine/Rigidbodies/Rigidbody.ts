@@ -4,6 +4,7 @@ import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
 import { LogicBehavior } from "@core/LogicBehavior.ts";
 import { MathUtility } from "@core/MathStructures/MathUtility.ts";
 import { Quaternion } from "@core/MathStructures/Quaternion.ts";
+import { CollisionRigidbodies } from "@extensions/PhysicsEngine/Colliders/CollisionRigidbodies.ts";
 
 /**
  * Rigibodies are physics handlers for game objects that have colliders
@@ -11,7 +12,7 @@ import { Quaternion } from "@core/MathStructures/Quaternion.ts";
 export class Rigidbody extends LogicBehavior<void> {
   public mass: number;
   private force: Vector2 = new Vector2(0, 0);
-  private linearVelocity: Vector2 = new Vector2(0, 0);
+  private _linearVelocity: Vector2 = new Vector2(0, 0);
   private angularVelocity: number = 0; // rad/s
   private _restitution: number = 0.6;
   private _collider: Collider;
@@ -24,9 +25,9 @@ export class Rigidbody extends LogicBehavior<void> {
     return this._restitution;
   }
 
-  // public get linearVelocity(): Vector2 {
-  //     return this._linearVelocity;
-  // }
+  public get linearVelocity(): Vector2 {
+    return this._linearVelocity;
+  }
 
   constructor(collider: Collider, mass: number = 1) {
     super();
@@ -47,7 +48,7 @@ export class Rigidbody extends LogicBehavior<void> {
     if (this.gameObject === undefined) return;
 
     collisions.forEach((collision: Collision) => {
-      if (collision.otherCollider.rigidbody) {
+      if (collision instanceof CollisionRigidbodies) {
         this.resolveCollisionRigidRigid(collision);
       } else {
         this.resolveCollisionRigidCollider(collision);
@@ -55,67 +56,41 @@ export class Rigidbody extends LogicBehavior<void> {
     });
   }
 
+  /**
+   * Resolve the collision by bouncing the rigidbody away from the collider
+   * @param collision
+   */
   public resolveCollisionRigidCollider(collision: Collision) {
     this.gameObject.transform.position.sub(
-      collision.normal.clone().scale(collision.getMassByDepthRatio()),
+      collision.normal.clone().scale(collision.depth),
     );
-    this.linearVelocity = new Vector2(
+    this._linearVelocity = new Vector2(
       this.linearVelocity.x,
       this.linearVelocity.y * -1,
     ).scale(this._restitution);
   }
 
   /**
-   * Resolve the collision by moving the game object (depending on the mass)
+   * Resolve the collision by shocking the game object (depending on the mass)
    * @param collision
    */
-  public resolveCollisionRigidRigid(collision: Collision) {
+  public resolveCollisionRigidRigid(collision: CollisionRigidbodies) {
     this.gameObject.transform.position.sub(
       collision.normal.clone().scale(collision.getMassByDepthRatio()),
     );
 
-    let rigidA: Rigidbody;
-    let rigidB: Rigidbody;
-
-    const otherRigidbody = collision.otherCollider.rigidbody;
-    if (!otherRigidbody) return;
-
-    if (collision.otherCollider.rigidbody == this) {
-      // Asserting that two rigidbodies involved have opposite response
-      rigidA = otherRigidbody;
-      rigidB = this;
-    } else {
-      rigidA = this;
-      rigidB = otherRigidbody;
-    }
-
-    const relativeVelocity = rigidB.linearVelocity
-      .clone()
-      .sub(rigidA.linearVelocity);
-
-    // let restitution = this._restitution
-    let restitution = 0;
-
-    let magnitude =
-      -(1 - restitution) *
-      relativeVelocity.dotProduct(collision.normal.toVector2());
-
-    magnitude /= 1 / rigidA.mass + 1 / rigidB.mass;
-
-    rigidA.linearVelocity.sub(
+    this._linearVelocity.sub(
       collision.normal
         .clone()
-        .scale(magnitude / rigidA.mass)
-        .toVector2(),
-    );
-    rigidB.linearVelocity.add(
-      collision.normal
-        .clone()
-        .scale(magnitude / rigidA.mass)
+        .scale(collision.magnitude / this.mass)
         .toVector2(),
     );
   }
 
+  /**
+   * Add to the instantaneous force of the collider
+   * @param force
+   */
   public addForce(force: Vector2): void {
     this.force.add(force);
   }
