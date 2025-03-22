@@ -107,7 +107,9 @@ export class Rigidbody extends LogicBehavior<void> {
    * Update the rigidbody for one tick (time based)
    */
   public step(deltaTime: number): void {
-    this.linearVelocity.add(this.force.clone().scale(deltaTime));
+    const acceleration: Vector2 = this.force.clone().scale(1 / this.mass);
+
+    this.linearVelocity.add(acceleration.scale(deltaTime));
 
     this.gameObject.transform.position.add(
       this.linearVelocity.clone().scale(deltaTime).toVector3(),
