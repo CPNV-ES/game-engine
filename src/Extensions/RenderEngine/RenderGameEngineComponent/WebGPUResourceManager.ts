@@ -239,31 +239,36 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
    */
   public async requestGpuResources() {
     if (!this.device) {
-      const adapter: GPUAdapter | null = await this.gpu.requestAdapter();
-      const device: GPUDevice | null = (await adapter?.requestDevice()) ?? null;
-      if (!device) {
-        if (!("gpu" in navigator)) {
-          this.onError.emit(
-            new Error(
-              "WebGPU not available in this browser - navigator.gpu is not defined",
-            ),
-          );
-        } else if (!adapter) {
-          this.onError.emit(
-            new Error(
-              "RequestAdapter returned null - this sample can't run on this system",
-            ),
-          );
-        } else {
-          this.onError.emit(
-            new Error("Unable to get a device for an unknown reason"),
-          );
+      try {
+        const adapter: GPUAdapter | null = await this.gpu.requestAdapter();
+        const device: GPUDevice | null =
+          (await adapter?.requestDevice()) ?? null;
+        if (!device) {
+          if (!("gpu" in navigator)) {
+            this.onError.emit(
+              new Error(
+                "WebGPU not available in this browser - navigator.gpu is not defined",
+              ),
+            );
+          } else if (!adapter) {
+            this.onError.emit(
+              new Error(
+                "RequestAdapter returned null - this sample can't run on this system",
+              ),
+            );
+          } else {
+            this.onError.emit(
+              new Error("Unable to get a device for an unknown reason"),
+            );
+          }
+          return;
         }
-        return;
+        this.device = device;
+        this.subscribeToDeviceEvents(this.device!);
+      } catch (error) {
+        this.onError.emit(error as Error);
+        throw error;
       }
-      this.device = device;
-      //If we have multiple instance of this manager, we should only subscribe once
-      this.subscribeToDeviceEvents(this.device!);
     }
     //This is not dependent on the device, so we can call it here every time (per instance)
     this._presentationTextureFormat = this.gpu.getPreferredCanvasFormat();
@@ -363,5 +368,10 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     device.onuncapturederror = (ev: GPUUncapturedErrorEvent): void => {
       this.onError.emit(new Error(`Uncaptured error:\n${ev.error.message}`));
     };
+  }
+
+  private async handleDeviceLost(): Promise<void> {
+    this.device = undefined;
+    await this.requestGpuResources();
   }
 }
