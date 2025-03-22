@@ -242,10 +242,16 @@ export class RenderGameEngineComponent
 
   private resizeCanvasToMatchDisplaySize() {
     const devicePixelRatio: number = window.devicePixelRatio;
-    this._canvasToDrawOn.width =
-      this._canvasToDrawOn.clientWidth * devicePixelRatio;
-    this._canvasToDrawOn.height =
-      this._canvasToDrawOn.clientHeight * devicePixelRatio;
+    const lastWidth: number = this._canvasToDrawOn.width;
+    const lastHeight: number = this._canvasToDrawOn.height;
+
+    const newWidth = this._canvasToDrawOn.clientWidth * devicePixelRatio;
+    const newHeight = this._canvasToDrawOn.clientHeight * devicePixelRatio;
+
+    if (lastWidth === newWidth && lastHeight === newHeight) return;
+
+    this._canvasToDrawOn.width = newWidth;
+    this._canvasToDrawOn.height = newHeight;
 
     this.createDepthTexture();
 
