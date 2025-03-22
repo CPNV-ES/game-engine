@@ -1,6 +1,7 @@
 import { Event } from "@core/EventSystem/Event.ts";
 import { WebGPUResourceDelegate } from "@extensions/RenderEngine/RenderGameEngineComponent/WebGPUResourceDelegate.ts";
 import { AsyncCache } from "@core/Caching/AsyncCache.ts";
+import { SyncCache } from "@core/Caching/SyncCache.ts";
 
 /**
  * A class that manages the resources for the WebGPU rendering engine.
@@ -62,6 +63,8 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     AsyncCache.getInstance<GPUTexture>("textures");
   private static readonly _renderPipelinesCache =
     AsyncCache.getInstance<GPURenderPipeline>("renderPipelines");
+  private static readonly _samplerCache =
+    SyncCache.getInstance<GPUSampler>("samplers");
 
   /**
    * Create a new WebGPUResourceManager.
@@ -89,7 +92,13 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   }
 
   public createSampler(descriptor: GPUSamplerDescriptor): GPUSampler {
-    return this.device!.createSampler(descriptor);
+    // Generate a unique key for the sampler based on its descriptor
+    const key = JSON.stringify(descriptor);
+
+    // Use the cache to retrieve or create the sampler
+    return WebGPUResourceManager._samplerCache.get(key, () => {
+      return this.device!.createSampler(descriptor);
+    });
   }
 
   public async createPipeline(
@@ -298,6 +307,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     this.destroyAllBuffers();
     WebGPUResourceManager._textureCache.clear();
     WebGPUResourceManager._renderPipelinesCache.clear();
+    WebGPUResourceManager._samplerCache.clear();
   }
 
   /**
