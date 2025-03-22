@@ -22,6 +22,8 @@ abstract class OutputBehavior extends Behavior {
 
 class AsyncCache<T> {
 }
+class SyncCache<T> {
+}
 
     }
     package DependencyInjection {

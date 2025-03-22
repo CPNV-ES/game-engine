@@ -73,6 +73,11 @@ class AsyncCache<T> {
     +clear(): void
     +remove(key: RequestInfo | URL): void
 }
+class SyncCache<T> {
+    +get(key: RequestInfo | URL, factory: () => T): T
+    +clear(): void
+    +remove(key: RequestInfo | URL): void
+}
 
     }
     package DependencyInjection {
@@ -474,6 +479,8 @@ class WebGPUResourceManager implements WebGPUResourceDelegate {
     +createDepthTexture(width: number, height: number): void
     +requestGpuResources(): Promise<void>
     +destroyGpuResources(): void
+    +destroyDepthTexture(): void
+    +destroyAllBuffers(): void
     +startRenderPass(textureView: GPUTextureView): { commandEncoder: GPUCommandEncoder; renderPassEncoder: GPURenderPassEncoder; }
     +finishRenderPass(passEncoder: { commandEncoder: GPUCommandEncoder; renderPassEncoder: GPURenderPassEncoder; }): void
 }
@@ -673,6 +680,7 @@ ObjLoader --> "1" MeshData
 WebGPUResourceDelegate --> "1" Event
 WebGPUResourceManager --> "1" Event
 WebGPUResourceManager --> "1" AsyncCache
+WebGPUResourceManager --> "1" SyncCache
 RenderGameEngineComponent --> "1" Event
 RenderGameEngineComponent --> "1" Vector2
 RenderGameEngineComponent --> "1" Ticker

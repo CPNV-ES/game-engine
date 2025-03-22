@@ -4,4 +4,9 @@ class AsyncCache<T> {
     +clear(): void
     +remove(key: RequestInfo | URL): void
 }
+class SyncCache<T> {
+    +get(key: RequestInfo | URL, factory: () => T): T
+    +clear(): void
+    +remove(key: RequestInfo | URL): void
+}
 @enduml

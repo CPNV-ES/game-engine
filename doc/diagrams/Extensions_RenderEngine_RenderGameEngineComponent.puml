@@ -35,6 +35,8 @@ class WebGPUResourceManager implements WebGPUResourceDelegate {
     +createDepthTexture(width: number, height: number): void
     +requestGpuResources(): Promise<void>
     +destroyGpuResources(): void
+    +destroyDepthTexture(): void
+    +destroyAllBuffers(): void
     +startRenderPass(textureView: GPUTextureView): { commandEncoder: GPUCommandEncoder; renderPassEncoder: GPURenderPassEncoder; }
     +finishRenderPass(passEncoder: { commandEncoder: GPUCommandEncoder; renderPassEncoder: GPURenderPassEncoder; }): void
 }
@@ -73,6 +75,7 @@ RenderBehavior --> "1" Renderer
 WebGPUResourceDelegate --> "1" Event
 WebGPUResourceManager --> "1" Event
 WebGPUResourceManager --> "1" AsyncCache
+WebGPUResourceManager --> "1" SyncCache
 RenderGameEngineComponent --> "1" Event
 RenderGameEngineComponent --> "1" Camera
 RenderGameEngineComponent --> "1" Vector2
