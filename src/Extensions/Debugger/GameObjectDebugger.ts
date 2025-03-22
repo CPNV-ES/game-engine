@@ -49,34 +49,49 @@ export class GameObjectDebugger {
     const gameObjectFolder: GUI = gui.addFolder(gameObject.name);
     gameObjectFolder.close();
 
-    this.renderGameObjectProperties(gameObjectFolder, gameObject);
-    this.renderBehaviors(gameObjectFolder, gameObject);
-    this.renderChildren(gameObjectFolder, gameObject);
+    // Use the observer to lazy load content when the folder is opened
+    this.observeFolderOpen(gameObjectFolder, () => {
+      // Clear any existing controllers to avoid duplication
+      gameObjectFolder.controllers.forEach((controller) =>
+        controller.destroy(),
+      );
 
-    gameObjectFolder
-      .add(
-        {
-          addChild: (): void => {
-            gameObject.addChild(new GameObject());
-            //TODO : Refresh the GUI
-          },
-        },
-        "addChild",
-      )
-      .name("Add Child");
-    if (gameObject.parent) {
+      // Render the content when the folder is opened
+      this.renderGameObjectProperties(gameObjectFolder, gameObject);
+      this.renderBehaviors(gameObjectFolder, gameObject);
+      this.renderChildren(gameObjectFolder, gameObject);
+
+      // Add the "Add Child" button
       gameObjectFolder
         .add(
           {
-            removeChild: (): void => {
-              gameObject.parent?.removeChild(gameObject);
-              //TODO : Refresh the GUI
+            addChild: (): void => {
+              gameObject.addChild(new GameObject());
+              // Refresh the GUI
+              //this.renderGameObject(gameObject, gui);
             },
           },
-          "removeChild",
+          "addChild",
         )
-        .name("Remove");
-    }
+        .name("Add Child");
+
+      // Add the "Remove" button if the game object has a parent
+      if (gameObject.parent) {
+        gameObjectFolder
+          .add(
+            {
+              removeChild: (): void => {
+                gameObject.parent?.removeChild(gameObject);
+                // Refresh the GUI
+                //this.renderGameObject(gameObject, gui);
+              },
+            },
+            "removeChild",
+          )
+          .name("Remove");
+      }
+    });
+
     return gameObjectFolder;
   }
 
@@ -209,5 +224,35 @@ export class GameObjectDebugger {
       .replace(/(?:^|_)(\w)/g, (_: any, letter: string) =>
         letter.toUpperCase(),
       );
+  }
+
+  private observeFolderOpen(folder: GUI, callback: () => void): void {
+    const folderElement = folder.domElement.closest(".lil-gui");
+
+    if (!folderElement) {
+      console.warn("Folder element not found.");
+      return;
+    }
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.attributeName === "class" ||
+          mutation.attributeName === "aria-expanded"
+        ) {
+          const isOpen =
+            !folderElement.classList.contains("closed") &&
+            !folderElement.classList.contains("transition");
+          if (isOpen) {
+            callback();
+            observer.disconnect();
+          }
+        }
+      });
+    });
+
+    observer.observe(folderElement, {
+      attributes: true, // Watch for attribute changes
+    });
   }
 }
