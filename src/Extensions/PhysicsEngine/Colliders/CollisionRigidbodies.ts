@@ -46,28 +46,6 @@ export class CollisionRigidbodies extends Collision {
   }
 
   /**
-   * Get the mass ratio of the current collider in the collision
-   * TODO: should remove the collider.rigidbody because it's a hack
-   */
-  public getMassByDepthRatio(): number {
-    if (
-      this._currentCollider.rigidbody === undefined ||
-      this._otherCollider.rigidbody === undefined
-    ) {
-      return this._depth;
-    }
-
-    return (
-      // @ts-ignore (rigidbody is possibly 'undefined'.)
-      (this._depth * this._currentCollider.rigidbody.mass) /
-      // @ts-ignore
-      (this._currentCollider.rigidbody.mass +
-        // @ts-ignore
-        this._otherCollider.rigidbody.mass)
-    );
-  }
-
-  /**
    * Get a computed opposite collision that matches the second collider involved POV
    */
   public getOpposite() {

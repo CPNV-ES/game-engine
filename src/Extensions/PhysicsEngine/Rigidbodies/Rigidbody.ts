@@ -76,7 +76,7 @@ export class Rigidbody extends LogicBehavior<void> {
    */
   public resolveCollisionRigidRigid(collision: CollisionRigidbodies) {
     this.gameObject.transform.position.sub(
-      collision.normal.clone().scale(collision.getMassByDepthRatio()),
+      collision.normal.clone().scale(collision.depth / 2),
     );
 
     this._linearVelocity.sub(
