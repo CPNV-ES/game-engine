@@ -14,7 +14,7 @@ export class Rigidbody extends LogicBehavior<void> {
   private force: Vector2 = new Vector2(0, 0);
   private _linearVelocity: Vector2 = new Vector2(0, 0);
   private angularVelocity: number = 0; // rad/s
-  private _restitution: number = 0.75;
+  private _restitution: number = 0.5;
   private _collider: Collider;
 
   public get collider(): Collider {
@@ -71,10 +71,10 @@ export class Rigidbody extends LogicBehavior<void> {
         .scale(
           this._linearVelocity.dotProduct(
             collision.normal.clone().toVector2(),
-          ) * 2,
+          ) *
+            (1 + this.restitution),
         )
-        .toVector2()
-        .scale(this._restitution),
+        .toVector2(),
     );
   }
 
