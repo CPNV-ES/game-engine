@@ -55,6 +55,8 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   private _depthTextureView: GPUTextureView | null = null;
   private _isHandlingDeviceLost: boolean = false;
 
+  private _trackedBuffers: Set<GPUBuffer> = new Set();
+
   private static _device: GPUDevice | undefined;
   private static readonly _textureCache =
     AsyncCache.getInstance<GPUTexture>("textures");
@@ -181,6 +183,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       });
       this.device!.queue.writeBuffer(buffer, 0, data);
+      this._trackedBuffers.add(buffer);
       return buffer;
     } catch (error) {
       this.onError.emit(error as Error);
@@ -292,6 +295,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   public destroyGpuResources() {
     if (!this.device) return;
     this.destroyDepthTexture();
+    this.destroyAllBuffers();
     WebGPUResourceManager._textureCache.clear();
     WebGPUResourceManager._renderPipelinesCache.clear();
   }
@@ -305,6 +309,14 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
       this._depthTexture = null;
       this._depthTextureView = null;
     }
+  }
+
+  /**
+   * Destroy all tracked GPU buffers.
+   */
+  public destroyAllBuffers(): void {
+    this._trackedBuffers.forEach((buffer) => buffer.destroy());
+    this._trackedBuffers.clear();
   }
 
   /**
