@@ -330,16 +330,6 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   }
 
   /**
-   * Destroy a GPU buffer.
-   * @param buffer - The buffer to destroy.
-   */
-  public destroyBuffer(buffer: GPUBuffer): void {
-    if (buffer) {
-      buffer.destroy();
-    }
-  }
-
-  /**
    * Starts a render pass with a command encoder and render pass encoder.
    *
    * @param textureView - The GPU texture view for rendering.
