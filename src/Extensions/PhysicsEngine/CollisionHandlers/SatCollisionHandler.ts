@@ -73,6 +73,8 @@ export class SatCollisionHandler implements CollisionHandler {
 
     // Check every axis of the polygons for separation
     for (const axis of axes) {
+      axis.normalize();
+
       const projectionA: { min: number; max: number } = this.projectVertices(
         verticesA,
         axis,
@@ -101,9 +103,6 @@ export class SatCollisionHandler implements CollisionHandler {
         normal = axis.toVector3();
       }
     }
-
-    depth! /= normal!.length;
-    normal = normal!.normalize();
 
     // Calculate a vector from the center of A to the center of B
     const worldCenterA: Vector3 = a
