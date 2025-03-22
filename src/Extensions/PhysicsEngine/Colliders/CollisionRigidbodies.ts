@@ -64,11 +64,11 @@ export class CollisionRigidbodies extends Collision {
    * @param rigidB
    */
   public computeMagnitude(rigidA: Rigidbody, rigidB: Rigidbody): number {
-    let restitution = 1;
+    const restitution = Math.min(rigidA.restitution, rigidB.restitution);
 
     return (
       (-(1 + restitution) *
-        this._relativeVelocity.dotProduct(this.normal.toVector2())) /
+        this._relativeVelocity.dotProduct(this.normal.clone().toVector2())) /
       (1 / rigidB.mass + 1 / rigidA.mass)
     );
   }

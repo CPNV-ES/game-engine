@@ -29,11 +29,12 @@ export class Rigidbody extends LogicBehavior<void> {
     return this._linearVelocity;
   }
 
-  constructor(collider: Collider, mass: number = 1) {
+  constructor(collider: Collider, mass: number = 1, restitution: number = 0.5) {
     super();
     this._collider = collider;
     this.collider.rigidbody = this;
     this.mass = mass;
+    this._restitution = restitution;
 
     this._collider.onDataChanged.addObserver((data: Collision[]) =>
       this.resolveCollisions(data),
