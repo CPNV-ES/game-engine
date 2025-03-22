@@ -269,17 +269,33 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
    */
   public destroyGpuResources() {
     if (!this.device) return;
-    // Destroy the depth texture
-    if (this._depthTexture) {
-      this._depthTexture.destroy();
-      this._depthTexture = null;
-      this._depthTextureView = null;
-    }
+    this.destroyDepthTexture();
 
     /*WebGPUResourceManager._textureCache.clear();
     WebGPUResourceManager._renderPipelinesCache.clear();
     TODO: SHOULD WE CLEAR THE CACHE? Will a new instance be created or is it definitive?
      */
+  }
+
+  /**
+   * Destroy the depth texture and its view.
+   */
+  public destroyDepthTexture(): void {
+    if (this._depthTexture) {
+      this._depthTexture.destroy();
+      this._depthTexture = null;
+      this._depthTextureView = null;
+    }
+  }
+
+  /**
+   * Destroy a GPU buffer.
+   * @param buffer - The buffer to destroy.
+   */
+  public destroyBuffer(buffer: GPUBuffer): void {
+    if (buffer) {
+      buffer.destroy();
+    }
   }
 
   /**
