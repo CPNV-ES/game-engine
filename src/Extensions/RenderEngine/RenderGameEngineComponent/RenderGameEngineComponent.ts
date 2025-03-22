@@ -233,14 +233,14 @@ export class RenderGameEngineComponent
 
   private startRendering(): void {
     window.addEventListener("resize", () => {
-      this.resizeCanvasToMatchDisplaySize();
+      this.resizeCanvasToMatchDisplaySize(false);
     });
     this._ticker.onTick.addObserver(this.frame.bind(this));
-    this.resizeCanvasToMatchDisplaySize();
+    this.resizeCanvasToMatchDisplaySize(true);
     this.IsRenderingReady = true;
   }
 
-  private resizeCanvasToMatchDisplaySize(): void {
+  private resizeCanvasToMatchDisplaySize(forceRefresh: boolean): void {
     const devicePixelRatio: number = window.devicePixelRatio;
     const lastWidth: number = this._canvasToDrawOn.width;
     const lastHeight: number = this._canvasToDrawOn.height;
@@ -248,7 +248,8 @@ export class RenderGameEngineComponent
     const newWidth = this._canvasToDrawOn.clientWidth * devicePixelRatio;
     const newHeight = this._canvasToDrawOn.clientHeight * devicePixelRatio;
 
-    if (lastWidth === newWidth && lastHeight === newHeight) return;
+    if (lastWidth === newWidth && lastHeight === newHeight && !forceRefresh)
+      return;
     if (newWidth === 0 || newHeight === 0) return;
 
     this._canvasToDrawOn.width = newWidth;
@@ -261,6 +262,7 @@ export class RenderGameEngineComponent
       this.camera.aspect = newWidth / newHeight;
     }
   }
+
   private frame(_deltaTime: number) {
     if (!this.IsRenderingReady || !this.attachedEngine) return;
     if (
