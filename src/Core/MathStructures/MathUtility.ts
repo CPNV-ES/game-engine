@@ -28,4 +28,19 @@ export class MathUtility {
   public static radToQuaternion(rad: number): Quaternion {
     return Quaternion.fromAxisAngle(new Vector3(0, 0, 1), rad);
   }
+
+  /**
+   * Rescope a value between min and max edges
+   * @param value
+   * @param min
+   * @param max
+   */
+  public static clamp(value: number, min: number, max: number) {
+    if (min > max)
+      throw new Error("Minimum clamping value cannot be > than the max");
+
+    if (value <= min) return min;
+    if (value >= max) return max;
+    return value;
+  }
 }
