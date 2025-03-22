@@ -53,6 +53,8 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   private _depthTextureFormat: GPUTextureFormat | undefined;
   private _depthTexture: GPUTexture | null = null;
   private _depthTextureView: GPUTextureView | null = null;
+  private _isHandlingDeviceLost: boolean = false;
+
   private static _device: GPUDevice | undefined;
   private static readonly _textureCache =
     AsyncCache.getInstance<GPUTexture>("textures");
@@ -370,6 +372,14 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
       this.onError.emit(
         new Error(`Device lost ("${reason.reason}"):\n${reason.message}`),
       );
+
+      // Appeler handleDeviceLost pour réinitialiser le périphérique
+      if (!this._isHandlingDeviceLost) {
+        this._isHandlingDeviceLost = true;
+        this.handleDeviceLost().finally(() => {
+          this._isHandlingDeviceLost = false; // Réinitialiser l'indicateur une fois terminé
+        });
+      }
     });
     device.onuncapturederror = (ev: GPUUncapturedErrorEvent): void => {
       this.onError.emit(new Error(`Uncaptured error:\n${ev.error.message}`));
@@ -377,6 +387,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   }
 
   private async handleDeviceLost(): Promise<void> {
+    this.destroyGpuResources();
     this.device = undefined;
     await this.requestGpuResources();
   }
