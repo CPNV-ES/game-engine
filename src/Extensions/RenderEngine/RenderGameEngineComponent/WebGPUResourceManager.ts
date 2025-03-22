@@ -138,6 +138,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   }
 
   public async createTexture(url: RequestInfo | URL): Promise<GPUTexture> {
+    let texture: GPUTexture | null = null;
     try {
       return await WebGPUResourceManager._textureCache.get(url, async () => {
         const response = await fetch(url);
@@ -147,7 +148,7 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
         if (srcWidth === 0 || srcHeight === 0) {
           throw new Error("Invalid image size");
         }
-        const imageTexture = this.device!.createTexture({
+        texture = this.device!.createTexture({
           size: [srcWidth, srcHeight, 1],
           format: "rgba8unorm",
           usage:
@@ -157,12 +158,15 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
         });
         this.device!.queue.copyExternalImageToTexture(
           { source: imageBitmap },
-          { texture: imageTexture },
+          { texture: texture },
           [imageBitmap.width, imageBitmap.height],
         );
-        return imageTexture;
+        return texture;
       });
     } catch (error) {
+      if (texture) {
+        (texture as GPUTexture)!.destroy();
+      }
       this.onError.emit(error as Error);
       throw error;
     }
