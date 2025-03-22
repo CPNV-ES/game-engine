@@ -7,6 +7,7 @@ import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
 import { SatCollisionHandler } from "@extensions/PhysicsEngine/CollisionHandlers/SatCollisionHandler.ts";
 import { Ticker } from "@core/Tickers/Ticker.ts";
 import { ArrayUtility } from "@core/Utilities/ArrayUtility.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
 
 /**
  * A unique game engine component responsible for handling the physics of the game at runtime. (works by Tick)
@@ -16,6 +17,7 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   public satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
   private _ticker: Ticker;
   private _collidersCollisions: Map<Collider, Collision[]> = new Map();
+  private _gravity: Vector2 = new Vector2(0, 9.81);
 
   constructor(ticker: Ticker) {
     super();
@@ -96,7 +98,11 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
 
     // Update the rigidbodies
     colliders.forEach((collider) => {
-      collider.rigidbody?.step(deltaTime);
+      if (!collider.rigidbody) return;
+      collider.rigidbody.addForce(
+        this._gravity.clone().scale(collider.rigidbody.mass),
+      );
+      collider.rigidbody.step(deltaTime);
     });
 
     //Clear tick's data

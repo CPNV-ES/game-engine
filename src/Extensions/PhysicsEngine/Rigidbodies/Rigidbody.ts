@@ -14,7 +14,7 @@ export class Rigidbody extends LogicBehavior<void> {
   private force: Vector2 = new Vector2(0, 0);
   private _linearVelocity: Vector2 = new Vector2(0, 0);
   private angularVelocity: number = 0; // rad/s
-  private _restitution: number = 0.9;
+  private _restitution: number = 0.75;
   private _collider: Collider;
 
   public get collider(): Collider {
@@ -108,7 +108,6 @@ export class Rigidbody extends LogicBehavior<void> {
    */
   public step(deltaTime: number): void {
     const acceleration: Vector2 = this.force.clone().scale(1 / this.mass);
-
     this.linearVelocity.add(acceleration.scale(deltaTime));
 
     this.gameObject.transform.position.add(
