@@ -169,12 +169,17 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   }
 
   public createUniformBuffer(data: Float32Array): GPUBuffer {
-    const buffer: GPUBuffer = this.device!.createBuffer({
-      size: data.byteLength,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-    });
-    this.device!.queue.writeBuffer(buffer, 0, data);
-    return buffer;
+    try {
+      const buffer: GPUBuffer = this.device!.createBuffer({
+        size: data.byteLength,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
+      this.device!.queue.writeBuffer(buffer, 0, data);
+      return buffer;
+    } catch (error) {
+      this.onError.emit(error as Error);
+      throw error;
+    }
   }
 
   public fillUniformBuffer(buffer: GPUBuffer, data: Float32Array): void {
