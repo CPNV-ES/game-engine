@@ -240,7 +240,7 @@ export class RenderGameEngineComponent
     this.IsRenderingReady = true;
   }
 
-  private resizeCanvasToMatchDisplaySize() {
+  private resizeCanvasToMatchDisplaySize(): void {
     const devicePixelRatio: number = window.devicePixelRatio;
     const lastWidth: number = this._canvasToDrawOn.width;
     const lastHeight: number = this._canvasToDrawOn.height;
@@ -249,18 +249,18 @@ export class RenderGameEngineComponent
     const newHeight = this._canvasToDrawOn.clientHeight * devicePixelRatio;
 
     if (lastWidth === newWidth && lastHeight === newHeight) return;
+    if (newWidth === 0 || newHeight === 0) return;
 
     this._canvasToDrawOn.width = newWidth;
     this._canvasToDrawOn.height = newHeight;
 
-    this.createDepthTexture();
+    this._webGpuResourcesManager.destroyDepthTexture();
+    this._webGpuResourcesManager.createDepthTexture(newWidth, newHeight);
 
     if (this.camera) {
-      this.camera.aspect =
-        this._canvasToDrawOn.width / this._canvasToDrawOn.height;
+      this.camera.aspect = newWidth / newHeight;
     }
   }
-
   private frame(_deltaTime: number) {
     if (!this.IsRenderingReady || !this.attachedEngine) return;
     if (
