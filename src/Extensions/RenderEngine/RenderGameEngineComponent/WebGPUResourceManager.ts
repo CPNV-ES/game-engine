@@ -281,11 +281,8 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   public destroyGpuResources() {
     if (!this.device) return;
     this.destroyDepthTexture();
-
-    /*WebGPUResourceManager._textureCache.clear();
+    WebGPUResourceManager._textureCache.clear();
     WebGPUResourceManager._renderPipelinesCache.clear();
-    TODO: SHOULD WE CLEAR THE CACHE? Will a new instance be created or is it definitive?
-     */
   }
 
   /**
