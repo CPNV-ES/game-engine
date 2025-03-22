@@ -395,11 +395,10 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
         new Error(`Device lost ("${reason.reason}"):\n${reason.message}`),
       );
 
-      // Appeler handleDeviceLost pour réinitialiser le périphérique
       if (!this._isHandlingDeviceLost) {
         this._isHandlingDeviceLost = true;
         this.handleDeviceLost().finally(() => {
-          this._isHandlingDeviceLost = false; // Réinitialiser l'indicateur une fois terminé
+          this._isHandlingDeviceLost = false;
         });
       }
     });
