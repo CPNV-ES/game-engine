@@ -96,40 +96,45 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
     buffersLayouts?: Iterable<GPUVertexBufferLayout | null> | undefined,
     targetBlend?: GPUBlendState | undefined,
   ): Promise<GPURenderPipeline> {
-    const hash = `${vertexWGSLShader}${fragmentWGSLShader}${primitiveState}${bindGroupLayouts}${buffersLayouts}${targetBlend}`;
-    return WebGPUResourceManager._renderPipelinesCache.get(hash, async () => {
-      const descriptor: GPURenderPipelineDescriptor = {
-        layout: this.device!.createPipelineLayout({
-          bindGroupLayouts: bindGroupLayouts,
-        }),
-        vertex: {
-          module: this.device!.createShaderModule({
-            code: vertexWGSLShader,
+    try {
+      const hash = `${vertexWGSLShader}${fragmentWGSLShader}${primitiveState}${bindGroupLayouts}${buffersLayouts}${targetBlend}`;
+      return WebGPUResourceManager._renderPipelinesCache.get(hash, async () => {
+        const descriptor: GPURenderPipelineDescriptor = {
+          layout: this.device!.createPipelineLayout({
+            bindGroupLayouts: bindGroupLayouts,
           }),
-          entryPoint: "main",
-          buffers: buffersLayouts,
-        },
-        fragment: {
-          module: this.device!.createShaderModule({
-            code: fragmentWGSLShader,
-          }),
-          entryPoint: "main",
-          targets: [
-            {
-              format: this._presentationTextureFormat!,
-              blend: targetBlend,
-            },
-          ],
-        },
-        primitive: primitiveState,
-        depthStencil: {
-          depthWriteEnabled: true,
-          depthCompare: "less",
-          format: this._depthTextureFormat!,
-        },
-      };
-      return this.device!.createRenderPipeline(descriptor);
-    });
+          vertex: {
+            module: this.device!.createShaderModule({
+              code: vertexWGSLShader,
+            }),
+            entryPoint: "main",
+            buffers: buffersLayouts,
+          },
+          fragment: {
+            module: this.device!.createShaderModule({
+              code: fragmentWGSLShader,
+            }),
+            entryPoint: "main",
+            targets: [
+              {
+                format: this._presentationTextureFormat!,
+                blend: targetBlend,
+              },
+            ],
+          },
+          primitive: primitiveState,
+          depthStencil: {
+            depthWriteEnabled: true,
+            depthCompare: "less",
+            format: this._depthTextureFormat!,
+          },
+        };
+        return this.device!.createRenderPipeline(descriptor);
+      });
+    } catch (error) {
+      this.onError.emit(error as Error);
+      throw error;
+    }
   }
 
   public async createTexture(url: RequestInfo | URL): Promise<GPUTexture> {
