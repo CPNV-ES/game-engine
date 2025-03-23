@@ -12,7 +12,7 @@
     "format": "prettier --write \"{src,test}/**/*.ts\"",
     "prepublishOnly": "npm run build",
     "generate-uml": "node ./doc/generator.js",
-    "generate-doc": "npx typedoc --excludeInternal false --entryPointStrategy expand --exclude \"**/main.ts\" --out ./doc/site/build ./src/"
+    "generate-doc": "npx typedoc"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",

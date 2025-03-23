@@ -1,0 +1,10 @@
+{
+  "entryPoints": ["./src/", "./doc/"],
+  "out": "./doc/site/build",
+  "projectDocuments": [
+    "./doc/**/**.md"
+  ],
+  "excludeInternal": false,
+  "entryPointStrategy" : "expand",
+  "exclude": ["**/main.ts"]
+}
