@@ -103,7 +103,7 @@ describe("Rigidbody", (): void => {
     expect(object1.transform.position.y).toBeCloseTo(4.905);
     expect(object1.transform.position.x).toBe(0);
 
-    // Check position at s1
+    // Check position at s2
     manualTicker.tick(1);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(0);
@@ -156,14 +156,14 @@ describe("Rigidbody", (): void => {
     expect(object1.transform.position.y).toBeCloseTo(4.905);
     expect(object1.transform.position.x).toBe(0);
 
-    // Check position at s1
+    // Check position at s1.5
     manualTicker.tick(0.5);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(0);
     expect(object1.transform.position.y).toBeCloseTo(3.67605);
     expect(object1.transform.position.x).toBe(0);
 
-    // Check position at s1
+    // Check position at s2
     manualTicker.tick(0.5);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(-2.4525);
