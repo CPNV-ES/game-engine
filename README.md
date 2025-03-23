@@ -95,6 +95,17 @@ This will generate a `dist` folder containing the library files.
 This will generate static files in the `dist` folder. 
 You can then deploy these files to a any web server.
 
+### Generate documentation
+#### Class diagrams
+```shell
+  npm run generate-uml
+```
+#### Website documentation
+```shell
+  npm run generate-doc
+```
+This will generate a `/doc/site/build` folder containing the documentation (static website).
+
 ## Collaborate
 ### Directory structure
 ```shell
