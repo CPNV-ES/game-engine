@@ -107,19 +107,26 @@ export class Rigidbody extends LogicBehavior<void> {
   /**
    * Update the rigidbody for one tick (time based)
    */
-  public step(deltaTime: number): void {
+  public step(deltaTime: number, gravity: Vector2): void {
+    // Compute the acceleration from the forces
     const acceleration: Vector2 = this.force.clone().scale(1 / this.mass);
-    this.linearVelocity.add(acceleration.scale(deltaTime));
+    acceleration.add(gravity);
 
-    this.gameObject.transform.position.add(
-      this.linearVelocity.clone().scale(deltaTime).toVector3(),
-    );
+    // Move position
+    const newPosition = this._linearVelocity
+      .clone()
+      .scale(deltaTime)
+      .add(acceleration.clone().scale(deltaTime ** 2 / 2));
+    this.gameObject.transform.position.add(newPosition.toVector3());
 
+    // Rotate
     const rotationQuaternion: Quaternion = MathUtility.radToQuaternion(
       this.angularVelocity * deltaTime,
     );
     this.gameObject.transform.rotation.multiply(rotationQuaternion);
 
-    this.force = new Vector2(0, 0);
+    // Update the props for next tick
+    this._linearVelocity.add(acceleration.scale(deltaTime));
+    this.force = new Vector2(0, 0); // reset in order to apply force by addForce() only
   }
 }
