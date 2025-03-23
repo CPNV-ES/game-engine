@@ -90,8 +90,7 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
    * @private
    */
   private stepBody(body: Rigidbody, deltaTime: number): void {
-    body.addForce(this._gravity.clone().scale(body.mass));
-    body.step(deltaTime);
+    body.step(deltaTime, this._gravity.clone());
   }
 
   /**
