@@ -129,6 +129,8 @@ class Event<T> {
 }
 ```
 
+For more information, see [Events](events.md).
+
 ### Dependency Injection
 
 The engine uses dependency injection to manage dependencies and promote loose coupling:
