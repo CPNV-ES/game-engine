@@ -8,6 +8,14 @@ All behaviors provide the following methods:
 - `onDisable()`: Called when the behavior is disabled (removed from a game object).
 - `tick(deltaTime : float)`: Called every frame with the time that has passed since the last frame.
 
+```typescript
+abstract class Behavior {
+    protected onEnable(): void;
+    protected onDisable(): void;
+    tick(_deltaTime: number): void;
+}
+```
+
 ## Types of Behaviors (Input, Logic, Output)
 These behaviors are modular and enforce clear separation of concerns, improving maintainability and testability.
 You generally want to use these behaviors instead of parent Behavior class.
@@ -28,12 +36,27 @@ You generally want to use these behaviors instead of parent Behavior class.
 ### **1. InputBehavior**
 **Responsibilities**:
 - Acts as the source of interaction, capturing user inputs or external events.
-- Likely responsible for triggering events or passing data to `LogicBehavior`.
+- Responsible for triggering and passing data to `LogicBehavior`.
 
 **Characteristics**:
 - Interacts with external systems like keyboard, mouse, or network.
 - Communicates with `LogicBehavior` by invoking specific public methods like `jump()` when spacebar is pressed.
 
+```typescript
+abstract class InputBehavior extends Behavior {
+    protected getLogicBehavior<T extends LogicBehavior<any>>(...): T | null;
+}
+```
+
+Example usage:
+```typescript
+class KeyboardInputBehavior extends DeviceInputBehavior {
+    protected onKeyboardKeyDown(key: string): void {
+        if(key === 'a')
+            this.getLogicBehavior<PlayerLogicBehavior>()?.jump();
+    }
+}
+```
 ---
 
 ### **2. LogicBehavior**
@@ -46,6 +69,24 @@ You generally want to use these behaviors instead of parent Behavior class.
 - Has 'input' methods like `jump()` or `onHover()` to modify its state.
 - Provides `notifyDataChanged()` to allow `OutputBehavior` to access its current state via event observation (`onDataChanged`).
 
+
+```typescript
+class LogicBehavior<T> extends Behavior {
+    readonly onDataChanged: Event<T>;
+    protected data: T;
+    protected notifyDataChanged(): void;
+}
+```
+
+Example usage:
+```typescript
+class ScoreLogicBehavior extends LogicBehavior<number> {
+    public increaseScore(): void {
+        this.data += 1;
+        this.notifyDataChanged();
+    }
+} 
+```
 ---
 
 ### **3. OutputBehavior**
@@ -56,6 +97,19 @@ You generally want to use these behaviors instead of parent Behavior class.
 **Characteristics**:
 - Can observe `LogicBehavior` using `observe`, with callbacks to handle data changes.
 - The transform of the associated `GameObject` is exposed for manipulation.
+
+```typescript
+abstract class OutputBehavior extends Behavior {
+    protected observe<T extends LogicBehavior<U>, U>(observer: (data: U) => void): void;
+}
+```
+
+Example usage:
+```typescript
+this.observe(LogicBehavior<number>, (score) => {
+    this.text = `Score: ${score}`;
+})
+```
 ---
 
 ## Lifecycle of behaviors

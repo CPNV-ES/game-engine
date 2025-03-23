@@ -28,7 +28,7 @@ Here is an example of how to use the `Event` class in our project:
 
 ```typescript
 // Import the Event class
-import { Event } from './path/to/Event';
+import { Event } from 'sprunk-engine';
 
 // Define a type for the event data
 type UserData = {

@@ -3,7 +3,7 @@
 ## Description
 A TypeScript game engine designed to be simple and small (Only 50 kb once minified) but modular, and extensible. It is intended to be used primarily in the browser. 
 
-This engine architecture focus on enforcing a strict separation of concerns between the different components of the engine. Not only for the engine itself but also for the games built on top of it.
+This engine architecture focus on event driven architecture and enforcing a strict separation of concerns between the different components of the engine. Not only for the engine itself but also for the games built on top of it.
 
 ## Features
 * [WebGPU](https://gpuweb.github.io/gpuweb/) 3D rendering engine (with support for Sprites, Meshes, Line drawing and Text)
@@ -23,16 +23,25 @@ This engine architecture focus on enforcing a strict separation of concerns betw
 ```shell
 npm i sprunk-engine
 ```
+
+### Fork a empty project to get started (with guided sample code)
+Go to the [empty project](https://github.com/sprunk-engine/empty) and click on the "Fork" button.
+
 ### How to use ? (Examples)
 Depending on what you want to do, you can check these examples:
+* [Sprunk Hero - A full 3D game example](https://github.com/sprunk-engine/sprunk-hero/)
+* [Flappy Sprunk - A 2D game example](https://github.com/sprunk-engine/flappy-sprunk)
+* [Sprunk Empty - Forkable Project to Get Started with basic usage examples](https://github.com/sprunk-engine/empty)
+
+You can also check the end-to-end tests of this project, providing small examples of how to use the engine:
 * [Basic usage (3D engine)](src/main.ts)
 * [Gamepad visualizer](test/Extensions/InputSystem/Gamepad/main.ts)
 * [Physics engine example](test/Extensions/PhysicsEngine/Integration/PhysicsSandbox/main.ts)
-* [Sprunk Hero - A full 3D game example](https://github.com/sprunk-engine/sprunk-hero/)
 
 ### Documentation
 The documentation is available in the [doc](doc) folder.
 Here are some useful links:
+* [Architecture (You should start with this one)](doc/architechture.md)
 * [Game Window Components](doc/game-window-components.md)
 * [Events and Callbacks](doc/events.md)
 * [Behaviors](doc/behaviors.md)
@@ -86,12 +95,25 @@ This will generate a `dist` folder containing the library files.
 This will generate static files in the `dist` folder. 
 You can then deploy these files to a any web server.
 
+### Generate documentation
+#### Class diagrams
+```shell
+  npm run generate-uml
+```
+#### Website documentation
+```shell
+  npm run generate-doc
+```
+This will generate a `/doc/site/build` folder containing the documentation (static website).
+
 ## Collaborate
 ### Directory structure
 ```shell
 ├───doc                     # Documentation
 ├───src                     # Source code
 │   ├───Core                # Core components
+│   │   ├───Caching         # Cache management system
+│   │   ├───DependencyInjection  # Dependency injection system
 │   │   ├───EventSystem     # Event and callback helpers
 │   │   ├───Initialisation  # Engine initialization
 │   │   ├───MathStructures  # Math structures (Vector, Quaternion, Transform)
@@ -102,15 +124,17 @@ You can then deploy these files to a any web server.
 │   │   ├───Debugger        # Debugging tools
 │   │   ├───InputSystem     # Web input system (Gamepads, Keyboard, Mouse)
 │   │   ├───PhysicsEngine   # 2D polygon physics engine using SAT
-│   │   │   ├───Colliders           # Collision shapes
-│   │   │   ├───CollisionHandlers   # Collision detection
-│   │   │   ├───Rigidbodies         # Rigidbody physics
 │   │   ├───RenderEngine    # WebGPU rendering engine
-│   │   │   ├───MeshBased   # Mesh rendering utilities
-│   │   │   ├───Text        # Text rendering system
-│   │   │   ├───Wireframe   # Wireframe rendering techniques
 ├───test                    # Unit tests (Vitest)
-├───public                  # Web files (not bundled, external resources)
+│   ├───CommonResources     # Shared resources (assets) for tests
+│   ├───Core                # Core component tests
+│   ├───ExampleBehaviors    # Reusable example behaviors for tests
+│   ├───Extensions          # Extension tests
+│   │   ├───Some Extension  # One folder per extension
+│   │   │   ├───Assets      # Assets used for the specific extension
+│   │   │   ├───Mocks       # Mocks for the extension
+│   │   │   ├───Integration # Integration tests for the extension (html files, etc.)
+
 ```
 ### Class syntax
 The classes are written in order to follow the [Google TypeScript style guidelines](https://google.github.io/styleguide/tsguide.html#classes)
