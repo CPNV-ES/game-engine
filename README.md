@@ -101,6 +101,8 @@ You can then deploy these files to a any web server.
 ├───doc                     # Documentation
 ├───src                     # Source code
 │   ├───Core                # Core components
+│   │   ├───Caching         # Cache management system
+│   │   ├───DependencyInjection  # Dependency injection system
 │   │   ├───EventSystem     # Event and callback helpers
 │   │   ├───Initialisation  # Engine initialization
 │   │   ├───MathStructures  # Math structures (Vector, Quaternion, Transform)
@@ -111,15 +113,17 @@ You can then deploy these files to a any web server.
 │   │   ├───Debugger        # Debugging tools
 │   │   ├───InputSystem     # Web input system (Gamepads, Keyboard, Mouse)
 │   │   ├───PhysicsEngine   # 2D polygon physics engine using SAT
-│   │   │   ├───Colliders           # Collision shapes
-│   │   │   ├───CollisionHandlers   # Collision detection
-│   │   │   ├───Rigidbodies         # Rigidbody physics
 │   │   ├───RenderEngine    # WebGPU rendering engine
-│   │   │   ├───MeshBased   # Mesh rendering utilities
-│   │   │   ├───Text        # Text rendering system
-│   │   │   ├───Wireframe   # Wireframe rendering techniques
 ├───test                    # Unit tests (Vitest)
-├───public                  # Web files (not bundled, external resources)
+│   ├───CommonResources     # Shared resources (assets) for tests
+│   ├───Core                # Core component tests
+│   ├───ExampleBehaviors    # Reusable example behaviors for tests
+│   ├───Extensions          # Extension tests
+│   │   ├───Some Extension  # One folder per extension
+│   │   │   ├───Assets      # Assets used for the specific extension
+│   │   │   ├───Mocks       # Mocks for the extension
+│   │   │   ├───Integration # Integration tests for the extension (html files, etc.)
+
 ```
 ### Class syntax
 The classes are written in order to follow the [Google TypeScript style guidelines](https://google.github.io/styleguide/tsguide.html#classes)
