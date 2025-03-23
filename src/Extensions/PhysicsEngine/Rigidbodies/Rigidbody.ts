@@ -127,6 +127,10 @@ export class Rigidbody extends LogicBehavior<void> {
 
     // Update the props for next tick
     this._linearVelocity.add(acceleration.scale(deltaTime));
+    if (this._linearVelocity.x > -0.00001 && this._linearVelocity.x < 0.00001)
+      this._linearVelocity.x = 0;
+    if (this._linearVelocity.y > -0.00001 && this._linearVelocity.y < 0.00001)
+      this._linearVelocity.y = 0;
     this.force = new Vector2(0, 0); // reset in order to apply force by addForce() only
   }
 }
