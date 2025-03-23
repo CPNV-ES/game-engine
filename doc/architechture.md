@@ -86,6 +86,7 @@ The engine implements a clear separation of concerns through specialized behavio
 - Has no direct effect on game logic
 
 *This separation creates a unidirectional data flow: Input → Logic → Output.*
+
 For more information, see [Behaviors](behaviors.md).
 
 ## Component Systems
