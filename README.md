@@ -41,7 +41,7 @@ You can also check the end-to-end tests of this project, providing small example
 ### Documentation
 The documentation is available in the [doc](doc) folder.
 Here are some useful links:
-* [Architecture (You should start with this one)](doc/architechture.md)
+* [Architecture (You should start with this one)](doc/architecture.md)
 * [Game Window Components](doc/game-window-components.md)
 * [Events and Callbacks](doc/events.md)
 * [Behaviors](doc/behaviors.md)

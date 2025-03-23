@@ -2,7 +2,7 @@
   "entryPoints": ["./src/", "./doc/"],
   "out": "./doc/site/build",
   "projectDocuments": [
-    "./doc/**/**.md"
+    "./doc/architecture.md"
   ],
   "excludeInternal": false,
   "entryPointStrategy" : "expand",

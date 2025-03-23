@@ -1,3 +1,9 @@
+---
+title: WebGPU Rendering Technical view
+children:
+   - ./3d-transformation-internal-pipeline.md
+   - ./text-render-behavior-internal.md
+---
 # Internal view of the WebGPU-Based Rendering System
 ![webgpu-draw-diagram.png](img/webgpu-draw-diagram.png)
 *From https://webgpufundamentals.org/*

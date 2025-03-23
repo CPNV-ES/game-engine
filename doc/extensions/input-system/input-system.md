@@ -1,3 +1,8 @@
+---
+title: Input System
+children:
+    - ./gamepad-system.md
+---
 # **Input System**
 
 ## **Devices**

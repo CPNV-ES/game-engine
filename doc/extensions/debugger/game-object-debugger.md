@@ -1,3 +1,6 @@
+---
+title: Game Object Debugger
+---
 # Game Object Debugger
 
 ## Overview

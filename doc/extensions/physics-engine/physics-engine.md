@@ -1,3 +1,9 @@
+---
+title: Physics Engine
+children:
+  - ./collision-resolution.md
+  - ./sat.md
+---
 # Overview of the physics engine
 This system is responsible for handling the basic physics of the games. It can process standard physics operations such as collision detection and collision resolution. The physics engine is designed to be modular and can be easily extended to support different types of physics operations.
 
