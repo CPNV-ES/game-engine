@@ -1,3 +1,17 @@
+---
+title: Overview
+children:
+  - ./events.md
+  - ./dependency-injection.md
+  - ./behaviors.md
+  - ./game-window-components.md
+  - ./limitations.md
+  - ./extensions/render-engine/render-engine.md
+  - ./extensions/physics-engine/physics-engine.md
+  - ./extensions/input-system/input-system.md
+  - ./extensions/audio-engine/audio-engine.md
+  - ./extensions/debugger/game-object-debugger.md
+---
 # Sprunk Game Engine Architecture
 
 ## Table of Contents
