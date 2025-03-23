@@ -54,6 +54,7 @@ Here are some useful links:
   * [Gamepad System](doc/extensions/input-system/gamepad-system.md)
 * [Game Object Debugger](doc/extensions/debugger/game-object-debugger.md)
 * [Audio Engine](doc/extensions/audio-engine/audio-engine.md)
+* [Limitations](doc/limitations.md)
 
 ## Getting Started (for maintainers)
 
