@@ -34,12 +34,13 @@ Every gameobject has a container that is used to resolve dependencies for its be
     - Dependencies (e.g., behaviors or engine components) are registered in a `DependencyContainer` associated with a `GameObject` or the global container (`GameEngineWindow`).
 
 2. **Injection**:
-    - When a behavior or component is added to a `GameObject`, the system scans its properties for `@Inject` or `@InjectGlobal` decorators.
+    - When a `Behavior` or a child `GameObject` is added to a `GameObject`, the system scans its properties for `@Inject` or `@InjectGlobal` decorators.
     - For `@Inject`:
         - The dependency is resolved from the current `GameObject`'s container.
         - If `recursive` is enabled, the system searches up the `GameObject` hierarchy (parent containers) for the dependency. If enabled, it can also search the global container (`GameEngineWindow`)
     - For `@InjectGlobal`:
         - The dependency is resolved directly from the global container (e.g., `GameEngineWindow`).
+    - *Note that the `@Inject` used in a GameObject resolve the dependency from the **parent** GameObject container so you don't need to set recursive to true to access the parent GameObject dependencies.*
 
 3. **Resolution**:
     - If a dependency is not found in the local or parent containers, the system falls back to the global container.

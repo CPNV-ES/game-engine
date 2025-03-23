@@ -283,7 +283,9 @@ export class GameObject {
    * When the GameObject is attached to the tree.
    * @protected
    */
-  protected onEnable() {}
+  protected onEnable() {
+    this._parent!.fillDependencies(this);
+  }
 
   /**
    * When the GameObject is detached from the tree. (After destroy / cleanup)
