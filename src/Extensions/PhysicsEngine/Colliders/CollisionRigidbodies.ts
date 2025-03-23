@@ -10,9 +10,14 @@ import { Vector2 } from "@core/MathStructures/Vector2.ts";
 export class CollisionRigidbodies extends Collision {
   private _magnitude: number;
   private _relativeVelocity: Vector2;
+  private _restitution: number;
 
   get magnitude(): number {
     return this._magnitude;
+  }
+
+  get restitution(): number {
+    return this._restitution;
   }
 
   get relativeVeocity(): Vector2 {
@@ -32,17 +37,13 @@ export class CollisionRigidbodies extends Collision {
         'Colliders must have rigidbodies to use "CollisionRigibodies"',
       );
     }
-
     super(depth, normal, currentCollider, otherCollider);
+    const rigidA: Rigidbody = currentCollider.rigidbody;
+    const rigidB: Rigidbody = otherCollider.rigidbody;
+    this._restitution = Math.min(rigidA.restitution, rigidB.restitution);
     this._relativeVelocity =
-      relativeVelocity ||
-      this.computeRelativeVelocity(
-        currentCollider.rigidbody,
-        otherCollider.rigidbody,
-      );
-    this._magnitude =
-      magnitude ||
-      this.computeMagnitude(currentCollider.rigidbody, otherCollider.rigidbody);
+      relativeVelocity || this.computeRelativeVelocity(rigidA, rigidB);
+    this._magnitude = magnitude || this.computeMagnitude(rigidA, rigidB);
   }
 
   /**
@@ -64,10 +65,9 @@ export class CollisionRigidbodies extends Collision {
    * @param rigidB
    */
   public computeMagnitude(rigidA: Rigidbody, rigidB: Rigidbody): number {
-    const restitution = Math.min(rigidA.restitution, rigidB.restitution);
-
+    console.log(this._restitution);
     return (
-      (-(1 + restitution) *
+      (-(1 + this._restitution) *
         this._relativeVelocity.dotProduct(this.normal.clone().toVector2())) /
       (1 / rigidB.mass + 1 / rigidA.mass)
     );
