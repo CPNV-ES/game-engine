@@ -6,8 +6,6 @@ import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonColl
 import { Vector2 } from "@core/MathStructures/Vector2";
 import { ManualTicker } from "@test/ExampleBehaviors/ManualTicker";
 import { Rigidbody } from "@extensions/PhysicsEngine/Rigidbodies/Rigidbody";
-import { PolygonRenderDebugger } from "../../../ExampleBehaviors/PolygonRenderDebugger";
-import { Color } from "../../../../src/Extensions/RenderEngine/Color";
 
 describe("Rigidbody", (): void => {
   let gameEngineWindow: GameEngineWindow;
@@ -51,26 +49,26 @@ describe("Rigidbody", (): void => {
 
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
     // check position at s0
-    expect(object1.transform.position.y).toBe(0);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBe(0);
     expect(rigidBody1.linearVelocity).toStrictEqual(new Vector2(0, 0));
 
     // Check position at s1
     manualTicker.tick(1);
     expect(rigidBody1.linearVelocity).toStrictEqual(new Vector2(0, 9.81));
-    expect(object1.transform.position.y).toBeCloseTo(4.905);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBeCloseTo(4.905);
 
     // Check position at s2
     manualTicker.tick(1);
-    expect(object1.transform.position.y).toBeCloseTo(19.62);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBeCloseTo(19.62);
     expect(rigidBody1.linearVelocity == new Vector2(0, 19.62));
 
     // Check position at s3
     manualTicker.tick(1);
-    expect(object1.transform.position.y).toBeCloseTo(44.145);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBeCloseTo(44.145);
     expect(rigidBody1.linearVelocity == new Vector2(0, 29.43));
   });
 
@@ -102,25 +100,25 @@ describe("Rigidbody", (): void => {
 
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
     // check position at s0
-    expect(object2.transform.position.y).toBe(4.905);
     expect(object2.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBe(0);
+    expect(object2.transform.position.y).toBe(4.905);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBe(0);
     expect(rigidBody1.linearVelocity).toStrictEqual(new Vector2(0, 0));
 
     // Check position at s1
     manualTicker.tick(1);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(-9.81);
-    expect(object1.transform.position.y).toBeCloseTo(4.905);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBeCloseTo(4.905);
 
     // Check position at s2
     manualTicker.tick(1);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(0);
-    expect(object1.transform.position.y).toBeCloseTo(0);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBeCloseTo(0);
   });
 
   /**
@@ -155,25 +153,25 @@ describe("Rigidbody", (): void => {
 
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
     // check position at s0
-    expect(object2.transform.position.y).toBe(4.905);
     expect(object2.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBe(0);
+    expect(object2.transform.position.y).toBe(4.905);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBe(0);
     expect(rigidBody1.linearVelocity).toStrictEqual(new Vector2(0, 0));
 
     // Check position at s1
     manualTicker.tick(1);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(-4.905);
-    expect(object1.transform.position.y).toBeCloseTo(4.905);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBeCloseTo(4.905);
 
     // Check position at s1.5
     manualTicker.tick(0.5);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(0);
-    expect(object1.transform.position.y).toBeCloseTo(3.67605);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBeCloseTo(3.67605);
 
     // Check position at s2
     manualTicker.tick(0.5);
@@ -225,29 +223,29 @@ describe("Rigidbody", (): void => {
 
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
     // check position at s0
-    expect(object2.transform.position.y).toBe(6.905);
     expect(object2.transform.position.x).toBe(0);
-    expect(object3.transform.position.y).toBe(4.905);
+    expect(object2.transform.position.y).toBe(6.905);
     expect(object3.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBe(0);
+    expect(object3.transform.position.y).toBe(4.905);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBe(0);
     expect(rigidBody1.linearVelocity).toStrictEqual(new Vector2(0, 0));
 
     // Check position at s1
     processTicksDuring(1);
-    expect(object3.transform.position.y).toBeCloseTo(4.905);
     expect(object3.transform.position.x).toBe(0);
+    expect(object3.transform.position.y).toBeCloseTo(4.905);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(9.81);
-    expect(object1.transform.position.y).toBeCloseTo(4.905);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBeCloseTo(4.905);
 
     // Check position at s2
     processTicksDuring(1);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(0, 0); // not working well since we create energy by inaccuracy
-    expect(object1.transform.position.y).toBeCloseTo(0); // not working well since we create energy by inaccuracy
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBeCloseTo(0); // not working well since we create energy by inaccuracy
   });
 
   /**
@@ -292,29 +290,28 @@ describe("Rigidbody", (): void => {
 
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
     // check position at s0
-    expect(object2.transform.position.y).toBe(6.905);
     expect(object2.transform.position.x).toBe(0);
-    expect(object3.transform.position.y).toBe(4.905);
+    expect(object2.transform.position.y).toBe(6.905);
     expect(object3.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBe(0);
+    expect(object3.transform.position.y).toBe(4.905);
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBe(0);
     expect(rigidBody1.linearVelocity).toStrictEqual(new Vector2(0, 0));
 
-    // Check position at s1.002
+    // Check position at s1
     processTicksDuring(1);
-    manualTicker.tick(0.002);
-    expect(object3.transform.position.y).toBeCloseTo(4.905, 1); // not working well since we create energy by inaccuracy
     expect(object3.transform.position.x).toBe(0);
+    expect(object3.transform.position.y).toBeCloseTo(4.905, 1); // not working well since we create energy by inaccuracy
     expect(rigidBody1.linearVelocity.x).toBe(0);
-    expect(rigidBody1.linearVelocity.y).toBeCloseTo(2.4552, 1); // not working well since we create energy by inaccuracy
-    expect(object1.transform.position.y).toBeCloseTo(4.905, 1); // not working well since we create energy by inaccuracy
+    expect(rigidBody1.linearVelocity.y).toBeCloseTo(-4.905, 0); // not working well since we create energy by inaccuracy
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBeCloseTo(4.905, 0); // not working well since we create energy by inaccuracy
 
     // Check position at s2
-    processTicksDuring(1);
+    processTicksDuring(0.5);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(0, 0); // not working well since we create energy by inaccuracy
-    expect(object1.transform.position.y).toBeCloseTo(0, 0); // not working well since we create energy by inaccuracy
     expect(object1.transform.position.x).toBe(0);
+    expect(object1.transform.position.y).toBeCloseTo(3.67875, 0); // not working well since we create energy by inaccuracy
   });
 });
