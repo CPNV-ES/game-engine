@@ -65,7 +65,6 @@ export class CollisionRigidbodies extends Collision {
    * @param rigidB
    */
   public computeMagnitude(rigidA: Rigidbody, rigidB: Rigidbody): number {
-    console.log(this._restitution);
     return (
       (-(1 + this._restitution) *
         this._relativeVelocity.dotProduct(this.normal.clone().toVector2())) /
