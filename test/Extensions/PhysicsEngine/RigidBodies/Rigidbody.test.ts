@@ -182,9 +182,7 @@ describe("Rigidbody", (): void => {
     processTicksDuring(0.249);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(0);
-    // expect(rigidBody1.linearVelocity.y).toBeCloseTo(2.45, 0);
     expect(object1.transform.position.x).toBe(0);
-    // expect(object1.transform.position.y).toBeCloseTo(3.67605);
     expect(object1.transform.position.y).toBeCloseTo(4.905, 0);
 
     // Check position at s2
