@@ -116,10 +116,10 @@ export class SatCollisionHandler implements CollisionHandler {
       .add(b.gameObject.transform.worldPosition);
 
     // Adjust the normal direction if necessary
-    if (worldCenterB.sub(worldCenterA).dotProduct(normal) < 0) {
-      normal = normal.scale(-1);
+    if (worldCenterB.sub(worldCenterA).dotProduct(normal!) < 0) {
+      normal = normal!.scale(-1);
     }
 
-    return CollisionFactory.create(depth!, normal, a, b); // No separating axis found, polygons are colliding
+    return CollisionFactory.create(depth!, normal!, a, b); // No separating axis found, polygons are colliding
   }
 }
