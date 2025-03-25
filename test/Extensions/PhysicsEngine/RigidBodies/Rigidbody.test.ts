@@ -261,9 +261,9 @@ describe("Rigidbody", (): void => {
     // Check position at s2
     processTicksDuring(1);
     expect(rigidBody1.linearVelocity.x).toBe(0);
-    expect(rigidBody1.linearVelocity.y).toBeCloseTo(0, 0); // not working well since we create energy by inaccuracy
+    expect(rigidBody1.linearVelocity.y).toBeCloseTo(0, 0);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(0, 0); // not working well since we create energy by inaccuracy
+    expect(object1.transform.position.y).toBeCloseTo(0, 0);
   });
 
   /**
@@ -320,18 +320,18 @@ describe("Rigidbody", (): void => {
     // Check position at s1
     processTicksDuring(1);
     expect(object3.transform.position.x).toBe(0);
-    expect(object3.transform.position.y).toBeCloseTo(4.905, 1); // not working well since we create energy by inaccuracy
+    expect(object3.transform.position.y).toBeCloseTo(4.905, 1);
     expect(rigidBody1.linearVelocity.x).toBe(0);
-    expect(rigidBody1.linearVelocity.y).toBeCloseTo(2.4525); // not working well since we create energy by inaccuracy
+    expect(rigidBody1.linearVelocity.y).toBeCloseTo(2.4525);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(4.905, 0); // not working well since we create energy by inaccuracy
+    expect(object1.transform.position.y).toBeCloseTo(4.905, 0);
 
     // Check position at s2
     processTicksDuring(0.5);
     expect(rigidBody1.linearVelocity.x).toBe(0);
-    expect(rigidBody1.linearVelocity.y).toBeCloseTo(0, 0); // not working well since we create energy by inaccuracy
+    expect(rigidBody1.linearVelocity.y).toBeCloseTo(0, 0);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(3.67875, 0); // not working well since we create energy by inaccuracy
+    expect(object1.transform.position.y).toBeCloseTo(3.67875, 0);
   });
 
   // TODO add tests for horizontal and complex movement
