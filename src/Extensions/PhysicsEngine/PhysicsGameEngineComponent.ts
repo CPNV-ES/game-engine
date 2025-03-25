@@ -109,7 +109,7 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     if (bodies.length <= 0) return;
 
     const iterations = MathUtility.clamp(
-      10,
+      40,
       this._minIterationPerTick,
       this._maxIterationPerTick,
     );
