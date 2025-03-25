@@ -1,3 +1,6 @@
+---
+title: AudioBehavior Class
+---
 ### Documentation for `AudioBehavior` Class
 
 The `AudioBehavior` class is designed to manage audio playback in a game engine. It provides functionality to load, play, pause, stop, and control audio properties like volume, pitch, and looping. This documentation explains the class's features, how to use it, and provides an example of its usage.

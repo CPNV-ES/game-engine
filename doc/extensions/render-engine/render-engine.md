@@ -1,3 +1,10 @@
+---
+title: Render Engine
+children:
+   - ./3d-transformations-usage.md
+   - ./text-render-behavior.md
+   - ./technical-in-house/render-engine-webgpu.md
+---
 # Overview of the WebGPU-Based Rendering System
 
 This system is built using WebGPU for rendering game objects in a 3D space, utilizing multiple classes that handle the rendering pipeline, camera settings, and game objects rendering.

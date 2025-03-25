@@ -1,6 +1,6 @@
 {
   "name": "sprunk-engine",
-  "version": "0.4.4",
+  "version": "0.4.7",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,7 @@
     "format": "prettier --write \"{src,test}/**/*.ts\"",
     "prepublishOnly": "npm run build",
     "generate-uml": "node ./doc/generator.js",
-    "generate-doc": "npx typedoc --out ./doc/site/build ./src/lib.ts"
+    "generate-doc": "npx typedoc"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",

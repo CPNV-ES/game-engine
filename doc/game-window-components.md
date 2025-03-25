@@ -16,3 +16,34 @@ Game Engine Components will be the base class for all the functionalities of the
 It doesn't have any imposed implementations, so it's up to the developer to implement the methods and properties needed for the game to work.
 ### Game Engine Component methods
 - `onAttachedTo` - Called when the component is added to the Game Engine Window.
+
+## Key Component Systems
+
+The engine includes several key component systems / feature extensions:
+
+### 3D Rendering System (RenderGameEngineComponent)
+
+Handles rendering using WebGPU. It:
+
+- Manages the rendering context
+- Provides access to WebGPU resources
+- Handles camera and view transformations
+
+### 2D Physics System (PhysicsGameEngineComponent)
+Manages physics simulation. It:
+
+- Detects collisions between physics bodies
+- Resolves collisions and applies forces
+- Updates physics state each frame
+
+### Input System (InputGameEngineComponent)
+Manages input devices and events. It:
+
+- Tracks connected input devices
+- Processes raw input events
+- Provides an abstraction layer for input handling
+
+### Audio System
+The audio system provides:
+- Audio playback and control (with precise timing)
+- Volume and pitch control

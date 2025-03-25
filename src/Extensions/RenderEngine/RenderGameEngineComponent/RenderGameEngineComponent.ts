@@ -204,7 +204,7 @@ export class RenderGameEngineComponent
     this._ticker.onTick.removeObservers();
 
     // Remove the resize event listener
-    window.removeEventListener("resize", this.resizeCanvasToMatchDisplaySize);
+    window.removeEventListener("resize", this.onCanvasResized.bind(this));
 
     // Destroy all GPU resources
     this._webGpuResourcesManager.destroyGpuResources();
@@ -232,26 +232,36 @@ export class RenderGameEngineComponent
   }
 
   private startRendering(): void {
-    window.addEventListener("resize", () => {
-      this.resizeCanvasToMatchDisplaySize();
-    });
+    window.addEventListener("resize", this.onCanvasResized.bind(this));
     this._ticker.onTick.addObserver(this.frame.bind(this));
-    this.resizeCanvasToMatchDisplaySize();
+    this.resizeCanvasToMatchDisplaySize(true);
     this.IsRenderingReady = true;
   }
 
-  private resizeCanvasToMatchDisplaySize() {
-    const devicePixelRatio: number = window.devicePixelRatio;
-    this._canvasToDrawOn.width =
-      this._canvasToDrawOn.clientWidth * devicePixelRatio;
-    this._canvasToDrawOn.height =
-      this._canvasToDrawOn.clientHeight * devicePixelRatio;
+  private onCanvasResized(): void {
+    this.resizeCanvasToMatchDisplaySize(false);
+  }
 
-    this.createDepthTexture();
+  private resizeCanvasToMatchDisplaySize(forceRefresh: boolean): void {
+    const devicePixelRatio: number = window.devicePixelRatio;
+    const lastWidth: number = this._canvasToDrawOn.width;
+    const lastHeight: number = this._canvasToDrawOn.height;
+
+    const newWidth = this._canvasToDrawOn.clientWidth * devicePixelRatio;
+    const newHeight = this._canvasToDrawOn.clientHeight * devicePixelRatio;
+
+    if (lastWidth === newWidth && lastHeight === newHeight && !forceRefresh)
+      return;
+    if (newWidth === 0 || newHeight === 0) return;
+
+    this._canvasToDrawOn.width = newWidth;
+    this._canvasToDrawOn.height = newHeight;
+
+    this._webGpuResourcesManager.destroyDepthTexture();
+    this._webGpuResourcesManager.createDepthTexture(newWidth, newHeight);
 
     if (this.camera) {
-      this.camera.aspect =
-        this._canvasToDrawOn.width / this._canvasToDrawOn.height;
+      this.camera.aspect = newWidth / newHeight;
     }
   }
 
