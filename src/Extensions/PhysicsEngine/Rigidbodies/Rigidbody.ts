@@ -11,9 +11,9 @@ import { CollisionRigidbodies } from "@extensions/PhysicsEngine/Colliders/Collis
  */
 export class Rigidbody extends LogicBehavior<void> {
   public mass: number;
-  private force: Vector2 = new Vector2(0, 0);
+  private _force: Vector2 = new Vector2(0, 0);
   private _linearVelocity: Vector2 = new Vector2(0, 0);
-  private angularVelocity: number = 0; // rad/s
+  private _angularVelocity: number = 0; // rad/s
   private _restitution: number = 0.5;
   private _collider: Collider;
 
@@ -101,15 +101,17 @@ export class Rigidbody extends LogicBehavior<void> {
    * @param force
    */
   public addForce(force: Vector2): void {
-    this.force.add(force);
+    this._force.add(force);
   }
 
   /**
-   * Update the rigidbody for one tick (time based)
+   * Update the rigidbody movement props for one tick: velocity, forces, acceleration (time based)
+   * @param deltaTime
+   * @param gravity
    */
   public step(deltaTime: number, gravity: Vector2): void {
     // Compute the acceleration from the forces
-    const acceleration: Vector2 = this.force.clone().scale(1 / this.mass);
+    const acceleration: Vector2 = this._force.clone().scale(1 / this.mass);
     acceleration.add(gravity);
 
     // Move position
@@ -121,7 +123,7 @@ export class Rigidbody extends LogicBehavior<void> {
 
     // Rotate
     const rotationQuaternion: Quaternion = MathUtility.radToQuaternion(
-      this.angularVelocity * deltaTime,
+      this._angularVelocity * deltaTime,
     );
     this.gameObject.transform.rotation.multiply(rotationQuaternion);
 
@@ -130,6 +132,6 @@ export class Rigidbody extends LogicBehavior<void> {
     if (this._linearVelocity.x > -0.00001 && this._linearVelocity.x < 0.00001)
       this._linearVelocity.x = 0;
 
-    this.force = new Vector2(0, 0); // reset in order to apply force by addForce() only
+    this._force = new Vector2(0, 0); // reset in order to apply force by addForce() only
   }
 }
