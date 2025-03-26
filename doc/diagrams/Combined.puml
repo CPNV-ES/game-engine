@@ -108,8 +108,6 @@ class Sprunk {
     }
     package MathStructures {
 
-class MathUtility {
-}
 class Vector2 {
     +x: number
     +y: number
@@ -164,6 +162,8 @@ class Quaternion {
     +setFromQuaternion(q: Quaternion): Quaternion
     +set(w: number, x: number, y: number, z: number): Quaternion
     +rotateAroundAxis(axis: Vector3, angle: number): Quaternion
+}
+class MathUtility {
 }
 class Transform {
     +position: Vector3
@@ -342,9 +342,18 @@ class PhysicsGameEngineComponent extends GameEngineComponent {
     }
     package PhysicsEngine.Colliders {
 
+class CollisionRigidbodies extends Collision {
+    +magnitude: number
+    +restitution: number
+    +relativeVeocity: Vector2
+    +computeMagnitude(rigidA: Rigidbody, rigidB: Rigidbody): number
+    +getOpposite(): CollisionRigidbodies
+}
 class Collider extends PhysicsBehavior {
     +rigidbody?: Rigidbody | undefined
     +collide(collisions: Collision[]): void
+}
+class CollisionFactory {
 }
 class PolygonCollider extends Collider {
     +vertices: Vector2[]
@@ -368,11 +377,14 @@ class SatCollisionHandler implements CollisionHandler {
 
 class Rigidbody extends LogicBehavior {
     +mass: number
-    +velocity: Vector2
-    +restitution: number
     +collider: Collider
+    +restitution: number
+    +linearVelocity: Vector2
     +resolveCollisions(collisions: Collision[]): void
-    +resolveCollision(collision: Collision): void
+    +resolveCollisionRigidCollider(collision: Collision): void
+    +resolveCollisionRigidRigid(collision: CollisionRigidbodies): void
+    +addForce(force: Vector2): void
+    +step(deltaTime: number, gravity: Vector2): void
 }
 
     }
@@ -620,6 +632,7 @@ Vector2 --> "1" Vector3
 Vector3 --> "1" Quaternion
 Vector3 --> "1" Vector2
 Quaternion --> "1" Vector3
+MathUtility --> "1" Quaternion
 Transform --> "1" Vector3
 Transform --> "1" Quaternion
 Ticker --> "1" Event
@@ -648,12 +661,20 @@ PhysicsGameEngineComponent --> "1" GameObject
 PhysicsGameEngineComponent --> "1" SatCollisionHandler
 PhysicsGameEngineComponent --> "1" Ticker
 PhysicsGameEngineComponent --> "1" Collider
+PhysicsGameEngineComponent --> "1" Vector2
 PhysicsGameEngineComponent --> "1" GameEngineWindow
 PhysicsGameEngineComponent --> "1" PolygonCollider
+PhysicsGameEngineComponent --> "1" Rigidbody
 Collision --> "1" Collider
+CollisionRigidbodies --> "1" Vector2
+CollisionRigidbodies --> "1" Rigidbody
 Rigidbody --> "1" Collider
+Rigidbody --> "1" CollisionRigidbodies
 Collider --> "1" Rigidbody
 Collider --> "1" Collision
+CollisionFactory --> "1" Vector3
+CollisionFactory --> "1" Collider
+CollisionFactory --> "1" Collision
 PolygonCollider --> "1" Vector3
 CollisionHandler --> "1" Collider
 CollisionHandler --> "1" Collision

@@ -1,16 +1,21 @@
 @startuml
 class Rigidbody extends LogicBehavior {
     +mass: number
-    +velocity: Vector2
-    +restitution: number
     +collider: Collider
+    +restitution: number
+    +linearVelocity: Vector2
     +resolveCollisions(collisions: Collision[]): void
-    +resolveCollision(collision: Collision): void
+    +resolveCollisionRigidCollider(collision: Collision): void
+    +resolveCollisionRigidRigid(collision: CollisionRigidbodies): void
+    +addForce(force: Vector2): void
+    +step(deltaTime: number, gravity: Vector2): void
 }
 GameEngineWindow --> "*" GameEngineComponent
 GameObject --> "*" Behavior
 Collider --> "1" Rigidbody
+CollisionRigidbodies --> "1" Rigidbody
 Rigidbody --> "1" Vector2
 Rigidbody --> "1" Collider
 Rigidbody --> "1" Collision
+Rigidbody --> "1" CollisionRigidbodies
 @enduml

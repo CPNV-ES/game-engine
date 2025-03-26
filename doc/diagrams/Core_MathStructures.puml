@@ -1,6 +1,4 @@
 @startuml
-class MathUtility {
-}
 class Vector2 {
     +x: number
     +y: number
@@ -56,6 +54,8 @@ class Quaternion {
     +set(w: number, x: number, y: number, z: number): Quaternion
     +rotateAroundAxis(axis: Vector3, angle: number): Quaternion
 }
+class MathUtility {
+}
 class Transform {
     +position: Vector3
     +rotation: Quaternion
@@ -72,6 +72,7 @@ Vector2 --> "1" Vector3
 Vector3 --> "1" Quaternion
 Vector3 --> "1" Vector2
 Quaternion --> "1" Vector3
+MathUtility --> "1" Quaternion
 GameEngineWindow --> "*" GameEngineComponent
 GameObject --> "1" Transform
 GameObject --> "*" Behavior

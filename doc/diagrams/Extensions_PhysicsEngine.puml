@@ -14,7 +14,9 @@ PhysicsGameEngineComponent --> "1" SatCollisionHandler
 PhysicsGameEngineComponent --> "1" Ticker
 PhysicsGameEngineComponent --> "1" Collider
 PhysicsGameEngineComponent --> "*" Collision
+PhysicsGameEngineComponent --> "1" Vector2
 PhysicsGameEngineComponent --> "1" GameEngineWindow
 PhysicsGameEngineComponent --> "*" Collider
 PhysicsGameEngineComponent --> "1" PolygonCollider
+PhysicsGameEngineComponent --> "1" Rigidbody
 @enduml

@@ -46,13 +46,13 @@ class Sprunk {
     }
     package MathStructures {
 
-class MathUtility {
-}
 class Vector2 {
 }
 class Vector3 {
 }
 class Quaternion {
+}
+class MathUtility {
 }
 class Transform {
 }
@@ -125,7 +125,11 @@ class PhysicsGameEngineComponent extends GameEngineComponent {
     }
     package PhysicsEngine.Colliders {
 
+class CollisionRigidbodies extends Collision {
+}
 class Collider extends PhysicsBehavior {
+}
+class CollisionFactory {
 }
 class PolygonCollider extends Collider {
 }

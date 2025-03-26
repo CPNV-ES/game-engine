@@ -1,7 +1,16 @@
 @startuml
+class CollisionRigidbodies extends Collision {
+    +magnitude: number
+    +restitution: number
+    +relativeVeocity: Vector2
+    +computeMagnitude(rigidA: Rigidbody, rigidB: Rigidbody): number
+    +getOpposite(): CollisionRigidbodies
+}
 class Collider extends PhysicsBehavior {
     +rigidbody?: Rigidbody | undefined
     +collide(collisions: Collision[]): void
+}
+class CollisionFactory {
 }
 class PolygonCollider extends Collider {
     +vertices: Vector2[]
@@ -11,9 +20,15 @@ class PolygonCollider extends Collider {
 GameEngineWindow --> "*" GameEngineComponent
 GameObject --> "*" Behavior
 Collision --> "1" Collider
+CollisionRigidbodies --> "1" Vector2
+CollisionRigidbodies --> "1" Rigidbody
 Rigidbody --> "1" Collider
+Rigidbody --> "1" CollisionRigidbodies
 Collider --> "1" Rigidbody
 Collider --> "1" Collision
+CollisionFactory --> "1" Vector3
+CollisionFactory --> "1" Collider
+CollisionFactory --> "1" Collision
 PolygonCollider --> "*" Vector2
 PolygonCollider --> "1" Vector3
 @enduml
