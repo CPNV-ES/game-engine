@@ -4,6 +4,7 @@ class Rigidbody extends LogicBehavior {
     +collider: Collider
     +restitution: number
     +linearVelocity: Vector2
+    +linearVelocity: Vector2
     +resolveCollisions(collisions: Collision[]): void
     +resolveCollisionRigidCollider(collision: Collision): void
     +resolveCollisionRigidRigid(collision: CollisionRigidbodies): void
