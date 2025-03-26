@@ -4,6 +4,7 @@ import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { Vector3 } from "@core/MathStructures/Vector3.ts";
 import { CollisionHandler } from "@extensions/PhysicsEngine/CollisionHandlers/CollisionHandler.ts";
 import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
+import { CollisionFactory } from "@extensions/PhysicsEngine/Colliders/CollisionFactory.ts";
 
 /**
  * SatCollisionHandler class is a collision handler that uses the Separating Axis Theorem (SAT) to check for collisions
@@ -72,6 +73,8 @@ export class SatCollisionHandler implements CollisionHandler {
 
     // Check every axis of the polygons for separation
     for (const axis of axes) {
+      axis.normalize();
+
       const projectionA: { min: number; max: number } = this.projectVertices(
         verticesA,
         axis,
@@ -101,9 +104,6 @@ export class SatCollisionHandler implements CollisionHandler {
       }
     }
 
-    depth! /= normal!.length;
-    normal = normal!.normalize();
-
     // Calculate a vector from the center of A to the center of B
     const worldCenterA: Vector3 = a
       .getGravitationCenter()
@@ -116,10 +116,10 @@ export class SatCollisionHandler implements CollisionHandler {
       .add(b.gameObject.transform.worldPosition);
 
     // Adjust the normal direction if necessary
-    if (worldCenterB.sub(worldCenterA).dotProduct(normal) < 0) {
-      normal = normal.scale(-1);
+    if (worldCenterB.sub(worldCenterA).dotProduct(normal!) < 0) {
+      normal = normal!.scale(-1);
     }
 
-    return new Collision(depth!, normal, a, b); // No separating axis found, polygons are colliding
+    return CollisionFactory.create(depth!, normal!, a, b); // No separating axis found, polygons are colliding
   }
 }

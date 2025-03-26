@@ -7,6 +7,9 @@ import { Collision } from "@extensions/PhysicsEngine/Colliders/Collision.ts";
 import { SatCollisionHandler } from "@extensions/PhysicsEngine/CollisionHandlers/SatCollisionHandler.ts";
 import { Ticker } from "@core/Tickers/Ticker.ts";
 import { ArrayUtility } from "@core/Utilities/ArrayUtility.ts";
+import { Vector2 } from "@core/MathStructures/Vector2.ts";
+import { MathUtility } from "@core/MathStructures/MathUtility.ts";
+import { Rigidbody } from "@extensions/PhysicsEngine/Rigidbodies/Rigidbody.ts";
 
 /**
  * A unique game engine component responsible for handling the physics of the game at runtime. (works by Tick)
@@ -16,6 +19,9 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   public satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
   private _ticker: Ticker;
   private _collidersCollisions: Map<Collider, Collision[]> = new Map();
+  private _gravity: Vector2 = new Vector2(0, 9.81);
+  private _minIterationPerTick: number = 1;
+  private _maxIterationPerTick: number = 128;
 
   constructor(ticker: Ticker) {
     super();
@@ -77,15 +83,57 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     this._collidersCollisions.get(colliderB)?.push(collision.getOpposite());
   }
 
-  private tick(): void {
-    // Check for collisions
-    ArrayUtility.combinations(this.getAllPolygonCollider(), 2).forEach(
-      (polygonsPair) => {
-        this.getPolygonColliderCollisions(
-          ...(polygonsPair as [PolygonCollider, PolygonCollider]),
-        );
-      },
+  /**
+   * Trigger the step update on a rigidbody
+   * @param body
+   * @param deltaTime
+   * @private
+   */
+  private stepBody(body: Rigidbody, deltaTime: number): void {
+    body.step(deltaTime, this._gravity.clone());
+  }
+
+  /**
+   * Iterate many times the initial force resolution to upgrade the rigidbodies precision
+   * @param colliders
+   * @param deltaTime
+   * @private
+   */
+  private resolveRidibodiesForces(colliders: Collider[], deltaTime: number) {
+    const bodies: Rigidbody[] = [];
+
+    colliders.forEach((c) => {
+      if (c.rigidbody) bodies.push(c.rigidbody);
+    });
+
+    if (bodies.length <= 0) return;
+
+    const iterations = MathUtility.clamp(
+      40,
+      this._minIterationPerTick,
+      this._maxIterationPerTick,
     );
+    const deltaTimePerIteration: number = deltaTime / iterations;
+
+    for (let i = 0; i < iterations; i++) {
+      bodies.forEach((body) => {
+        this.stepBody(body, deltaTimePerIteration);
+      });
+    }
+  }
+
+  private tick(deltaTime: number): void {
+    const colliders: Collider[] = this.getAllPolygonCollider();
+
+    // stat by resolving the forces on rigidbodies
+    this.resolveRidibodiesForces(colliders, deltaTime);
+
+    // Check for collisions
+    ArrayUtility.combinations(colliders, 2).forEach((polygonsPair) => {
+      this.getPolygonColliderCollisions(
+        ...(polygonsPair as [PolygonCollider, PolygonCollider]),
+      );
+    });
 
     // Resolve collisions
     this._collidersCollisions.forEach(
