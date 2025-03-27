@@ -19,7 +19,7 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   public satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
   private _ticker: Ticker;
   private _collidersCollisions: Map<Collider, Collision[]> = new Map();
-  private _gravity: Vector2 = new Vector2(0, 9.81);
+  private _gravity: Vector2 = new Vector2(0, -9.81);
   private _minIterationPerTick: number = 1;
   private _maxIterationPerTick: number = 128;
 
