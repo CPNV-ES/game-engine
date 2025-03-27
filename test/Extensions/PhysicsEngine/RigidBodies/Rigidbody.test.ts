@@ -66,21 +66,21 @@ describe("Rigidbody", (): void => {
     // Check position at s1
     manualTicker.tick(1);
     expect(rigidBody1.linearVelocity.x).toBeCloseTo(0);
-    expect(rigidBody1.linearVelocity.y).toBeCloseTo(9.81);
+    expect(rigidBody1.linearVelocity.y).toBeCloseTo(-9.81);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(4.905);
+    expect(object1.transform.position.y).toBeCloseTo(-4.905);
 
     // Check position at s2
     manualTicker.tick(1);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(19.62);
-    expect(rigidBody1.linearVelocity == new Vector2(0, 19.62));
+    expect(object1.transform.position.y).toBeCloseTo(-19.62);
+    expect(rigidBody1.linearVelocity.y).toBeCloseTo(-19.62);
 
     // Check position at s3
     manualTicker.tick(1);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(44.145);
-    expect(rigidBody1.linearVelocity == new Vector2(0, 29.43));
+    expect(object1.transform.position.y).toBeCloseTo(-44.145);
+    expect(rigidBody1.linearVelocity.y).toBeCloseTo(-29.48, 0);
   });
 
   /**
@@ -91,10 +91,10 @@ describe("Rigidbody", (): void => {
     const object1: GameObject = new GameObject("Object1");
     gameEngineWindow.root.addChild(object1);
     const vertices1: Vector2[] = [
+      new Vector2(1, 2),
       new Vector2(1, 0),
-      new Vector2(1, -2),
-      new Vector2(-1, -2),
       new Vector2(-1, 0),
+      new Vector2(-1, 2),
     ];
     const polygonCollider1: PolygonCollider = new PolygonCollider(vertices1);
     const rigidBody1 = new Rigidbody(polygonCollider1, 1, 1);
@@ -107,12 +107,12 @@ describe("Rigidbody", (): void => {
     const vertices2: Vector2[] = [new Vector2(-1, 0), new Vector2(1, 0)];
     const polygonCollider2: PolygonCollider = new PolygonCollider(vertices2);
     object2.addBehavior(polygonCollider2);
-    object2.transform.position.set(0, 4.905, 0);
+    object2.transform.position.set(0, -4.905, 0);
 
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
     // check position at s0
     expect(object2.transform.position.x).toBe(0);
-    expect(object2.transform.position.y).toBe(4.905);
+    expect(object2.transform.position.y).toBe(-4.905);
     expect(object1.transform.position.x).toBe(0);
     expect(object1.transform.position.y).toBe(0);
     expect(rigidBody1.linearVelocity).toStrictEqual(new Vector2(0, 0));
@@ -120,9 +120,9 @@ describe("Rigidbody", (): void => {
     // Check position at s1
     manualTicker.tick(1);
     expect(rigidBody1.linearVelocity.x).toBe(0);
-    expect(rigidBody1.linearVelocity.y).toBeCloseTo(-9.81);
+    expect(rigidBody1.linearVelocity.y).toBeCloseTo(9.81);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(4.905);
+    expect(object1.transform.position.y).toBeCloseTo(-4.905);
 
     // Check position at s2
     manualTicker.tick(1);
@@ -140,10 +140,10 @@ describe("Rigidbody", (): void => {
     const object1: GameObject = new GameObject("Object1");
     gameEngineWindow.root.addChild(object1);
     const vertices1: Vector2[] = [
+      new Vector2(1, 2),
       new Vector2(1, 0),
-      new Vector2(1, -2),
-      new Vector2(-1, -2),
       new Vector2(-1, 0),
+      new Vector2(-1, 2),
     ];
     const polygonCollider1: PolygonCollider = new PolygonCollider(vertices1);
     const rigidBody1 = new Rigidbody(polygonCollider1, 1, 0.5);
@@ -156,16 +156,16 @@ describe("Rigidbody", (): void => {
     const vertices2: Vector2[] = [
       new Vector2(-1, 0),
       new Vector2(1, 0),
-      new Vector2(0, 2),
+      new Vector2(0, -2),
     ];
     const polygonCollider2: PolygonCollider = new PolygonCollider(vertices2);
     object2.addBehavior(polygonCollider2);
-    object2.transform.position.set(0, 4.905, 0);
+    object2.transform.position.set(0, -4.905, 0);
 
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
     // check position at s0
     expect(object2.transform.position.x).toBe(0);
-    expect(object2.transform.position.y).toBe(4.905);
+    expect(object2.transform.position.y).toBe(-4.905);
     expect(object1.transform.position.x).toBe(0);
     expect(object1.transform.position.y).toBe(0);
     expect(rigidBody1.linearVelocity).toStrictEqual(new Vector2(0, 0));
@@ -173,23 +173,22 @@ describe("Rigidbody", (): void => {
     // Check position at s1
     processTicksDuring(1);
     expect(rigidBody1.linearVelocity.x).toBe(0);
-    // expect(rigidBody1.linearVelocity.y).toBeCloseTo(9.81);
-    expect(rigidBody1.linearVelocity.y).toBeCloseTo(-2.45, 0);
+    expect(rigidBody1.linearVelocity.y).toBeCloseTo(2.45, 0);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(4.905);
+    expect(object1.transform.position.y).toBeCloseTo(-4.905);
 
     // Check position when reach max height
     processTicksDuring(0.249);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(0);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(4.905, 0);
+    expect(object1.transform.position.y).toBeCloseTo(-4.905, 0);
 
     // Check position at s2
     processTicksDuring(0.249);
     expect(rigidBody1.linearVelocity.x).toBe(0);
-    expect(rigidBody1.linearVelocity.y).toBeCloseTo(2.4525);
-    expect(object1.transform.position.y).toBeCloseTo(4.905);
+    expect(rigidBody1.linearVelocity.y).toBeCloseTo(-2.4525);
+    expect(object1.transform.position.y).toBeCloseTo(-4.905);
     expect(object1.transform.position.x).toBe(0);
   });
 
@@ -201,10 +200,10 @@ describe("Rigidbody", (): void => {
     const object1: GameObject = new GameObject("Object1");
     gameEngineWindow.root.addChild(object1);
     const vertices1: Vector2[] = [
+      new Vector2(1, 2),
       new Vector2(1, 0),
-      new Vector2(1, -2),
-      new Vector2(-1, -2),
       new Vector2(-1, 0),
+      new Vector2(-1, 2),
     ];
     const polygonCollider1: PolygonCollider = new PolygonCollider(vertices1);
     const rigidBody1 = new Rigidbody(polygonCollider1, 1, 1);
@@ -214,16 +213,16 @@ describe("Rigidbody", (): void => {
     const object3: GameObject = new GameObject("Object3");
     gameEngineWindow.root.addChild(object3);
     const vertices3: Vector2[] = [
-      new Vector2(1, 2),
-      new Vector2(1, -0),
-      new Vector2(-1, -0),
-      new Vector2(-1, 2),
+      new Vector2(1, 0),
+      new Vector2(1, -2),
+      new Vector2(-1, -2),
+      new Vector2(-1, 0),
     ];
     const polygonCollider3: PolygonCollider = new PolygonCollider(vertices3);
     object3.addBehavior(polygonCollider3);
     const rigidBody3 = new Rigidbody(polygonCollider3, 1, 1);
     object3.addBehavior(rigidBody3);
-    object3.transform.position.set(0, 4.905, 0);
+    object3.transform.position.set(0, -4.905, 0);
 
     // Collider
     const object2: GameObject = new GameObject("Object2");
@@ -231,14 +230,14 @@ describe("Rigidbody", (): void => {
     const vertices2: Vector2[] = [new Vector2(-1, 0), new Vector2(1, 0)];
     const polygonCollider2: PolygonCollider = new PolygonCollider(vertices2);
     object2.addBehavior(polygonCollider2);
-    object2.transform.position.set(0, 6.905, 0);
+    object2.transform.position.set(0, -6.905, 0);
 
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
     // check position at s0
     expect(object2.transform.position.x).toBe(0);
-    expect(object2.transform.position.y).toBe(6.905);
+    expect(object2.transform.position.y).toBe(-6.905);
     expect(object3.transform.position.x).toBe(0);
-    expect(object3.transform.position.y).toBe(4.905);
+    expect(object3.transform.position.y).toBe(-4.905);
     expect(object1.transform.position.x).toBe(0);
     expect(object1.transform.position.y).toBe(0);
     expect(rigidBody1.linearVelocity).toStrictEqual(new Vector2(0, 0));
@@ -246,7 +245,7 @@ describe("Rigidbody", (): void => {
     // Check position at s1
     processTicksDuring(1);
     expect(object3.transform.position.x).toBe(0);
-    expect(object3.transform.position.y).toBeCloseTo(4.905);
+    expect(object3.transform.position.y).toBeCloseTo(-4.905);
     expect(rigidBody1.linearVelocity.x).toBe(0);
 
     let vel = rigidBody1.linearVelocity.y;
@@ -256,7 +255,7 @@ describe("Rigidbody", (): void => {
 
     expect(isVelExpected).toBe(true);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(4.905);
+    expect(object1.transform.position.y).toBeCloseTo(-4.905);
 
     // Check position at s2
     processTicksDuring(1);
@@ -274,10 +273,10 @@ describe("Rigidbody", (): void => {
     const object1: GameObject = new GameObject("Object1");
     gameEngineWindow.root.addChild(object1);
     const vertices1: Vector2[] = [
+      new Vector2(1, 2),
       new Vector2(1, 0),
-      new Vector2(1, -2),
-      new Vector2(-1, -2),
       new Vector2(-1, 0),
+      new Vector2(-1, 2),
     ];
     const polygonCollider1: PolygonCollider = new PolygonCollider(vertices1);
     const rigidBody1 = new Rigidbody(polygonCollider1, 1, 0.5);
@@ -287,16 +286,16 @@ describe("Rigidbody", (): void => {
     const object3: GameObject = new GameObject("Object3");
     gameEngineWindow.root.addChild(object3);
     const vertices3: Vector2[] = [
-      new Vector2(1, 2),
-      new Vector2(1, -0),
-      new Vector2(-1, -0),
-      new Vector2(-1, 2),
+      new Vector2(1, 0),
+      new Vector2(1, -2),
+      new Vector2(-1, -2),
+      new Vector2(-1, 0),
     ];
     const polygonCollider3: PolygonCollider = new PolygonCollider(vertices3);
     object3.addBehavior(polygonCollider3);
     const rigidBody3 = new Rigidbody(polygonCollider3, 1, 1);
     object3.addBehavior(rigidBody3);
-    object3.transform.position.set(0, 4.905, 0);
+    object3.transform.position.set(0, -4.905, 0);
 
     // Collider
     const object2: GameObject = new GameObject("Object2");
@@ -304,15 +303,15 @@ describe("Rigidbody", (): void => {
     const vertices2: Vector2[] = [new Vector2(-1, 0), new Vector2(1, 0)];
     const polygonCollider2: PolygonCollider = new PolygonCollider(vertices2);
     object2.addBehavior(polygonCollider2);
-    object2.transform.position.set(0, 6.905, 0);
+    object2.transform.position.set(0, -6.905, 0);
 
     gameEngineWindow.addGameComponent(physicsGameEngineComponent);
 
     // check position at s0
     expect(object2.transform.position.x).toBe(0);
-    expect(object2.transform.position.y).toBe(6.905);
+    expect(object2.transform.position.y).toBe(-6.905);
     expect(object3.transform.position.x).toBe(0);
-    expect(object3.transform.position.y).toBe(4.905);
+    expect(object3.transform.position.y).toBe(-4.905);
     expect(object1.transform.position.x).toBe(0);
     expect(object1.transform.position.y).toBe(0);
     expect(rigidBody1.linearVelocity).toStrictEqual(new Vector2(0, 0));
@@ -320,18 +319,18 @@ describe("Rigidbody", (): void => {
     // Check position at s1
     processTicksDuring(1);
     expect(object3.transform.position.x).toBe(0);
-    expect(object3.transform.position.y).toBeCloseTo(4.905, 1);
+    expect(object3.transform.position.y).toBeCloseTo(-4.905, 1);
     expect(rigidBody1.linearVelocity.x).toBe(0);
-    expect(rigidBody1.linearVelocity.y).toBeCloseTo(2.4525);
+    expect(rigidBody1.linearVelocity.y).toBeCloseTo(-2.4525);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(4.905, 0);
+    expect(object1.transform.position.y).toBeCloseTo(-4.905, 0);
 
     // Check position at s2
     processTicksDuring(0.5);
     expect(rigidBody1.linearVelocity.x).toBe(0);
     expect(rigidBody1.linearVelocity.y).toBeCloseTo(0, 0);
     expect(object1.transform.position.x).toBe(0);
-    expect(object1.transform.position.y).toBeCloseTo(3.67875, 0);
+    expect(object1.transform.position.y).toBeCloseTo(-3.67875, 0);
   });
 
   // TODO add tests for horizontal and complex movement

@@ -5,12 +5,8 @@ import { Vector2 } from "@core/MathStructures/Vector2";
 import { PolygonCollider } from "@extensions/PhysicsEngine/Colliders/PolygonCollider";
 import { PolygonRenderDebugger } from "@test/ExampleBehaviors/PolygonRenderDebugger";
 import { Color } from "@extensions/RenderEngine/Color";
-import { KeyboardMovableBehavior } from "@test/ExampleBehaviors/KeyboardMovableBehavior";
-import { MovableLogicBehavior } from "@test/ExampleBehaviors/MovableLogicBehavior";
-import { Behavior } from "@core/Behavior";
 import { Sprunk } from "@core/Initialisation/Sprunk";
 import { Rigidbody } from "@extensions/PhysicsEngine/Rigidbodies/Rigidbody";
-import { MathUtility } from "../../../../../src/Core/MathStructures/MathUtility";
 
 const canvas: HTMLCanvasElement =
   document.querySelector<HTMLCanvasElement>("#app")!;
@@ -23,8 +19,10 @@ const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, true, [
 
 const cameraGo = new GameObject("Camera");
 gameEngineWindow.root.addChild(cameraGo);
-cameraGo.addBehavior(new Camera(17));
-cameraGo.transform.position.set(0, 0, 10);
+cameraGo.addBehavior(new Camera(Math.PI / 2));
+cameraGo.transform.position.set(0, 0, 15);
+// cameraGo.addBehavior(new FreeLookCameraController());
+// cameraGo.addBehavior(new FreeLookCameraKeyboardMouseInput());
 
 for (let i = 0; i < 35; i++) {
   const smallShape: GameObject = new GameObject(`SmallShape${i}`);
@@ -77,8 +75,6 @@ for (let i = 0; i < 35; i++) {
     0,
     Math.cos(randomAngle * 0.5),
   );
-  // Doubled the scale from 0.5 to 1.0
-  smallShape.transform.scale.set(1.0, 1.0, 1);
 }
 
 // floor
@@ -156,11 +152,3 @@ const debuggedRight = new PolygonRenderDebugger(
 right.transform.position.set(-10, 0, 0);
 right.addBehavior(polygonCollider102);
 right.addBehavior(debuggedRight);
-
-setInterval(() => {
-  gameEngineWindow.root.getAllChildren().forEach((go) => {
-    go.getBehaviors(Behavior).forEach((behavior) => {
-      behavior.tick(1 / 60);
-    });
-  });
-}, 1000 / 60);
