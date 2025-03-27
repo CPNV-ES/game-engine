@@ -20,7 +20,7 @@ const gameEngineWindow: GameEngineWindow = Sprunk.newGame(canvas, true, [
 const cameraGo = new GameObject("Camera");
 gameEngineWindow.root.addChild(cameraGo);
 cameraGo.addBehavior(new Camera(Math.PI / 2));
-cameraGo.transform.position.set(0, 0, 10);
+cameraGo.transform.position.set(0, 0, 15);
 // cameraGo.addBehavior(new FreeLookCameraController());
 // cameraGo.addBehavior(new FreeLookCameraKeyboardMouseInput());
 
