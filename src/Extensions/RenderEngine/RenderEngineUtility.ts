@@ -14,6 +14,7 @@ export class RenderEngineUtility {
 
     const worldPosition = transform.worldPosition;
     const worldRotation = transform.worldRotation;
+    const worldScale = transform.worldScale;
 
     // Apply translation (position)
     modelMatrix = mat4.translate(modelMatrix, [
@@ -28,9 +29,9 @@ export class RenderEngineUtility {
 
     // Apply scale
     modelMatrix = mat4.scale(modelMatrix, [
-      transform.scale.x,
-      transform.scale.y,
-      transform.scale.z,
+      worldScale.x,
+      worldScale.y,
+      worldScale.z,
     ]);
 
     return modelMatrix;
