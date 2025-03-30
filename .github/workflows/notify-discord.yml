@@ -1,0 +1,22 @@
+name: Notify Discord on Tag Push
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Tag Name
+        id: tag
+        run: |
+          echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Send to Discord
+        run: |
+          curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"content":"🚀 New release published: `${{ steps.tag.outputs.tag_name }}`"}' \
+            "${{ secrets.DISCORD_WH }}"
