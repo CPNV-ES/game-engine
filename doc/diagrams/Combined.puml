@@ -336,6 +336,9 @@ class PhysicsBehavior<T> extends LogicBehavior
 class PhysicsGameEngineComponent extends GameEngineComponent {
     +rootObject?: GameObject | undefined
     +satCollisionHandler: SatCollisionHandler
+    +gravity: Vector2
+    +minIterationPerTick: number
+    +maxIterationPerTick: number
     +onAttachedTo(_gameEngine: GameEngineWindow): void
 }
 
