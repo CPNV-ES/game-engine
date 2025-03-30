@@ -19,9 +19,9 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   public satCollisionHandler: SatCollisionHandler = new SatCollisionHandler();
   private _ticker: Ticker;
   private _collidersCollisions: Map<Collider, Collision[]> = new Map();
-  private _gravity: Vector2 = new Vector2(0, -9.81);
-  private _minIterationPerTick: number = 1;
-  private _maxIterationPerTick: number = 128;
+  public gravity: Vector2 = new Vector2(0, -9.81);
+  public minIterationPerTick: number = 1;
+  public maxIterationPerTick: number = 128;
 
   constructor(ticker: Ticker) {
     super();
@@ -90,7 +90,7 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
    * @private
    */
   private stepBody(body: Rigidbody, deltaTime: number): void {
-    body.step(deltaTime, this._gravity.clone());
+    body.step(deltaTime, this.gravity.clone());
   }
 
   /**
@@ -110,8 +110,8 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
 
     const iterations = MathUtility.clamp(
       40,
-      this._minIterationPerTick,
-      this._maxIterationPerTick,
+      this.minIterationPerTick,
+      this.maxIterationPerTick,
     );
     const deltaTimePerIteration: number = deltaTime / iterations;
 
