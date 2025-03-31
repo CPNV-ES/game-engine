@@ -96,7 +96,6 @@ async function handleUmlGeneration(version) {
 
 async function runTests() {
     try {
-        // If that fails, run without bail but still without watch
         execSync('npm test -- --watch=false', { stdio: 'inherit' });
     } catch (testError) {
         console.error('Tests failed!');
@@ -105,49 +104,74 @@ async function runTests() {
 }
 
 async function main() {
-    const version = process.argv[2];
+    // Store original environment variables
+    const originalEnv = {
+        GIT_MERGE_AUTOEDIT: process.env.GIT_MERGE_AUTOEDIT,
+        GIT_EDITOR: process.env.GIT_EDITOR,
+        EDITOR: process.env.EDITOR
+    };
 
-    if (!version) {
-        console.error('Please provide a version number as an argument (e.g., 1.2.3)');
-        process.exit(1);
+    try {
+        const version = process.argv[2];
+
+        if (!version) {
+            console.error('Please provide a version number as an argument (e.g., 1.2.3)');
+            process.exit(1);
+        }
+
+        validateVersion(version);
+        console.log(`Starting release process for version ${version}`);
+
+        const releaseTitle = checkChangelog(version);
+        if (!releaseTitle) {
+            console.error('Could not determine release title from changelog.md');
+            process.exit(1);
+        }
+
+        // Configure environment to prevent editor opening
+        process.env.GIT_MERGE_AUTOEDIT = 'no';
+        process.env.GIT_EDITOR = 'true';
+        process.env.EDITOR = 'true';
+
+        // Step 2: Start git flow release
+        runCommand(`git flow release start ${version}`);
+
+        // Step 3: Update package.json and package-lock.json
+        updatePackageJson(version);
+        runCommand('npm i');
+        runCommand('git add package.json package-lock.json');
+        runCommand(`git commit -m "chore: bump version to ${version}"`);
+
+        await handleUmlGeneration(version);
+
+        // Step 5: Run tests and build
+        await runTests();
+        runCommand('npm run build');
+
+        // Step 6: Finish release with editor bypass
+        const tagMessage = `${version}: ${releaseTitle}`;
+        runCommand(`git flow release finish -m "Release ${version}" -T "${tagMessage}" -S ${version}`, {
+            env: {
+                ...process.env,
+                GIT_MERGE_AUTOEDIT: 'no',
+                GIT_EDITOR: 'true',
+                EDITOR: 'true'
+            }
+        });
+
+        // Step 7: Push everything
+        runCommand('git push origin main');
+        runCommand('git push origin develop');
+        runCommand('git push --tags');
+
+        console.log(`\n🎉 Successfully released version ${version}: ${releaseTitle}`);
+    } finally {
+        // Restore original environment variables
+        process.env.GIT_MERGE_AUTOEDIT = originalEnv.GIT_MERGE_AUTOEDIT;
+        process.env.GIT_EDITOR = originalEnv.GIT_EDITOR;
+        process.env.EDITOR = originalEnv.EDITOR;
+        rl.close();
     }
-
-    validateVersion(version);
-
-    console.log(`Starting release process for version ${version}`);
-
-    const releaseTitle = checkChangelog(version);
-    if (!releaseTitle) {
-        console.error('Could not determine release title from changelog.md');
-        process.exit(1);
-    }
-
-    // Step 2: Start git flow release
-    runCommand(`git flow release start ${version}`);
-
-    // Step 3: Update package.json and package-lock.json
-    updatePackageJson(version);
-    runCommand('npm i');
-    runCommand('git add package.json package-lock.json');
-    runCommand(`git commit -m "chore: bump version to ${version}"`);
-
-    await handleUmlGeneration(version);
-
-    // Step 5: Run tests and build
-    await runTests();
-    runCommand('npm run build');
-
-    // Step 6: Finish release
-    const tagMessage = `${version}: ${releaseTitle}`;
-    runCommand(`git flow release finish -m "Release ${version}" -T "${tagMessage}" -S ${version}`);
-
-    // Step 7: Push everything
-    runCommand('git push origin main');
-    runCommand('git push origin develop');
-    runCommand('git push --tags');
-
-    console.log(`\n🎉 Successfully released version ${version}: ${releaseTitle}`);
-    rl.close();
 }
 
 main().catch((error) => {
