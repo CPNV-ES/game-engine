@@ -276,14 +276,13 @@ export class RenderGameEngineComponent
         "Device, context, or presentation texture format not available",
       );
 
-    const textureView: GPUTextureView = this._context
-      .getCurrentTexture()
-      .createView(); // Get the current texture from the context (changed each frames because of the swap chain)
+    const texture: GPUTexture = this._context.getCurrentTexture();
+    const textureView: GPUTextureView = texture.createView(); // Get the current texture from the context (changed each frames because of the swap chain)
 
     const passEncoder: {
       commandEncoder: GPUCommandEncoder;
       renderPassEncoder: GPURenderPassEncoder;
-    } = this._webGpuResourcesManager.startRenderPass(textureView);
+    } = this._webGpuResourcesManager.startRenderPass(textureView, texture);
 
     this.attachedEngine!.root.getAllChildren().forEach((gameObject) => {
       gameObject.getBehaviors(RenderBehavior).forEach((behavior) => {
