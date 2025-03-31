@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.13] - Auto release system
+- Automated release system instruction (eg. `node release.js 0.4.13`)
+
 ## [0.4.12] - Hotfix
 - Exposed gravity and iteration properties for better accessibility
 - Incorporated worldScale into model matrix calculations for accurate scaling
