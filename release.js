@@ -120,7 +120,7 @@ async function main() {
     await handleUmlGeneration(version);
 
     // Step 5: Run tests and build
-    runCommand('npm test -- --watchAll=false --bail');
+    runCommand('npm test -- --watch=false --bail');
     runCommand('npm run build');
 
     // Step 6: Finish release
