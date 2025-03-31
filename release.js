@@ -88,7 +88,7 @@ async function handleUmlGeneration(version) {
         }
 
         runCommand('git add doc/diagrams');
-        runCommand(`git commit -m "Update UML diagrams for ${version}"`);
+        runCommand(`git commit -m "docs: generate all class diagrams uml for ${version}"`);
     } catch (error) {
         console.error('Error handling UML generation:', error.message);
     }
@@ -129,7 +129,7 @@ async function main() {
     updatePackageJson(version);
     runCommand('npm i');
     runCommand('git add package.json package-lock.json');
-    runCommand(`git commit -m "Bump version to ${version}"`);
+    runCommand(`git commit -m "chore: bump version to ${version}"`);
 
     await handleUmlGeneration(version);
 
