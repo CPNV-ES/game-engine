@@ -5,6 +5,7 @@ children:
   - ./dependency-injection.md
   - ./behaviors.md
   - ./game-window-components.md
+  - ./changelog.md
   - ./limitations.md
   - ./extensions/render-engine/render-engine.md
   - ./extensions/physics-engine/physics-engine.md
