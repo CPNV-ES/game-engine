@@ -96,18 +96,11 @@ async function handleUmlGeneration(version) {
 
 async function runTests() {
     try {
-        // First try with --bail=1
-        console.log('Running tests with --bail=1...');
-        execSync('npm test -- --watch=false --bail=1', { stdio: 'inherit' });
-    } catch (bailError) {
-        console.log('--bail=1 failed, trying without bail...');
-        try {
-            // If that fails, run without bail but still without watch
-            execSync('npm test -- --watch=false', { stdio: 'inherit' });
-        } catch (testError) {
-            console.error('Tests failed!');
-            process.exit(1);
-        }
+        // If that fails, run without bail but still without watch
+        execSync('npm test -- --watch=false', { stdio: 'inherit' });
+    } catch (testError) {
+        console.error('Tests failed!');
+        process.exit(1);
     }
 }
 
