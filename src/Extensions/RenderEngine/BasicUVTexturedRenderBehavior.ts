@@ -69,6 +69,9 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
   protected async asyncInit(): Promise<void> {
     await super.asyncInit();
 
+    // Return immediately if the pipeline is not ready anymore (already disposing all objects)
+    if (!this._renderEngine.IsRenderingReady) return;
+
     //Create buffers on the GPU based on data
     this._vertexBuffer = this._renderEngine.createVertexBuffer(
       this._vertexData,
@@ -79,6 +82,9 @@ export class BasicUVTexturedRenderBehavior extends RenderBehavior {
     this._spriteTexture = await this._renderEngine.createTexture(
       this._spriteImageUrl,
     );
+
+    // Return immediately if the pipeline is not ready anymore (already disposing all objects)
+    if (!this._renderEngine.IsRenderingReady) return;
 
     //Create the bind group for shaders
     this._bindGroup = this._renderEngine.createBindGroup(
