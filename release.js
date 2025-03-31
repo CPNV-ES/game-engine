@@ -139,7 +139,7 @@ async function main() {
 
     // Step 6: Finish release
     const tagMessage = `${version}: ${releaseTitle}`;
-    runCommand(`git flow release finish -m "${tagMessage}" ${version}`);
+    runCommand(`git flow release finish -m "Release ${version}" -T "${tagMessage}" -S ${version}`);
 
     // Step 7: Push everything
     runCommand('git push origin main');
