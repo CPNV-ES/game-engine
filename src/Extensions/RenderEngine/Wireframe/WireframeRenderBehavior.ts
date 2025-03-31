@@ -63,6 +63,9 @@ export class WireframeRenderBehavior extends RenderBehavior {
   protected async asyncInit(): Promise<void> {
     await super.asyncInit();
 
+    // Return immediately if the pipeline is not ready anymore (already disposing all objects)
+    if (!this._renderEngine.IsRenderingReady) return;
+
     this._vertexBuffer = this._renderEngine.createVertexBuffer(
       this._vertexData,
     );

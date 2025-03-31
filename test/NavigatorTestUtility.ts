@@ -20,15 +20,53 @@ export class NavigatorTestUtility {
     // Listen for page errors
     this._page.on("pageerror", (error) => {
       this.addError(error);
-      console.error("Page error:", error);
+      console.error("Browser Page error:", error);
     });
 
     // Listen for console errors
-    this._page.on("console", (message) => {
+    interface BrowserError {
+      message?: string;
+      stack?: string;
+      // Add other possible error properties if needed
+      [key: string]: unknown;
+    }
+
+    this._page.on("console", async (message) => {
       if (message.type() === "error") {
-        const error = new Error(message.text());
-        this.addError(error);
-        console.error("Console error:", message.text());
+        try {
+          const args = await Promise.all(
+            message.args().map((arg) => arg.jsonValue()),
+          );
+
+          // Type guard to check if first arg is an error-like object
+          const getErrorDetails = (arg: unknown): BrowserError => {
+            if (typeof arg === "object" && arg !== null) {
+              return {
+                message: "message" in arg ? String(arg.message) : undefined,
+                stack: "stack" in arg ? String(arg.stack) : undefined,
+              };
+            }
+            return {};
+          };
+
+          const errorDetails = getErrorDetails(args[0]);
+          const errorMessage = errorDetails.message || message.text();
+
+          const error = new Error(errorMessage);
+          error.stack =
+            errorDetails.stack ||
+            `At: ${message.location().url}:${message.location().lineNumber}`;
+
+          this.addError(error);
+          console.error("Browser Error", {
+            message: error.message,
+            stack: error.stack,
+            location: message.location(),
+            rawArgs: args, // For debugging
+          });
+        } catch (err) {
+          console.error("Failed to process console error:", err);
+        }
       }
     });
   }

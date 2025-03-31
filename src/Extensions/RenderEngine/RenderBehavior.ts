@@ -82,6 +82,8 @@ export abstract class RenderBehavior extends OutputBehavior {
       this._bufferLayouts,
       this._targetBlend,
     );
+    // Return immediately if the pipeline is not ready anymore (already disposing all objects)
+    if (!this._renderEngine.IsRenderingReady) return;
     this._mvpUniformBuffer = this._renderEngine.createUniformBuffer(
       mat4.identity(),
     );

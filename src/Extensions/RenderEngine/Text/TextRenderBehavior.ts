@@ -157,7 +157,15 @@ export class TextRenderBehavior extends RenderBehavior {
 
   protected async asyncInit(): Promise<void> {
     await super.asyncInit();
+
+    // Return immediately if the pipeline is not ready anymore (already disposing all objects)
+    if (!this._renderEngine.IsRenderingReady) return;
+
     this._font = await this.createFont();
+
+    // Return immediately if the pipeline is not ready anymore (already disposing all objects)
+    if (!this._renderEngine.IsRenderingReady) return;
+
     this.refreshText();
   }
 

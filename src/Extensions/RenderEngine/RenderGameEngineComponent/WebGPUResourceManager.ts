@@ -111,43 +111,79 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
   ): Promise<GPURenderPipeline> {
     try {
       const hash = `${vertexWGSLShader}${fragmentWGSLShader}${primitiveState}${bindGroupLayouts}${buffersLayouts}${targetBlend}`;
-      return WebGPUResourceManager._renderPipelinesCache.get(hash, async () => {
-        const descriptor: GPURenderPipelineDescriptor = {
-          layout: this.device!.createPipelineLayout({
-            bindGroupLayouts: bindGroupLayouts,
-          }),
-          vertex: {
-            module: this.device!.createShaderModule({
-              code: vertexWGSLShader,
+      return await WebGPUResourceManager._renderPipelinesCache.get(
+        hash,
+        async () => {
+          // Validate shaders first
+          this.validateShader(vertexWGSLShader, "vertex");
+          this.validateShader(fragmentWGSLShader, "fragment");
+
+          const descriptor: GPURenderPipelineDescriptor = {
+            layout: this.device!.createPipelineLayout({
+              bindGroupLayouts: bindGroupLayouts,
             }),
-            entryPoint: "main",
-            buffers: buffersLayouts,
-          },
-          fragment: {
-            module: this.device!.createShaderModule({
-              code: fragmentWGSLShader,
-            }),
-            entryPoint: "main",
-            targets: [
-              {
-                format: this._presentationTextureFormat!,
-                blend: targetBlend,
-              },
-            ],
-          },
-          primitive: primitiveState,
-          depthStencil: {
-            depthWriteEnabled: true,
-            depthCompare: "less",
-            format: this._depthTextureFormat!,
-          },
-        };
-        return this.device!.createRenderPipeline(descriptor);
-      });
+            vertex: {
+              module: this.device!.createShaderModule({
+                code: vertexWGSLShader,
+              }),
+              entryPoint: "main",
+              buffers: buffersLayouts,
+            },
+            fragment: {
+              module: this.device!.createShaderModule({
+                code: fragmentWGSLShader,
+              }),
+              entryPoint: "main",
+              targets: [
+                {
+                  format: this._presentationTextureFormat!,
+                  blend: targetBlend,
+                },
+              ],
+            },
+            primitive: primitiveState,
+            depthStencil: {
+              depthWriteEnabled: true,
+              depthCompare: "less",
+              format: this._depthTextureFormat!,
+            },
+          };
+
+          try {
+            return await this.device!.createRenderPipelineAsync(descriptor);
+          } catch (error) {
+            throw this.normalizeWebGPUError(error, descriptor);
+          }
+        },
+      );
     } catch (error) {
-      this.onError.emit(error as Error);
-      throw error;
+      const normalizedError =
+        error instanceof Error ? error : new Error(String(error));
+      this.onError.emit(normalizedError);
+      throw normalizedError;
     }
+  }
+
+  private validateShader(code: string, type: "vertex" | "fragment"): void {
+    if (!code.includes("main")) {
+      throw new Error(`Missing 'main' function in ${type} shader`);
+    }
+    // Add more validation as needed
+  }
+
+  private normalizeWebGPUError(
+    error: unknown,
+    descriptor: GPURenderPipelineDescriptor,
+  ): Error {
+    if (error instanceof Error) {
+      // Enhance with pipeline creation context
+      error.message =
+        `Pipeline creation failed: ${error.message}\n` +
+        `Vertex module: ${descriptor.vertex.module}\n` +
+        `Fragment module: ${descriptor.fragment?.module}`;
+      return error;
+    }
+    return new Error(`Unknown WebGPU error: ${String(error)}`);
   }
 
   public async createTexture(url: RequestInfo | URL): Promise<GPUTexture> {
@@ -333,15 +369,33 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
    * Starts a render pass with a command encoder and render pass encoder.
    *
    * @param textureView - The GPU texture view for rendering.
+   * @param texture - The GPU texture to render to.
    * @returns An object with the command encoder and render pass encoder.
    *
    * Sets up the render pass descriptor with color and depth-stencil attachments,
    * clearing the color to transparent black and depth to the farthest value.
    */
-  public startRenderPass(textureView: GPUTextureView): {
+  public startRenderPass(
+    textureView: GPUTextureView,
+    texture: GPUTexture,
+  ): {
     commandEncoder: GPUCommandEncoder;
     renderPassEncoder: GPURenderPassEncoder;
   } {
+    // Ensure depth texture matches size
+    if (
+      !this._depthTexture ||
+      this._depthTexture.width !== texture.width ||
+      this._depthTexture.height !== texture.height
+    ) {
+      // Force resizing depth texture. But it should have been resized when the user resized the canvas.
+      console.warn(
+        "Force resizing depth texture to prevent errors... how did you get here?",
+      );
+      this.destroyDepthTexture();
+      this.createDepthTexture(texture.width, texture.height);
+    }
+
     const renderPassDescriptor: GPURenderPassDescriptor = {
       colorAttachments: [
         {
@@ -359,9 +413,8 @@ export class WebGPUResourceManager implements WebGPUResourceDelegate {
       },
     };
 
-    const commandEncoder: GPUCommandEncoder =
-      this.device!.createCommandEncoder();
-    const renderPassEncoder: GPURenderPassEncoder =
+    const commandEncoder = this.device!.createCommandEncoder();
+    const renderPassEncoder =
       commandEncoder.beginRenderPass(renderPassDescriptor);
 
     return { commandEncoder, renderPassEncoder };

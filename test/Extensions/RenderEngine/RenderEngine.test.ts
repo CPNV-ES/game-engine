@@ -66,6 +66,7 @@ const runScreenshotTestCase = async (
       //Because this error can happen when we are freeing all resources. It's ok to ignore it.
       continue;
     }
+    console.error(error);
     expect(error).toBe("");
   }
   await screenshotUtil.closeBrowser();
