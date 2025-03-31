@@ -96,7 +96,7 @@ async function main() {
 
     // Step 4: Generate UML docs
     runCommand('npm run generate-uml');
-    runCommand('git add docs/uml');
+    runCommand('git add docs/diagrams');
     runCommand(`git commit -m "Update UML diagrams for ${version}"`);
 
     // Step 5: Run tests and build
