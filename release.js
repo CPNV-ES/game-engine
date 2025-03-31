@@ -71,19 +71,23 @@ async function handleUmlGeneration(version) {
         console.log('Generating UML diagrams...');
         runCommand('npm run generate-uml');
 
-        const umlDirExists = fs.existsSync('docs/uml');
+        const umlDirExists = fs.existsSync('doc/diagrams');
         if (!umlDirExists) {
-            console.log('No docs/uml directory found - skipping UML commit');
+            console.log('No doc/diagrams directory found - skipping UML commit');
             return;
         }
 
-        const statusOutput = execSync('git status --porcelain docs/uml').toString();
-        if (statusOutput.trim() === '') {
-            console.log('No changes in UML diagrams - skipping commit');
+        // Check for actual content changes (ignoring whitespace)
+        const changes = execSync('git diff --ignore-cr-at-eol --ignore-space-at-eol --ignore-all-space --ignore-blank-lines --numstat doc/diagrams').toString();
+
+        if (changes.trim() === '') {
+            console.log('Only whitespace changes in UML diagrams - skipping commit');
+            // Reset any potential line ending changes
+            execSync('git checkout -- doc/diagrams', { stdio: 'ignore' });
             return;
         }
 
-        runCommand('git add docs/uml');
+        runCommand('git add doc/diagrams');
         runCommand(`git commit -m "Update UML diagrams for ${version}"`);
     } catch (error) {
         console.error('Error handling UML generation:', error.message);
