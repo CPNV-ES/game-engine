@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.14] - Publish changelog
+- Published changelog to GitHub pages
+
 ## [0.4.13] - Auto release system + Stable RenderEngine creation / destruction operations
 - Automated release system (eg. `node release.js 0.4.13`)
 - Added internal test logging
