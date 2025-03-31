@@ -104,15 +104,26 @@ async function runTests() {
 }
 
 async function finishRelease(version, tagMessage) {
-    console.log('Standard finish failed, trying alternative approach...');
-    try {
-        // Fallback 1: Without squash option
-        runCommand(`git flow release finish -m "Release ${version}" -T "${tagMessage}" ${version}`);
-    } catch (secondAttemptError) {
-        console.log('Second attempt failed, trying basic finish...');
-        // Fallback 2: Most basic finish command
-        runCommand(`git flow release finish -m "Release ${version}" ${version}`);
-    }
+    console.log('Completing release with direct Git commands...');
+
+    // 1. Get back to release branch if needed
+    runCommand('git checkout release/' + version);
+
+    // 2. Merge release branch to main with no-fast-forward
+    runCommand('git checkout main');
+    runCommand(`git merge --no-ff release/${version} -m "Release ${version}"`);
+
+    // 3. Tag the release
+    runCommand(`git tag -a ${version} -m "${tagMessage}"`);
+
+    // 4. Merge to develop
+    runCommand('git checkout develop');
+    runCommand(`git merge --no-ff ${version} -m "Merge tag '${version}' into develop"`);
+
+    // 5. Clean up release branch
+    runCommand(`git branch -d release/${version}`);
+
+    console.log('Release completed successfully with direct Git commands');
 }
 
 async function main() {
