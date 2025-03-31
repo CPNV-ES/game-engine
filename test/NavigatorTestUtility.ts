@@ -20,15 +20,30 @@ export class NavigatorTestUtility {
     // Listen for page errors
     this._page.on("pageerror", (error) => {
       this.addError(error);
-      console.error("Page error:", error);
+      console.error("Browser Page error:", error);
     });
 
     // Listen for console errors
-    this._page.on("console", (message) => {
+    this._page.on("console", async (message) => {
       if (message.type() === "error") {
-        const error = new Error(message.text());
+        // Get the full error details (including stack)
+        const args = await Promise.all(
+          message.args().map((arg) => arg.jsonValue()),
+        );
+
+        // Construct a detailed error
+        const errorDetails = {
+          text: message.text(),
+          stack: args.join(" "), // Includes stack trace if available
+          location: message.location(), // File & line number
+          type: message.type(),
+        };
+
+        const error = new Error(errorDetails.text);
+        error.stack = errorDetails.stack; // Attach browser stack trace
+
         this.addError(error);
-        console.error("Console error:", message.text());
+        console.error("Browser Console Error:", errorDetails);
       }
     });
   }
