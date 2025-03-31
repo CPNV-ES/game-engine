@@ -103,6 +103,18 @@ async function runTests() {
     }
 }
 
+async function finishRelease(version, tagMessage) {
+    console.log('Standard finish failed, trying alternative approach...');
+    try {
+        // Fallback 1: Without squash option
+        runCommand(`git flow release finish -m "Release ${version}" -T "${tagMessage}" ${version}`);
+    } catch (secondAttemptError) {
+        console.log('Second attempt failed, trying basic finish...');
+        // Fallback 2: Most basic finish command
+        runCommand(`git flow release finish -m "Release ${version}" ${version}`);
+    }
+}
+
 async function main() {
     // Store original environment variables
     const originalEnv = {
@@ -148,16 +160,9 @@ async function main() {
         await runTests();
         runCommand('npm run build');
 
-        // Step 6: Finish release with editor bypass
+        // Step 6: Finish release with multiple fallbacks
         const tagMessage = `${version}: ${releaseTitle}`;
-        runCommand(`git flow release finish -m "Release ${version}" -T "${tagMessage}" -S ${version}`, {
-            env: {
-                ...process.env,
-                GIT_MERGE_AUTOEDIT: 'no',
-                GIT_EDITOR: 'true',
-                EDITOR: 'true'
-            }
-        });
+        await finishRelease(version, tagMessage);
 
         // Step 7: Push everything
         runCommand('git push origin main');
