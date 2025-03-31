@@ -66,7 +66,30 @@ function updatePackageJson(version) {
     }
 }
 
-// Main function
+async function handleUmlGeneration(version) {
+    try {
+        console.log('Generating UML diagrams...');
+        runCommand('npm run generate-uml');
+
+        const umlDirExists = fs.existsSync('docs/uml');
+        if (!umlDirExists) {
+            console.log('No docs/uml directory found - skipping UML commit');
+            return;
+        }
+
+        const statusOutput = execSync('git status --porcelain docs/uml').toString();
+        if (statusOutput.trim() === '') {
+            console.log('No changes in UML diagrams - skipping commit');
+            return;
+        }
+
+        runCommand('git add docs/uml');
+        runCommand(`git commit -m "Update UML diagrams for ${version}"`);
+    } catch (error) {
+        console.error('Error handling UML generation:', error.message);
+    }
+}
+
 async function main() {
     const version = process.argv[2];
 
@@ -94,10 +117,7 @@ async function main() {
     runCommand('git add package.json package-lock.json');
     runCommand(`git commit -m "Bump version to ${version}"`);
 
-    // Step 4: Generate UML docs
-    runCommand('npm run generate-uml');
-    runCommand('git add docs/diagrams');
-    runCommand(`git commit -m "Update UML diagrams for ${version}"`);
+    await handleUmlGeneration(version);
 
     // Step 5: Run tests and build
     runCommand('npm run test');
