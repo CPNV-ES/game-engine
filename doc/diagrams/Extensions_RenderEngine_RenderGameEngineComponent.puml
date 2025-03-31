@@ -37,7 +37,7 @@ class WebGPUResourceManager implements WebGPUResourceDelegate {
     +destroyGpuResources(): void
     +destroyDepthTexture(): void
     +destroyAllBuffers(): void
-    +startRenderPass(textureView: GPUTextureView): { commandEncoder: GPUCommandEncoder; renderPassEncoder: GPURenderPassEncoder; }
+    +startRenderPass(textureView: GPUTextureView, texture: GPUTexture): { commandEncoder: GPUCommandEncoder; renderPassEncoder: GPURenderPassEncoder; }
     +finishRenderPass(passEncoder: { commandEncoder: GPUCommandEncoder; renderPassEncoder: GPURenderPassEncoder; }): void
 }
 class RenderGameEngineComponent extends GameEngineComponent implements Renderer {
