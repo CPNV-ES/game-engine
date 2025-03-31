@@ -24,26 +24,49 @@ export class NavigatorTestUtility {
     });
 
     // Listen for console errors
+    interface BrowserError {
+      message?: string;
+      stack?: string;
+      // Add other possible error properties if needed
+      [key: string]: unknown;
+    }
+
     this._page.on("console", async (message) => {
       if (message.type() === "error") {
-        // Get the full error details (including stack)
-        const args = await Promise.all(
-          message.args().map((arg) => arg.jsonValue()),
-        );
+        try {
+          const args = await Promise.all(
+            message.args().map((arg) => arg.jsonValue()),
+          );
 
-        // Construct a detailed error
-        const errorDetails = {
-          text: message.text(),
-          stack: args.join(" "), // Includes stack trace if available
-          location: message.location(), // File & line number
-          type: message.type(),
-        };
+          // Type guard to check if first arg is an error-like object
+          const getErrorDetails = (arg: unknown): BrowserError => {
+            if (typeof arg === "object" && arg !== null) {
+              return {
+                message: "message" in arg ? String(arg.message) : undefined,
+                stack: "stack" in arg ? String(arg.stack) : undefined,
+              };
+            }
+            return {};
+          };
 
-        const error = new Error(errorDetails.text);
-        error.stack = errorDetails.stack; // Attach browser stack trace
+          const errorDetails = getErrorDetails(args[0]);
+          const errorMessage = errorDetails.message || message.text();
 
-        this.addError(error);
-        console.error("Browser Console Error:", errorDetails);
+          const error = new Error(errorMessage);
+          error.stack =
+            errorDetails.stack ||
+            `At: ${message.location().url}:${message.location().lineNumber}`;
+
+          this.addError(error);
+          console.error("Browser Error", {
+            message: error.message,
+            stack: error.stack,
+            location: message.location(),
+            rawArgs: args, // For debugging
+          });
+        } catch (err) {
+          console.error("Failed to process console error:", err);
+        }
       }
     });
   }
