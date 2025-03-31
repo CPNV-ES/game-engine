@@ -63,6 +63,7 @@ export class RenderGameEngineComponent
   private _context: GPUCanvasContext | undefined;
   private _isRenderingReady: boolean = false;
   private _webGpuResourcesManager: WebGPUResourceManager;
+  private _resizeBinding: () => void = this.onCanvasResized.bind(this);
 
   constructor(
     canvasToDrawOn: HTMLCanvasElement | null = null,
@@ -178,7 +179,6 @@ export class RenderGameEngineComponent
     //We don't want to throw an error if the engine is not attached already or detached
     if (this.attachedEngine === null) return;
     this.onError.emit(error);
-    console.error(error);
     this.IsRenderingReady = false;
   }
 
@@ -204,7 +204,7 @@ export class RenderGameEngineComponent
     this._ticker.onTick.removeObservers();
 
     // Remove the resize event listener
-    window.removeEventListener("resize", this.onCanvasResized.bind(this));
+    window.removeEventListener("resize", this._resizeBinding);
 
     // Destroy all GPU resources
     this._webGpuResourcesManager.destroyGpuResources();
@@ -232,7 +232,7 @@ export class RenderGameEngineComponent
   }
 
   private startRendering(): void {
-    window.addEventListener("resize", this.onCanvasResized.bind(this));
+    window.addEventListener("resize", this._resizeBinding);
     this._ticker.onTick.addObserver(this.frame.bind(this));
     this.resizeCanvasToMatchDisplaySize(true);
     this.IsRenderingReady = true;
