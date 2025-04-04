@@ -11,7 +11,7 @@ export class FixedTimeTicker implements Ticker {
   private _fixedTimeStep: number;
   private _lastTimestamp: number = 0;
   private _timeAccumulator: number = 0;
-  private _maxCatchupTicks: number = 600; // 10 seconds worth of ticks at 60fps
+  private _maxCatchupTicks: number;
 
   public set maxCatchupTicks(value: number) {
     this._maxCatchupTicks = value;
@@ -19,6 +19,7 @@ export class FixedTimeTicker implements Ticker {
 
   constructor(fixedTimeStep: number) {
     this._fixedTimeStep = fixedTimeStep;
+    this._maxCatchupTicks = fixedTimeStep * 10;
     requestAnimationFrame((timestamp: number) => this.onFrame(timestamp));
   }
 
