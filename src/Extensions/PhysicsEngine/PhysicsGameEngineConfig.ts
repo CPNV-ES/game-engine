@@ -3,18 +3,18 @@
  */
 export class PhysicsGameEngineConfig {
   private _rigidbodiesCalculationPrecision: number; // number of bodies "actions/steps" computations per tick (we recommend between 1 and 128)
-  private _maxTicksDebt: number; // max number of ticks to compute if simulation temporarily stopped (for FixedTimeTicker)
+  private _maxCatchupTicks: number; // max number of ticks to compute if simulation temporarily stopped (for FixedTimeTicker)
 
   public get rigidbodiesCalculationPrecision(): number {
     return this._rigidbodiesCalculationPrecision;
   }
 
-  public get maxTicksDebt(): number {
-    return this._maxTicksDebt;
+  public get maxCatchupTicks(): number {
+    return this._maxCatchupTicks;
   }
 
-  constructor(precision: number, ticksDebt: number) {
+  constructor(precision: number, maxCatchupTicks: number) {
     this._rigidbodiesCalculationPrecision = precision;
-    this._maxTicksDebt = ticksDebt;
+    this._maxCatchupTicks = maxCatchupTicks;
   }
 }
