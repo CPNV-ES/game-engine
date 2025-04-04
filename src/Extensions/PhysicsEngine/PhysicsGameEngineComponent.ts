@@ -11,6 +11,7 @@ import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { MathUtility } from "@core/MathStructures/MathUtility.ts";
 import { Rigidbody } from "@extensions/PhysicsEngine/Rigidbodies/Rigidbody.ts";
 import { PhysicsGameEngineConfig } from "@extensions/PhysicsEngine/PhysicsGameEngineConfig.ts";
+import { FixedTimeTicker } from "@core/Tickers/FixedTimeTicker.ts";
 
 /**
  * A unique game engine component responsible for handling the physics of the game at runtime. (works by Tick)
@@ -28,6 +29,9 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   constructor(ticker: Ticker, config?: PhysicsGameEngineConfig) {
     super();
     this._config = config || new PhysicsGameEngineConfig(40, 600);
+
+    if (ticker instanceof FixedTimeTicker)
+      ticker.maxCatchupTicks = this._config.maxCatchupTicks;
     this._ticker = ticker;
   }
 
