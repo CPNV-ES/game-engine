@@ -10,6 +10,7 @@ import { ArrayUtility } from "@core/Utilities/ArrayUtility.ts";
 import { Vector2 } from "@core/MathStructures/Vector2.ts";
 import { MathUtility } from "@core/MathStructures/MathUtility.ts";
 import { Rigidbody } from "@extensions/PhysicsEngine/Rigidbodies/Rigidbody.ts";
+import { PhysicsGameEngineConfig } from "@extensions/PhysicsEngine/PhysicsGameEngineConfig.ts";
 
 /**
  * A unique game engine component responsible for handling the physics of the game at runtime. (works by Tick)
@@ -22,9 +23,11 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
   public gravity: Vector2 = new Vector2(0, -9.81);
   public minIterationPerTick: number = 1;
   public maxIterationPerTick: number = 128;
+  private _config: PhysicsGameEngineConfig;
 
-  constructor(ticker: Ticker) {
+  constructor(ticker: Ticker, config?: PhysicsGameEngineConfig) {
     super();
+    this._config = config || new PhysicsGameEngineConfig(40, 600);
     this._ticker = ticker;
   }
 
@@ -109,7 +112,7 @@ export class PhysicsGameEngineComponent extends GameEngineComponent {
     if (bodies.length <= 0) return;
 
     const iterations = MathUtility.clamp(
-      40,
+      this._config.rigidbodiesCalculationPrecision,
       this.minIterationPerTick,
       this.maxIterationPerTick,
     );
