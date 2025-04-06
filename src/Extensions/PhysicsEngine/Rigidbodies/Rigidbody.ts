@@ -10,12 +10,17 @@ import { CollisionRigidbodies } from "@extensions/PhysicsEngine/Colliders/Collis
  * Rigibodies are physics handlers for game objects that have colliders
  */
 export class Rigidbody extends LogicBehavior<void> {
-  public mass: number;
+  private _mass: number;
+  private _inverseMass: number; // stored for performance
   private _force: Vector2 = new Vector2(0, 0);
   private _linearVelocity: Vector2 = new Vector2(0, 0);
   private _angularVelocity: number = 0; // rad/s
   private _restitution: number = 0.5;
   private _collider: Collider;
+
+  public get mass(): number {
+    return this._mass;
+  }
 
   public get collider(): Collider {
     return this._collider;
@@ -23,6 +28,11 @@ export class Rigidbody extends LogicBehavior<void> {
 
   public get restitution(): number {
     return this._restitution;
+  }
+
+  public set mass(value: number) {
+    this._mass = value;
+    this._inverseMass = 1 / value;
   }
 
   public get linearVelocity(): Vector2 {
@@ -33,11 +43,15 @@ export class Rigidbody extends LogicBehavior<void> {
     this._linearVelocity = value;
   }
 
+  public get inverseMass() {
+    return this._inverseMass;
+  }
+
   constructor(collider: Collider, mass: number = 1, restitution: number = 0.6) {
     super();
     this._collider = collider;
     this.collider.rigidbody = this;
-    this.mass = mass;
+    this.mass = mass; // pass through the setter to set the inverse mass
     this._restitution = restitution;
 
     this._collider.onDataChanged.addObserver((data: Collision[]) =>
@@ -95,7 +109,7 @@ export class Rigidbody extends LogicBehavior<void> {
     this._linearVelocity.sub(
       collision.normal
         .clone()
-        .scale(collision.magnitude / this.mass)
+        .scale(collision.magnitude / this._mass)
         .toVector2(),
     );
   }
@@ -115,7 +129,7 @@ export class Rigidbody extends LogicBehavior<void> {
    */
   public step(deltaTime: number, gravity: Vector2): void {
     // Compute the acceleration from the forces
-    const acceleration: Vector2 = this._force.clone().scale(1 / this.mass);
+    const acceleration: Vector2 = this._force.clone().scale(this._inverseMass);
     acceleration.add(gravity);
 
     // Move position

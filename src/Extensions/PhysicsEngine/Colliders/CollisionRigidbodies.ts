@@ -68,7 +68,7 @@ export class CollisionRigidbodies extends Collision {
     return (
       (-(1 + this._restitution) *
         this._relativeVelocity.dotProduct(this.normal.clone().toVector2())) /
-      (1 / rigidB.mass + 1 / rigidA.mass)
+      (rigidB.inverseMass + rigidA.inverseMass)
     );
   }
 
